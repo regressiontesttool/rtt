@@ -1,0 +1,43 @@
+123
+
+Chapter 2 Overview of RTT
+
+In the following chapter, a brief overview of RTT is given. The first section defines the requirements that RTT had to meet. Afterwards, RTT's coarse workflow is introduced followed by the explanation of the tree matching problem, which arises while comparing multiple .
+
+2.1 Requirements Analysis
+
+The test tool has to meet special requirements to be usable for compiler testing. First of all, it is important to be able to integrate  as easy and quick as possible. One goal of  is to save development time and therefore to save costs. Another advantage of easy integration is the reduced danger of user-introduced errors. The integration approach should leave little to no room for making mistakes. Therefore it must be carefully designed, also in regards of the integration's  flexibility. The application should not be higly specialised on one parser concept. Instead, it should be possible to integrate it in other than normal parser concepts too like scannerless or  parsers. 
+
+A different design goal is to develop an archive management system that enables the easy management of testsuites and their testcases. Besides ordinary management functions like adding and deleting testsuites and testcases, the management system should support advanced functions like the versioning of old testcases to enable testcases traceability. Another useful feature is to export only failed testcases. After all, the archive management system should log every event that happens in the archive, for instance positive and negative test results and the addition, update and removal of testcases.
+
+A third goal is flexibility. In order to improve compiler regression testing, an independent testresult format should be created, such that testsuites can be reused to test many different compiler implementations. In such way, compilers under construction can be tested against verified compilers for the same language.
+
+Finally, the tool's usability is important. To be usable in current development environments, it should interface with common development tools and should be easy to integrate in the developmet cycle. Table 2.1 summarizes RTT's requirements.
+
+
+
+2.2 Workflow
+
+Three main tasks have to be accomplished to regression test compilers.
+
+First of all, compilers intended to be tested need to be adapted as described in chapter [cha:Integration], allowing RTT to interact with them.
+
+In a second step, testsuites have to be created.  uses test archives that combine testsuites with testcases, configurations, which specify the lexer and parser, and reference results. Test archives are zip files or plain directories. RTT provides different methods to create and alter archives (see chapter [cha:Usage]). Archives are easy usable because they are designed in a selfdescribing manner according to the requirement of usability. When creating new archives or adding new tests, reference results have to be generated.
+
+The last step is to run regression tests on compilers. After  loads an archive, the test phase starts. The overall test process is divided into two stages for testing the lexer and parser autonomously. After instantiating the lexer, RTT initializes it and provides the input data. It then fetches all tokens produced by the lexer and transforms them into a neutral format for comparing it against the expected results. 
+
+After the lexer test is finished, the second phase starts. The parser gets initialized in a similar manner as the lexer. The parser (or an apropriate adapter) has to take care of initializing the lexer as both test phases are run independent of each other. The parser produces the AST and returns it to RTT where the transformation into a neutral format takes place and the tree will be compared against the expected results. If the parser returns multiple trees, RTT cannot assume that they are in the same order everytime. Therefore it has to find a heuristic to compare the right tree against its expected version. The used algorithm for that task is explained in the next section. 
+
+A third phase for running semantic tests does not exist because semantic tests are integrated in the second phase. However, compilers have to meet special prerequisites as described in chapter [sub:Annotations-in-RTT].
+
+Finally, RTT updates the log with the test results.
+
+2.3 Tree Matching
+
+Comparing the lexic results of a compiler is in most cases trivial because  usually the lexer emits a stream of tokens that has to be compared against earlier versions. It gets more complicated with results of the parser. A normal deterministic parser returns one AST. Because the parser is deterministic, one can assume that for every run with the same input the same output is returned. To compare the output tree, every node will be compared seperatly. But if the parser is a generalized parser and the context-free grammar it is based on is ambiguous, one tree for every possible interpretation of the input is returned. However it is not necessarly defined, in wich order the trees are created. Problems arise if the returned trees' order can change. In such a case RTT has to find the right version of the returned trees, so they can be compared  against the expected results. If the order is not strictly defined, some kind of heuristic is needed to determine the right pairs of trees to compare. This heuristic must take into account that the structure of the trees can differ because of changes in the grammar or in the parser. Whole subtrees can be shifted or changed in their order. One special case occures if the number of trees are different. It will be handled by RTT as an unintended change and results in an error.
+
+Tree Edit Distance
+
+One heuristic that helps finding the right pairs of trees is a measurement for tree similarity. One of the most frequently used measurement for calculating the distance between two trees is the Tree Edit Distance [SLATS]. The tree edit distance expresses the costs of transforming one tree into another one. The algorithm divides the transformation into predefined edit operations. Every operation adds some cost to the overall cost of the transformation. For calculating the distance in RTT the operations defined are rename, insert and delete. If matching is turned on while testing, RTT will calculate the tree edit distance between every tree from the compiler and the expected trees. Thereby RTT ignores all informational attributes such as debugging information. The pairs of trees with the minimum costs will be compared.
+
+For calculating the tree edit distance, RTT uses an algorithm by Zhang and Shasha [ZS89]. This algorithm is designed for use with ordered trees and is therefore adequate for comparing ASTs.

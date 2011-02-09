@@ -1,0 +1,136 @@
+456
+
+Chapter 3 Integration Concept
+
+The integration capabilities of RTT into existing compilers are important for its success. An appropriate concept must be found to fit the requirements. It must be both general and easy to apply. A compiler independent format of the test results is needed to be able to store compiler results for further regression tests and to  compare the results of different compilers. Therefore, a transformation is needed to prepare a compiler's results of a lexic, syntactic or semantic test for RTT. This transformation can be carried out by several entities. 
+
+00.00.0000 User The user is in charge of transforming the results. This is the most general method because the user can design the transformation. The downsite is the needed effort and time to integrate RTT.
+
+00.00.0000 RTT The tool itself takes control of producing the independent format of RTT. For this option, RTT will need a transformation specification. This specification describes in some way what and how to transform. 
+
+The following chapter will discuss different possible approaches. It will highlight the assets and drawbacks of each single approach.
+
+3.1 User-based Transformations
+
+In this approach, it is the developers task to transform the intern compiler representation of the test results to the format of RTT. This is the most general approach as the developer can decide, which information will be compared and how it will be transformed. It can be applied on many kinds of compilers as the only requirement will be to implement an abstract interface, provided by the regression test tool. I.e. the regression test tool expects compilation results satisfying its interface. 
+
+A problem of this generic method is, that the user himself has to write much code for transforming compilation results. There are three deficits. First, it is time-consuming to implement the transformations, which results in high costs. Second, as he has to write the code by hand, the danger of making mistakes is much higher. And last, if changes arise at the compiler, the user has to change the transformation code.
+
+3.2 Provided Plugins
+
+It is a common technique to use lexer and parser generators in compiler development. The developer only has to write the specification for the generator. The generated parser then conforms to the grammar. Another strategy for integration can be to provide plugins for specific parser generators. The structure of the built parsers can be anticipated by knowing the building generator. For instance, there can be a plugin for the ANTLR parser generator [ANTLR] or one for JavaCC [Javacc]. If the developer is using one of these generators, he will be able to integrate RTT quickly into his application. He only has to make minimal to no changes. 
+
+Problems arise, if no suited plugin exists. This can happen, if the parser is not generated or the generator is not supported. Also the structure of the resulting AST cannot be anticipated, if parser generators, where result construction is based on user written semantic actions, are used, e.g. yacc [yacc] or Beaver [Beaver]. In such a case, RTT cannot have any knowledge about the generated results. The user has to write his own plugin that is suited on this specific situation. With this approach, the genericity of the former variant, the user-based transformation, is subsumed as the user can write the transformation as a plugin. But the deficits are also inherited, namely the development time and the possibility of making mistakes. With a set of provided plugins, this risk can only be reduced.
+
+3.3 Transformation Specifications
+
+Another option is to let the user just specify transformation instructions. He has to define the structure of the results in some kind of description. Those structures include the classes involved and the attributes and methods of the classes that are needed to be compared. For tree structured results, as they occure in ASTs, the children of a node are needed to be described too. This description can have several forms. For instance, it can be written as an XML description [XML]. XML is easy to parse and would be an ideal option to describe the result structure. With the help of reflection, RTT then can transform the described data into its own compiler independent form. Another option is to use aspects [Aspect]. RTT would provide several abstract aspects that can be weaved in at the right places. This corresponds to a transformation description because the user only has to define several pointcuts according to the internal compiler structure for applying RTT.
+
+The advantage of this method is that RTT can automatically execute the transformation based on the given specification. The user only has to describe the form of the data and feed this description into RTT. Because the user does not have to write the transformation by himself, the risk of making mistakes is reduced. Also the time needed to write this description is much shorter than writing the whole transformation. Both options, XML descriptions and aspects, implies that the specification is placed in another location than the compiler's actual code. So if the compiler's interface changes, the developer has to consider changing the specification too. That is a potential risk. Also this approach is only usable in environments that allowes aspect weaving.
+
+3.4 Annotations
+
+The method used by RTT depends on annotations. The developer has to identify the classes, methods and fields, which have to be compared, with specific annotations. RTT gains knowledge about the structure of the internal compiler representation by analyzing the annotations. This is a comparable approach to the one based on transformation specifications, because the user specifies what has to be transformed. He states, what attributes have to be compared and where the children of a node reside. The difference lies in the place, where the specification is placed. The annotations are not directly in the code, but not far away. That means, if the interface of a compiler is changed, the risk of forgetting to change the specification too is reduced. Some compiler generators even allow to add annotations into the specifications of the lexer or parser. Therefore an annotated and with RTT usable lexer respectively parser is generated. Because the developer only has to add annotations to his code, the effort of integrating RTT is very small compared to the other approaches. Nonetheless is this approach the most generic one. It subsumes the first approach, because the user is still able to write his own transformation of the internal structur as an adapter. He then not attaches the annotations at the compiler's internal classes directly but at the adapter. It is also an usable approach if the sourcecode cannot be changed. With AspectJ [AJ] it is possible to weave annotations into existing byte code. Therefore RTT's specification can be placed in another location than the actual code.
+
+The downsite of this approach is the limitation to Java only. It is possible to write an annotated adapter that interfaces via JNI with programs that are written in other languages. But then, more effort is needed and the ease of annotations would be lost.
+
+A summary with the advantages and disadvantages of every approach can be seen in table 3.1.
+
+
+
+3.4.1 Annotations in RTT
+
+The annotations are used to depict the compiler's specific classes and methods that are important for its usage. In most cases, these classes are the parser and lexer as well as the results produced by them. In RTT, the annotations are designed in an extensive way, which means, that some annotations are redundant but they are selfdocumenting and increase comprehensibility. RTT uses different types of annotations. One kind of annotations is needed to run the compiler while the other annotations describe the results that the compiler returns.
+
+
+
+When integrating RTT into a compiler, the fist step is to annotate the lexer and parser. To make the compiler testable with RTT, the developer has to add the annotations shown in table [tab:Lexer-and-Parser].
+
+For initializing, RTT has to make some assumptions. The @Lexer.Initialize and @Parser.Initialize annotations describe the method or constructor used for initialising the lexer respectively the parser. The annotated methods have to accept a java.io.InputStream that contains the input data because lexer and parser are tested independent of each other. Therefore the parser has to instantiate the lexer by himself. If this annotation is not found, RTT will try to instantiate the lexer or parser using a constructor that accepts an InputStream.
+
+The annotation @Lexer.NextToken specifies a method, that returns one token per call and has no parameters. The returned tokens have to be annotated using the annotations shown in Table [tab:Token-and-Node].
+
+To get the AST of a parser, RTT will call the method annotated with @Parser.AST. This method must also be parameterless. It can return a single AST or an java.lang.Iterable that contains several trees. The second option can be used by generalized parsers [GLR] that return one tree for every possible interpretation. All the objects in the returned tree have to be annotated with the annotations shown in table [tab:Token-and-Node]. 
+
+
+
+Algorithm 3.1 displays how to apply the annotations to an existing lexer. The parser's annotations are applied in the same manner:
+
+
+
+After annotating the lexer and parser, the next step is to describe the results. The lexer returns tokens describing the input data while the parser returns the nodes of an AST. These objects have to be tagged with the @Lexer.Token or the @Parser.Node annotation respectively. It is only necessary to annotate abstract base classes because the annotations are inherited. To be more verbatim, the annotations have a prefix describing the concerning component as lexer or parser. These prefixes can be omitted.
+
+
+
+The developer has to specify, which methods and fields have to be compared. Those methods must be parameterless and return an object with a meaningful toString representation. If RTT discovers a @*.Compare annotation, it will call the toString-Method on the returned object to save this representation for later testing or to compare it in tests. A @*.Informational annotation is also included for debugging purposes. Attributes of minor importance for the test can be tagged with this annotation. The informational attributes will then be saved and displayed if needed but do not fail the test, if they differ.
+
+An annotation specific for the lexer is the @Lexer.Token.EOF annotation. It has to be attached at a boolean field or parameterless method and states, if the current token is the last token in the stream. Hence, the lexer method, which returns the next token, has to return a specific End-of-File token. The annotated attribute of this specific token must return true.
+
+To be able to visit every node of the AST, the @Parser.Node.Child annotation describes a parameterless method or field that returns one or more children of the current node. Those children again have to be tagged with @Parser.Node. The returned object can be one child or it can be an instance of java.lang.Iterable containing more than one children to visit. 
+
+The following listing shows a completly annotated Token. The token's start and end position are included for debugging purposes. Only the token's value and type are compared. The isEof-Method must be implemented also. 
+
+
+
+The 's nodes are annotated similar. Example 3.4 shows that the annotations can be split up in many classes since annotations are inherited. The type of every BinExpr will be compared. Because of the child-annotations, the left and right child will be visited and compared.
+
+
+
+As stated earlier, a third kind of tests are semantic tests, which test calculations over . Those calculations can be for instance the wiring of declaration and use of a variable. If the compiler matches specific requirements, such as:
+
+• Semantic calculations are capsulated in functions or attributes of the 's nodes.
+
+• Such functions do not need any additional input.
+
+• They return values with a meaningful string representation.
+
+than semantic tests can already be specified by using the existing parser annotations. One compiler generator, which generates such compilers, is the JastAdd compiler-compiler system [JastAdd]. In the course of this work, semantic tests are used to test:
+
+• Wiring of declaration and usage of variables
+
+• Evaluation of mathematical expressions
+
+• Values of program statements (e.g. variable assignments)
+
+As all node classes are generated, AspectJ [AJ] was used to introduce the annotations and additional functions for testing. See the section “Aspects” of the next chapter for details about the usage of annotations in AspectJ specifications.
+
+3.4.2 Usage of Annotations
+
+The annotations can be attached as shown in the previous section. For some scenarios this is not possible. Some or all of the objects can be generated and every direct change, like annotations, will vanish on the next generation. Another option is to use a parser included via a library. As the library only consists of bytecode, the annotations cannot be attached. Therefor other methods to integrate  are needed. The following section describes how to emulate other ways of integration, for instance an adapter or aspects. 
+
+Specification
+
+Some compiler generators allow to include the needed annotations directly into their specifications. Generated compilers will automaticaly be annotated and usable with . This is a great advantage because if changes in the interface of the compiler arise, the annotations are updated automaticaly and the user does not have to change anything. Not every compiler generator supports including annotations into the specifications. One reason can be, that annotations are a Java-only language construct and some compiler generators are language independant.
+
+A generator that supports annotations is for instance JavaCC. In the specification of JavaCC, it is possible to modify the generated parser in a way, that all needed annotations are included, as illustrated in the following example. 
+
+
+
+The @Parser.Initialize method is ommited. Because JavaCC generates a constructor, that accepts an InputStream,  is still able to instantiate the parser.
+
+Adapter
+
+If a compiler generator's specifications do not allow annotations, the user needs to write a small adapter. The adapter acts as an delegate and only forwards 's calls of to the lexer or parser and returns the results. An examplary implementation can be seen in listing 3.6. 
+
+
+
+The adapter in this example simultaneously plays the role of lexer and parser. The needed methods are implemented and just forward calls from  to the specific component. Such an adapter can also be used if the instanziation by  is not possible due to other instanziation schemata or if changes are overwriten by generators.
+
+Aspects
+
+Using AspectJ [AJ], it is possible to weave annotations into existing code, which is useful to integrate RTT if:
+
+• The compiler only exists as a binary library or
+
+• The generator's specifications do not allow annotations and
+
+• The classes of the tokens or nodes are generated.
+
+In every case it is not possible to annotate the classes directly. AspectJ's injection mechanism can be used to introduce the annotations. The overall process is visualised in figure 3.1.
+
+
+
+An example how to use AspectJ to weave annotations into the compiler's parser class is shown in listing 3.7. The class ParserClass gets annotated with the @Parser-annotation. After that, the initializing method and the method, which returns the parsed syntax tree, are annotated.
+
+
+

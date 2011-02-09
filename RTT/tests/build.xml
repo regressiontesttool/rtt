@@ -1,0 +1,680 @@
+<!--
+	This program and the accompanying materials are made available under the
+	terms of the BSD 3-clause license which accompanies this distribution.
+-->
+
+<!--
+	Ant build script to execute test scenarios that cover RTT's main use cases.
+	Each scenario generates a test archive, manipulates it and exports its log
+	file, which can be consulted to check if RTT behaved as expected.
+	
+	The scenarios depend on test cases contained in subfolders of the
+	"testsets" folder. Each subfolder's name describes the result of each
+	of its test cases, whereas each literal represents one test case, starting
+	from first to last. The subfolders' naming scheme is:
+	 - c: correct test case
+	 - f: test case that fails
+	 - e: test case that does not work, i.e. aborts with an exception
+	
+	Scenarios' results will be generated into subfolders of the
+	"testresults" folder, whereas each subfolder is named like the scenario it
+	represents. Similar like test cases, the scenarios have a naming scheme:
+	 - "ga" (Generate Archive): An "o" following the "ga" means "the overwrite
+	   flag is true". It follows the default configuration. E.g. "ga_o_1" means
+	   "generate the archive with overwrite flag true and default configuration
+	   1".
+	 - "uc" (Update Configuration): The configuration to update follows. An "o"
+	   following the "uc" means "the overwrite flag is true". A "s" following
+	   the configuration to update means the update is skipped, either since
+	   the configuration did not change or the overwrite flag was not set. E.g.
+	   "uc_o_1s" means "update the configuration 1, whereas the overwrite flag
+	   is set but nethertheless the update will be skipped because the
+	   configuration did not change".
+	 - "ua" (Update Archive): The test set to use for update follows. The test
+	   suite to update follows by "s" and the suite's number. Then the test
+	   cases that are updated follow, whereas an "s" means the test case is
+	   not updated - i.e. it is skipped - and an "r" means the test case is
+	   removed. E.g. "ua_o_ccc_s1_1s23" means "update the test cases 1, 2 and 3
+	   of test suite 1 with the test set ccc, whereas the overwrite flag is set
+	   and the 1'th test case's update is skipped since it did not change at
+	   all".
+	 - "ur" (Update Results): Again the configuration to use and the test suite
+	   and test cases to update follow, but each test case can be followed by
+	   an "e" which means "the generation of the results of the respective
+	   test case fails with an exception" or an "s" which means "the generation
+	   of new results is skipped since the result did not change". E.g.
+	   "ur_c1_s2_34e7" means "update the results of test suite 2 using
+	   configuration 1. The update generates results for test cases 3, 4 and 7,
+	   whereas the generation for test case 4 fails with an exception".
+	 - "rt" (Run Tests): Again the configuration to use and the test suite and
+	   its respective test cases to execute follow, whereas each test case is
+	   augmented with an "c" if it is correct, "f" if it fails, "e" if it
+	   fails with an exception or "s" if it is skipped since its results are
+	   not up to date. E.g. "rt_c3_s2_2c9s3c" means "run the test cases 2, 9
+	   and 3 of test suite 2 using configuration 3, whereas test cases 2 and
+	   3 succeed and test case 9 is skipped".
+	
+	@author C. Bürger
+-->
+<project name="rtt" default="Tests">
+	<path id="_basedir">
+		<pathelement location="./.."/>
+	</path>
+	<property name="_basedir" refid="_basedir"/>
+	
+	<!-- Declare RTT's Ant tasks -->
+	<taskdef resource="rtt/ant/taskdef.properties">
+		<classpath path="${_basedir}/distribution/rtt.jar"/>
+	</taskdef>
+	
+	<!-- Delete all generated testsuites and their logs -->
+	<target name="Clean">
+		<delete includeemptydirs="false">
+			<fileset dir="${_basedir}/tests/testresults">
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<!-- Execute all test Scenarios -->
+	<target name="Tests" depends="Clean">
+		<antcall target="ConfigurationUpdateTestScenarios"/>
+		<antcall target="ArchiveUpdateTestScenarios"/>
+		<antcall target="RunTestsTestScenarios"/>
+	</target>
+	
+	<!--
+	===========================================================================
+	                        Run Tests Test Scenarios
+	===========================================================================
+	-->
+	
+	<target name="RunTestsTestScenarios">
+		<antcall target="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c"/>
+		<antcall target="ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3"/>
+		<!-- For the following test consult test case description below! -->
+		<antcall target="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c"/>
+	</target>
+	
+	<!-- Testing a correct tool -->
+	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c"
+		/>
+	</target>
+
+	<!--
+		Testing a tool that produces wrong data
+		
+		IMPORTANT: To validate correct behaviour of RTT, check that indeed test
+			case 3 failed.
+	-->
+	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>		
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/cfc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests
+			fail_with_exception="false">
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+				log="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/log.xml"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c"
+		/>
+	</target>
+	
+	<!-- Testing an erroneous tool implementation -->
+	<target name="ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/cec" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3"
+		/>
+	</target>
+	
+	<!--
+	===========================================================================
+					  Configuration Update Test Scenarios
+	===========================================================================
+	-->
+	
+	<target name="ConfigurationUpdateTestScenarios">
+		<antcall target="ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2"/>
+		<antcall target="ga_1-ua_ccc_s1_123-ga_2"/>
+	</target>
+	
+	<!-- Replacing configurations -->
+	<target name="ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				overwrite="true"
+				name="c1"
+				lexer="RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				overwrite="true"
+				name="c1"
+				lexer="RepositoryGenerator"
+				parser="RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				overwrite="true"
+				name="c1"
+				lexer="RepositoryGenerator"
+				parser="RepositoryGenerator">
+				<classpathElement path="."/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				overwrite="true"
+				name="c1"
+				lexer="RepositoryGenerator"
+				parser="RepositoryGenerator">
+				<classpathElement path="."/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				name="c2"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				name="c2"
+				lexer="lexer"
+				parser="parser">
+				<classpathElement path="."/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			<configuration
+				overwrite="true"
+				name="c2"
+				lexer="lexer"
+				parser="parser">
+				<classpathElement path="."/>
+			</configuration>
+		</updateConfigurations>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2"
+		/>
+	</target>
+	
+	<!-- Changing the default configuration -->
+	<target name="ga_1-ua_ccc_s1_123-ga_2">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c2">
+		</createArchive>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2"
+		/>
+	</target>
+	
+	<!--
+	===========================================================================
+		                   Archive Update Test Scenarios
+	===========================================================================
+	-->
+	
+	<target name="ArchiveUpdateTestScenarios">
+		<antcall target="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"/>
+		<antcall target="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1"/>
+		<antcall target="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c"/>
+		<antcall target="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"/>
+	</target>
+	
+	<!-- Replacing a testcase with a new version -->
+	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/cfc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="true">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"
+		/>
+	</target>
+	
+	<!-- Temporary removing a testcase and adding it later again -->
+	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+			<removeTest testsuit="s1" testcase="1"/>
+		</updateArchive>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c"
+		/>
+	</target>
+	
+	<!-- Testing empty test suites -->
+	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip">
+			<removeTest testsuit="s1" testcase="1"/>
+			<removeTest testsuit="s1" testcase="2"/>
+			<removeTest testsuit="s1" testcase="3"/>
+		</updateArchive>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1"
+		/>
+	</target>
+	
+	<!-- Removing and later replacing a testcase with a new version -->
+	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
+		<createArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			overwrite="false"
+			defaultConfiguration="c1">
+		</createArchive>
+		
+		<updateConfigurations
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<configuration
+				name="c1"
+				lexer="rtt.tests.RepositoryGenerator"
+				parser="rtt.tests.RepositoryGenerator">
+				<classpathElement path="./../../../binary"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/cfc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<removeTest testsuit="s1" testcase="2"/>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<updateArchive
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+			<testsuite name="s1" overwrite="false">
+				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
+					<include name="*.testcase"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			configuration="c1"
+		/>
+		
+		<runTests>
+			<test
+				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+				configuration="c1"
+				matching="false"
+			/>
+		</runTests>
+		
+		<exportLog
+			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"
+		/>
+	</target>
+</project>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	This program and the accompanying materials are made available under the
+	terms of the BSD 3-clause license which accompanies this distribution.
+-->
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_1_0.xsd">
+	<jaxb:bindings schemaLocation="testsuit.xsd" node="/xsd:schema">
+		<jaxb:bindings node="//xsd:complexType[@name='inputRef']">
+		
+			<jaxb:property name="input" >
+				<jaxb:baseType name="rtt.archive.Input">
+					<jaxb:javaType name="rtt.archive.Input" parseMethod="rtt.archive.utils.ReferenceConverter.loadInputRef" printMethod="rtt.archive.utils.ReferenceConverter.saveInputRef"/>
+				</jaxb:baseType>
+			</jaxb:property>
+			
+		</jaxb:bindings>
+		
+				<jaxb:bindings node="//xsd:complexType[@name='lexerOutputRef']">
+		
+			<jaxb:property name="lexerOutput" >
+				<jaxb:baseType name="rtt.archive.LexerOutput">
+					<jaxb:javaType name="rtt.archive.LexerOutput" parseMethod="rtt.archive.utils.ReferenceConverter.loadLexerOutputRef" printMethod="rtt.archive.utils.ReferenceConverter.saveLexerOutputRef"/>
+				</jaxb:baseType>
+			</jaxb:property>
+			
+		</jaxb:bindings>
+		
+				<jaxb:bindings node="//xsd:complexType[@name='parserOutputRef']">
+		
+			<jaxb:property name="parserOutput" >
+				<jaxb:baseType name="rtt.archive.ParserOutput">
+					<jaxb:javaType name="rtt.archive.ParserOutput" parseMethod="rtt.archive.utils.ReferenceConverter.loadParserOutputRef" printMethod="rtt.archive.utils.ReferenceConverter.saveParserOutputRef"/>
+				</jaxb:baseType>
+			</jaxb:property>
+			
+		</jaxb:bindings>
+		
+	</jaxb:bindings>
+</jaxb:bindings>

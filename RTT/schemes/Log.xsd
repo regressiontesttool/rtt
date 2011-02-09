@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	This program and the accompanying materials are made available under the
+	terms of the BSD 3-clause license which accompanies this distribution.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="archiveLog">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="info" type="Information"/>
+				<xs:element name="failed" type="failed"/>
+				<xs:element name="testrun" type="Testrun"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Logentry" abstract="0">
+		<xs:attribute name="date" type="xs:dateTime" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Testrun">
+		<xs:complexContent>
+			<xs:extension base="Logentry">
+				<xs:sequence>
+					<xs:element name="failed" type="failed"
+						minOccurs="0" maxOccurs="unbounded" />
+
+					<xs:element name="passed" type="passed"
+						maxOccurs="unbounded" minOccurs="0">
+					</xs:element>
+					<xs:element name="skipped" type="skipped" maxOccurs="unbounded" minOccurs="0"></xs:element>
+				</xs:sequence>
+				<xs:attribute name="configuration" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Information">
+		<xs:complexContent>
+			<xs:extension base="Logentry">
+				<xs:sequence>
+					<xs:element name="testInformation"
+						type="testInformation" maxOccurs="unbounded" minOccurs="0">
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="msg" type="xs:string" />
+				<xs:attribute name="suffix" type="xs:string"></xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+  
+  <xs:complexType name="GenerationInformation">
+    <xs:complexContent>
+      <xs:extension base="Information" />
+    </xs:complexContent>
+  </xs:complexType>
+  
+	<xs:complexType name="failed">
+		<xs:attribute name="test" type="xs:string"/>
+		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="msg" type="xs:string"/>
+		<xs:attribute name="testsuit" type="xs:string"/>
+	</xs:complexType>
+
+	<xs:complexType name="passed">
+		<xs:attribute name="test" type="xs:string"></xs:attribute>
+		<xs:attribute name="testSuite" type="xs:string"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="testInformation">
+		<xs:attribute name="msg" type="xs:string"></xs:attribute>
+		<xs:attribute name="test" type="xs:string"></xs:attribute>
+		<xs:attribute name="priority" type="xs:int"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="skipped">
+		<xs:attribute name="test" type="xs:string"></xs:attribute>
+		<xs:attribute name="testSuite" type="xs:string"></xs:attribute>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,55 @@
+873262
+
+Chapter 4 Archive Structure
+
+The main purpose of RTT is to aid developers in regression testing compilers. Hence, RTT needs a coherent system for managing testcases in an easy and time saving manner. In opposite to currently used testing frameworks (see chapter [cha:Related-Works]) RTT employs a management system for reoccuring tasks like adding testcases or updating reference results. Every one of those actions can be done by using RTT's user interface.
+
+The data needed for regression testing is combined into archives to achieve the ease of a black box approach. All information that is needed to run regression tests on compilers is included in one zip file.
+
+Archives can contain different configurations, which specify the lexer and parser to use, i.e. their implementation classes as well as class paths. These paths are needed for loading the classes and all their dependencies. The separation of configurations and testcases allowes to reuse testcases for different compilers. Additionaly, the archive contains the input data for every testcase as well as the expected output data. A log file, which records archive events, is also included.
+
+Archive files are separated into several main sections:
+
+MM The root directory Configurations, testsuite descriptors, which references all included testcases, and the log reside here.
+
+MM An input section This folder contains only the plain sources of the input data grouped by testsuites. Each file is named after the test that it represents.
+
+MM An output section This folder contains the expected results of the compiler. As the results depend on the used configuration, subfolders that are named after the used configuration exists. Each folder contains lexer and/or parser results grouped by testsuites.
+
+MM A versioned section This folder contains older versions of the tests and their results. The structure of subdirectories is the same as in the root folder.
+
+4.1 Archive Descriptor
+
+Every archive contains a mandatory archive descriptor, the archive.xml, which describes the archive's configurations and testsuits. A complete description of a configuration can be seen in listing 4.1.
+
+
+
+The name of a configuration must be unique and is used as reference. The classes of the lexer and the parser or maybe their adapters must exist in the classpath. The classpath can be absolut or relative. In means of location independency, it is recommended to use only relative paths.
+
+An archive can contain several configurations. Therefore it is possible to define a default configuration (listing 4.2), which is used if no configuration is specified while testing.
+
+
+
+Besides different configurations, the archive descriptor contains a references for each of the archive's testsuites. These references point to testsuite descriptors within the archive, which define the testsuite in detail. 
+
+The overall structure of an archive descriptor can be seen in listing 4.3.
+
+
+
+4.2 Testsuites
+
+The testsuite descriptors, which are referenced by the archive.xml, describe the structure of their testcases. Each testcase consist of an input that will be fed into the compiler and an expected output. Listing 4.4 shows an exemplary testsuite descriptor. Every testsuite must have an unique name, which conforms to the name of the XML file. Each testcase must have a name, which is unique in the scope of the testsuite.
+
+
+
+The input's reference is relative to the input folder in the archive. Input files are plain textfiles that contain the source code that will be sent to the compiler. The generated results of the compiler depend on the used configuration. Therefore the output reference points to a subdirectory in the output folder. This subdirectory has the name of the currently used configuration. The full path of an output file is output/<configuration>/<reference>.
+
+4.3 Log File
+
+Every action that alters the archive, such as adding or removing a testcases or configuration, is reported in a log file within the archive. Additionally, events like running a test and its test results will be saved in the log too. This log can be exported and the result contains two files: the log in its XML representation and an XSL transformation specification [XST]. This specification allowes to view the log in a web browser that supports XSL files as stylesheets for XML data. An example log can be seen in figure 4.1.
+
+
+
+4.4 Versioning
+
+Test archives support versioning to aid tracebility of former tests and their results. Errors and wrongly generated results can be fixed easier by using old tests as comparision. Versioning of tests includes saving former versions of the input and the expected output. This occures if a test gets overwritten by a newer version in case of updating the archive. Old versions can be found in the versioned folder tagged with a timestamp.
