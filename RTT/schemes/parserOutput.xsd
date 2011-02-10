@@ -1,31 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 	This program and the accompanying materials are made available under the
-	terms of the BSD 3-clause license which accompanies this distribution.
+	terms of the MIT license (X11 license) which accompanies this distribution.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="regression.test.tool" targetNamespace="regression.test.tool" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:tns="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="regression.test.tool">
 	<xs:element name="parserOutput">
 		<xs:complexType>
 			<xs:annotation>
 				<xs:documentation>type of parser output</xs:documentation>
 			</xs:annotation>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:sequence maxOccurs="unbounded" minOccurs="0">
 				<xs:element name="tree" type="tns:tree"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="node">
 		<xs:sequence>
-			<xs:element name="nodeAttribute" type="tns:nodeAttribute" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="children" minOccurs="0">
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="nodeAttribute" type="tns:nodeAttribute"/>
+			<xs:element minOccurs="0" name="children">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="node" type="tns:node" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="node" type="tns:node"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="isNull" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute default="false" name="isNull" type="xs:boolean" use="optional"/>
 	</xs:complexType>
 	<xs:complexType name="nodeAttribute">
 		<xs:attribute name="name" type="xs:string"/>
@@ -33,7 +33,7 @@
 		<xs:attribute name="informational" type="xs:boolean"/>
 	</xs:complexType>
 	<xs:complexType name="tree">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+		<xs:sequence maxOccurs="unbounded" minOccurs="0">
 			<xs:element name="node" type="tns:node"/>
 		</xs:sequence>
 	</xs:complexType>

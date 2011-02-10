@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 	This program and the accompanying materials are made available under the
-	terms of the BSD 3-clause license which accompanies this distribution.
+	terms of the MIT license (X11 license) which accompanies this distribution.
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>

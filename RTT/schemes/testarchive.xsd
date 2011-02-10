@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 	This program and the accompanying materials are made available under the
 	terms of the BSD 3-clause license which accompanies this distribution.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="regression.test.tool" targetNamespace="regression.test.tool" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:tns="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="regression.test.tool">
 	<xs:include schemaLocation="Testsuit.xsd"/>
 	<xs:element name="testarchive">
 		<xs:complexType>
@@ -15,7 +15,7 @@
 	</xs:element>
 	<xs:complexType name="testsuites">
 		<xs:sequence>
-			<xs:element name="testsuite" type="tns:testsuiteRef" maxOccurs="unbounded"/>
+			<xs:element maxOccurs="unbounded" name="testsuite" type="tns:testsuiteRef"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="testsuiteRef">
@@ -25,16 +25,16 @@
 	</xs:complexType>
 	<xs:complexType name="configuration">
 		<xs:all>
-			<xs:element name="lexerClass" type="tns:lexerClass" minOccurs="0"/>
-			<xs:element name="parserClass" type="tns:parserClass" minOccurs="0"/>
-			<xs:element name="classpath" type="tns:classpath" minOccurs="0"/>
+			<xs:element minOccurs="0" name="lexerClass" type="tns:lexerClass"/>
+			<xs:element minOccurs="0" name="parserClass" type="tns:parserClass"/>
+			<xs:element minOccurs="0" name="classpath" type="tns:classpath"/>
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="description" type="xs:string" use="optional"/>
 	</xs:complexType>
 	<xs:complexType name="configurations">
 		<xs:sequence>
-			<xs:element name="configuration" type="tns:configuration" maxOccurs="unbounded"/>
+			<xs:element maxOccurs="unbounded" name="configuration" type="tns:configuration"/>
 		</xs:sequence>
 		<xs:attribute name="default" type="xs:string" use="optional"/>
 	</xs:complexType>
@@ -50,7 +50,7 @@
 	</xs:complexType>
 	<xs:complexType name="classpath">
 		<xs:sequence>
-			<xs:element name="path" type="tns:path" maxOccurs="unbounded"/>
+			<xs:element maxOccurs="unbounded" name="path" type="tns:path"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="path">

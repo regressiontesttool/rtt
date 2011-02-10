@@ -1,3 +1,9 @@
-#Tue Jul 14 09:45:21 CEST 2009
+#Thu Feb 10 17:04:59 CET 2011
 eclipse.preferences.version=1
+encoding//schemes/Input.xsd=UTF8
+encoding//schemes/Log.xsd=UTF8
+encoding//schemes/Testsuit.xsd=UTF8
+encoding//schemes/lexerOutput.xsd=UTF8
+encoding//schemes/parserOutput.xsd=UTF8
+encoding//schemes/testarchive.xsd=UTF8
 encoding/<project>=UTF-8
