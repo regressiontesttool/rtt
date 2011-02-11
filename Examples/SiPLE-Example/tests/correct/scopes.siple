@@ -1,0 +1,59 @@
+% This program and the accompanying materials are made available under the
+% terms of the MIT license (X11 license) which accompanies this distribution.
+
+% @author C. Bürger
+
+Procedure main() Begin
+	Var x:Integer;
+	Var y:Integer;
+	
+	x := 1;
+	y := 2;
+	
+	Write x;
+	Write y;
+	
+	Begin
+		Write x;
+		Write y;
+		
+		Var x:Boolean;
+		x := true;
+		
+		Write x;
+		Write y;
+		
+		Begin
+			Write x;
+			Write y;
+			
+			Var y:Boolean;
+			y := true;
+			
+			Write x;
+			Write y;
+		End;
+		
+		Write x;
+		Write y;
+		
+		Begin
+			Write x;
+			Write y;
+			
+			Var x:Real;
+			Var y:Real;
+			x := 1.0;
+			y := 2.0;
+			
+			Write x;
+			Write y;
+		End;
+		
+		Write x;
+		Write y;
+	End;
+	
+	Write x;
+	Write y;
+End;

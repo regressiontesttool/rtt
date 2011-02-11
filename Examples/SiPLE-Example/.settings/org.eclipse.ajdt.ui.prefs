@@ -1,0 +1,4 @@
+#Thu Feb 10 20:45:50 CET 2011
+eclipse.preferences.version=1
+org.eclipse.ajdt.aopxml=/SiPLE-Example/src/siple/rtt/aop.xml
+org.eclipse.ajdt.ui.outJar=siple_rtt.jar

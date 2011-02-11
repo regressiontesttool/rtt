@@ -1,0 +1,66 @@
+﻿<!--
+	This program and the accompanying materials are made available under the
+	terms of the MIT license (X11 license) which accompanies this distribution.
+-->
+
+<!--
+	Ant script to generate and run RTT regression tests for SiPLE.
+	@author C. Bürger
+-->
+<project name="Testing" default="Test">
+	<property name="archive" value="./tests.zip"/>
+	
+	<!-- Declare RTT's Ant tasks -->
+	<taskdef resource="rtt/ant/taskdef.properties">
+		<classpath path="./../sources/libraries/rtt.jar"/>
+	</taskdef>
+	
+	<target name="Clean" description="Delete testsuite, logs and injected errors">
+		<delete file="${archive}"/>
+		<delete file="./log.xml"/>
+		<delete file="./log.xslt"/>
+		<delete file="./../src/siple/rtt/InjectErrors.aj"/>
+	</target>
+	
+	<target name="Archive" description="Create archive.">
+		<createArchive
+			archive="${archive}"
+			defaultConfiguration="JastAdd"
+		/>
+		
+		<updateConfigurations archive="${archive}">
+			<configuration
+				name="JastAdd"
+				lexer="siple.symbols.SIPLELexer"
+				parser="siple.syntax.SIPLEParser">
+				<classpathElement path="./../siple_rtt.jar"/>
+				<classpathElement path="./../sources/libraries/aspectjrt.jar"/>
+			</configuration>
+		</updateConfigurations>
+		
+		<updateArchive archive="${archive}">
+			<testsuite name="correct">
+				<fileset dir="./correct">
+					<include name="*.siple"/>
+				</fileset>
+			</testsuite>
+			<testsuite name="incorrect">
+				<fileset dir="./incorrect">
+					<include name="*.siple"/>
+				</fileset>
+			</testsuite>
+		</updateArchive>
+		
+		<updateTests archive="${archive}"/>
+	</target>
+	
+	<target name="Test" description="Execute all tests.">
+		<runTests log="./log.xml">
+			<test archive="${archive}"/>
+		</runTests>
+	</target>
+	
+	<target name="Error" description="Inject artificial compiler errors.">
+		<copy file="./InjectErrors.aj" tofile="./../src/siple/rtt/InjectErrors.aj"/>
+	</target>
+</project>
