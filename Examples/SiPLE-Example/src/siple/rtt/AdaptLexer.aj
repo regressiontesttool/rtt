@@ -20,6 +20,7 @@ public aspect AdaptLexer {
 	// Lexer annotations:
 	declare @type: SIPLELexer : @Lexer;
 	
+	// Specify method returning next token:
 	declare @method:
 		public * SIPLELexer.nextToken() : @Lexer.NextToken;
 	
