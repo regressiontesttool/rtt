@@ -24,7 +24,7 @@
 		</delete>
 		<delete includeemptydirs="true">
 			<fileset dir="${_basedir}/distribution">
-				<include name="rtt.jar"/>
+				<include name="rtt_1.0.jar"/>
 				<include name="rtt_src.zip"/>
 				<include name="javadoc/**/*"/>
 			</fileset>
@@ -67,7 +67,7 @@
 	<!-- Create *.jar distribution -->
 	<target name="Jar" depends="JAXB">
 		<jar
-			destfile="${_basedir}/distribution/rtt.jar"
+			destfile="${_basedir}/distribution/rtt_1.0.jar"
 			index="false"
 			update="false"
 			compress="false">
@@ -77,7 +77,10 @@
 			<zipfileset src="${_basedir}/sources/libraries/truezip-6.7.jar" />
 			<zipfileset src="${_basedir}/sources/libraries/jewelcli-0.6.jar" />
 			<fileset dir="${_basedir}">
-				<include name="License.txt"/>
+				<include name="RTT-License.txt"/>
+				<include name="TrueZip-License.txt"/>
+				<include name="JewelCli-License.txt"/>
+				<include name="headliner.treedistance-License.txt"/>
 			</fileset>
 			<fileset dir="${_basedir}/implementation">
 				<include name="**/taskdef.properties"/>
