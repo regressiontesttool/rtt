@@ -8,9 +8,11 @@
  */
 package rtt.ant;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
 /**
  * This task is intended for running all included tests. It will still continue<br>

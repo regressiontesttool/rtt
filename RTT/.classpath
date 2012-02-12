@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="implementation"/>
 	<classpathentry kind="src" path="tests/tested_repository"/>
+	<classpathentry kind="src" path="src-gen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="sources/libraries/ant.jar"/>
 	<classpathentry kind="lib" path="sources/libraries/truezip-6.7.jar"/>

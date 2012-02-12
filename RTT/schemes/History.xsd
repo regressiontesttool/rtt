@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xs:schema 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:rtt="regression.test.tool" 
+ 	targetNamespace="regression.test.tool"
+ 
+	attributeFormDefault="unqualified" 
+	elementFormDefault="qualified">
+	
+	<xs:element name="history">
+		<xs:complexType>			
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="version" type="rtt:version"/>				
+			</xs:sequence>			
+			<xs:attribute name="current" default="0" type="xs:int" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="version">
+<!-- 		<xs:choice> -->
+<!-- 			<xs:element name="reference" type="rtt:reference" /> -->
+<!-- 		</xs:choice> -->
+		<xs:attribute name="nr" type="xs:int" use="required" />
+		<xs:attribute name="date" type="xs:string" use="required" />
+		<xs:attribute name="reference" type="xs:int" />
+	</xs:complexType>
+	
+	<xs:complexType name="reference">
+		<xs:attribute name="toVersion" type="xs:int" use="required"></xs:attribute>
+	</xs:complexType>
+	
+<!-- 	<xs:complexType name="version"> -->
+<!-- 		<xs:attribute name="nr" type="xs:string" use="required"/> -->
+<!-- 		<xs:attribute name="date" type="xs:date" use="optional"/> -->
+<!-- 		<xs:attribute name="fileName" type="xs:string" use="required"/> -->
+<!-- 	</xs:complexType> -->
+	
+	
+	
+<!-- 	<xs:complexType name="testinput"> -->
+<!-- 		<xs:attribute name="version" type="xs:int" default="0"/> -->
+<!-- 	</xs:complexType> -->
+	
+<!-- 	<xs:complexType name="testdata"> -->
+<!-- 		<xs:sequence> -->
+<!-- 			<xs:element maxOccurs="unbounded" name="testconfig" type="rtt:testconfig" /> -->
+<!-- 		</xs:sequence> -->
+<!-- 	</xs:complexType> -->
+	
+<!-- 	<xs:complexType name="testconfig"> -->
+<!-- 		<xs:attribute name="name" type="xs:string" use="required" /> -->
+<!-- 		<xs:attribute name="version" type="xs:int" use="required"/> -->
+<!-- 		<xs:attribute name="deprecated" type="xs:boolean" default="false"/> -->
+<!-- 	</xs:complexType> -->
+	
+</xs:schema>

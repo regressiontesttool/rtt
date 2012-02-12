@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import rtt.archive.Node;
-import rtt.archive.Tree;
-import rtt.managing.Printer;
+import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Tree;
+import rtt.core.manager.Printer;
 
 
 /** This defines are tree.  The tree contains labelled nodes.  Labels

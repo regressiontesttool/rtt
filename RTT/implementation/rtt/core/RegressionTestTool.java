@@ -6,21 +6,22 @@
  *
  * </copyright>
  */
-package rtt;
+package rtt.core;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import rtt.cli.CommandLineValidator;
-import rtt.cli.CommandlineOptions;
-import rtt.logging.TestInformation;
-import rtt.managing.Manager;
+import rtt.core.archive.logging.Detail;
+import rtt.core.cli.CommandLineValidator;
+import rtt.core.cli.CommandlineOptions;
+import rtt.core.manager.Manager;
+import rtt.core.manager.Manager.TestCaseMode;
 import uk.co.flamingpenguin.jewel.cli.Cli;
 import uk.co.flamingpenguin.jewel.cli.CliFactory;
 
 /**
  * Includes the main method for starting RTT. See
- * {@link rtt.cli.CommandlineOptions} on how to use RTT.
+ * {@link rtt.core.cli.CommandlineOptions} on how to use RTT.
  * 
  * @author Peter Mucha
  */
@@ -28,9 +29,10 @@ public class RegressionTestTool {
 
 	/**
 	 * Starts RTT. For more informations about the parameters, see
-	 * {@link rtt.cli.CommandlineOptions}.
+	 * {@link rtt.core.cli.CommandlineOptions}.
 	 * 
 	 * @param args
+	 * @throws Throwable 
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Throwable {
@@ -52,28 +54,29 @@ public class RegressionTestTool {
 		Manager m = new Manager(options.getArchive(), true);
 
 		if (options.getArchive().exists() && !options.isOverwrite()) {
-			if (options.isConfiguration())
+			if (options.isConfiguration()) {
 				m.loadArchive(options.getConfiguration());
-			else
+			} else {
 				m.loadArchive();
-		} else
+			}
+		} else {
 			m.createArchive();
+		}
+			
 
 		if (options.getInformation())
 			m.printArchiveInformations();
 
-		if (options.isMerge()) {
-			m.merge(options.getMerge());
-		} else if (options.isGenerate()) {
+		if (options.isGenerate()) {
 			m.generateTests(null);
 		} else if (options.isRegenerate()) {
 			m.generateTests(null);
 		} else if (options.isTest()) {
 			m.runTests(null, true);
 		} else if (options.isAddFile()) {
-			List<TestInformation> r = m.addFile(options.getAddFile(), options
-					.getTestsuite(), options.isOutput() ? 3 : 0);
-			m.currentLog.addInformational("File added", "", r);
+			List<Detail> r = m.addFile(options.getAddFile(), options
+					.getTestsuite(), options.isOutput() ? TestCaseMode.OVERWRITE : TestCaseMode.SKIP);
+			m.getArchive().getLogManager().addInformational("File added", "", r);
 		} else if (options.isRemoveTestsuite()) {
 			m.removeTestsuite(options.getRemoveTestsuite());
 		} else if (options.isRemoveTest()) {
@@ -101,5 +104,4 @@ public class RegressionTestTool {
 		}
 
 	}
-
 }

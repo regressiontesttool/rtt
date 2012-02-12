@@ -8,11 +8,12 @@
  */
 package rtt.ant;
 
-import java.io.*;
+import java.io.File;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
-import rtt.managing.Manager;
+import rtt.core.manager.Manager;
 
 /**
  * 

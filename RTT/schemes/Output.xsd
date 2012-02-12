@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This program and the accompanying materials are made available under 
+	the terms of the MIT license (X11 license) which accompanies this distribution. -->
+<xs:schema xmlns:rtt="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	targetNamespace="regression.test.tool">
+
+	<!-- Definitions used by Parser- and LexerOutput -->
+	<xs:complexType name="classable">
+		<xs:attribute name="simpleName" type="xs:string" />
+		<xs:attribute name="fullName" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="attributeList">
+		<xs:sequence maxOccurs="unbounded" minOccurs="0">
+			<xs:element name="attribute" type="rtt:attribute" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="attribute">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="informational" type="xs:boolean" />
+	</xs:complexType>
+
+	<!-- LexerOutput Definitions -->
+	<xs:element name="lexerOutput">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>type of lexer output</xs:documentation>
+			</xs:annotation>
+			<xs:sequence maxOccurs="unbounded" minOccurs="0">
+				<xs:element name="token" type="rtt:token" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="token">
+		<xs:complexContent>
+			<xs:extension base="rtt:classable">
+				<xs:sequence>
+					<xs:element name="attributes" type="rtt:attributeList" />
+				</xs:sequence>
+				<xs:attribute default="false" name="isEof" type="xs:boolean"
+					use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ParserOutput Definitions -->
+	<xs:element name="parserOutput">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>type of parser output</xs:documentation>
+			</xs:annotation>
+			<xs:sequence maxOccurs="unbounded" minOccurs="0">
+				<xs:element name="tree" type="rtt:tree" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="tree">
+		<xs:complexContent>
+			<xs:extension base="rtt:classable">
+				<xs:sequence maxOccurs="unbounded" minOccurs="0">
+					<xs:element name="node" type="rtt:node" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="node">
+		<xs:complexContent>
+			<xs:extension base="rtt:classable">
+				<xs:sequence>
+					<xs:element name="attributes" type="rtt:attributeList" />
+					<xs:element name="children" type="rtt:childrenList" />
+				</xs:sequence>
+				<xs:attribute default="false" name="isNull" type="xs:boolean"
+					use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="childrenList">
+		<xs:sequence maxOccurs="unbounded" minOccurs="0">
+			<xs:element name="node" type="rtt:node" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

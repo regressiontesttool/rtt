@@ -8,21 +8,25 @@
  */
 package rtt.ant;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
-import rtt.annotations.Lexer;
-import rtt.managing.Manager;
+import rtt.core.manager.Manager;
+import rtt.core.manager.Manager.TestCaseMode;
 
 
 /**
  * This task is intended to update existing archives. <br>
  * An update can be adding, removing or changing tests and testsuites.<br>
  * No new results will be generated, if a testcase is changed.<br>
- * See {@link rtt.ant.UpdateTests} Task.<br>
+ * See {@link rtt.core.ant.UpdateTests} Task.<br>
  * <br>
  * Example:<br>
  * <br>
@@ -108,7 +112,7 @@ public class UpdateArchive extends Task {
 			System.out.println("Archive loaded");
 
 			for (Testsuite t : toUpdate) {
-				int mode = t.isOverwrite() ? 3 : 0;
+				TestCaseMode mode = t.isOverwrite() ? TestCaseMode.OVERWRITE : TestCaseMode.SKIP;
 				List<File> fs = t.getFiles();
 				// Create test suite, iff it does not exist yet:
 				

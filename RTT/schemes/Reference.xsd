@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xs:schema 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:rtt="regression.test.tool" 
+ 	targetNamespace="regression.test.tool"
+ 
+	attributeFormDefault="unqualified" 
+	elementFormDefault="qualified">
+	
+	<xs:element name="history">
+		<xs:complexType>			
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="version" type="rtt:version"/>				
+			</xs:sequence>			
+			<xs:attribute name="current" type="xs:int" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="version">
+		<xs:attribute name="nr" type="xs:int" use="required" />
+		<xs:attribute name="date" type="xs:string" use="required" />
+		<xs:attribute name="reference" type="xs:int" />
+	</xs:complexType>
+	
+	<xs:complexType name="reference">
+		<xs:attribute name="toVersion" type="xs:int" use="required"></xs:attribute>
+	</xs:complexType>
+	
+</xs:schema>

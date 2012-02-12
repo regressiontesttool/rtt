@@ -22,10 +22,10 @@ import java.util.List;
  * 
  */
 public class AnnotationProcessor {
+	
+	private Class<?> clazz;
 
-	private Class clazz;
-
-	public AnnotationProcessor(Class clazz) {
+	public AnnotationProcessor(Class<?> clazz) {
 		this.clazz = clazz;
 	}
 
@@ -49,11 +49,11 @@ public class AnnotationProcessor {
 		return result;
 	}
 
-	public <A extends Annotation> List<Constructor> getConstructorsWithAnnotation(
+	public <A extends Annotation> List<Constructor<?>> getConstructorsWithAnnotation(
 			Class<A> annotationClass) {
-		Constructor[] cs = clazz.getConstructors();
-		List<Constructor> result = new LinkedList<Constructor>();
-		for (Constructor c : cs)
+		Constructor<?>[] cs = clazz.getConstructors();
+		List<Constructor<?>> result = new LinkedList<Constructor<?>>();
+		for (Constructor<?> c : cs)
 			if (c.isAnnotationPresent(annotationClass))
 				result.add(c);
 
@@ -70,18 +70,6 @@ public class AnnotationProcessor {
 
 		return result;
 	}
-
-
-	public List<Method> getMethods(String s) throws Exception {
-		Method[] ms = clazz.getMethods();
-		List<Method> result = new LinkedList<Method>();
-		for (Method m : ms)
-			if (m.getName().equals(s))
-				result.add(m);
-
-		return result;
-	}
-
 	
 	public Object getNewInstance() throws Exception {
 		return clazz.newInstance();

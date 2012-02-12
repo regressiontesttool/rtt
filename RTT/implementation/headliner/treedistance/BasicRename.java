@@ -1,7 +1,7 @@
 package headliner.treedistance;
 
-import rtt.archive.Node;
-import rtt.managing.Printer;
+import rtt.core.archive.output.Node;
+import rtt.core.manager.Printer;
 
 /* Implements a basic rename operation.  If node labels are the same
  * then the cost is 0, otherwise the cost is 1.

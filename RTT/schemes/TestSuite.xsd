@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:rtt="regression.test.tool" targetNamespace="regression.test.tool"
+
+	attributeFormDefault="unqualified" elementFormDefault="qualified">
+	<xs:element name="testsuites">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="testsuite"
+					type="rtt:testsuite" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="testsuite">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="testcase"
+				type="rtt:testcase" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="deleted" type="xs:boolean" default="false" />
+	</xs:complexType>
+
+	<xs:complexType name="testcase">
+		<xs:sequence>
+		<xs:element minOccurs="1" maxOccurs="1" name="versionData"
+				type="rtt:versionData" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="deleted" type="xs:boolean" default="false" />
+	</xs:complexType>
+
+	<xs:complexType name="versionData">
+		<xs:attribute name="input" type="xs:int" default="0"/>
+		<xs:attribute name="reference" type="xs:int" default="0" />
+		<xs:attribute name="test" type="xs:int" default="0" />
+	</xs:complexType>
+
+</xs:schema>

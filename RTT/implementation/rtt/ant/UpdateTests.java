@@ -13,7 +13,7 @@ import java.io.File;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import rtt.managing.Manager;
+import rtt.core.manager.Manager;
 
 /**
  * Task for regenerating the results.<br>

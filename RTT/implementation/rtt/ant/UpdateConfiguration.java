@@ -8,12 +8,14 @@
  */
 package rtt.ant;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
-import rtt.managing.Manager;
+import rtt.core.manager.Manager;
 
 /**
  * 
@@ -84,9 +86,7 @@ public class UpdateConfiguration extends Task {
 		Manager m = new Manager(new File(archive), true);
 		try {
 			m.loadArchive();
-			System.out.println("Archive loaded");
-			
-			
+			System.out.println("Archive loaded");			
 			
 			for (Configuration c : configs) 
 			{

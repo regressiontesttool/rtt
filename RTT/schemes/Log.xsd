@@ -1,74 +1,92 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
-	This program and the accompanying materials are made available under the
-	terms of the MIT license (X11 license) which accompanies this distribution.
--->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+<!-- This program and the accompanying materials are made available under 
+	the terms of the MIT license (X11 license) which accompanies this distribution. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:rtt="regression.test.tool" targetNamespace="regression.test.tool"
+	attributeFormDefault="unqualified" elementFormDefault="qualified">
+
 	<xs:element name="archiveLog">
 		<xs:complexType>
-			<xs:choice maxOccurs="unbounded" minOccurs="0">
-				<xs:element name="info" type="Information"/>
-				<xs:element name="failed" type="failed"/>
-				<xs:element name="testrun" type="Testrun"/>
-			</xs:choice>
+			<xs:sequence>
+				<xs:element name="entry" type="rtt:entry" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType abstract="0" name="Logentry">
-		<xs:attribute name="date" type="xs:dateTime" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="Testrun">
-		<xs:complexContent>
-			<xs:extension base="Logentry">
-				<xs:sequence>
-					<xs:element maxOccurs="unbounded" minOccurs="0" name="failed" type="failed"/>
 
-					<xs:element maxOccurs="unbounded" minOccurs="0" name="passed" type="passed">
-					</xs:element>
-					<xs:element maxOccurs="unbounded" minOccurs="0" name="skipped" type="skipped"/>
+	<xs:complexType name="entry">
+		<xs:sequence>
+			<xs:element name="detail" type="rtt:detail" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+
+		<xs:attribute name="date" type="xs:dateTime" use="required" />
+		<xs:attribute name="msg" type="xs:string" />
+		<xs:attribute name="suffix" type="xs:string" />
+		<xs:attribute name="type" type="rtt:entryType" />
+	</xs:complexType>
+
+	<xs:simpleType name="entryType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INFO" />
+			<xs:enumeration value="GENERATION" />
+			<xs:enumeration value="TESTRUN" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="detail">
+		<xs:attribute name="msg" type="xs:string" />
+		<xs:attribute name="suffix" type="xs:string" />
+		<xs:attribute name="priority" type="xs:int" />
+	</xs:complexType>
+
+	<xs:complexType name="testrun">
+		<xs:complexContent>
+			<xs:extension base="rtt:entry">
+				<xs:sequence>
+					<xs:element name="result" type="rtt:result" minOccurs="0"
+						maxOccurs="unbounded" />
 				</xs:sequence>
-				<xs:attribute name="configuration" type="xs:string" use="optional"/>
+				<xs:attribute name="configuration" type="xs:string"
+					use="optional" />
+				<xs:attribute name="testsuite" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Information">
-		<xs:complexContent>
-			<xs:extension base="Logentry">
-				<xs:sequence>
-					<xs:element maxOccurs="unbounded" minOccurs="0" name="testInformation" type="testInformation">
-					</xs:element>
-				</xs:sequence>
-				<xs:attribute name="msg" type="xs:string"/>
-				<xs:attribute name="suffix" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-  
-  <xs:complexType name="GenerationInformation">
-    <xs:complexContent>
-      <xs:extension base="Information"/>
-    </xs:complexContent>
-  </xs:complexType>
-  
-	<xs:complexType name="failed">
-		<xs:attribute name="test" type="xs:string"/>
-		<xs:attribute name="path" type="xs:string"/>
-		<xs:attribute name="msg" type="xs:string"/>
-		<xs:attribute name="testsuit" type="xs:string"/>
+
+	<xs:complexType name="result">
+		<xs:sequence>
+			<xs:element name="failure" type="rtt:failure" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="testcase" type="xs:string" use="required" />
+		<xs:attribute name="testsuite" type="xs:string" use="required" />
+
+		<xs:attribute name="note" type="xs:string" />
+		<xs:attribute name="dataVersion" type="xs:int" />
+		
+		<xs:attribute name="type" type="rtt:resultType" />
 	</xs:complexType>
 
-	<xs:complexType name="passed">
-		<xs:attribute name="test" type="xs:string"/>
-		<xs:attribute name="testSuite" type="xs:string"/>
-	</xs:complexType>
+	<xs:simpleType name="resultType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FAILED" />
+			<xs:enumeration value="SKIPPED" />
+			<xs:enumeration value="PASSED" />
+		</xs:restriction>
+	</xs:simpleType>
 
-	<xs:complexType name="testInformation">
-		<xs:attribute name="msg" type="xs:string"/>
-		<xs:attribute name="test" type="xs:string"/>
-		<xs:attribute name="priority" type="xs:int"/>
+	<xs:complexType name="failure">
+		<xs:attribute name="path" type="xs:string" />
+		<xs:attribute name="msg" type="xs:string" />
+		<xs:attribute name="type" type="rtt:failureType" />
 	</xs:complexType>
+	
+	<xs:simpleType name="failureType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PARSER" />
+			<xs:enumeration value="LEXER" />
+		</xs:restriction>
+	</xs:simpleType>
 
-	<xs:complexType name="skipped">
-		<xs:attribute name="test" type="xs:string"/>
-		<xs:attribute name="testSuite" type="xs:string"/>
-	</xs:complexType>
 </xs:schema>
