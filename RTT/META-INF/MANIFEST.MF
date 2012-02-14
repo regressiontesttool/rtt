@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Regression Test Tool Core
+Bundle-SymbolicName: rtt.core;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: sources/libraries/ant.jar,
+ sources/libraries/jewelcli-0.6.jar,
+ sources/libraries/truezip-6.7.jar,
+ .
+Require-Bundle: org.eclipse.ant.core;bundle-version="3.2.201"

@@ -1,109 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     13.02.2012 15:51:05                                                        
+
+     JAXB Tasks:
+	
+        	This file contains all task for JAXB class creation.
+        	Within this file are two tasks for complete deletion and 
+        	creating of JAXB classes.
+                   
+     Christian Oelsner                                                               
+     ====================================================================== -->
 <project name="jaxb-taks">
 	
+	<dirname file="${ant.file.jaxb-taks}" property="tasks.base"/>
+
+	<!-- Home of JDK and JAXB Compiler (xjc)-->
+	<property name="jdk.home" location="C:/Program Files (x86)/Java/jdk1.6.0_26" />
+	<property name="xjc.home" location="${jdk.home}/bin/xjc" />
+
+	<!-- Some important directories -->
+	<property name="project.dir" location="${tasks.base}/.." />
+	<property name="src-gen.dir" location="${project.dir}/src-gen" />
+	<property name="schemes.dir" location="${project.dir}/schemes" />
+
+	<!-- Some package definintions -->
+	<property name="package.core" location="${src-gen.dir}/rtt/core" />
+	<property name="package.archive" location="${package.core}/archive" />
+
+	<!-- Removes all classes of JAXB -->
+	<target name="Clean XJC">
+		<antcall target="Clean Config" />
+		<antcall target="Clean Testsuite" />
+		<antcall target="Clean Output" />
+		<antcall target="Clean Input" />
+		<antcall target="Clean History" />
+		<antcall target="Clean Logging" />
+	</target>
+
+	<!-- Generate JAXB implementation -->
+	<target name="XJC ALL">
+		<antcall target="XJC Config" />
+		<antcall target="XJC Testsuite" />
+		<antcall target="XJC Output" />
+		<antcall target="XJC Input" />
+		<antcall target="XJC History" />
+		<antcall target="XJC Logging" />
+	</target>
+
 	<!-- = = = = = = = = = = = = = = = = =
 		          macrodef: JAXBClean          
-		         = = = = = = = = = = = = = = = = = -->
-		<macrodef name="JAXBClean">
-			<attribute name="package" />
-			<sequential>
-				<delete>
-					<fileset dir="${_basedir}/src-gen/rtt/core/archive">
-						<include name="@{package}/*.java" />
-					</fileset>
-				</delete>
-			</sequential>
-		</macrodef>
+	     = = = = = = = = = = = = = = = = = -->
+	<macrodef name="JAXBClean">
+		<attribute name="package" />
+		<sequential>
+			<delete failonerror="false">
+				<fileset dir="${package.archive}">
+					<include name="@{package}/*.java" />
+				</fileset>
+			</delete>
+		</sequential>
+	</macrodef>
 
-		<!-- = = = = = = = = = = = = = = = = =
+	<!-- = = = = = = = = = = = = = = = = =
 		          macrodef: JAXBCreate          
-		         = = = = = = = = = = = = = = = = = -->
-		<macrodef name="JAXBCreate">
-			<attribute name="package" />
-			<attribute name="schema" />
-			<element name="xjc-args" implicit="yes" optional="yes" />
-			<sequential>
-				<exec executable="${java.jdk-home}/bin/xjc">
-					<arg value="-p" />
-					<arg value="rtt.core.archive.@{package}" />
-					<arg value="-d" />
-					<arg value="${_basedir}/src-gen" />
-					<arg value="${_basedir}/schemes/@{schema}" />
-					<xjc-args />
-				</exec>
-			</sequential>
-		</macrodef>
+	     = = = = = = = = = = = = = = = = = -->
+	<macrodef name="JAXBCreate">
+		<attribute name="package" />
+		<attribute name="schema" />
+		<element name="xjc-args" implicit="yes" optional="yes" />
+		<sequential>
+			<exec executable="${xjc.home}">
+				<arg value="-p" />
+				<arg value="rtt.core.archive.@{package}" />
+				<arg value="-d" />
+				<arg value="${src-gen.dir}" />
+				<arg value="${schemes.dir}${file.separator}@{schema}" />
+				<xjc-args />
+			</exec>
+		</sequential>
+	</macrodef>
 
-		<!-- ================================= 
+	<!-- ================================= 
 	            Configurations
-	         ================================= -->
-		<target name="Clean Config">
-			<JAXBClean package="configuration" />
-		</target>
+	     ================================= -->
+	<target name="Clean Config">
+		<JAXBClean package="configuration" />
+	</target>
 
-		<target name="XJC Config" depends="Clean Config">
-			<JAXBCreate package="configuration" schema="Configuration.xsd" />
-		</target>
+	<target name="XJC Config" depends="Clean Config">
+		<JAXBCreate package="configuration" schema="Configuration.xsd" />
+	</target>
 
-		<!-- ================================= 
+	<!-- ================================= 
 		         Testsuite
-		     ================================= -->
-		<target name="Clean Testsuite">
-			<JAXBClean package="testsuite" />
-		</target>
+	     ================================= -->
+	<target name="Clean Testsuite">
+		<JAXBClean package="testsuite" />
+	</target>
 
-		<target name="XJC Testsuite" depends="Clean Testsuite">
-			<JAXBCreate package="testsuite" schema="TestSuite.xsd" />
-		</target>
+	<target name="XJC Testsuite" depends="Clean Testsuite">
+		<JAXBCreate package="testsuite" schema="TestSuite.xsd" />
+	</target>
 
-		<!-- ================================= 
+	<!-- ================================= 
 			     Input
-			 ================================= -->
-		<target name="Clean Input">
-			<JAXBClean package="input" />
-		</target>
+		 ================================= -->
+	<target name="Clean Input">
+		<JAXBClean package="input" />
+	</target>
 
-		<target name="XJC Input" depends="Clean Input">
-			<JAXBCreate package="input" schema="Input.xsd" />
-		</target>
+	<target name="XJC Input" depends="Clean Input">
+		<JAXBCreate package="input" schema="Input.xsd" />
+	</target>
 
-		<!-- ================================= 
+	<!-- ================================= 
 		         Output
-		     ================================= -->
-		<target name="Clean Output">
-			<JAXBClean package="output" />
-		</target>
+	     ================================= -->
+	<target name="Clean Output">
+		<JAXBClean package="output" />
+	</target>
 
-		<target name="XJC Output" depends="Clean Output">
-			<JAXBCreate package="output" schema="Output.xsd" />
-		</target>
+	<target name="XJC Output" depends="Clean Output">
+		<JAXBCreate package="output" schema="Output.xsd" />
+	</target>
 
-		<!-- ================================= 
+	<!-- ================================= 
 		         History
-		     ================================= -->
-		<target name="Clean History">
-			<JAXBClean package="history" />
-		</target>
+	     ================================= -->
+	<target name="Clean History">
+		<JAXBClean package="history" />
+	</target>
 
-		<target name="XJC History" depends="Clean History">
-			<JAXBCreate package="history" schema="History.xsd">
-				<arg value="-b" />
-				<arg value="${_basedir}/schemes/History.xjb" />
-			</JAXBCreate>
-		</target>
+	<target name="XJC History" depends="Clean History">
+		<JAXBCreate package="history" schema="History.xsd">
+			<arg value="-b" />
+			<arg value="${schemes.dir}${file.separator}History.xjb" />
+		</JAXBCreate>
+	</target>
 
-		<!-- ================================= 
+	<!-- ================================= 
 		         Logging
-		     ================================= -->
-		<target name="Clean Logging">
-			<JAXBClean package="logging" />
-		</target>
+	     ================================= -->
+	<target name="Clean Logging">
+		<JAXBClean package="logging" />
+	</target>
 
-		<target name="XJC Logging" depends="Clean Logging">
-			<JAXBCreate package="logging" schema="Log.xsd">
-				<arg value="-b" />
-				<arg value="${_basedir}/schemes/Log.xjb" />
-			</JAXBCreate>
-		</target>
-	
+	<target name="XJC Logging" depends="Clean Logging">
+		<JAXBCreate package="logging" schema="Log.xsd">
+			<arg value="-b" />
+			<arg value="${schemes.dir}${file.separator}Log.xjb" />
+		</JAXBCreate>
+	</target>
 
 </project>

@@ -10,26 +10,6 @@
 
 	<import file="${_basedir}/build-scripts/jaxb.xml" />
 
-	<!-- Removes all implementation classes -->
-	<target name="Clean XJC">
-		<antcall target="Clean Config" />
-		<antcall target="Clean Testsuite" />
-		<antcall target="Clean Output" />
-		<antcall target="Clean Input" />
-		<antcall target="Clean History" />
-		<antcall target="Clean Logging" />
-	</target>
-
-	<!-- Generate JAXB implementation -->
-	<target name="XJC ALL">
-		<antcall target="XJC Config" />
-		<antcall target="XJC Testsuite" />
-		<antcall target="XJC Output" />
-		<antcall target="XJC Input" />
-		<antcall target="XJC History" />
-		<antcall target="XJC Logging" />
-	</target>
-
 	<!-- Refresh all classes and create jar -->
 	<target name="Clean_XJC_Jar">
 		<antcall target="XJC ALL" />

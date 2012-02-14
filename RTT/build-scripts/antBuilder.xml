@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     13.02.2012 15:51:05                                                        
+
+     Ant Builder for RTT:
+	
+        	This is a builder script for the eclipse.
+        	It should provide an easy way for generating classes by
+        	the JAXB Compiler (xjc).
+        	
+        	This script will automatically (re-)generate classes, 
+        	if any schema will be changed or updated.
+                   
+     Christian Oelsner                                                               
+     ====================================================================== -->
+<project name="Ant Builder for RTT">
+	<description>
+    	This is a builder script for the eclipse.
+    	It should provide an easy way for generating classes by
+    	the JAXB Compiler (xjc).
+    	        	
+    	This script will automatically (re-)generate classes, 
+    	if any schema will be changed or updated.
+    </description>
+	
+	<import file="jaxb.xml"/>
+
+	<property name="project.name" value="RTT" />
+	<property name="build.complete" location="${src-gen.dir}/.done" />
+
+	<uptodate property="build.notRequired" targetfile="${build.complete}">
+		<srcfiles dir="${schemes.dir}" includes="**/*.xsd" />
+	</uptodate>
+
+	<!-- ================================= 
+          target: Clean_GenSrc              
+         ================================= -->
+	<target name="Clean_GenSrc" description="Removes *all* files within the src-gen directory">
+		<delete includeemptydirs="true">
+			<fileset dir="${project.dir}/src-gen" includes="**/*" />
+		</delete>
+		<eclipse.refreshLocal resource="${project.name}" />
+	</target>
+
+
+	<!-- ================================= 
+          target: Create_GenSrc              
+         ================================= -->
+	<target name="Create_GenSrc" unless="build.notRequired" description="Creates classes from schemes">
+		<antcall target="XJC ALL" />
+		<touch file="${build.complete}" />
+		<eclipse.refreshLocal resource="${project.name}" />
+	</target>
+
+</project>

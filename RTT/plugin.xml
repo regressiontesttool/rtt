@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ant.core.antTasks">
+      <antTask
+            class="rtt.Task1"
+            library="RTT.antTask1"
+            name="RTT.antTask1">
+      </antTask>
+   </extension>
+
+</plugin>
