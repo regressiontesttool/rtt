@@ -1,64 +1,87 @@
-<project name="rtt" default="Jar">
-	<path id="_basedir">
-		<pathelement location="./" />
-	</path>
-	<path id="jdk">
-		<pathelement location="C:\Program Files (x86)\Java\jdk1.6.0_26" />
-	</path>
-	<property name="_basedir" refid="_basedir" />
-	<property name="java.jdk-home" refid="jdk" />
+<!--
+	This program and the accompanying materials are made available under the
+	terms of the MIT license (X11 license) which accompanies this distribution.
+-->
 
-	<import file="${_basedir}/build-scripts/jaxb.xml" />
+<!--
+	Ant build script to generate RTT's Java XML bindings (JAXB) and its
+	distributions.
+	@author C. Bürger
+-->
+
+<project name="rtt" default="Jar">
+	<dirname file="${ant.file.rtt}" property="rtt.base" />
+
+	<!-- Definitions of the JAXB ant tasks -->
+	<import file="${rtt.base}/build-scripts/jaxb.xml" />
+
+	<!-- Important directories -->
+	<property name="distr.dir" location="${rtt.base}/distribution" />
+	<property name="lib.dir" location="${rtt.base}/sources/libraries" />
+	<property name="src.dir" location="${rtt.base}/implementation" />
+	<property name="bin.dir" location="${rtt.base}/binary" />
+	<property name="tasks.dir" location="${rtt.base}/ant-tasks" />
+
+	<!-- Name of the jar and source file-->
+	<property name="distr.jar.name" value="rtt" />
+	<property name="distr.jar.path" location="${distr.dir}/${distr.jar.name}.jar" />
+	<property name="distr.src.name" value="rtt_src" />
+	<property name="tasks.jar" location="${tasks.dir}/ant-tasks.jar" />
 
 	<!-- Refresh all classes and create jar -->
-	<target name="Clean_XJC_Jar">
+	<target name="RefreshAll">
 		<antcall target="XJC ALL" />
 		<antcall target="Jar" />
 	</target>
 
 	<target name="Clean Distribution">
 		<delete includeemptydirs="true">
-			<fileset dir="${_basedir}/distribution">
-				<include name="rtt_1.0.jar" />
-				<include name="rtt_src.zip" />
+			<fileset dir="${distr.dir}">
+				<include name="${distr.jar.name}.jar" />
+				<include name="${distr.src.name}.zip" />
 				<include name="javadoc/**/*" />
 			</fileset>
 		</delete>
 	</target>
-	
+
 	<!-- Create *.jar distribution -->
 	<target name="Jar">
-		<jar destfile="${_basedir}/distribution/rtt_1.0.jar" index="false" update="false" compress="false">
+		<jar destfile="${distr.jar.path}" index="false" update="false" compress="false">
 			<manifest>
 				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
 			</manifest>
-			<zipfileset src="${_basedir}/sources/libraries/truezip-6.7.jar" />
-			<zipfileset src="${_basedir}/sources/libraries/jewelcli-0.6.jar" />
-			<fileset dir="${_basedir}">
+			<zipfileset src="${lib.dir}/truezip-6.7.jar" />
+			<zipfileset src="${lib.dir}/jewelcli-0.6.jar" />
+			<fileset dir="${rtt.base}">
 				<include name="RTT-License.txt" />
 				<include name="TrueZip-License.txt" />
 				<include name="JewelCli-License.txt" />
 				<include name="headliner.treedistance-License.txt" />
 			</fileset>
-			<fileset dir="${_basedir}/implementation">
+			<fileset dir="${src.dir}">
 				<include name="**/taskdef.properties" />
 				<include name="headliner/treedistance/Makefile" />
 			</fileset>
-			<fileset dir="${_basedir}/schemes">
+			<fileset dir="${schemes.dir}">
 				<include name="**/*.xsd" />
 				<include name="**/*.xslt" />
 			</fileset>
-			<fileset dir="${_basedir}/binary">
+			<fileset dir="${bin.dir}">
 				<include name="**/*.class" />
 				<exclude name="rtt/core/tests/**/*" />
 			</fileset>
 		</jar>
 	</target>
 
+	<target name="CreateAntTaskJar" depends="Jar">
+		<mkdir dir="${tasks.dir}" />
+		<copy file="${distr.jar.path}" tofile="${tasks.jar}" />
+	</target>
+
 	<!-- Create source code distribution -->
 	<target name="SrcDistribution" depends="Clean XJC, Clean Distribution">
-		<zip destfile="${_basedir}/distribution/rtt_src.zip" encoding="UTF-8" compress="true" update="false">
-			<fileset dir="${_basedir}">
+		<zip destfile="${distr.dir}/${distr.src.name}.zip" encoding="UTF-8" compress="true" update="false">
+			<fileset dir="${rtt.base}">
 				<include name="**/*" />
 				<exclude name="binary" />
 				<exclude name="binary/**/*" />
@@ -72,7 +95,7 @@
 
 	<!-- Creates Javadoc (todo) -->
 	<target name="Javadoc">
-		<javadoc access="public" author="true" destdir="${_basedir}/distribution/javadoc" doctitle="RTT" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.6" sourcepath="${_basedir}/implementation" splitindex="true" use="true" version="true" overview="${_basedir}/implementation/overview.html">
+		<javadoc access="public" author="true" destdir="${distr.dir}/javadoc" doctitle="RTT" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.6" sourcepath="${src.dir}" splitindex="true" use="true" version="true" overview="${src.dir}/overview.html">
 			<package name="rtt.core" />
 			<package name="rtt.core.utils" />
 			<package name="rtt.ant" />
@@ -80,7 +103,7 @@
 			<package name="rtt.core.cli" />
 			<package name="rtt.core.exceptions" />
 			<classpath>
-				<fileset dir="${_basedir}/sources/libraries">
+				<fileset dir="${lib.dir}">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>

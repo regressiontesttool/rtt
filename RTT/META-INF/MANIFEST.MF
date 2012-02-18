@@ -10,3 +10,11 @@ Bundle-ClassPath: sources/libraries/ant.jar,
  sources/libraries/truezip-6.7.jar,
  .
 Require-Bundle: org.eclipse.ant.core;bundle-version="3.2.201"
+Export-Package: rtt.annotations,
+ rtt.ant;uses:="org.apache.tools.ant.types,org.apache.tools.ant",
+ rtt.core.archive;
+  uses:="rtt.core.archive.testsuite,
+   rtt.core.loader,
+   rtt.core.manager.data,
+   rtt.core.manager,
+   rtt.core.archive.configuration"
