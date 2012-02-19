@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/rtt.feature_1.0.0.201202192204.jar" id="rtt.feature" version="1.0.0.201202192204">
+      <category name="rtt.category"/>
+   </feature>
+   <category-def name="rtt.category" label="Regression Test Tool"/>
+</site>
