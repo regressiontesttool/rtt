@@ -9,7 +9,9 @@ Bundle-ClassPath: sources/libraries/ant.jar,
  sources/libraries/jewelcli-0.6.jar,
  sources/libraries/truezip-6.7.jar,
  .
-Require-Bundle: org.eclipse.ant.core;bundle-version="3.2.201"
+Require-Bundle: org.eclipse.ant.core;bundle-version="3.2.201",
+ org.eclipse.jdt.core;bundle-version="3.6.2",
+ org.eclipse.core.runtime;bundle-version="3.6.0"
 Export-Package: rtt.annotations,
  rtt.ant;uses:="org.apache.tools.ant.types,org.apache.tools.ant",
  rtt.core.archive;
@@ -17,4 +19,21 @@ Export-Package: rtt.annotations,
    rtt.core.loader,
    rtt.core.manager.data,
    rtt.core.manager,
-   rtt.core.archive.configuration"
+   rtt.core.archive.configuration",
+ rtt.core.archive.configuration,
+ rtt.core.archive.history,
+ rtt.core.archive.input,
+ rtt.core.archive.logging,
+ rtt.core.archive.output,
+ rtt.core.archive.testsuite,
+ rtt.core.classpath,
+ rtt.core.exceptions,
+ rtt.core.loader,
+ rtt.core.manager;
+  uses:="rtt.core.archive.testsuite,
+   rtt.core.manager.data,
+   rtt.core.archive,
+   rtt.core.archive.configuration,
+   rtt.core.archive.output",
+ rtt.core.manager.data,
+ rtt.core.utils

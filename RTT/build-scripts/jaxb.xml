@@ -11,8 +11,8 @@
      Christian Oelsner                                                               
      ====================================================================== -->
 <project name="jaxb-taks">
-	
-	<dirname file="${ant.file.jaxb-taks}" property="tasks.base"/>
+
+	<dirname file="${ant.file.jaxb-taks}" property="tasks.base" />
 
 	<!-- Home of JDK and JAXB Compiler (xjc)-->
 	<property name="jdk.home" location="C:/Program Files (x86)/Java/jdk1.6.0_26" />
@@ -20,11 +20,11 @@
 
 	<!-- Some important directories -->
 	<property name="project.dir" location="${tasks.base}/.." />
-	<property name="src-gen.dir" location="${project.dir}/src-gen" />
-	<property name="schemes.dir" location="${project.dir}/schemes" />
+	<property name="rtt.src-gen" location="${project.dir}/src-gen" />
+	<property name="rtt.schemes" location="${project.dir}/schemes" />
 
 	<!-- Some package definintions -->
-	<property name="package.core" location="${src-gen.dir}/rtt/core" />
+	<property name="package.core" location="${rtt.src-gen}/rtt/core" />
 	<property name="package.archive" location="${package.core}/archive" />
 
 	<!-- Removes all classes of JAXB -->
@@ -36,7 +36,7 @@
 		<antcall target="Clean History" />
 		<antcall target="Clean Logging" />
 	</target>
-
+	
 	<!-- Generate JAXB implementation -->
 	<target name="XJC ALL">
 		<antcall target="XJC Config" />
@@ -73,8 +73,8 @@
 				<arg value="-p" />
 				<arg value="rtt.core.archive.@{package}" />
 				<arg value="-d" />
-				<arg value="${src-gen.dir}" />
-				<arg value="${schemes.dir}${file.separator}@{schema}" />
+				<arg value="${rtt.src-gen}" />
+				<arg value="${rtt.schemes}${file.separator}@{schema}" />
 				<xjc-args />
 			</exec>
 		</sequential>
@@ -134,7 +134,7 @@
 	<target name="XJC History" depends="Clean History">
 		<JAXBCreate package="history" schema="History.xsd">
 			<arg value="-b" />
-			<arg value="${schemes.dir}${file.separator}History.xjb" />
+			<arg value="${rtt.schemes}${file.separator}History.xjb" />
 		</JAXBCreate>
 	</target>
 
@@ -148,7 +148,7 @@
 	<target name="XJC Logging" depends="Clean Logging">
 		<JAXBCreate package="logging" schema="Log.xsd">
 			<arg value="-b" />
-			<arg value="${schemes.dir}${file.separator}Log.xjb" />
+			<arg value="${rtt.schemes}${file.separator}Log.xjb" />
 		</JAXBCreate>
 	</target>
 

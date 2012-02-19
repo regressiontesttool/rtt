@@ -22,14 +22,23 @@
     	This script will automatically (re-)generate classes, 
     	if any schema will be changed or updated.
     </description>
-	
-	<import file="jaxb.xml"/>
+
+	<import file="jaxb.xml" />
+
+	<property name="rtt.lib" location="${project.dir}/lib" />
+	<property name="rtt.ant-tasks" location="${rtt.lib}/ant-lib.jar" />
+	<property name="rtt.interface" location="${rtt.lib}/rtt-interface.jar" />
+
+	<property name="rtt.base" location="${project.dir}" />
+	<property name="rtt.src.lib" location="${project.dir}/sources/libraries" />
+	<property name="rtt.src" location="${project.dir}/implementation" />
+	<property name="rtt.bin" location="${project.dir}/binary" />
 
 	<property name="project.name" value="RTT" />
-	<property name="build.complete" location="${src-gen.dir}/.done" />
+	<property name="build.complete" location="${rtt.src-gen}/.done" />
 
 	<uptodate property="build.notRequired" targetfile="${build.complete}">
-		<srcfiles dir="${schemes.dir}" includes="**/*.xsd" />
+		<srcfiles dir="${rtt.schemes}" includes="**/*.xsd" />
 	</uptodate>
 
 	<!-- ================================= 
@@ -37,7 +46,7 @@
          ================================= -->
 	<target name="Clean_GenSrc" description="Removes *all* files within the src-gen directory">
 		<delete includeemptydirs="true">
-			<fileset dir="${project.dir}/src-gen" includes="**/*" />
+			<fileset dir="${rtt.src-gen}" includes="**/*" />
 		</delete>
 		<eclipse.refreshLocal resource="${project.name}" />
 	</target>
@@ -46,10 +55,68 @@
 	<!-- ================================= 
           target: Create_GenSrc              
          ================================= -->
-	<target name="Create_GenSrc" unless="build.notRequired" description="Creates classes from schemes">
+	<target name="Create_GenSrc" description="Creates classes from schemes">
 		<antcall target="XJC ALL" />
 		<touch file="${build.complete}" />
 		<eclipse.refreshLocal resource="${project.name}" />
+	</target>
+
+	<!-- ================================= 
+          target: Create_AntLib              
+         ================================= -->
+	<target name="Create_AntLib" description="description">
+		<jar destfile="${rtt.ant-tasks}" index="false" update="false" compress="false">
+			<manifest>
+				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
+			</manifest>
+			<zipfileset src="${rtt.src.lib}/truezip-6.7.jar" />
+			<zipfileset src="${rtt.src.lib}/jewelcli-0.6.jar" />
+			<fileset dir="${rtt.base}">
+				<include name="RTT-License.txt" />
+				<include name="TrueZip-License.txt" />
+				<include name="JewelCli-License.txt" />
+				<include name="headliner.treedistance-License.txt" />
+			</fileset>
+			<fileset dir="${rtt.src}">
+				<include name="**/taskdef.properties" />
+				<include name="headliner/treedistance/Makefile" />
+			</fileset>
+			<fileset dir="${rtt.schemes}">
+				<include name="**/*.xsd" />
+				<include name="**/*.xslt" />
+			</fileset>
+			<fileset dir="${rtt.bin}">
+				<include name="**/*.class" />
+				<exclude name="rtt/core/tests/**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- ================================= 
+          target: Create_InterfaceLib              
+         ================================= -->
+	<target name="Create_InterfaceLib" description="description">
+		<jar destfile="${rtt.interface}" index="false" update="false" compress="false">
+			<fileset dir="${rtt.base}">
+				<include name="RTT-License.txt" />
+				<include name="TrueZip-License.txt" />
+				<include name="JewelCli-License.txt" />
+				<include name="headliner.treedistance-License.txt" />
+			</fileset>
+			<fileset dir="${rtt.bin}">
+				<include name="rtt/annotations/**/*.class" />
+				<exclude name="rtt/annotations/AnnotationProcessor.class" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- ================================= 
+          target: Create_All              
+         ================================= -->
+	<target name="Create_All" unless="build.notRequired" description="description">
+		<antcall target="Create_GenSrc" />
+		<antcall target="Create_AntLib" />
+		<antcall target="Create_InterfaceLib" />
 	</target>
 
 </project>

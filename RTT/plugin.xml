@@ -5,45 +5,52 @@
          point="org.eclipse.ant.core.antTasks">
       <antTask
             class="rtt.ant.CreateArchive"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.CreateArchive">
       </antTask>
       
       <antTask
             class="rtt.ant.UpdateArchive"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.UpdateArchive">
       </antTask>
       
       <antTask
             class="rtt.ant.UpdateConfiguration"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.UpdateConfigurations">
       </antTask>
       
       <antTask
             class="rtt.ant.UpdateTests"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.UpdateTests">
       </antTask>
       
       <antTask
             class="rtt.ant.RunTest"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.Test">
       </antTask>
       
       <antTask
             class="rtt.ant.RunTests"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.RunTests">
       </antTask>
       
       <antTask
             class="rtt.ant.ExportLog"
-            library="ant-tasks/ant-tasks.jar"
+            library="lib/ant-lib.jar"
             name="Rtt.ExportLog">
       </antTask>
    
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="rtt.core.classpath.RTTClasspathContainerInitializer"
+            id="RTT.ClasspathContainer">
+      </classpathContainerInitializer>
    </extension>
 </plugin>
