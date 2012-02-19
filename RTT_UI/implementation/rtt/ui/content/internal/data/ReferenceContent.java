@@ -1,0 +1,68 @@
+package rtt.ui.content.internal.data;
+
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
+
+import rtt.ui.RttPluginUI;
+import rtt.ui.content.AbstractContent;
+import rtt.ui.content.IClickableContent;
+import rtt.ui.content.IContent;
+import rtt.ui.content.internal.ContentIcon;
+import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.core.ProjectFinder;
+import rtt.ui.editors.form.MasterDetailFormEditor;
+import rtt.ui.editors.form.MasterDetailFormEditor.ParserPage;
+import rtt.ui.editors.input.TestCaseEditorInput;
+import rtt.ui.model.RttProject;
+
+public class ReferenceContent extends AbstractContent implements IContent,
+		IClickableContent {
+	
+	private String suiteName;
+	private String caseName;
+	private int version;
+
+	public ReferenceContent(IContent parent, String suiteName, String caseName, int version) {
+		super(parent);
+		this.suiteName = suiteName;
+		this.caseName = caseName;
+		this.version = version;
+	}
+
+	@Override
+	public void doDoubleClick(IWorkbenchPage currentPage) {
+		ProjectContent projectContent = ProjectFinder
+				.getCurrentProjectContent();
+		RttProject project = projectContent.getProject();
+
+		try {
+			IEditorPart part = IDE.openEditor(currentPage,
+					new TestCaseEditorInput(project.getLoader(), suiteName,
+							caseName, project.getActiveConfiguration()),
+					MasterDetailFormEditor.ID, true);
+			if (part != null && part instanceof MasterDetailFormEditor) {
+				((MasterDetailFormEditor) part).setActivePage(ParserPage.ID);
+			}
+
+		} catch (PartInitException e) {
+			ErrorDialog.openError(currentPage.getActivePart().getSite().getShell(),
+					"Error", "Could not open editor", new Status(Status.ERROR,
+							RttPluginUI.PLUGIN_ID, e.getMessage(), e));
+		}
+	}
+
+	@Override
+	public String getText() {		
+		return "Reference (" + version + ")";
+	}
+
+	@Override
+	protected ContentIcon getIcon() {
+		return ContentIcon.REFERENCE;
+	}
+
+}
