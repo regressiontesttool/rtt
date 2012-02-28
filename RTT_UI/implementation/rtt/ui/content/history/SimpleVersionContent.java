@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.tests;
+package rtt.ui.content.history;
 
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
@@ -9,11 +9,11 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
 import rtt.ui.content.internal.ContentIcon;
 
-public class VersionContent extends AbstractContent implements IDecoratableContent {
+public class SimpleVersionContent extends AbstractContent implements IDecoratableContent {
 	
 	private Version version;
 	
-	public VersionContent(IContent parent, Version version) {
+	public SimpleVersionContent(IContent parent, Version version) {
 		super(parent);
 		this.version = version;
 	}

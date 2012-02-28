@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
@@ -104,7 +105,7 @@ public class TestView extends AbstractProjectView {
 
 	protected void loadContent(final ProjectContent currentContent) {
 		List<IContent> childs = new ArrayList<IContent>();
-
+		
 		if (currentContent != null && currentContent.getProject() != null) {
 			RttProject project = currentContent.getProject();
 
@@ -146,10 +147,17 @@ public class TestView extends AbstractProjectView {
 				return super.compare(viewer, e1, e2);
 			}
 		});
+		
+		int lastSelection = suiteComboViewer.getCombo().getSelectionIndex();
 
 		suiteComboViewer.setInput(currentContent.getTestsuiteContents()
 				.toArray());
-		suiteComboViewer.getCombo().select(0);
+		
+		if (lastSelection > -1) {
+			suiteComboViewer.getCombo().select(lastSelection);
+		} else {
+			suiteComboViewer.getCombo().select(0);
+		}
 	}
 
 	@Override

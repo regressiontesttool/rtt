@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.tests;
+package rtt.ui.content.history;
 
 import java.util.Calendar;
 

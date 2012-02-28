@@ -13,13 +13,13 @@ import rtt.ui.content.internal.SimpleTypedContent.ContentType;
 
 public class ConfigurationContent extends AbstractContent implements IDecoratableContent {
 
-	private String name;
+	private Configuration config;
 	private boolean isActive;
 	private boolean isDefault;
 
 	public ConfigurationContent(IContent parent, Configuration config) {
 		super(parent);
-		this.name = config.getName();
+		this.config = config;
 		this.isActive = false;
 
 		if (config.getLexerClass() != null) {
@@ -39,7 +39,7 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	@Override
 	public String getText() {
-		return name;
+		return config.getName();
 	}
 
 	@Override
@@ -71,5 +71,9 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	public void setDefault(boolean isDefault) {
 		this.isDefault = isDefault;
+	}
+
+	public Configuration getConfiguration() {
+		return config;
 	}
 }

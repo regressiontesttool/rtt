@@ -27,9 +27,9 @@ import rtt.core.manager.data.ReferenceManager;
 import rtt.core.manager.data.TestManager;
 import rtt.ui.content.ContentTreeViewer;
 import rtt.ui.content.IContent;
+import rtt.ui.content.history.HistoryContent;
+import rtt.ui.content.history.HistoryContent.VersionType;
 import rtt.ui.content.internal.ProjectContent;
-import rtt.ui.content.internal.tests.HistoryContent;
-import rtt.ui.content.internal.tests.HistoryContent.VersionType;
 import rtt.ui.core.ProjectFinder;
 
 public class VersionView extends AbstractProjectView {

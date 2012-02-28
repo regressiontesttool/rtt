@@ -21,17 +21,17 @@ public class ConfigurationDialog extends AbstractDialog {
 	
 	public ConfigurationDialog(Shell parentShell) {
 		super(parentShell, "New configuration", "Input data for a new configuration.", true);
-		configName = "";
-		parserClass = "";
-		lexerClass = "";
+		configName = "myConfig";
+		parserClass = "test.MyParser";
+		lexerClass = "test.MyLexer";
 		makeDefault = false;
 	}
 	
 	@Override
 	protected void addContent(Composite parent) {
-		configText = createText(parent, "Name of configuration", "myConfig");	
-		lexerText = createText(parent, "Lexerclass", "test.MyLexer");
-		parserText = createText(parent, "Parserclass", "test.MyParser");
+		configText = createText(parent, "Name of configuration", configName);	
+		lexerText = createText(parent, "Lexerclass", lexerClass);
+		parserText = createText(parent, "Parserclass", parserClass);
 		
 		Label defaultButtonLabel = new Label(parent, SWT.NONE);
 		defaultButtonLabel.setText("Make default?");
@@ -47,6 +47,29 @@ public class ConfigurationDialog extends AbstractDialog {
 		makeDefault = makeDefaultButton.getSelection();	
 		
 		super.okPressed();		
+	}
+	
+	public void setContent(String configName, String lexerName, String parserName, boolean makeDefault) {
+		this.configName = configName;
+		this.lexerClass = lexerName;
+		this.parserClass = parserName;
+		this.makeDefault = makeDefault;
+		
+		if (configText != null) {
+			configText.setText(configName);
+		}
+
+		if (lexerText != null) {
+			lexerText.setText(lexerName);
+		}
+		
+		if (parserText != null) {
+			parserText.setText(parserName);
+		}
+		
+		if (makeDefaultButton != null) {
+			makeDefaultButton.setSelection(makeDefault);
+		}
 	}
 	
 	public String getConfigName() {

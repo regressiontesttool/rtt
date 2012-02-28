@@ -70,6 +70,10 @@
             name="Add Configuration">
       </command>
       <command
+            id="rtt.ui.commands.config.edit"
+            name="Edit Config">
+      </command>
+      <command
             id="rtt.ui.commands.config.setActive"
             name="Set Active">
       </command>
@@ -229,6 +233,29 @@
             </visibleWhen>
          </command>
          <command
+               commandId="rtt.ui.commands.config.edit"
+               id="config.edit"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <or>
+                  <reference
+                        definitionId="rtt.ui.definitions.selection.config">
+                  </reference>
+                  <and>
+                     <reference
+                           definitionId="rtt.ui.definitions.configParent">
+                     </reference>
+                     <not>
+                        <reference
+                              definitionId="rtt.ui.definitions.selection.classpath">
+                        </reference>
+                     </not>
+                  </and>
+               </or>
+            </visibleWhen>
+         </command>
+         <command
                commandId="rtt.ui.commands.config.setActive"
                id="config.setActive"
                style="push">
@@ -377,6 +404,12 @@
             commandId="rtt.ui.commands.config.add">
          <class
                class="rtt.ui.handlers.config.ConfigAddHandler"></class>
+      </handler>
+      <handler
+            commandId="rtt.ui.commands.config.edit">
+         <class
+               class="rtt.ui.handlers.config.ConfigEditHandler">
+         </class>
       </handler>
       <handler
             commandId="rtt.ui.commands.config.setActive">

@@ -6,7 +6,7 @@ import rtt.ui.RttPluginUI;
 
 public enum ContentIcon {
 	
-	NONE(""),
+	NONE("icons/none.gif"),
 	PLACEHOLDER("icons/place_full.gif","icons/place_empty.gif"),
 	
 	TESTCASE("icons/testcase.gif"),
