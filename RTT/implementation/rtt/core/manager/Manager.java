@@ -257,9 +257,12 @@ public class Manager {
 				// CHRISTIAN todo !
 				refManager.save();
 				
-				VersionData versionData = tcase.getVersionData();
-				versionData.setReference(versionData.getReference() + 1);
-				tcase.setVersionData(versionData);
+				if (genInfo.lexerReplaced || genInfo.parserReplaced || genInfo.lexerVersioned || genInfo.parserVersioned) {
+					VersionData versionData = tcase.getVersionData();
+					versionData.setReference(versionData.getReference() + 1);
+					tcase.setVersionData(versionData);
+				}
+				
 
 				if (genInfo.lexerVersioned) {
 					// TestInformation info = new TestInformation();
