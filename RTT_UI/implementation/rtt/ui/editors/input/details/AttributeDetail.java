@@ -1,15 +1,15 @@
-package rtt.ui.editors.input;
+package rtt.ui.editors.input.details;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.ui.core.archive.IAttribute;
+import rtt.core.archive.output.Attribute;
 
 public class AttributeDetail {
 	
 	private List<String> details;
 	
-	public AttributeDetail(IAttribute attribute) {
+	public AttributeDetail(Attribute attribute) {
 		details = new ArrayList<String>();
 		
 		if (attribute != null) {

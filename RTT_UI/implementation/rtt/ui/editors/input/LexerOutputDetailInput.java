@@ -3,16 +3,20 @@ package rtt.ui.editors.input;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 
-import rtt.ui.core.archive.ILexerOutput;
-import rtt.ui.core.internal.treeItem.LexerOutputDataTreeItem;
-import rtt.ui.core.internal.treeItem.TokenTreeItem;
+import rtt.core.archive.output.LexerOutput;
+import rtt.ui.content.IContent;
+import rtt.ui.content.output.RootContent;
+import rtt.ui.content.output.TokenContent;
+import rtt.ui.editors.input.details.IDetail;
+import rtt.ui.editors.input.details.TokenDetail;
 
+// FIXME anpassungen auf Content !
 public class LexerOutputDetailInput implements IDetailInput {
 	
 	private String editorID = ""; 
-	private ILexerOutput lexerOutput;
+	private LexerOutput lexerOutput;
 	
-	public LexerOutputDetailInput(String editorID, ILexerOutput lexerOutput) {
+	public LexerOutputDetailInput(String editorID, LexerOutput lexerOutput) {
 		this.editorID = editorID;
 		this.lexerOutput = lexerOutput;
 	}
@@ -64,7 +68,7 @@ public class LexerOutputDetailInput implements IDetailInput {
 
 	@Override
 	public String[] getKeys() {
-		return new String[] { TokenDetail.CLASSNAME, TokenDetail.A_COUNT };
+		return new String[] { TokenDetail.FULL_NAME, TokenDetail.A_COUNT };
 	}
 
 	@Override
@@ -74,8 +78,8 @@ public class LexerOutputDetailInput implements IDetailInput {
 
 	@Override
 	public IDetail getDetail(Object o) {
-		if (o != null && o instanceof TokenTreeItem) {
-			return new TokenDetail((TokenTreeItem) o);
+		if (o != null && o instanceof TokenContent) {
+			return new TokenDetail((TokenContent) o);
 		}
 		
 		return null;
@@ -86,14 +90,18 @@ public class LexerOutputDetailInput implements IDetailInput {
 		return "Output";
 	}
 
-	@Override
-	public Object getMasterRoot() {
-		return new LexerOutputDataTreeItem(lexerOutput);
-	}
+//	@Override
+//	public Object getMasterRoot() {
+//		return new LexerOutputDataTreeItem(lexerOutput);
+//	}
+	
+	public IContent getRoot() {
+		return new RootContent(lexerOutput);		
+	};
 
 	@Override
 	public Class<?>[] getDetailClasses() {
-		return new Class<?>[] { TokenTreeItem.class };
+		return new Class<?>[] { TokenContent.class };
 	}
 
 }

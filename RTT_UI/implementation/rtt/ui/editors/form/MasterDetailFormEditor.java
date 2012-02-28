@@ -9,81 +9,56 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 import rtt.ui.RttPluginUI;
-import rtt.ui.editors.input.IDetailInput;
-import rtt.ui.editors.input.ITestCaseEditorInput;
 import rtt.ui.editors.input.LexerOutputDetailInput;
 import rtt.ui.editors.input.ParserOutputDetailInput;
+import rtt.ui.editors.input.RTTEditorInput;
 
 public class MasterDetailFormEditor extends FormEditor {
-	
-	public class ParserPage extends MasterDetailFormPage {
-		
-		public static final String ID = "rtt.ui.editors.parser";
 
-		public ParserPage(FormEditor editor) {
-			super(editor, ID, "ParserOuput");
-		}
-
-		@Override
-		protected String getPageTitle() {
-			return "ParserOutput";
-		}
-
-		@Override
-		protected IDetailInput getDetailInput() {
-			return new ParserOutputDetailInput(ID, testCaseInput.getParserOuput());
-		}
-		
-	}
-	
-	public class LexerPage extends MasterDetailFormPage {
-		public static final String ID = "rtt.ui.editors.lexer";
-		
-		public LexerPage(FormEditor editor) {
-			super(editor, ID, "LexerOutput");
-		}
-		
-		@Override
-		protected String getPageTitle() {
-			return "LexerOutput";
-		}
-		
-		@Override
-		protected IDetailInput getDetailInput() {
-			return new LexerOutputDetailInput(ID, testCaseInput.getLexerOutput());
-		}
-	}
-	
-	
 	public static final String ID = "rtt.ui.editors.formeditor";
+	public static final String LEXER_ID = "rtt.ui.editors.lexer";
+	public static final String PARSER_ID = "rtt.ui.editors.parser";
 
-	public MasterDetailFormEditor() {	}
-	protected ITestCaseEditorInput testCaseInput;
+	private RTTEditorInput editorInput;
+
+	public MasterDetailFormEditor() {
+
+	}
 
 	@Override
 	protected void addPages() {
-		
+
 		try {
-//			addPage(new InputFormPage(this));
-			addPage(new LexerPage(this));
-			addPage(new ParserPage(this));
+			RTTFormPage lexPage = new RTTFormPage(this, LEXER_ID, "Lexer");
+			lexPage.input = new LexerOutputDetailInput(LEXER_ID,
+					editorInput.getLexerOutput());
+
+			RTTFormPage parPage = new RTTFormPage(this, PARSER_ID, "Parser");
+			parPage.input = new ParserOutputDetailInput(PARSER_ID,
+					editorInput.getParserOuput());
+
+			addPage(lexPage);
+			addPage(parPage);
 		} catch (PartInitException e) {
-			ErrorDialog.openError(getSite().getShell(), "Error", "Could not open editor", 
-					new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e.getMessage(),e));
+			ErrorDialog.openError(getSite().getShell(), "Error",
+					"Could not open editor", new Status(Status.ERROR,
+							RttPluginUI.PLUGIN_ID, e.getMessage(), e));
 		}
 	}
-	
+
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 
-		if (!(input instanceof ITestCaseEditorInput)) {
-			throw new PartInitException(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, "Wrong Editor input: " + input));
+		if (input instanceof RTTEditorInput) {
+			editorInput = (RTTEditorInput) input;
+		} else {
+			throw new PartInitException(new Status(Status.ERROR,
+					RttPluginUI.PLUGIN_ID, "Wrong Editor input: " + input));
 		}
-		
-		this.testCaseInput = (ITestCaseEditorInput) input;
+
 		super.init(site, input);
-		this.setPartName(testCaseInput.getName());
+		super.setPartName(input.getName());
 	}
 
 	@Override
@@ -97,8 +72,6 @@ public class MasterDetailFormEditor extends FormEditor {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
 
 	@Override
 	public boolean isSaveAsAllowed() {

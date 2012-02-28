@@ -1,4 +1,4 @@
-package rtt.ui.editors.input;
+package rtt.ui.editors.input.details;
 
 public class StringDetail {
 

@@ -3,16 +3,19 @@ package rtt.ui.editors.input;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 
-import rtt.ui.core.archive.IParserOutput;
-import rtt.ui.core.internal.treeItem.NodeTreeItem;
-import rtt.ui.core.internal.treeItem.ParserOutputDataTreeItem;
+import rtt.core.archive.output.ParserOutput;
+import rtt.ui.content.IContent;
+import rtt.ui.content.output.NodeContent;
+import rtt.ui.content.output.RootContent;
+import rtt.ui.editors.input.details.IDetail;
+import rtt.ui.editors.input.details.NodeDetail;
 
 public class ParserOutputDetailInput implements IDetailInput {
-	
-	private String editorID = ""; 
-	private IParserOutput parserOutput;
-	
-	public ParserOutputDetailInput(String editorID, IParserOutput parserOutput) {
+
+	private String editorID = "";
+	private ParserOutput parserOutput;
+
+	public ParserOutputDetailInput(String editorID, ParserOutput parserOutput) {
 		this.editorID = editorID;
 		this.parserOutput = parserOutput;
 	}
@@ -64,7 +67,8 @@ public class ParserOutputDetailInput implements IDetailInput {
 
 	@Override
 	public String[] getKeys() {
-		return new String[] { NodeDetail.CLASSNAME, NodeDetail.C_COUNT , NodeDetail.A_COUNT };
+		return new String[] { NodeDetail.FULL_NAME, NodeDetail.C_COUNT,
+				NodeDetail.A_COUNT };
 	}
 
 	@Override
@@ -74,10 +78,10 @@ public class ParserOutputDetailInput implements IDetailInput {
 
 	@Override
 	public IDetail getDetail(Object o) {
-		if (o != null && o instanceof NodeTreeItem) {
-			return new NodeDetail((NodeTreeItem) o);
+		if (o != null && o instanceof NodeContent) {
+			return new NodeDetail((NodeContent) o);
 		}
-		
+
 		return null;
 	}
 
@@ -86,14 +90,19 @@ public class ParserOutputDetailInput implements IDetailInput {
 		return "Abstract Syntax Tree";
 	}
 
+	// @Override
+	// public Object getMasterRoot() {
+	// return new ParserOutputDataTreeItem(parserOutput);
+	// }
+
 	@Override
-	public Object getMasterRoot() {
-		return new ParserOutputDataTreeItem(parserOutput);
+	public IContent getRoot() {
+		return new RootContent(parserOutput);
 	}
 
 	@Override
 	public Class<?>[] getDetailClasses() {
-		return new Class<?>[] { NodeTreeItem.class };
+		return new Class<?>[] { NodeContent.class };
 	}
 
 }

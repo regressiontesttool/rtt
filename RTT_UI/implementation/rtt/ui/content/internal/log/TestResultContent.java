@@ -8,8 +8,8 @@ import rtt.ui.content.internal.ContentIcon;
 
 public class TestResultContent extends AbstractContent {
 
-	Result result;
-	ContentIcon icon;
+	private Result result;
+	private ContentIcon icon;
 	
 	public TestResultContent(IContent parent, Result result) {
 		super(parent);
@@ -19,6 +19,18 @@ public class TestResultContent extends AbstractContent {
 		for (Failure failure : result.getFailure()) {
 			childs.add(new FailureContent(this, failure));
 		}
+	}
+	
+	protected String getSuiteName() {
+		return result.getTestsuite();
+	}
+	
+	protected String getCaseName() {
+		return result.getTestcase();
+	}
+	
+	protected Integer getTestVersion() {
+		return result.getDataVersion();
 	}
 
 	@Override

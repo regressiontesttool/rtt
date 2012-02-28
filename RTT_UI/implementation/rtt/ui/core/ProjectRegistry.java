@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
+@Deprecated
 public class ProjectRegistry {
 	
 	public static final ProjectRegistry INSTANCE = new ProjectRegistry();

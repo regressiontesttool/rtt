@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
+import rtt.ui.RttNature;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IContentObserver;
 import rtt.ui.content.internal.ProjectContent;
@@ -36,16 +38,19 @@ public class ProjectFinder implements IContentObserver {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		for (IProject project : root.getProjects()) {
 			try {
+				
+				IProjectDescription description = project.getDescription();
+				if (description.hasNature(RttNature.NATURE_ID)) {
+					RttProject newProject = new RttProject(project);
+					ProjectContent content = new ProjectContent(newProject);
+					projects.put(newProject.getName(), content);
 
-				RttProject newProject = new RttProject(project);
-				ProjectContent content = new ProjectContent(newProject);
-				projects.put(newProject.getName(), content);
+					content.addObserver(this);
 
-				content.addObserver(this);
-
-				if (currentProjectContent == null && content != null) {
-					currentProjectContent = content;
-				}
+					if (currentProjectContent == null && content != null) {
+						currentProjectContent = content;
+					}
+				}		
 
 			} catch (Exception e) {
 				e.printStackTrace();

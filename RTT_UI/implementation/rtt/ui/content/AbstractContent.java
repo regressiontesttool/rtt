@@ -62,6 +62,10 @@ public abstract class AbstractContent implements IContent {
 
 	@Override
 	public Image getImage(ResourceManager manager) {
+		if (getIcon() == null) {
+			return manager.createImage(ContentIcon.PLACEHOLDER.getDescriptor(!hasChildren()));
+		}
+		
 		return manager.createImage(getIcon().getDescriptor(!hasChildren()));
 	}
 	

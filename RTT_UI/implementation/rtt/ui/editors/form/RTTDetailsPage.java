@@ -26,12 +26,12 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
-import rtt.ui.editors.input.AttributeDetail;
-import rtt.ui.editors.input.IDetail;
 import rtt.ui.editors.input.IDetailInput;
-import rtt.ui.editors.input.StringDetail;
+import rtt.ui.editors.input.details.AttributeDetail;
+import rtt.ui.editors.input.details.IDetail;
+import rtt.ui.editors.input.details.StringDetail;
 
-public class DetailsPage implements IDetailsPage {
+public class RTTDetailsPage implements IDetailsPage {
 	
 	ScrolledForm form;
 	FormToolkit toolkit;
@@ -39,7 +39,7 @@ public class DetailsPage implements IDetailsPage {
 	Map<String, Label> labels;
 	TableViewer attributeViewer;
 	
-	public DetailsPage(IDetailInput input) {
+	public RTTDetailsPage(IDetailInput input) {
 		this.input = input;
 		labels = new HashMap<String, Label>();
 	}
@@ -109,8 +109,7 @@ public class DetailsPage implements IDetailsPage {
 			}
 		}
 		
-		attributeViewer.setInput(detail.getAttributes());
-		
+		attributeViewer.setInput(detail.getAttributes());		
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class DetailsPage implements IDetailsPage {
 				Section.DESCRIPTION | Section.TITLE_BAR
 		);
 		detailSection.setText("Details");
-		detailSection.setDescription("This is overview of the selected item.");
+		detailSection.setDescription("This is an overview of the selected item.");
 		detailSection.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL));
 		
 		Composite detailClient = toolkit.createComposite(detailSection, SWT.WRAP);
@@ -199,6 +198,7 @@ public class DetailsPage implements IDetailsPage {
 		}
 		
 		SectionPart detailSectionPart = new SectionPart(detailSection);
+		Section section = detailSectionPart.getSection();
 		SectionPart attributeSectionPart = new SectionPart(attributeSection);		
 	}
 }

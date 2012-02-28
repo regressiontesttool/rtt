@@ -1,6 +1,7 @@
-package rtt.ui.editors.input;
+package rtt.ui.editors.input.details;
 
 import java.util.List;
+
 
 public interface IDetail {
 	

@@ -17,7 +17,9 @@ public class SimpleTypedContent extends AbstractContent {
 		PARSERCLASS("Parser: ", ContentIcon.PARSER), 
 		CLASSPATHENTRY("", ContentIcon.CLASSPATH), 
 		
-		DETAIL("", ContentIcon.PLACEHOLDER);
+		DETAIL("", ContentIcon.PLACEHOLDER), 
+		ATTRIBUTES("Attributes", ContentIcon.ATTRIBUTE_LIST), 
+		CHILDREN("Children", ContentIcon.CHILDREN_LIST);
 
 		protected String text;
 		protected ContentIcon icon;

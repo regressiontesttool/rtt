@@ -49,6 +49,7 @@ public class ProjectView extends ViewPart implements ISelectionListener,
 	@Override
 	public void dispose() {
 		getSite().getPage().removeSelectionListener(this);
+		ProjectFinder.removeProjectListener(this);
 		super.dispose();
 	}
 

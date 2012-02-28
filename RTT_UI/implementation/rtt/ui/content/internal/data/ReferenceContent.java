@@ -12,21 +12,18 @@ import rtt.ui.content.AbstractContent;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.internal.ContentIcon;
-import rtt.ui.content.internal.ProjectContent;
-import rtt.ui.core.ProjectFinder;
 import rtt.ui.editors.form.MasterDetailFormEditor;
-import rtt.ui.editors.form.MasterDetailFormEditor.ParserPage;
-import rtt.ui.editors.input.TestCaseEditorInput;
-import rtt.ui.model.RttProject;
+import rtt.ui.editors.input.RTTEditorInput;
 
 public class ReferenceContent extends AbstractContent implements IContent,
 		IClickableContent {
-	
+
 	private String suiteName;
 	private String caseName;
 	private int version;
 
-	public ReferenceContent(IContent parent, String suiteName, String caseName, int version) {
+	public ReferenceContent(IContent parent, String suiteName, String caseName,
+			int version) {
 		super(parent);
 		this.suiteName = suiteName;
 		this.caseName = caseName;
@@ -35,28 +32,26 @@ public class ReferenceContent extends AbstractContent implements IContent,
 
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
-		ProjectContent projectContent = ProjectFinder
-				.getCurrentProjectContent();
-		RttProject project = projectContent.getProject();
 
 		try {
-			IEditorPart part = IDE.openEditor(currentPage,
-					new TestCaseEditorInput(project.getLoader(), suiteName,
-							caseName, project.getActiveConfiguration()),
+			IEditorPart part = IDE.openEditor(currentPage, RTTEditorInput
+					.getReference(getProject(), suiteName, caseName, version),
 					MasterDetailFormEditor.ID, true);
+			
 			if (part != null && part instanceof MasterDetailFormEditor) {
-				((MasterDetailFormEditor) part).setActivePage(ParserPage.ID);
+				((MasterDetailFormEditor) part)
+						.setActivePage(MasterDetailFormEditor.PARSER_ID);
 			}
 
 		} catch (PartInitException e) {
-			ErrorDialog.openError(currentPage.getActivePart().getSite().getShell(),
-					"Error", "Could not open editor", new Status(Status.ERROR,
-							RttPluginUI.PLUGIN_ID, e.getMessage(), e));
+			ErrorDialog.openError(currentPage.getActivePart().getSite()
+					.getShell(), "Error", "Could not open editor", new Status(
+					Status.ERROR, RttPluginUI.PLUGIN_ID, e.getMessage(), e));
 		}
 	}
 
 	@Override
-	public String getText() {		
+	public String getText() {
 		return "Reference (" + version + ")";
 	}
 

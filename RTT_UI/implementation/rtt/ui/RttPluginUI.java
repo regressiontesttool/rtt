@@ -1,9 +1,12 @@
 package rtt.ui;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import regression.test.TestFactory;
+import regression.test.util.TestResourceFactoryImpl;
 import rtt.ui.core.ProjectFinder;
 import rtt.ui.core.ProjectRegistry;
 
@@ -31,6 +34,8 @@ public class RttPluginUI extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
+		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("rtt", new TestResourceFactoryImpl());
 		
 //		ProjectRegistry.loadData();
 		ProjectFinder.loadProjects();

@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPage;
 
 public class ContentTreeViewer extends TreeViewer {
@@ -74,7 +75,7 @@ public class ContentTreeViewer extends TreeViewer {
 		}
 	}
 
-	private class ContentLabelProvider extends LabelProvider {
+	public class ContentLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
 
@@ -123,6 +124,12 @@ public class ContentTreeViewer extends TreeViewer {
 	public ContentTreeViewer(Composite parent, int style, final IWorkbenchPage currentPage) {
 		super(parent, style | SWT.VIRTUAL);
 		
+		initViewer(currentPage);
+		
+		
+	}
+	
+	private void initViewer(final IWorkbenchPage currentPage) {
 		resourceManager = new LocalResourceManager(
 				JFaceResources.getResources(), this.getControl());
 		
@@ -148,5 +155,10 @@ public class ContentTreeViewer extends TreeViewer {
 				}
 			}
 		});
+	}
+
+	public ContentTreeViewer(Tree tree, final IWorkbenchPage currentPage) {
+		super(tree);
+		initViewer(currentPage);
 	}
 }

@@ -1,19 +1,10 @@
 package rtt.ui.core.internal.treeItem;
 
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IDE;
 
-import rtt.ui.RttPluginUI;
 import rtt.ui.core.ITreeItem;
 import rtt.ui.core.archive.ITestCase;
 import rtt.ui.editors.IEditorCommand;
-import rtt.ui.editors.form.MasterDetailFormEditor;
-import rtt.ui.editors.form.MasterDetailFormEditor.ParserPage;
-import rtt.ui.editors.input.TestCaseEditorInput;
 
 public class TestCaseTreeItem extends AbstractTreeItem {
 

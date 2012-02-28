@@ -2,6 +2,9 @@ package rtt.ui.editors.input;
 
 import org.eclipse.ui.IEditorInput;
 
+import rtt.ui.content.IContent;
+import rtt.ui.editors.input.details.IDetail;
+
 
 public interface IDetailInput extends IEditorInput {
 	
@@ -12,8 +15,9 @@ public interface IDetailInput extends IEditorInput {
 	String[] getHeaderNames();
 	IDetail getDetail(Object o);
 	String getMasterSectionTitle();
-	Object getMasterRoot();
 	Class<?>[] getDetailClasses();
+	
+	IContent getRoot();
 	
 //	void setDetail(IDetail detail);
 //	IDetail getDetail();

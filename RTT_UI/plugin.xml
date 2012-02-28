@@ -626,5 +626,45 @@
             type="rtt.ui.content.IContent">
       </propertyTester>
    </extension>
+   <extension
+         point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            class="regression.test.util.TestResourceFactoryImpl"
+            type="test">
+      </parser>
+   </extension>
+   <extension
+         point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="regression.test.TestPackage"
+            uri="regression.test.tool">
+      </package>
+   </extension>
+   <extension
+         point="org.eclipse.emf.edit.itemProviderAdapterFactories">
+      <factory
+            class="regression.test.provider.TestItemProviderAdapterFactory"
+            uri="regression.test.tool"
+             
+             supportedTypes="org.eclipse.emf.edit.provider.IEditingDomainItemProvider
+               org.eclipse.emf.edit.provider.IStructuredItemContentProvider
+               org.eclipse.emf.edit.provider.ITreeItemContentProvider
+               org.eclipse.emf.edit.provider.IItemLabelProvider
+               org.eclipse.emf.edit.provider.IItemPropertySource">
+      </factory>
+   </extension>
+   <extension
+         id="projectnature"
+         name="RTT Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="rtt.ui.RttNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
 
 </plugin>

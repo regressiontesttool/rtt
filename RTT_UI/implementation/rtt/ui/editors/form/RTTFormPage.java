@@ -2,7 +2,6 @@ package rtt.ui.editors.form;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,17 +17,16 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-import rtt.ui.core.internal.treeItem.TreeItemContentProvider;
-import rtt.ui.core.internal.treeItem.TreeItemLabelProvider;
+import rtt.ui.content.ContentTreeViewer;
 import rtt.ui.editors.input.IDetailInput;
 
-public abstract class MasterDetailFormPage extends FormPage {
+public class RTTFormPage extends FormPage {
 	
-	protected class DetailsBlock extends MasterDetailsBlock {
+	protected class RTTDetailsBlock extends MasterDetailsBlock {
 		
-		protected MasterDetailFormPage page;
+		protected RTTFormPage page;
 		
-		public DetailsBlock(MasterDetailFormPage page) {
+		public RTTDetailsBlock(RTTFormPage page) {
 			this.page = page;
 		}
 
@@ -42,12 +40,12 @@ public abstract class MasterDetailFormPage extends FormPage {
 			
 			Composite client = toolkit.createComposite(section, SWT.WRAP);
 			GridLayout layout = new GridLayout();
-			layout.numColumns = 1;			
+			layout.numColumns = 1;	
+			layout.marginHeight = 2;
+			layout.marginWidth = 2;
 			client.setLayout(layout);
 			
-			Tree tree = toolkit.createTree(client, SWT.BORDER | SWT.SINGLE);
-			tree.setLinesVisible(true);
-			tree.setHeaderVisible(true);
+			Tree tree = toolkit.createTree(client, SWT.NULL);
 			
 			GridData gd = new GridData(GridData.FILL_BOTH);
 			gd.heightHint = 20;
@@ -60,7 +58,15 @@ public abstract class MasterDetailFormPage extends FormPage {
 			final SectionPart sPart = new SectionPart(section);
 			managedForm.addPart(sPart);
 			
-			TreeViewer viewer = new TreeViewer(tree);
+			ContentTreeViewer viewer = new ContentTreeViewer(tree, getSite().getPage());
+			viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				
+				@Override
+				public void selectionChanged(SelectionChangedEvent event) {
+					managedForm.fireSelectionChanged(sPart, event.getSelection());
+				}
+			});
+			viewer.setInput(input.getRoot());
 			
 //			TreeViewerColumn treeColumn = new TreeViewerColumn(viewer, SWT.LEFT);
 //			treeColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -72,24 +78,13 @@ public abstract class MasterDetailFormPage extends FormPage {
 //			treeColumn.getColumn().setText("classname");
 //			treeColumn.getColumn().setWidth(80);
 			
-			viewer.setContentProvider(new TreeItemContentProvider(null));
-			viewer.setLabelProvider(TreeItemLabelProvider.getInstance());
 			
-			viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-				
-				@Override
-				public void selectionChanged(SelectionChangedEvent event) {
-					managedForm.fireSelectionChanged(sPart, event.getSelection());
-				}
-			});
-			
-			viewer.setInput(getDetailInput().getMasterRoot());
 		}
 
 		@Override
 		protected void registerPages(DetailsPart detailsPart) {
 			for (Class<?> clazz : getDetailInput().getDetailClasses()) {
-				detailsPart.registerPage(clazz, new DetailsPage(getDetailInput()));
+				detailsPart.registerPage(clazz, new RTTDetailsPage(getDetailInput()));
 			}
 			
 			
@@ -104,12 +99,15 @@ public abstract class MasterDetailFormPage extends FormPage {
 	}
 	
 	protected FormToolkit toolkit;
-	protected IDetailInput input;
 	protected MasterDetailsBlock block;
 	
-	public MasterDetailFormPage(FormEditor editor, String id, String tabTitle) {
+	protected String title;
+	protected IDetailInput input;
+	
+	
+	public RTTFormPage(FormEditor editor, String id, String tabTitle) {
 		super(editor, id, tabTitle);
-		block = new DetailsBlock(this);
+		block = new RTTDetailsBlock(this);
 	}
 	
 	@Override
@@ -119,6 +117,11 @@ public abstract class MasterDetailFormPage extends FormPage {
 		block.createContent(managedForm);
 	}
 
-	protected abstract String getPageTitle();
-	protected abstract IDetailInput getDetailInput();
+	protected String getPageTitle() {
+		return title;
+	}
+	
+	protected IDetailInput getDetailInput() {
+		return input;		
+	}
 }
