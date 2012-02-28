@@ -79,6 +79,20 @@ public abstract class DataManager<T> {
 
 				Marshaller marshaller = jc.createMarshaller();
 				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//				marshaller.setProperty(
+//						"com.sun.xml.internal.bind.namespacePrefixMapper",
+//						new NamespacePrefixMapper() {
+//							@Override
+//							public String getPreferredPrefix(
+//									String namespaceUri, String suggestion,
+//									boolean requirePrefix) {
+//								if (namespaceUri.equals("regression.test.tool"))
+//									return "test";
+//								
+//								return suggestion;
+//
+//							}
+//						});
 				if (xsltPath != null && !xsltPath.equals("")) {
 					marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
 					outputStream

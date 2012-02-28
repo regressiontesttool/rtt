@@ -7,7 +7,7 @@ import de.schlichtherle.io.DefaultArchiveDetector;
 import de.schlichtherle.io.File;
 import de.schlichtherle.io.FileInputStream;
 import de.schlichtherle.io.FileOutputStream;
-import de.schlichtherle.io.archive.zip.Zip32Driver;
+import de.schlichtherle.io.archive.zip.ZipDriver;
 
 public class ZipArchiveLoader extends ArchiveLoader {
 
@@ -15,7 +15,7 @@ public class ZipArchiveLoader extends ArchiveLoader {
 
 	public ZipArchiveLoader(String folder, String fileName) {
 		File.setDefaultArchiveDetector(new DefaultArchiveDetector("zip",
-				new Zip32Driver()));
+				new ZipDriver()));
 
 		File archiveFile = new File(folder + File.separator + fileName);
 		setBaseFile(archiveFile);

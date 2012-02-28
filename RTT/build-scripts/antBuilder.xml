@@ -69,7 +69,7 @@
 			<manifest>
 				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
 			</manifest>
-			<zipfileset src="${rtt.src.lib}/truezip-6.7.jar" />
+			<zipfileset src="${rtt.src.lib}/truezip-6.8.4.jar" />
 			<zipfileset src="${rtt.src.lib}/jewelcli-0.6.jar" />
 			<fileset dir="${rtt.base}">
 				<include name="RTT-License.txt" />
