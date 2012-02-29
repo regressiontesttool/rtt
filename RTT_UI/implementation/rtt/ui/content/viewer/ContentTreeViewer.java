@@ -1,4 +1,4 @@
-package rtt.ui.content;
+package rtt.ui.content.viewer;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -9,51 +9,25 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPage;
 
+import rtt.ui.content.IClickableContent;
+import rtt.ui.content.IContent;
+import rtt.ui.content.IDecoratableContent;
+
 public class ContentTreeViewer extends TreeViewer {
 
-	public static final Object[] EMPTY_ARRAY = new Object[0];
-
-	public static class ContentProvider implements ITreeContentProvider {
-
-		@Override
-		public void dispose() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public Object[] getElements(Object inputElement) {
-			return getChildren(inputElement);
-		}
+	public static class TreeContentProvider extends BaseContentProvider
+			implements ITreeContentProvider {
 
 		@Override
 		public Object[] getChildren(Object parentElement) {
-//			System.out.println("Parent:" + parentElement);
-			
-			if (parentElement instanceof Object[]) {
-				return ((Object[]) parentElement);
-			}
-
-			if (parentElement instanceof IContent) {
-				return ((IContent) parentElement).getChildren();
-			}
-			
-			return EMPTY_ARRAY;
+			return getElements(parentElement);
 		}
 
 		@Override
@@ -75,16 +49,7 @@ public class ContentTreeViewer extends TreeViewer {
 		}
 	}
 
-	public class ContentLabelProvider extends LabelProvider {
-		@Override
-		public String getText(Object element) {
-
-			if (element instanceof IContent) {
-				return ((IContent) element).getText();
-			}
-
-			return super.getText(element);
-		}
+	public class ContentLabelProviderWithImage extends BaseContentLabelProvider {
 
 		@Override
 		public Image getImage(Object element) {
@@ -120,22 +85,22 @@ public class ContentTreeViewer extends TreeViewer {
 	}
 
 	private LocalResourceManager resourceManager;
-	
-	public ContentTreeViewer(Composite parent, int style, final IWorkbenchPage currentPage) {
+
+	public ContentTreeViewer(Composite parent, int style,
+			final IWorkbenchPage currentPage) {
 		super(parent, style | SWT.VIRTUAL);
-		
+
 		initViewer(currentPage);
-		
-		
 	}
-	
+
 	private void initViewer(final IWorkbenchPage currentPage) {
 		resourceManager = new LocalResourceManager(
 				JFaceResources.getResources(), this.getControl());
-		
-		setContentProvider(new ContentProvider());
+
+		setContentProvider(new TreeContentProvider());
 		setLabelProvider(new DecoratingLabelProvider(
-				new ContentLabelProvider(), new ContentLabelDecorator()));
+				new ContentLabelProviderWithImage(),
+				new ContentLabelDecorator()));
 
 		addDoubleClickListener(new IDoubleClickListener() {
 
@@ -144,10 +109,10 @@ public class ContentTreeViewer extends TreeViewer {
 
 				if (event.getSelection() != null
 						&& event.getSelection() instanceof IStructuredSelection) {
-					
+
 					IStructuredSelection selection = (IStructuredSelection) event
 							.getSelection();
-					
+
 					if (selection.getFirstElement() instanceof IClickableContent) {
 						((IClickableContent) selection.getFirstElement())
 								.doDoubleClick(currentPage);

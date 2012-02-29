@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import rtt.core.archive.logging.ArchiveLog;
 import rtt.core.archive.logging.Entry;
 import rtt.core.manager.data.LogManager;
-import rtt.ui.content.ContentTreeViewer;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
@@ -41,6 +40,7 @@ import rtt.ui.content.internal.SimpleTypedContent;
 import rtt.ui.content.internal.SimpleTypedContent.ContentType;
 import rtt.ui.content.internal.log.DetailContent;
 import rtt.ui.content.internal.log.LogEntryContent;
+import rtt.ui.content.viewer.ContentTreeViewer;
 import rtt.ui.model.RttProject;
 import rtt.ui.utils.ContentViewerFilter;
 
@@ -131,7 +131,7 @@ public class LogView extends AbstractProjectView {
 			}
 		});
 
-		contentViewer.setContentProvider(new ContentTreeViewer.ContentProvider());
+		contentViewer.setContentProvider(new ContentTreeViewer.TreeContentProvider());
 		contentViewer.addDoubleClickListener(new IDoubleClickListener() {
 			
 			@Override

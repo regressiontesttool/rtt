@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 import rtt.core.archive.Archive;
 import rtt.core.archive.configuration.Configuration;
@@ -106,5 +109,14 @@ public class RttProject {
 
 	public void runTests(String suiteName, boolean matching) throws RTTException {
 		manager.runTests(suiteName, matching);
+	}
+
+	public IPath find(String path) {
+		IResource resource = project.findMember(new Path(path));
+		if (resource != null) {
+			return resource.getLocation();
+		} 
+		
+		return null;		
 	}
 }

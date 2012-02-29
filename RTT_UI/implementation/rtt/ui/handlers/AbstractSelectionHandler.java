@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import rtt.ui.content.IContent;
-import rtt.ui.core.ITreeItem;
 import rtt.ui.core.Item;
 
 public abstract class AbstractSelectionHandler extends AbstractHandler {
@@ -42,10 +41,6 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
 			
 			if (clazz.isInstance(sObject)) {
 				return (T) sObject;
-			}
-			
-			if (sObject instanceof ITreeItem) {
-				return (T) ((ITreeItem) sObject).getObject(clazz);
 			}
 			
 			if (sObject instanceof IContent) {

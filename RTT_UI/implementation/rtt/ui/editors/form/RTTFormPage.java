@@ -17,7 +17,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-import rtt.ui.content.ContentTreeViewer;
+import rtt.ui.content.viewer.ContentTreeViewer;
 import rtt.ui.editors.input.IDetailInput;
 
 public class RTTFormPage extends FormPage {

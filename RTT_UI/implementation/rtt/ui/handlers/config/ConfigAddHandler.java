@@ -7,6 +7,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
 
+import rtt.core.archive.configuration.Configuration;
+import rtt.core.archive.configuration.Path;
 import rtt.ui.content.internal.ProjectContent;
 import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
@@ -17,23 +19,28 @@ public class ConfigAddHandler extends AbstractSelectionHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ProjectContent projectContent = getSelectedObject(ProjectContent.class, event);
-		RttProject project = projectContent.getProject();
 		
 		ConfigurationDialog configDialog = new ConfigurationDialog(
-				getParentShell(event));
+				getParentShell(event), projectContent);
 
 		if (configDialog.open() == Dialog.OK) {
 			try {
-				String lexerClass = configDialog.getLexerName();
-				String parserClass = configDialog.getParserName();
-				String configName = configDialog.getConfigName();
-				boolean makeDefault = configDialog.getMakeDefault();
-
-				// CHRISTIAN todo
+				Configuration config = configDialog.getConfiguration();
+				RttProject project = projectContent.getProject();
+				
+				String lexerClass = config.getLexerClass().getValue();
+				String parserClass = config.getParserClass().getValue();
+				String configName = config.getName();
+				boolean makeDefault = configDialog.isDefault();
+				
 				List<String> cp = new LinkedList<String>();
-				cp.add(project.getWorkspaceProject().getLocation()
-						.toOSString()
-						+ "\\bin\\");
+				if (config.getClasspath() != null) {
+					for (Path path : config.getClasspath().getPath()) {
+						if (path.getValue() != null) {
+							cp.add(path.getValue());
+						}						
+					}
+				}
 				
 				project.addConfiguration(lexerClass, parserClass, configName,
 						makeDefault, cp);

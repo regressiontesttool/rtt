@@ -9,41 +9,42 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.Dialog;
 
 import rtt.core.archive.configuration.Configuration;
+import rtt.core.archive.configuration.Path;
 import rtt.ui.content.internal.ProjectContent;
 import rtt.ui.content.internal.configuration.ConfigurationContent;
 import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
 
-public class ConfigEditHandler extends AbstractSelectionHandler implements
-		IHandler {
+public class ConfigEditHandler extends AbstractSelectionHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectContent projectContent = getSelectedObject(ProjectContent.class,
-				event);
-		RttProject project = projectContent.getProject();
+		ProjectContent projectContent = getSelectedObject(ProjectContent.class, event);
 		ConfigurationContent configContent = getSelectedObject(
 				ConfigurationContent.class, event);
-		Configuration config = configContent.getConfiguration();
-
+		
 		ConfigurationDialog configDialog = new ConfigurationDialog(
-				getParentShell(event));
-
-		configDialog.setContent(config.getName(), config.getLexerClass()
-				.getValue(), config.getParserClass().getValue(), true);
+				getParentShell(event), configContent);
 
 		if (configDialog.open() == Dialog.OK) {
 			try {
-				String lexerClass = configDialog.getLexerName();
-				String parserClass = configDialog.getParserName();
-				String configName = configDialog.getConfigName();
-				boolean makeDefault = configDialog.getMakeDefault();
-
-				// CHRISTIAN todo
+				Configuration config = configContent.getConfiguration();
+				RttProject project = projectContent.getProject();
+				
+				String lexerClass = config.getLexerClass().getValue();
+				String parserClass = config.getParserClass().getValue();
+				String configName = config.getName();
+				boolean makeDefault = configDialog.isDefault();
+				
 				List<String> cp = new LinkedList<String>();
-				cp.add(project.getWorkspaceProject().getLocation().toOSString()
-						+ "\\bin\\");
+				if (config.getClasspath() != null) {
+					for (Path path : config.getClasspath().getPath()) {
+						if (path.getValue() != null) {
+							cp.add(path.getValue());
+						}						
+					}
+				}
 
 				project.addConfiguration(lexerClass, parserClass, configName,
 						makeDefault, cp);

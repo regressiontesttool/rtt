@@ -11,10 +11,9 @@ import rtt.ui.content.internal.SimpleTypedContent.ContentType;
 
 public class ClasspathContent extends AbstractContent implements IContent {
 
-	public ClasspathContent(ConfigurationContent configurationContent,
-			Classpath classpath) {
+	public ClasspathContent(IContent parent, Classpath classpath) {
 
-		super(configurationContent);
+		super(parent);
 
 		for (Path path : classpath.getPath()) {
 			if (path.getValue() != null) {
@@ -24,7 +23,7 @@ public class ClasspathContent extends AbstractContent implements IContent {
 		}
 
 		if (childs.size() == 0) {
-			childs.add(new EmptyContent("No classpath entries found."));
+			childs.add(new EmptyContent("No classpath entries set."));
 		}
 
 	}
