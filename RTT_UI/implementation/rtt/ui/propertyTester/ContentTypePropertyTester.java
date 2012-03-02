@@ -5,10 +5,10 @@ import java.util.Arrays;
 import org.eclipse.core.expressions.PropertyTester;
 
 import rtt.ui.content.IContent;
-import rtt.ui.content.SimpleTypedContent;
-import rtt.ui.content.SimpleTypedContent.ContentType;
 import rtt.ui.content.configuration.ClasspathContent;
 import rtt.ui.content.configuration.ConfigurationContent;
+import rtt.ui.content.main.SimpleTypedContent;
+import rtt.ui.content.main.SimpleTypedContent.ContentType;
 
 public class ContentTypePropertyTester extends PropertyTester {
 	

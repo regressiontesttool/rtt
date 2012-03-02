@@ -14,7 +14,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import rtt.ui.content.IContent;
 import rtt.ui.content.IContentObserver;
-import rtt.ui.content.ProjectContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.core.IProjectListener;
 import rtt.ui.core.ProjectFinder;
 import rtt.ui.viewer.ContentTreeViewer;
@@ -29,17 +29,16 @@ public class ProjectView extends ViewPart implements ISelectionListener,
 
 	@Override
 	public void createPartControl(Composite parent) {
-
-		getSite().getPage().addSelectionListener(this);
-
-		MenuManager menuManager = new MenuManager();
-
+		
 		projectViewer = new ContentTreeViewer(parent, SWT.BORDER, this.getSite().getPage());
-
-		getSite().setSelectionProvider(projectViewer);
+		
+		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(projectViewer.getControl());
 		projectViewer.getControl().setMenu(menu);
+		
 		getSite().registerContextMenu(menuManager, projectViewer);
+		getSite().setSelectionProvider(projectViewer);
+		getSite().getPage().addSelectionListener(this);
 
 		setViewerData();
 		
@@ -52,17 +51,7 @@ public class ProjectView extends ViewPart implements ISelectionListener,
 		ProjectFinder.removeProjectListener(this);
 		super.dispose();
 	}
-
-	private void setViewerData() {
-		Collection<ProjectContent> projects = ProjectFinder.getProjectContents();
-		for (ProjectContent project : projects) {
-			project.addObserver(this);
-		}
-		
-		projectViewer.setInput(projects.toArray());		
-		projectViewer.expandToLevel(3);
-	}
-
+	
 	@Override
 	public void setFocus() {
 		projectViewer.getControl().setFocus();
@@ -84,6 +73,17 @@ public class ProjectView extends ViewPart implements ISelectionListener,
 			}
 		}
 	}
+
+	private void setViewerData() {
+		Collection<ProjectContent> projects = ProjectFinder.getProjectContents();
+		for (ProjectContent project : projects) {
+			project.addObserver(this);
+		}
+		
+		projectViewer.setInput(projects.toArray());		
+		projectViewer.expandToLevel(3);
+	}
+	
 
 	@Override
 	public String getObserverID() {

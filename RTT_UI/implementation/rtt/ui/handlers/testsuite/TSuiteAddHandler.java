@@ -4,7 +4,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
 
-import rtt.ui.content.ProjectContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
 
@@ -16,7 +16,7 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
-		ProjectContent projectContent = getSelectedObject(ProjectContent.class, event);
+		ProjectContent projectContent = this.getProjectContent(event);
 		RttProject project = projectContent.getProject();
 		
 		InputDialog inputDialog = new InputDialog(

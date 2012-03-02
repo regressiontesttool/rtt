@@ -3,14 +3,13 @@ package rtt.ui.content.testsuite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 import rtt.ui.editors.input.InputEditorInput;
 
-public class InputContent extends AbstractContent implements IContent,
-		IClickableContent {
+public class InputContent extends AbstractContent implements IClickableContent {
 
 	
 

@@ -1,4 +1,6 @@
-package rtt.ui.content;
+package rtt.ui.content.main;
+
+import rtt.ui.content.IContent;
 
 
 public class EmptyContent extends AbstractContent {

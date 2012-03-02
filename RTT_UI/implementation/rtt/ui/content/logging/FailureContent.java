@@ -25,13 +25,13 @@ import rtt.core.archive.logging.FailureType;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.ReferenceManager;
 import rtt.core.manager.data.TestManager;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 import rtt.ui.model.RttProject;
 
-public class FailureContent extends AbstractContent implements IContent, IClickableContent {
+public class FailureContent extends AbstractContent implements IClickableContent {
 
 	private String text;
 //	private String path;

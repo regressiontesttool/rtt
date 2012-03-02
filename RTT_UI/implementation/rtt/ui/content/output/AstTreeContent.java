@@ -2,11 +2,11 @@ package rtt.ui.content.output;
 
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Tree;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 
-public class AstTreeContent extends AbstractContent implements IContent {
+public class AstTreeContent extends AbstractContent {
 
 	private Tree tree;
 	

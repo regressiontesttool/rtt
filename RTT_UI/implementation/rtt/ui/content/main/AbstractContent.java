@@ -1,4 +1,4 @@
-package rtt.ui.content;
+package rtt.ui.content.main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,12 @@ import java.util.List;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
+import rtt.ui.content.IContent;
 import rtt.ui.model.RttProject;
 
 public abstract class AbstractContent implements IContent {
 	
-	protected static final Object[] EMPTY_ARRAY = new Object[0];
+	protected static final IContent[] EMPTY_ARRAY = new IContent[0];
 	protected IContent parent = null;	
 	protected List<IContent> childs;	
 	
@@ -51,12 +52,12 @@ public abstract class AbstractContent implements IContent {
 	}
 	
 	@Override
-	public Object[] getChildren() {
+	public IContent[] getChildren() {
 		if (childs == null) {
 			return EMPTY_ARRAY;
 		}
 		
-		return childs.toArray();
+		return childs.toArray(new IContent[childs.size()]);
 	}
 
 	@Override

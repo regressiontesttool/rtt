@@ -13,7 +13,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 
 import rtt.ui.content.IContent;
 import rtt.ui.content.IContentObserver;
-import rtt.ui.content.ProjectContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.model.RttProject;
 
 public class ProjectFinder implements IContentObserver {

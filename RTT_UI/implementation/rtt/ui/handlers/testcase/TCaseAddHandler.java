@@ -15,7 +15,7 @@ import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import rtt.core.exceptions.RTTException;
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.ProjectContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
@@ -30,7 +30,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectContent projectContent = getSelectedObject(ProjectContent.class, event);
+		ProjectContent projectContent = this.getProjectContent(event);
 		RttProject project = projectContent.getProject();
 		
 		TestsuiteContent suite = getSelectedObject(TestsuiteContent.class,

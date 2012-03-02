@@ -4,13 +4,12 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.logging.Detail;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 
-public class DetailContent extends AbstractContent implements IContent,
-		IColumnableContent {
+public class DetailContent extends AbstractContent implements IColumnableContent {
 	
 	private Detail detail;
 

@@ -11,22 +11,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.ProjectContent;
 
 public abstract class AbstractSelectionHandler extends AbstractHandler {
-	
-	@Deprecated
-	protected IProject getSelectedProject(ExecutionEvent event) throws ExecutionException {
-		ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
-		if (selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection)selection).getFirstElement();
-			
-			if (selectedObject instanceof IJavaProject) {
-				return ((IJavaProject) selectedObject).getProject();				
-			}
-		}
-		
-		throw new ExecutionException("No Project selected");
-	}
 	
 	@SuppressWarnings("unchecked")
 	protected <T> T getSelectedObject(Class<T> clazz, ExecutionEvent event) throws ExecutionException {
@@ -46,11 +33,12 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
 		return null;
 	}
 	
+	protected ProjectContent getProjectContent(ExecutionEvent event) throws ExecutionException {
+		return getSelectedObject(ProjectContent.class, event);
+	}
+	
 	protected Shell getParentShell(ExecutionEvent event) throws ExecutionException {
 		return HandlerUtil.getActiveWorkbenchWindowChecked(event).getShell();
 	}
-
-	@Override
-	public abstract Object execute(ExecutionEvent event) throws ExecutionException;
 
 }

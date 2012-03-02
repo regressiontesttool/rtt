@@ -2,9 +2,9 @@ package rtt.ui.content.logging;
 
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.Result;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 
 public class TestResultContent extends AbstractContent {
 

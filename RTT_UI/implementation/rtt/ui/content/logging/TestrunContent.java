@@ -7,11 +7,11 @@ import javax.xml.bind.DatatypeConverter;
 import rtt.core.archive.logging.Entry;
 import rtt.core.archive.logging.Result;
 import rtt.core.archive.logging.Testrun;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 
-public class TestrunContent extends AbstractContent implements IContent {
+public class TestrunContent extends AbstractContent {
 
 	Testrun testrun;
 	Calendar calendar;

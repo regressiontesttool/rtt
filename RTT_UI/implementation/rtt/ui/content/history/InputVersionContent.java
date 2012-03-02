@@ -10,15 +10,14 @@ import org.eclipse.ui.PartInitException;
 import rtt.core.archive.history.Version;
 import rtt.core.manager.data.IHistoryManager;
 import rtt.core.manager.data.InputManager;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 import rtt.ui.editors.input.InputEditorInput;
 
-public class InputVersionContent extends AbstractContent implements IContent,
-		IClickableContent, IDecoratableContent {
+public class InputVersionContent extends AbstractContent implements IClickableContent, IDecoratableContent {
 
 	Integer versionNr;
 	InputManager manager;

@@ -26,9 +26,9 @@ import rtt.core.manager.data.InputManager;
 import rtt.core.manager.data.ReferenceManager;
 import rtt.core.manager.data.TestManager;
 import rtt.ui.content.IContent;
-import rtt.ui.content.ProjectContent;
 import rtt.ui.content.history.HistoryContent;
 import rtt.ui.content.history.HistoryContent.VersionType;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.core.ProjectFinder;
 import rtt.ui.viewer.ContentTreeViewer;
 

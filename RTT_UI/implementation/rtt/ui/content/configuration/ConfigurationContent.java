@@ -4,12 +4,12 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.configuration.Configuration;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
-import rtt.ui.content.SimpleTypedContent;
-import rtt.ui.content.SimpleTypedContent.ContentType;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
+import rtt.ui.content.main.SimpleTypedContent;
+import rtt.ui.content.main.SimpleTypedContent.ContentType;
 
 public class ConfigurationContent extends AbstractContent implements IDecoratableContent {
 

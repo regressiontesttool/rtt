@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.ProjectContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.utils.AbstractTestRunnable;
@@ -20,8 +20,7 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Shell parentShell = getParentShell(event);
-		ProjectContent projectContent = getSelectedObject(
-				ProjectContent.class, event);
+		ProjectContent projectContent = this.getProjectContent(event);
 		TestsuiteContent suite = getSelectedObject(
 				TestsuiteContent.class, event);
 		

@@ -11,15 +11,14 @@ import rtt.core.archive.history.Version;
 import rtt.core.manager.data.IHistoryManager;
 import rtt.core.manager.data.ReferenceManager;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 import rtt.ui.editors.MasterDetailFormEditor;
 import rtt.ui.editors.input.RTTEditorInput;
 
-public class ReferenceVersionContent extends AbstractContent implements
-		IContent, IClickableContent {
+public class ReferenceVersionContent extends AbstractContent implements IClickableContent {
 
 	private Version version;
 	private ReferenceManager refManager;

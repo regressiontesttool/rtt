@@ -1,7 +1,9 @@
-package rtt.ui.content;
+package rtt.ui.content.main;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rtt.ui.content.IContent;
 
 
 public class SimpleTypedContent extends AbstractContent {

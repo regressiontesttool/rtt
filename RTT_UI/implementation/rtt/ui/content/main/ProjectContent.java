@@ -1,4 +1,4 @@
-package rtt.ui.content;
+package rtt.ui.content.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,8 +7,10 @@ import java.util.Map;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.testsuite.Testsuite;
-import rtt.ui.content.SimpleTypedContent.ContentType;
+import rtt.ui.content.IContent;
+import rtt.ui.content.IContentObserver;
 import rtt.ui.content.configuration.ConfigurationContent;
+import rtt.ui.content.main.SimpleTypedContent.ContentType;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.model.RttProject;
 
@@ -21,8 +23,7 @@ public class ProjectContent extends AbstractContent {
 	private Map<String, IContentObserver> observers;
 	
 	public ProjectContent(RttProject project) {
-		super(null);
-		
+		super(null);		
 
 		this.observers = new HashMap<String, IContentObserver>();
 		this.project = project;

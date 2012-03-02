@@ -8,15 +8,14 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
 import rtt.ui.editors.MasterDetailFormEditor;
 import rtt.ui.editors.input.RTTEditorInput;
 
-public class ReferenceContent extends AbstractContent implements IContent,
-		IClickableContent {
+public class ReferenceContent extends AbstractContent implements IClickableContent {
 
 	private String suiteName;
 	private String caseName;

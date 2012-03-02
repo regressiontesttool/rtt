@@ -16,11 +16,11 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 
 import rtt.core.archive.testsuite.Testsuite;
-import rtt.ui.content.EmptyContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.ProjectContent;
-import rtt.ui.content.SimpleTypedContent;
-import rtt.ui.content.SimpleTypedContent.ContentType;
+import rtt.ui.content.main.EmptyContent;
+import rtt.ui.content.main.ProjectContent;
+import rtt.ui.content.main.SimpleTypedContent;
+import rtt.ui.content.main.SimpleTypedContent.ContentType;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.model.RttProject;
 import rtt.ui.utils.TestsuiteComboViewer;

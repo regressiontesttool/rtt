@@ -42,11 +42,11 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.LexerClass;
 import rtt.core.archive.configuration.ParserClass;
 import rtt.core.archive.configuration.Path;
-import rtt.ui.content.EmptyContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.ProjectContent;
 import rtt.ui.content.configuration.ClasspathContent;
 import rtt.ui.content.configuration.ConfigurationContent;
+import rtt.ui.content.main.EmptyContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.BaseContentLabelProvider;
 import rtt.ui.viewer.BaseContentProvider;
 
