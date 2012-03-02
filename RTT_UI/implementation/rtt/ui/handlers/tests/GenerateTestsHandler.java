@@ -43,7 +43,7 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 					.getMessage(), e));
 		}
 		
-		projectContent.updateObserver();
+		projectContent.fireContentChanged();
 
 		return null;
 	}

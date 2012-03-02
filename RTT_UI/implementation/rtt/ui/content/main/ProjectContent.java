@@ -116,12 +116,8 @@ public class ProjectContent extends AbstractContent {
 		loadContents();
 		
 		if (updateObserver) {
-			updateObserver();
+			fireContentChanged();
 		}
-	}
-	
-	public void updateObserver() {
-		fireContentChanged();
 	}
 	
 	public synchronized void addObserver(IContentObserver observer) {
@@ -132,7 +128,7 @@ public class ProjectContent extends AbstractContent {
 		observers.remove(observer.getObserverID());
 	}
 	
-	protected synchronized void fireContentChanged() {
+	public synchronized void fireContentChanged() {
 		for (IContentObserver observer : observers.values()) {
 			observer.update(this);
 		}

@@ -35,7 +35,6 @@ public class RttPluginUI extends AbstractUIPlugin {
 		
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("rtt", new TestResourceFactoryImpl());
 		
-//		ProjectRegistry.loadData();
 		ProjectFinder.loadProjects();
 	}
 

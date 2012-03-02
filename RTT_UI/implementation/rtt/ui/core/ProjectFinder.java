@@ -37,17 +37,18 @@ public class ProjectFinder implements IContentObserver {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		for (IProject project : root.getProjects()) {
 			try {
+	
+				// FIXME listen for projects instead of content 
 				
 				IProjectDescription description = project.getDescription();
 				if (description.hasNature(RttNature.NATURE_ID)) {
 					RttProject newProject = new RttProject(project);
-					ProjectContent content = new ProjectContent(newProject);
-					projects.put(newProject.getName(), content);
+					projects.put(newProject.getName(), newProject.getContent());
 
-					content.addObserver(this);
+					newProject.getContent().addObserver(this);
 
-					if (currentProjectContent == null && content != null) {
-						currentProjectContent = content;
+					if (currentProjectContent == null && newProject.getContent() != null) {
+						currentProjectContent = newProject.getContent();
 					}
 				}		
 

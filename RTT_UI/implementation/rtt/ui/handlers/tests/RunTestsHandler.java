@@ -40,7 +40,7 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 					.getMessage(), e));
 		}
 		
-		projectContent.updateObserver();
+		projectContent.fireContentChanged();
 
 		return null;
 	}

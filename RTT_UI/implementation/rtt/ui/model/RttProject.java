@@ -18,6 +18,7 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.Manager;
 import rtt.core.manager.Manager.TestCaseMode;
 import rtt.ui.RttPluginUtil;
+import rtt.ui.content.main.ProjectContent;
 
 public class RttProject {
 
@@ -25,6 +26,8 @@ public class RttProject {
 	private IProject project;
 	private File archiveFile;
 	private Manager manager;
+	
+	private ProjectContent content;
 
 	public RttProject(IProject project) throws RTTException, CoreException {
 		this.project = project;
@@ -32,6 +35,7 @@ public class RttProject {
 		manager = RttPluginUtil.getRttArchive(archiveFile);
 
 		this.name = project.getDescription().getName();
+		this.content = new ProjectContent(this);
 	}
 
 	public String getName() {
@@ -45,6 +49,10 @@ public class RttProject {
 		}
 		
 		return suiteNames;
+	}
+	
+	public ProjectContent getContent() {
+		return content;
 	}
 
 	public Archive getArchive() {

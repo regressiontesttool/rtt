@@ -15,7 +15,6 @@ public class ProjectPerspectiveFactory implements IPerspectiveFactory {
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
-//		ProjectRegistry.loadData();
 		
 		String refId = layout.getEditorArea();	
 
@@ -34,8 +33,6 @@ public class ProjectPerspectiveFactory implements IPerspectiveFactory {
 		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, 0.65f, refId);
 		right.addView(TestView.ID);
 		right.addView("org.eclipse.pde.runtime.LogView");
-		
-				
 	}
 
 }
