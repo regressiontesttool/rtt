@@ -6,7 +6,6 @@ import java.util.List;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
-import rtt.ui.content.internal.ContentIcon;
 import rtt.ui.model.RttProject;
 
 public abstract class AbstractContent implements IContent {

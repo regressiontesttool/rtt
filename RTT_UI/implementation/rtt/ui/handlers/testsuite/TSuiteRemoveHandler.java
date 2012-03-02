@@ -3,7 +3,7 @@ package rtt.ui.handlers.testsuite;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.content.internal.data.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;

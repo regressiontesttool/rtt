@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.content.internal.data.TestsuiteContent;
 
 public class TestsuiteComboViewer extends ComboViewer {

@@ -15,7 +15,7 @@ import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import rtt.core.exceptions.RTTException;
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.content.internal.data.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;

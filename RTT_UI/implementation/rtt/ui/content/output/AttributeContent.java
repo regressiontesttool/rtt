@@ -2,8 +2,8 @@ package rtt.ui.content.output;
 
 import rtt.core.archive.output.Attribute;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
 
 public class AttributeContent extends AbstractContent implements IContent {
 

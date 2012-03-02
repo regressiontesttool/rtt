@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.content.internal.data.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.utils.AbstractTestRunnable;

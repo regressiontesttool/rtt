@@ -26,9 +26,9 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.ReferenceManager;
 import rtt.core.manager.data.TestManager;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
 import rtt.ui.model.RttProject;
 
 public class FailureContent extends AbstractContent implements IContent, IClickableContent {

@@ -9,9 +9,9 @@ import org.eclipse.ui.ide.IDE;
 
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
 import rtt.ui.editors.form.MasterDetailFormEditor;
 import rtt.ui.editors.input.RTTEditorInput;
 

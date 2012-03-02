@@ -14,7 +14,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import rtt.ui.content.IContent;
 import rtt.ui.content.IContentObserver;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.content.viewer.ContentTreeViewer;
 import rtt.ui.core.IProjectListener;
 import rtt.ui.core.ProjectFinder;

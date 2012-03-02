@@ -4,9 +4,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
 import rtt.ui.editors.input.InputEditorInput;
 
 public class InputContent extends AbstractContent implements IContent,

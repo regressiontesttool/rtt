@@ -5,8 +5,8 @@ import java.util.Arrays;
 import org.eclipse.core.expressions.PropertyTester;
 
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.SimpleTypedContent;
-import rtt.ui.content.internal.SimpleTypedContent.ContentType;
+import rtt.ui.content.SimpleTypedContent;
+import rtt.ui.content.SimpleTypedContent.ContentType;
 import rtt.ui.content.internal.configuration.ClasspathContent;
 import rtt.ui.content.internal.configuration.ConfigurationContent;
 

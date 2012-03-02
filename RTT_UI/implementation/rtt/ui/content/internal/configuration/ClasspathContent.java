@@ -3,11 +3,11 @@ package rtt.ui.content.internal.configuration;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Path;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
+import rtt.ui.content.EmptyContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
-import rtt.ui.content.internal.EmptyContent;
-import rtt.ui.content.internal.SimpleTypedContent;
-import rtt.ui.content.internal.SimpleTypedContent.ContentType;
+import rtt.ui.content.SimpleTypedContent;
+import rtt.ui.content.SimpleTypedContent.ContentType;
 
 public class ClasspathContent extends AbstractContent implements IContent {
 

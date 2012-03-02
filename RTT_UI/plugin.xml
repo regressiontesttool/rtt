@@ -692,7 +692,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="rtt.ui.RttNature">
+               class="rtt.ui.core.RttNature">
          </run>
       </runtime>
       <requires-nature

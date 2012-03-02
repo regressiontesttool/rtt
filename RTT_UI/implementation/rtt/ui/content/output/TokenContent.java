@@ -6,10 +6,10 @@ import java.util.List;
 import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.Token;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
-import rtt.ui.content.internal.SimpleTypedContent;
-import rtt.ui.content.internal.SimpleTypedContent.ContentType;
+import rtt.ui.content.SimpleTypedContent;
+import rtt.ui.content.SimpleTypedContent.ContentType;
 
 public class TokenContent extends AbstractContent implements IContent {
 	

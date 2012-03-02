@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 
 public abstract class AbstractTestRunnable implements IRunnableWithProgress {
 

@@ -5,7 +5,7 @@ import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.output.Token;
 import rtt.core.archive.output.Tree;
 import rtt.ui.content.AbstractContent;
-import rtt.ui.content.internal.ContentIcon;
+import rtt.ui.content.ContentIcon;
 
 public class RootContent extends AbstractContent {
 	

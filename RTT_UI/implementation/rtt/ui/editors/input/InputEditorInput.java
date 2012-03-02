@@ -11,7 +11,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 
 import rtt.core.manager.data.InputManager;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.core.ProjectFinder;
 import rtt.ui.model.RttProject;
 

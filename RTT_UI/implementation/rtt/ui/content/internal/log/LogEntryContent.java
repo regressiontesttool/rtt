@@ -13,10 +13,10 @@ import rtt.core.archive.logging.Detail;
 import rtt.core.archive.logging.Entry;
 import rtt.core.archive.logging.EntryType;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.internal.ContentIcon;
 
 public class LogEntryContent extends AbstractContent implements
 		IColumnableContent, IClickableContent {

@@ -6,9 +6,9 @@ import org.eclipse.swt.graphics.Image;
 import rtt.core.archive.history.Version;
 import rtt.core.manager.data.IHistoryManager;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
-import rtt.ui.content.internal.ContentIcon;
 
 public class HistoryContent extends AbstractContent implements
 		IDecoratableContent {

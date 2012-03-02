@@ -17,8 +17,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
 import rtt.core.classpath.RTTClasspathContainer;
-import rtt.ui.RttNature;
 import rtt.ui.core.ProjectFinder;
+import rtt.ui.core.RttNature;
 import rtt.ui.perspectives.ProjectPerspectiveFactory;
 
 public class InitArchiveHandler extends AbstractSelectionHandler {

@@ -1,4 +1,4 @@
-package rtt.ui;
+package rtt.ui.core;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -11,6 +11,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.dialogs.ContainerGenerator;
 
 import rtt.core.manager.Manager;
+import rtt.ui.RttPluginUI;
+import rtt.ui.RttPreferenceStore;
 
 public class RttNature implements IProjectNature {
 

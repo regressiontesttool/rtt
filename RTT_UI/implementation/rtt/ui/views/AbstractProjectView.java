@@ -3,7 +3,7 @@ package rtt.ui.views;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.core.IProjectListener;
 import rtt.ui.core.ProjectFinder;
 

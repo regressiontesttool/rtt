@@ -1,4 +1,4 @@
-package rtt.ui.content.internal;
+package rtt.ui.content;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 

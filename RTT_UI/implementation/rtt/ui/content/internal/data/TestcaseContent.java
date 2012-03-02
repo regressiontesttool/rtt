@@ -4,9 +4,9 @@ import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDeletableContent;
-import rtt.ui.content.internal.ContentIcon;
 import rtt.ui.core.ProjectFinder;
 import rtt.ui.model.RttProject;
 

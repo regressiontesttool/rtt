@@ -9,7 +9,7 @@ import org.eclipse.jface.dialogs.Dialog;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Path;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;

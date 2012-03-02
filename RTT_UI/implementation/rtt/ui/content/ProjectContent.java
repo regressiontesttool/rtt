@@ -1,4 +1,4 @@
-package rtt.ui.content.internal;
+package rtt.ui.content;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,10 +7,7 @@ import java.util.Map;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.testsuite.Testsuite;
-import rtt.ui.content.AbstractContent;
-import rtt.ui.content.IContent;
-import rtt.ui.content.IContentObserver;
-import rtt.ui.content.internal.SimpleTypedContent.ContentType;
+import rtt.ui.content.SimpleTypedContent.ContentType;
 import rtt.ui.content.internal.configuration.ConfigurationContent;
 import rtt.ui.content.internal.data.TestsuiteContent;
 import rtt.ui.model.RttProject;

@@ -11,10 +11,9 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
-import rtt.ui.RttNature;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IContentObserver;
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 import rtt.ui.model.RttProject;
 
 public class ProjectFinder implements IContentObserver {

@@ -4,9 +4,9 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import rtt.core.exceptions.RTTException;
-import rtt.ui.content.internal.ProjectContent;
-import rtt.ui.content.internal.SimpleTypedContent;
-import rtt.ui.content.internal.SimpleTypedContent.ContentType;
+import rtt.ui.content.ProjectContent;
+import rtt.ui.content.SimpleTypedContent;
+import rtt.ui.content.SimpleTypedContent.ContentType;
 import rtt.ui.content.internal.configuration.ConfigurationContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;

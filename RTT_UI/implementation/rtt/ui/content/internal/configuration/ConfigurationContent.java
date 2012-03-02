@@ -5,11 +5,11 @@ import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.ui.content.AbstractContent;
+import rtt.ui.content.ContentIcon;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
-import rtt.ui.content.internal.ContentIcon;
-import rtt.ui.content.internal.SimpleTypedContent;
-import rtt.ui.content.internal.SimpleTypedContent.ContentType;
+import rtt.ui.content.SimpleTypedContent;
+import rtt.ui.content.SimpleTypedContent.ContentType;
 
 public class ConfigurationContent extends AbstractContent implements IDecoratableContent {
 

@@ -1,6 +1,6 @@
 package rtt.ui.core;
 
-import rtt.ui.content.internal.ProjectContent;
+import rtt.ui.content.ProjectContent;
 
 public interface IProjectListener {
 
