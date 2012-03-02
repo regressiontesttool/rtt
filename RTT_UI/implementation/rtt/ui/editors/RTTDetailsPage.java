@@ -1,4 +1,4 @@
-package rtt.ui.editors.form;
+package rtt.ui.editors;
 
 import java.util.HashMap;
 import java.util.List;

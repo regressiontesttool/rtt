@@ -1,4 +1,4 @@
-package rtt.ui.editors.form;
+package rtt.ui.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;

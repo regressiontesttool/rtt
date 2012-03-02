@@ -643,7 +643,7 @@
             name="TreeItemEditor">
       </editor>
       <editor
-            class="rtt.ui.editors.form.MasterDetailFormEditor"
+            class="rtt.ui.editors.MasterDetailFormEditor"
             default="false"
             id="rtt.ui.editors.formeditor"
             name="RTT Editor">

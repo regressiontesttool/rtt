@@ -1,4 +1,4 @@
-package rtt.ui.editors.form;
+package rtt.ui.editors;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
