@@ -29,8 +29,8 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.ProjectContent;
 import rtt.ui.content.history.HistoryContent;
 import rtt.ui.content.history.HistoryContent.VersionType;
-import rtt.ui.content.viewer.ContentTreeViewer;
 import rtt.ui.core.ProjectFinder;
+import rtt.ui.viewer.ContentTreeViewer;
 
 public class VersionView extends AbstractProjectView {
 

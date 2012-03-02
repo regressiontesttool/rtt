@@ -8,8 +8,8 @@ import java.util.Map;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.ui.content.SimpleTypedContent.ContentType;
-import rtt.ui.content.internal.configuration.ConfigurationContent;
-import rtt.ui.content.internal.data.TestsuiteContent;
+import rtt.ui.content.configuration.ConfigurationContent;
+import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.model.RttProject;
 
 public class ProjectContent extends AbstractContent {

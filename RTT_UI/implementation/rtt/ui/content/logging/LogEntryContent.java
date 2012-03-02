@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.log;
+package rtt.ui.content.logging;
 
 import java.util.Calendar;
 

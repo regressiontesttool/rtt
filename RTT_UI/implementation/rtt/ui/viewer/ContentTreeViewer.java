@@ -1,4 +1,4 @@
-package rtt.ui.content.viewer;
+package rtt.ui.viewer;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;

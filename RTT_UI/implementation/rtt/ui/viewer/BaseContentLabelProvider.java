@@ -1,4 +1,4 @@
-package rtt.ui.content.viewer;
+package rtt.ui.viewer;
 
 import org.eclipse.jface.viewers.LabelProvider;
 

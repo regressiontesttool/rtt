@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.data;
+package rtt.ui.content.testsuite;
 
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;

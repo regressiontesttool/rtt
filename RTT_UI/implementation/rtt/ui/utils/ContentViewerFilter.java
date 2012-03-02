@@ -4,9 +4,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import rtt.core.archive.logging.EntryType;
-import rtt.ui.content.internal.log.DetailContent;
-import rtt.ui.content.internal.log.LogEntryContent;
-import rtt.ui.content.internal.log.TestResultContent;
+import rtt.ui.content.logging.DetailContent;
+import rtt.ui.content.logging.LogEntryContent;
+import rtt.ui.content.logging.TestResultContent;
 
 public class ContentViewerFilter extends ViewerFilter {
 	

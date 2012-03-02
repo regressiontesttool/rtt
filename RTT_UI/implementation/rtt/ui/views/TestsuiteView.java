@@ -21,10 +21,10 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.ProjectContent;
 import rtt.ui.content.SimpleTypedContent;
 import rtt.ui.content.SimpleTypedContent.ContentType;
-import rtt.ui.content.internal.data.TestsuiteContent;
-import rtt.ui.content.viewer.ContentTreeViewer;
+import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.model.RttProject;
 import rtt.ui.utils.TestsuiteComboViewer;
+import rtt.ui.viewer.ContentTreeViewer;
 
 public class TestsuiteView extends AbstractProjectView {
 	public TestsuiteView() {

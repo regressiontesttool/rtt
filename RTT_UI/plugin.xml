@@ -483,7 +483,7 @@
                   ifEmpty="false"
                   operator="and">
                <instanceof
-                     value="rtt.ui.content.internal.data.TestsuiteContent">
+                     value="rtt.ui.content.testsuite.TestsuiteContent">
                </instanceof>
             </iterate>
             <count
@@ -499,7 +499,7 @@
                   ifEmpty="false"
                   operator="and">
                <instanceof
-                     value="rtt.ui.content.internal.data.TestcaseContent">
+                     value="rtt.ui.content.testsuite.TestcaseContent">
                </instanceof>
             </iterate>
             <count
@@ -531,7 +531,7 @@
                   ifEmpty="false"
                   operator="and">
                <instanceof
-                     value="rtt.ui.content.internal.configuration.ConfigurationContent">
+                     value="rtt.ui.content.configuration.ConfigurationContent">
                </instanceof>
             </iterate>
             <count
@@ -547,7 +547,7 @@
                   ifEmpty="false"
                   operator="and">
                <instanceof
-                     value="rtt.ui.content.internal.configuration.ClasspathContent">
+                     value="rtt.ui.content.configuration.ClasspathContent">
                </instanceof>
             </iterate>
             <count

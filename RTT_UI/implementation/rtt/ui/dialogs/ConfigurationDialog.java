@@ -45,10 +45,10 @@ import rtt.core.archive.configuration.Path;
 import rtt.ui.content.EmptyContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.ProjectContent;
-import rtt.ui.content.internal.configuration.ClasspathContent;
-import rtt.ui.content.internal.configuration.ConfigurationContent;
-import rtt.ui.content.viewer.BaseContentLabelProvider;
-import rtt.ui.content.viewer.BaseContentProvider;
+import rtt.ui.content.configuration.ClasspathContent;
+import rtt.ui.content.configuration.ConfigurationContent;
+import rtt.ui.viewer.BaseContentLabelProvider;
+import rtt.ui.viewer.BaseContentProvider;
 
 public class ConfigurationDialog extends TitleAreaDialog {
 	

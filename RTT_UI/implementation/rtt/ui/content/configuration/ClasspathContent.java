@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.configuration;
+package rtt.ui.content.configuration;
 
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Path;

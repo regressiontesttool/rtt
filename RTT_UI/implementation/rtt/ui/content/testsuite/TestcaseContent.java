@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.data;
+package rtt.ui.content.testsuite;
 
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;

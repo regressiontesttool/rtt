@@ -38,16 +38,16 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.ProjectContent;
 import rtt.ui.content.SimpleTypedContent;
 import rtt.ui.content.SimpleTypedContent.ContentType;
-import rtt.ui.content.internal.log.FailureContent;
-import rtt.ui.content.internal.log.TestResultContent;
-import rtt.ui.content.internal.log.TestrunContent;
-import rtt.ui.content.viewer.ContentTreeViewer;
+import rtt.ui.content.logging.FailureContent;
+import rtt.ui.content.logging.TestResultContent;
+import rtt.ui.content.logging.TestrunContent;
 import rtt.ui.core.ProjectFinder;
 import rtt.ui.model.RttProject;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
 import rtt.ui.utils.RunTestRunnable;
 import rtt.ui.utils.TestsuiteComboViewer;
+import rtt.ui.viewer.ContentTreeViewer;
 
 public class TestView extends AbstractProjectView {
 

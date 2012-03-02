@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.log;
+package rtt.ui.content.logging;
 
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.Result;

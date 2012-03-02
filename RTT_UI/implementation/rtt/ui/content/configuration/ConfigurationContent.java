@@ -1,4 +1,4 @@
-package rtt.ui.content.internal.configuration;
+package rtt.ui.content.configuration;
 
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;

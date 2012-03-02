@@ -38,11 +38,11 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.ProjectContent;
 import rtt.ui.content.SimpleTypedContent;
 import rtt.ui.content.SimpleTypedContent.ContentType;
-import rtt.ui.content.internal.log.DetailContent;
-import rtt.ui.content.internal.log.LogEntryContent;
-import rtt.ui.content.viewer.ContentTreeViewer;
+import rtt.ui.content.logging.DetailContent;
+import rtt.ui.content.logging.LogEntryContent;
 import rtt.ui.model.RttProject;
 import rtt.ui.utils.ContentViewerFilter;
+import rtt.ui.viewer.ContentTreeViewer;
 
 public class LogView extends AbstractProjectView {
 
