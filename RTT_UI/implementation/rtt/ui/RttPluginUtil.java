@@ -70,11 +70,12 @@ public class RttPluginUtil {
 
 		IEclipsePreferences pref = RttPreferenceStore.getPreferences(project);
 
-		if (pref != null
-				&& !pref.get(RttPreferenceStore.PREF_ARCHIVE_PATH, "").equals(
-						"")) {
-			return new File(
-					pref.get(RttPreferenceStore.PREF_ARCHIVE_PATH, null));
+		if (pref != null) {
+			String archivePath = pref.get(RttPreferenceStore.PREF_ARCHIVE_PATH, "");
+			if (archivePath != null && !archivePath.equals("")) {
+				return new File(
+						pref.get(RttPreferenceStore.PREF_ARCHIVE_PATH, null));
+			}			
 		}
 
 		return null;

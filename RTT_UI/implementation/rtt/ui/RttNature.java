@@ -46,8 +46,6 @@ public class RttNature implements IProjectNature {
 
 		RttPreferenceStore.put(project, RttPreferenceStore.PREF_ARCHIVE_PATH,
 				archive.getLocation().toOSString());
-		RttPreferenceStore.putBoolean(project,
-				RttPreferenceStore.PREF_ARCHIVE_EXIST, true);
 
 	}
 
