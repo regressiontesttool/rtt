@@ -5,10 +5,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import regression.test.TestFactory;
 import regression.test.util.TestResourceFactoryImpl;
 import rtt.ui.core.ProjectFinder;
-import rtt.ui.core.ProjectRegistry;
 
 /**
  * The activator class controls the plug-in life cycle

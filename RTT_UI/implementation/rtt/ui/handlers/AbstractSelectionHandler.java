@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import rtt.ui.content.IContent;
-import rtt.ui.core.Item;
 
 public abstract class AbstractSelectionHandler extends AbstractHandler {
 	
@@ -20,10 +19,6 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
 		ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
 		if (selection instanceof IStructuredSelection) {
 			Object selectedObject = ((IStructuredSelection)selection).getFirstElement();
-			
-			if (selectedObject instanceof Item) {
-				return ((Item) selectedObject).getProject();
-			}
 			
 			if (selectedObject instanceof IJavaProject) {
 				return ((IJavaProject) selectedObject).getProject();				
