@@ -9,11 +9,11 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
-public class DetailContent extends AbstractContent implements IColumnableContent {
+public class LogDetailContent extends AbstractContent implements IColumnableContent {
 	
 	private Detail detail;
 
-	public DetailContent(IContent parent, Detail detail) {
+	public LogDetailContent(IContent parent, Detail detail) {
 		super(parent);
 		this.detail = detail;
 	}

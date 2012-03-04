@@ -2,33 +2,27 @@ package rtt.ui.content.testsuite;
 
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;
-import rtt.core.exceptions.RTTException;
 import rtt.ui.content.IContent;
-import rtt.ui.content.IDeletableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
-import rtt.ui.core.ProjectFinder;
-import rtt.ui.model.RttProject;
 
-public class TestcaseContent extends AbstractContent implements
-		IDeletableContent {
+public class TestcaseContent extends AbstractContent {
 
-	private String suiteName;
-	private String caseName;
+	private Testcase testcase;
 
 	public TestcaseContent(IContent parent, String suiteName, Testcase testcase) {
 		super(parent);
-		this.caseName = testcase.getName();
-		this.suiteName = suiteName;
 		VersionData versionData = testcase.getVersionData();
+		
+		this.testcase = testcase;
 
-		childs.add(new InputContent(this, suiteName, caseName, versionData.getInput()));
-		childs.add(new ReferenceContent(this, suiteName, caseName, versionData.getReference()));
+		childs.add(new InputContent(this, suiteName, testcase.getName(), versionData.getInput()));
+		childs.add(new ReferenceContent(this, suiteName, testcase.getName(), versionData.getReference()));
 	}
 
 	@Override
 	public String getText() {
-		return caseName;
+		return testcase.getName();
 	}
 
 	@Override
@@ -36,16 +30,7 @@ public class TestcaseContent extends AbstractContent implements
 		return ContentIcon.TESTCASE;
 	}
 
-	@Override
-	public void doDelete() throws RTTException {
-		RttProject project = parent.getProject();
-		
-		if (project != null) {
-			project.removeTestcase(suiteName, caseName);
-			project.save();
-			
-			parent.load();
-			ProjectFinder.fireChangeEvent();			
-		}		
+	public Testcase getTestcase() {
+		return testcase;
 	}
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -26,8 +27,6 @@ public class RttProject {
 	private IProject project;
 	private File archiveFile;
 	private Manager manager;
-	
-	private ProjectContent content;
 
 	public RttProject(IProject project) throws RTTException, CoreException {
 		this.project = project;
@@ -35,7 +34,6 @@ public class RttProject {
 		manager = RttPluginUtil.getRttArchive(archiveFile);
 
 		this.name = project.getDescription().getName();
-		this.content = new ProjectContent(this);
 	}
 
 	public String getName() {
@@ -49,10 +47,6 @@ public class RttProject {
 		}
 		
 		return suiteNames;
-	}
-	
-	public ProjectContent getContent() {
-		return content;
 	}
 
 	public Archive getArchive() {
@@ -103,8 +97,8 @@ public class RttProject {
 		manager.removeTestsuite(suiteName);
 	}
 
-	public void addTestcase(String text, File file) throws RTTException {
-		manager.addFile(file, text, TestCaseMode.OVERWRITE);
+	public void addTestcase(String text, IFile file) throws RTTException {
+		manager.addFile(file.getLocation().toFile(), text, TestCaseMode.OVERWRITE);
 	}
 
 	public void removeTestcase(String suiteName, String caseName) throws RTTException {

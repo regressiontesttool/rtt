@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.part.ViewPart;
 
 import rtt.core.archive.Archive;
 import rtt.core.archive.configuration.Configuration;
@@ -25,14 +26,15 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.InputManager;
 import rtt.core.manager.data.ReferenceManager;
 import rtt.core.manager.data.TestManager;
+import rtt.ui.IRttListener;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
 import rtt.ui.content.history.HistoryContent;
 import rtt.ui.content.history.HistoryContent.VersionType;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.core.ProjectFinder;
 import rtt.ui.viewer.ContentTreeViewer;
 
-public class VersionView extends AbstractProjectView {
+public class VersionView extends ViewPart implements IRttListener {
 
 	public static final String ID = "rtt.ui.views.VersionView";
 	
@@ -48,7 +50,7 @@ public class VersionView extends AbstractProjectView {
 	protected final String[] EMPTY_ARRAY = new String[0];
 
 	@Override
-	public void createContentControl(Composite parent) {
+	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, true));
 
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -111,29 +113,12 @@ public class VersionView extends AbstractProjectView {
 	}
 	
 	protected void loadContent(ProjectContent currentProject) {
-		Archive a = currentProject.getProject().getArchive();
-
-		List<Testsuite> suites = a.getTestsuites(false);
-		suiteNames = new String[suites.size() + 1];
-		suiteNames[0] = "Select ...";
 		
-		for (int i = 1; i < suites.size() + 1; i++) {
-			Testsuite suite = suites.get(i - 1);
-			suiteNames[i] = suite.getName();
-		}
-		
-		suiteCombo.setItems(suiteNames);
-		suiteCombo.select(0);
-		suiteCombo.setEnabled(true);
-		
-		caseCombo.setEnabled(false);
-		treeViewer.setInput(EMPTY_ARRAY);
-		treeViewer.getTree().setEnabled(false);	
 	}
 
 	protected void loadTestsuite(int selectionIndex) {
 		if (selectionIndex > 0) {
-			ProjectContent currentProject = ProjectFinder.getCurrentProjectContent();
+			ProjectContent currentProject = RttPluginUI.getCurrentProjectContent();
 			String suiteName = suiteNames[selectionIndex];
 			
 			if (suiteName != null && suiteName.equals("") == false) {
@@ -168,7 +153,7 @@ public class VersionView extends AbstractProjectView {
 			final String caseName = caseNames[selectionIndex];
 			final String suiteName = suiteNames[suiteCombo.getSelectionIndex()];
 			
-			final ProjectContent currentProject = ProjectFinder.getCurrentProjectContent();
+			final ProjectContent currentProject = RttPluginUI.getCurrentProjectContent();
 			
 			Archive archive = currentProject.getProject().getArchive();
 			final Configuration activeConfig = currentProject.getProject().getActiveConfiguration();
@@ -221,5 +206,32 @@ public class VersionView extends AbstractProjectView {
 	@Override
 	public void setFocus() {
 		treeViewer.getControl().setFocus();
+	}
+
+	@Override
+	public void refresh() {
+		treeViewer.refresh(true);
+	}
+
+	@Override
+	public void update(ProjectContent projectContent) {
+		Archive a = projectContent.getProject().getArchive();
+
+		List<Testsuite> suites = a.getTestsuites(false);
+		suiteNames = new String[suites.size() + 1];
+		suiteNames[0] = "Select ...";
+		
+		for (int i = 1; i < suites.size() + 1; i++) {
+			Testsuite suite = suites.get(i - 1);
+			suiteNames[i] = suite.getName();
+		}
+		
+		suiteCombo.setItems(suiteNames);
+		suiteCombo.select(0);
+		suiteCombo.setEnabled(true);
+		
+		caseCombo.setEnabled(false);
+		treeViewer.setInput(EMPTY_ARRAY);
+		treeViewer.getTree().setEnabled(false);	
 	}
 }

@@ -24,9 +24,7 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 		TestsuiteContent suite = getSelectedObject(
 				TestsuiteContent.class, event);
 		
-		AbstractTestRunnable runnable = new RunTestRunnable();
-		runnable.setProjectContent(projectContent);
-		runnable.setSuiteName(suite.getText());
+		AbstractTestRunnable runnable = new RunTestRunnable(projectContent, suite.getText());
 		
 		ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(
 				parentShell);

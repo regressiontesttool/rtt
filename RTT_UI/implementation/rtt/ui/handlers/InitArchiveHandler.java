@@ -17,7 +17,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
 import rtt.core.classpath.RTTClasspathContainer;
-import rtt.ui.core.ProjectFinder;
+import rtt.ui.RttLog;
+import rtt.ui.RttPluginUI;
 import rtt.ui.core.RttNature;
 import rtt.ui.perspectives.ProjectPerspectiveFactory;
 
@@ -35,9 +36,7 @@ public class InitArchiveHandler extends AbstractSelectionHandler {
 			return null;
 		}
 
-		// CHRISTIAN reload projects !!!
-		ProjectFinder.loadProjects();
-		ProjectFinder.fireChangeEvent();
+		RttPluginUI.addProject(jProject.getProject());
 
 		try {
 			IWorkbench workbench = PlatformUI.getWorkbench();
@@ -67,8 +66,8 @@ public class InitArchiveHandler extends AbstractSelectionHandler {
 			jProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
 			return true;
 			
-		} catch (JavaModelException e) {
-			e.printStackTrace();
+		} catch (JavaModelException exception) {
+			RttLog.log(exception);
 		}
 		
 		return false;
@@ -101,8 +100,8 @@ public class InitArchiveHandler extends AbstractSelectionHandler {
 			project.setDescription(description, null);
 			
 			return true;
-		} catch (CoreException e) {
-			e.printStackTrace();
+		} catch (CoreException exception) {
+			RttLog.log(exception);
 		}
 		
 		return false;

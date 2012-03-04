@@ -1,4 +1,4 @@
-package rtt.ui.utils;
+package rtt.ui.viewer;
 
 import java.util.List;
 

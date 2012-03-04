@@ -1,12 +1,16 @@
 package rtt.ui.content.logging;
 
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.swt.graphics.Image;
+
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.Result;
+import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
-public class TestResultContent extends AbstractContent {
+public class TestResultContent extends AbstractContent implements IColumnableContent {
 
 	private Result result;
 	private ContentIcon icon;
@@ -42,28 +46,6 @@ public class TestResultContent extends AbstractContent {
 	protected ContentIcon getIcon() {
 		return icon;
 	}
-
-//	@Override
-//	public String getText(int columnIndex) {
-//		switch (columnIndex) {
-//		case 0:
-//			return "RESULT";
-//		
-//		case 1:
-//			return "[" + result.getTestsuite() + "/" + result.getTestcase() + "] " + "(V=" + result.getDataVersion()+")";
-//			
-//		case 2:
-//			return "DATE?!";
-//
-//		default:
-//			return "TestResult";
-//		}
-//	}
-
-//	@Override
-//	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
-//		return getImage(resourceManager);
-//	}
 	
 	private ContentIcon getContentIcon(Result result) {
 		switch (result.getType()) {
@@ -79,5 +61,28 @@ public class TestResultContent extends AbstractContent {
 		default:
 			return ContentIcon.PLACEHOLDER;
 		}
+	}
+
+	@Override
+	public String getText(int columnIndex) {
+		switch (columnIndex) {
+		case 0:
+			return result.getType().toString();
+
+		case 1:
+			return "Testcase: " + result.getTestcase() + " - Testsuite: " + result.getTestsuite();
+
+		default:
+			return "";
+		}
+	}
+
+	@Override
+	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
+		if (columnIndex == 0) {
+			return getImage(resourceManager);
+		}
+		
+		return null;
 	}
 }

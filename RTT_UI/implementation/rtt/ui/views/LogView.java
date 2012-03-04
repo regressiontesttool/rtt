@@ -1,24 +1,18 @@
 package rtt.ui.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,24 +21,43 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.part.ViewPart;
 
-import rtt.core.archive.logging.ArchiveLog;
-import rtt.core.archive.logging.Entry;
-import rtt.core.manager.data.LogManager;
-import rtt.ui.content.IClickableContent;
+import rtt.ui.IRttListener;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.logging.DetailContent;
+import rtt.ui.content.logging.LogDetailContent;
 import rtt.ui.content.logging.LogEntryContent;
-import rtt.ui.content.main.EmptyContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.SimpleTypedContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
-import rtt.ui.model.RttProject;
-import rtt.ui.utils.ContentViewerFilter;
+import rtt.ui.viewer.ContentDoubleClickListener;
 import rtt.ui.viewer.ContentTreeViewer;
+import rtt.ui.viewer.ContentViewerFilter;
 
-public class LogView extends AbstractProjectView {
+public class LogView extends ViewPart implements IRttListener {
+	
+	private static class ContentViewerComperator extends ViewerComparator {
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			if (e1 instanceof LogEntryContent && e2 instanceof LogEntryContent) {
+				LogEntryContent entry1 = (LogEntryContent) e1;
+				LogEntryContent entry2 = (LogEntryContent) e2;
+				
+				return -(entry1.getCalendar().compareTo(entry2.getCalendar()));					
+			}
+			
+			if (e1 instanceof LogDetailContent && e2 instanceof LogDetailContent) {
+				LogDetailContent detail1 = (LogDetailContent) e1;
+				LogDetailContent detail2 = (LogDetailContent) e2;
+				
+				return detail1.getPriority().compareTo(detail2.getPriority());
+			}
+			
+			return super.compare(viewer, e1, e2);
+		}
+	}
 
 	public static final String ID = "rtt.ui.views.LogView";
 	private TreeViewer contentViewer;
@@ -52,41 +65,29 @@ public class LogView extends AbstractProjectView {
 	private int columnCount = 0;
 	private LocalResourceManager resourceManager;
 
-	
-
-	public LogView() {
-	}
+	public LogView() {}
 
 	@Override
-	public void createContentControl(Composite parent) {
+	public void createPartControl(Composite parent) {
 
 		parent.setLayout(new GridLayout(1, false));
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				1, 1));
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,1, 1));
 
-		Label lblType = new Label(composite, SWT.NONE);
-		lblType.setText("Type Selection:");
+		Label typeLabel = new Label(composite, SWT.NONE);
+		typeLabel.setText("Filter:");
 
 		combo = new Combo(composite, SWT.READ_ONLY);
 		combo.setItems(new String[] { "Complete log ... ", "Information only",
 				"Generation only", "Testrun only" });
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		combo.select(0);
-		combo.addSelectionListener(new SelectionListener() {
-
-			@Override
+		combo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				contentViewer.setFilters(new ViewerFilter[] { new ContentViewerFilter(combo.getSelectionIndex()) });
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
+				setFocus();
 			}
 		});
 
@@ -97,53 +98,23 @@ public class LogView extends AbstractProjectView {
 		TreeColumnLayout treeColumnLayout = new TreeColumnLayout();
 		treeComposite.setLayout(treeColumnLayout);
 
-		contentViewer = new TreeViewer(treeComposite, SWT.BORDER
-				| SWT.FULL_SELECTION);
+		contentViewer = new TreeViewer(treeComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		Tree tree = contentViewer.getTree();
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 
-		resourceManager = new LocalResourceManager(
-				JFaceResources.getResources(), contentViewer.getControl());
+		resourceManager = new LocalResourceManager(JFaceResources.getResources(), contentViewer.getControl());
 
 		addColumn("Type", 20, 100, treeColumnLayout);
 		addColumn("Message", 60, 100, treeColumnLayout);
 		addColumn("Date", 20, 100, treeColumnLayout);
 		
-		contentViewer.setComparator(new ViewerComparator() {
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				if (e1 instanceof LogEntryContent && e2 instanceof LogEntryContent) {
-					LogEntryContent entry1 = (LogEntryContent) e1;
-					LogEntryContent entry2 = (LogEntryContent) e2;
-					
-					return -(entry1.getCalendar().compareTo(entry2.getCalendar()));					
-				}
-				
-				if (e1 instanceof DetailContent && e2 instanceof DetailContent) {
-					DetailContent detail1 = (DetailContent) e1;
-					DetailContent detail2 = (DetailContent) e2;
-					
-					return detail1.getPriority().compareTo(detail2.getPriority());
-				}
-				
-				return super.compare(viewer, e1, e2);
-			}
-		});
-
+		contentViewer.setComparator(new ContentViewerComperator());
 		contentViewer.setContentProvider(new ContentTreeViewer.TreeContentProvider());
-		contentViewer.addDoubleClickListener(new IDoubleClickListener() {
-			
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (event.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-					if (selection.getFirstElement() instanceof IClickableContent) {
-						((IClickableContent) selection.getFirstElement()).doDoubleClick(getSite().getPage());
-					}
-				}
-			}
-		});
+		contentViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
+		
+		update(RttPluginUI.getCurrentProjectContent());
+		RttPluginUI.addListener(this);
 	}
 
 	@Override
@@ -193,34 +164,21 @@ public class LogView extends AbstractProjectView {
 	}
 
 	@Override
-	protected void loadContent(ProjectContent currentContent) {
-		List<IContent> childs = new ArrayList<IContent>();
+	public void refresh() {
+		contentViewer.refresh(true);
+	}
+	
+	@Override
+	public void dispose() {
+		RttPluginUI.removeListener(this);
+		super.dispose();
+	}
 
-		if (currentContent != null && currentContent.getProject() != null) {
-			RttProject project = currentContent.getProject();
-
-			LogManager logManager = project.getArchive().getLogManager();
-
-			if (logManager != null) {
-				ArchiveLog log = logManager.getData();
-
-				if (log == null || log.getEntry().isEmpty()) {
-					childs.add(new EmptyContent("No log entries found."));
-				} else {
-					for (Entry entry : log.getEntry()) {
-						childs.add(new LogEntryContent(currentContent, entry));
-					}
-				}
-
-			}
-		} else {
-			childs.add(new EmptyContent("No archive log found."));
-		}
-
-		contentViewer.setInput(new SimpleTypedContent(currentContent,
-				ContentType.LOG_DIRECTORY, childs));
-		
-		contentViewer.expandAll();
+	@Override
+	public void update(ProjectContent projectContent) {
+		contentViewer.setInput(new SimpleTypedContent(projectContent,
+				ContentType.LOG_DIRECTORY, projectContent.getLogContents()));
+		contentViewer.expandAll(); 
 	}
 
 }

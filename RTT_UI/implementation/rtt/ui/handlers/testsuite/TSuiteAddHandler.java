@@ -17,7 +17,6 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
 		ProjectContent projectContent = this.getProjectContent(event);
-		RttProject project = projectContent.getProject();
 		
 		InputDialog inputDialog = new InputDialog(
 				getParentShell(event), 
@@ -31,10 +30,7 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 			String suiteName = inputDialog.getValue();
 			if (suiteName != null && !suiteName.equals("")) {
 				try {
-					project.addTestsuite(suiteName);
-					project.save();
-					
-					projectContent.reload();
+					projectContent.addTestsuite(suiteName);
 				} catch (Exception e) {
 					throw new ExecutionException("Could not add test suite", e);
 				}

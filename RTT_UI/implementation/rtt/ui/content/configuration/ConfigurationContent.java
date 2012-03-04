@@ -4,12 +4,14 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.configuration.Configuration;
+import rtt.core.exceptions.RTTException;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.content.main.SimpleTypedContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
+import rtt.ui.model.RttProject;
 
 public class ConfigurationContent extends AbstractContent implements IDecoratableContent {
 
@@ -75,5 +77,32 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	public Configuration getConfiguration() {
 		return config;
+	}
+
+	public void addClasspathEntry(String value) throws RTTException {
+		RttProject project = this.getProject();
+		project.save();
+		project.addClassPathEntry(config.getName(), value);
+		
+		// FIXME do reload
+//		projectContent.reload(true); 
+		
+	}
+
+	public void removeClasspathEntry(String value) throws RTTException {
+		RttProject project = this.getProject();
+		project.removeClasspathEntry(config.getName(), value);
+		project.save();
+		
+		// FIXME do reload
+//		projectContent.reload(true);
+	}
+
+	public void changeActive() {
+		RttProject project = this.getProject();
+		project.setActiveConfiguration(config.getName());
+		
+		// FIXME do reload
+//		projectContent.reload();
 	}
 }

@@ -1,52 +1,50 @@
 package rtt.ui.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
+import rtt.core.exceptions.RTTException;
 import rtt.ui.RttLog;
-import rtt.ui.RttPluginUI;
-import rtt.ui.model.RttProject;
+import rtt.ui.content.main.ProjectContent;
 
 public class GenerateTestRunnable extends AbstractTestRunnable implements IRunnableWithProgress {
+
+	public GenerateTestRunnable(ProjectContent projectContent, String suiteName) {
+		this();
+		setProjectContent(projectContent);
+		setSuiteName(suiteName);
+	}
+	
+	public GenerateTestRunnable() {
+		super("Generating new tests ...");
+	}
 
 	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
 		monitor.beginTask("Generating reference data for test suite '" + suiteName + "' ...", IProgressMonitor.UNKNOWN);
 
+		boolean exceptionOccured = false;
 		try {
-			RttProject project = projectContent.getProject();
-			
-			exceptions.addAll(project.generateTests(suiteName));
-
-			for (Throwable throwable : exceptions) {
-				RttLog.log(new Status(Status.ERROR,
-						RttPluginUI.PLUGIN_ID, throwable
-								.getMessage(), throwable));
+			List<Throwable> exceptions = projectContent.generateTest(suiteName);
+			if (exceptions != null && !exceptions.isEmpty()) {
+				for (Throwable throwable : exceptions) {
+					RttLog.log(throwable);
+				}
+				exceptionOccured = true;				
 			}
-
-			project.save();
-			projectContent.reload(false);				
-			
-		} catch (Exception e) {
-			RttLog.log(new Status(Status.ERROR,
-					RttPluginUI.PLUGIN_ID, e.getMessage(), e));
-
-			exceptions.add(e);
+		} catch (RTTException e) {
+			RttLog.log(e);
+			exceptionOccured = true;
 		}
-
-		monitor.done();
 		
-		if (exceptions.size() > 0) {
+		if (exceptionOccured) {
 			throw new InterruptedException("Errors occured during generation. Check Error Log for details.");
 		}
-	}
-
-	@Override
-	public String getMessageTitle() {
-		return "Generating new tests ...";
+		
+		monitor.done();
 	}
 }

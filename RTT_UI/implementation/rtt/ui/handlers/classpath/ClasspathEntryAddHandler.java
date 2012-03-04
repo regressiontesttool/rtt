@@ -7,17 +7,12 @@ import org.eclipse.jface.dialogs.InputDialog;
 
 import rtt.core.exceptions.RTTException;
 import rtt.ui.content.configuration.ConfigurationContent;
-import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
-import rtt.ui.model.RttProject;
 
 public class ClasspathEntryAddHandler extends AbstractSelectionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectContent projectContent = this.getProjectContent(event);
-		RttProject project = projectContent.getProject();
-		
 		ConfigurationContent config = getSelectedObject(
 				ConfigurationContent.class, event);
 
@@ -29,9 +24,7 @@ public class ClasspathEntryAddHandler extends AbstractSelectionHandler {
 			String value = inputDialog.getValue();
 			if (value != null && !value.equals("")) {
 				try {
-					project.addClassPathEntry(config.getText(), value);
-					project.save();
-					projectContent.reload(true);
+					config.addClasspathEntry(value);
 				} catch (RTTException e) {
 					throw new ExecutionException(
 							"Could not add class path entry.", e);

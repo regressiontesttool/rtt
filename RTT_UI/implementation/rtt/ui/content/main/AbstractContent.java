@@ -57,6 +57,8 @@ public abstract class AbstractContent implements IContent {
 			return EMPTY_ARRAY;
 		}
 		
+		System.out.println(this.getClass().getSimpleName() + ": getChildren");
+		
 		return childs.toArray(new IContent[childs.size()]);
 	}
 

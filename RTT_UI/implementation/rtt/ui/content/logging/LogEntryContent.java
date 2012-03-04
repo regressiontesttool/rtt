@@ -22,19 +22,17 @@ public class LogEntryContent extends AbstractContent implements
 		IColumnableContent, IClickableContent {
 
 	private Entry entry;
-	private Calendar calendar;
-	private ContentIcon icon;
-
-	public LogEntryContent(IContent parent, Entry object) {
+	protected Calendar calendar;
+	
+	public LogEntryContent(IContent parent, Entry entry) {
 		super(parent);
-		this.entry = object;
-		this.icon = getContentIcon(entry);
+		this.entry = entry;
 		
 		calendar = DatatypeConverter.parseDate(entry.getDate().toXMLFormat());
 		
 		if (entry.getDetail() != null && !entry.getDetail().isEmpty()) {
 			for (Detail detail : entry.getDetail()) {
-				childs.add(new DetailContent(this, detail));
+				childs.add(new LogDetailContent(this, detail));
 			}
 		}
 	}
@@ -66,7 +64,7 @@ public class LogEntryContent extends AbstractContent implements
 
 	@Override
 	protected ContentIcon getIcon() {
-		return icon;
+		return getContentIcon(entry);
 	}
 
 	@Override
@@ -109,5 +107,4 @@ public class LogEntryContent extends AbstractContent implements
 				.getShell(), entry.getType().toString(),
 				entry.getMsg() + entry.getSuffix());
 	}
-
 }

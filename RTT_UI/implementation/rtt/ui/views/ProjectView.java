@@ -1,7 +1,5 @@
 package rtt.ui.views;
 
-import java.util.Collection;
-
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -12,15 +10,14 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import rtt.ui.IRttListener;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
-import rtt.ui.content.IContentObserver;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.core.IProjectListener;
-import rtt.ui.core.ProjectFinder;
+import rtt.ui.content.main.ProjectDirectoryContent;
 import rtt.ui.viewer.ContentTreeViewer;
 
-public class ProjectView extends ViewPart implements ISelectionListener,
-		IContentObserver, IProjectListener {
+public class ProjectView extends ViewPart implements ISelectionListener, IRttListener {
 
 	public static final String ID = "rtt.ui.views.ProjectView";
 	private ContentTreeViewer projectViewer;
@@ -39,16 +36,15 @@ public class ProjectView extends ViewPart implements ISelectionListener,
 		getSite().registerContextMenu(menuManager, projectViewer);
 		getSite().setSelectionProvider(projectViewer);
 		getSite().getPage().addSelectionListener(this);
-
-		setViewerData();
 		
-		ProjectFinder.addProjectListener(this);
+		RttPluginUI.addListener(this);		
+		setViewerData(RttPluginUI.getProjectDirectory());
 	}
 	
 	@Override
 	public void dispose() {
 		getSite().getPage().removeSelectionListener(this);
-		ProjectFinder.removeProjectListener(this);
+		RttPluginUI.removeListener(this);
 		super.dispose();
 	}
 	
@@ -68,38 +64,43 @@ public class ProjectView extends ViewPart implements ISelectionListener,
 						.getContent(ProjectContent.class);
 				
 				if (selectedContent != null) {
-					ProjectFinder.setCurrentProjectContent(selectedContent);
+					RttPluginUI.setCurrentProjectContent(selectedContent);
 				}
 			}
 		}
 	}
 
-	private void setViewerData() {
-		Collection<ProjectContent> projects = ProjectFinder.getProjectContents();
-		for (ProjectContent project : projects) {
-			project.addObserver(this);
-		}
-		
-		projectViewer.setInput(projects.toArray());		
+	private void setViewerData(ProjectDirectoryContent content) {		
+		projectViewer.setInput(content);		
 		projectViewer.expandToLevel(3);
+	}
+
+	@Override
+	public void refresh() {
+		projectViewer.refresh(true);
+	}
+	
+	@Override
+	public void update(ProjectContent projectContent) {
+//		projectViewer.refresh(true);
 	}
 	
 
-	@Override
-	public String getObserverID() {
-		return ID;
-	}
+//	@Override
+//	public String getObserverID() {
+//		return ID;
+//	}
 
-	@Override
-	public void update(IContent content) {
-		projectViewer.refresh(true);
-		projectViewer.expandToLevel(3);
-	}
-
-	@Override
-	public void updateContent(ProjectContent currentProjectContent) {
-		projectViewer.refresh(true);
-		projectViewer.expandToLevel(3);
-	}
+//	@Override
+//	public void update(IContent content) {
+//		projectViewer.refresh(true);
+//		projectViewer.expandToLevel(3);
+//	}
+//
+//	@Override
+//	public void updateContent(ProjectContent currentProjectContent) {
+//		projectViewer.refresh(true);
+//		projectViewer.expandToLevel(3);
+//	}
 
 }

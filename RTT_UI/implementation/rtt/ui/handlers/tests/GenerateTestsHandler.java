@@ -27,9 +27,7 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 		TestsuiteContent suite = getSelectedObject(
 				TestsuiteContent.class, event);
 		
-		AbstractTestRunnable runnable = new GenerateTestRunnable();
-		runnable.setProjectContent(projectContent);
-		runnable.setSuiteName(suite.getText());
+		AbstractTestRunnable runnable = new GenerateTestRunnable(projectContent, suite.getText());
 		
 		ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(
 				parentShell);

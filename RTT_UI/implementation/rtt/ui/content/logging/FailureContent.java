@@ -15,6 +15,8 @@ import org.eclipse.emf.compare.util.ModelUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbenchPage;
 
 import regression.test.TestPackage;
@@ -26,34 +28,26 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.ReferenceManager;
 import rtt.core.manager.data.TestManager;
 import rtt.ui.content.IClickableContent;
-import rtt.ui.content.IContent;
+import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.model.RttProject;
 
-public class FailureContent extends AbstractContent implements IClickableContent {
-
-	private String text;
-//	private String path;
-//	private String message;
+public class FailureContent extends AbstractContent implements IClickableContent, IColumnableContent {
 	
 	private ReferenceManager refManager;
 	private TestManager testManager;
 	private Integer testVersion;
 	private Integer refVersion;
 	
+	private Failure failure;
+	
 	public FailureContent(TestResultContent parent, Failure failure) {
 		super(parent);
 		
-		this.testVersion = parent.getTestVersion();
+		this.failure = failure;
 		
-		if 	(failure.getType() == FailureType.LEXER) {
-			this.text = "Lexer results";
-		} else if (failure.getType() == FailureType.PARSER){
-			this.text = "Parser results";
-		} else {
-			this.text = "Unknown error";
-		}
+		this.testVersion = parent.getTestVersion();
 		
 		RttProject project = parent.getProject();
 		
@@ -71,14 +65,19 @@ public class FailureContent extends AbstractContent implements IClickableContent
 				this.refVersion = version.getReference();
 			}
 		}
-		
-//		this.message = failure.getMsg();
-//		this.path = failure.getPath();
 	}
 
 	@Override
 	public String getText() {
-		return text;
+		if (failure.getType() == FailureType.LEXER) {
+			return "Lexer results";
+		}
+		
+		if (failure.getType() == FailureType.PARSER) {
+			return "Parser results";
+		}
+		
+		return "Unknown error";
 	}
 
 	@Override
@@ -114,6 +113,29 @@ public class FailureContent extends AbstractContent implements IClickableContent
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public String getText(int columnIndex) {
+		switch (columnIndex) {
+		case 0:
+			return failure.getType().toString();
+
+		case 1:
+			return failure.getMsg() + " - " + failure.getPath();
+
+		default:
+			return "";
+		}
+	}
+
+	@Override
+	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
+		if (columnIndex == 0) {
+			return getImage(resourceManager);
+		}
+		
+		return null;
 	}
 
 }

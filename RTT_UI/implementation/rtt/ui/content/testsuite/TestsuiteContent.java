@@ -1,22 +1,26 @@
 package rtt.ui.content.testsuite;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IFile;
+
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
+import rtt.core.exceptions.RTTException.Type;
+import rtt.ui.RttLog;
 import rtt.ui.content.IContent;
-import rtt.ui.content.IDeletableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
-import rtt.ui.core.ProjectFinder;
 import rtt.ui.model.RttProject;
 
-public class TestsuiteContent extends AbstractContent implements IDeletableContent {
-
-	private String suiteName;
+public class TestsuiteContent extends AbstractContent {
+	private Testsuite testsuite;
 
 	public TestsuiteContent(IContent parent, Testsuite testsuite) {
 		super(parent);
-		this.suiteName = testsuite.getName();
+		this.testsuite = testsuite;
 		
 		if (testsuite.getTestcase() != null) {
 			for (Testcase testcase : testsuite.getTestcase()) {
@@ -29,25 +33,59 @@ public class TestsuiteContent extends AbstractContent implements IDeletableConte
 
 	@Override
 	public String getText() {
-		return suiteName;
+		return testsuite.getName();
 	}
 
 	@Override
 	protected ContentIcon getIcon() {
 		return ContentIcon.TESTSUITE;
 	}
-	
-	@Override
-	public void doDelete() throws RTTException {
-		RttProject project = parent.getProject();
+
+	public void addTestcase(Object[] objects) throws RTTException {
+		RttProject project = this.getProject();
+		List<Exception> exceptions = new ArrayList<Exception>();
+		int savedTestCases = 0;
 		
-		if (project != null) {
-			project.removeTestsuite(suiteName);
-			project.save();
+		for (Object object : objects) {
+			try  {
+				if (object instanceof IFile) {
+					project.addTestcase(testsuite.getName(), (IFile) object);
+					savedTestCases++;
+				}							
+			} catch (RTTException e) {
+				exceptions.add(e);
+			}
+		}
+		
+		if (exceptions.isEmpty() == false) {
+			for (Exception exception : exceptions) {
+				RttLog.log(exception);
+			}
 			
-			parent.load();
-			ProjectFinder.fireChangeEvent();
-		}		
+			String message = "";
+			if (savedTestCases > 0) {
+				message = "Some files could not be added to the test suite. See Error Log for more information";
+			} else {
+				message = "No file added to the test suite. See Error Log for more information.";
+			}
+			
+			throw new RTTException(Type.TESTCASE, message);
+		}
+		
+		project.save();
+		
+		// FIXME do reload
+//		projectContent.reload();
+	}
+
+	public void removeTestcase(String caseName) throws RTTException {
+		RttProject project = this.getProject();
+		
+		project.removeTestcase(testsuite.getName(), caseName);
+		project.save();
+		
+		// FIXME do reload
+//		projectContent.reload();
 	}
 
 }

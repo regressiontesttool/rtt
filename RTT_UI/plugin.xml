@@ -20,14 +20,6 @@
             restorable="true">
       </view>
       <view
-            category="rtt.ui.views.category.experimental"
-            class="rtt.ui.views.TestsuiteView"
-            icon="icons/sample.gif"
-            id="rtt.ui.views.TestsuiteView"
-            name="Testsuites"
-            restorable="true">
-      </view>
-      <view
             category="rtt.ui.views.category.standard"
             class="rtt.ui.views.LogView"
             icon="icons/sample.gif"
@@ -56,7 +48,11 @@
             id="rtt.ui.views.ResultView"
             name="Results"
             restorable="true">
-      </view>ew>
+      </view>
+      <category
+            id="rtt.ui"
+            name="Sample Category">
+      </category>ew>
      
    </extension>
    <extension
@@ -698,6 +694,24 @@
       <requires-nature
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="rtt.ui.views.SampleView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
    </extension>
 
 </plugin>

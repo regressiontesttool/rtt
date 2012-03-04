@@ -1,10 +1,11 @@
-package rtt.ui.utils;
+package rtt.ui.viewer;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import rtt.core.archive.logging.EntryType;
-import rtt.ui.content.logging.DetailContent;
+import rtt.ui.content.logging.FailureContent;
+import rtt.ui.content.logging.LogDetailContent;
 import rtt.ui.content.logging.LogEntryContent;
 import rtt.ui.content.logging.TestResultContent;
 
@@ -52,18 +53,22 @@ public class ContentViewerFilter extends ViewerFilter {
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 
-		if (element instanceof DetailContent) {
+		if (element instanceof LogDetailContent) {
+			return true;
+		}
+		
+		if (element instanceof TestResultContent) {
+			return true;
+		}
+		
+		if (element instanceof FailureContent) {
 			return true;
 		}
 
 		if (element instanceof LogEntryContent) {
 			FilterType type = FilterType.getType(selectionIndex);
 			return type.show((LogEntryContent) element);
-		}
-
-		if (element instanceof TestResultContent) {
-			return true;
-		}
+		}		
 
 		return false;
 	}

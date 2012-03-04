@@ -3,14 +3,23 @@ package rtt.ui.utils;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
+import rtt.core.exceptions.RTTException;
 import rtt.ui.RttLog;
-import rtt.ui.RttPluginUI;
-import rtt.ui.model.RttProject;
+import rtt.ui.content.main.ProjectContent;
 
 public class RunTestRunnable extends AbstractTestRunnable implements IRunnableWithProgress {
+
+	public RunTestRunnable(ProjectContent projectContent, String suiteName) {
+		this();
+		setProjectContent(projectContent);
+		setSuiteName(suiteName);
+	}
+
+	public RunTestRunnable() {
+		super("Running tests ...");
+	}
 
 	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException,
@@ -19,33 +28,12 @@ public class RunTestRunnable extends AbstractTestRunnable implements IRunnableWi
 		monitor.beginTask("Running tests for test suite '" + suiteName + "' ...", IProgressMonitor.UNKNOWN);
 
 		try {
-			RttProject project = projectContent.getProject();
-			
-			try {
-				project.runTests(suiteName, true);
-				project.save();
-				projectContent.reload(false);
-			} catch (Exception e) {
-				exceptions.add(e);
-			}
-			
-		} catch (Exception e) {
-			RttLog.log(new Status(Status.ERROR,
-					RttPluginUI.PLUGIN_ID, e.getMessage(), e));
-
-			exceptions.add(e);
+			projectContent.runTest(suiteName);			
+		} catch (RTTException exception) {
+			RttLog.log(exception);
+			throw new InterruptedException("Errors occured during test execution. Check Error Log for details.");
 		}
 
-		monitor.done();
-		
-		if (exceptions.size() > 0) {
-			throw new InterruptedException("Errors occured during test execution. Check Error Log for details.");
-		}		
+		monitor.done();		
 	}
-	
-	@Override
-	public String getMessageTitle() {
-		return "Running tests ...";
-	}
-
 }

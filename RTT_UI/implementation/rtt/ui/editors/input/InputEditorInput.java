@@ -11,8 +11,8 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 
 import rtt.core.manager.data.InputManager;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.core.ProjectFinder;
 import rtt.ui.model.RttProject;
 
 public class InputEditorInput implements IStorageEditorInput {
@@ -102,7 +102,7 @@ public class InputEditorInput implements IStorageEditorInput {
 			@Override
 			public InputStream getContents() throws CoreException {
 				if (manager == null) {
-					ProjectContent projectContent = ProjectFinder
+					ProjectContent projectContent = RttPluginUI
 							.getCurrentProjectContent();
 					RttProject project = projectContent.getProject();
 

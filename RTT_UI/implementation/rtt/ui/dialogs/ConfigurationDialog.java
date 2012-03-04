@@ -52,6 +52,7 @@ import rtt.ui.viewer.BaseContentProvider;
 
 public class ConfigurationDialog extends TitleAreaDialog {
 	
+	// TODO better search scope
 	static final IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
 	static final IRunnableContext context = PlatformUI.getWorkbench().getProgressService();
 	

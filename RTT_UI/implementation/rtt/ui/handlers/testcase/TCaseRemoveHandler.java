@@ -3,27 +3,20 @@ package rtt.ui.handlers.testcase;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestcaseContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
-import rtt.ui.model.RttProject;
 
 public class TCaseRemoveHandler extends AbstractSelectionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectContent projectContent = getProjectContent(event);
-		RttProject project = projectContent.getProject();
-		
 		TestsuiteContent suite = getSelectedObject(TestsuiteContent.class,
 				event);
 		TestcaseContent tcase = getSelectedObject(TestcaseContent.class, event);
 		
 		try {
-			project.removeTestcase(suite.getText(), tcase.getText());
-			project.save();
-			projectContent.reload();
+			suite.removeTestcase(tcase.getText());			
 		} catch (Exception e) {
 			throw new ExecutionException("Could not remove test case.", e);
 		}
