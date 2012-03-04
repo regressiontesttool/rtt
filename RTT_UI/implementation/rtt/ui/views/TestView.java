@@ -1,8 +1,5 @@
 package rtt.ui.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
@@ -27,13 +24,10 @@ import org.eclipse.ui.part.ViewPart;
 
 import rtt.ui.IRttListener;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.IContent;
 import rtt.ui.content.logging.FailureContent;
 import rtt.ui.content.logging.TestResultContent;
 import rtt.ui.content.logging.TestrunContent;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.content.main.SimpleTypedContent;
-import rtt.ui.content.main.SimpleTypedContent.ContentType;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
 import rtt.ui.utils.RunTestRunnable;
@@ -57,6 +51,30 @@ public class TestView extends ViewPart implements IRttListener {
 			return super.compare(viewer, e1, e2);
 		}
 	}
+	
+	private static class TestrunFilter extends ViewerFilter {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement,
+				Object element) {
+			
+			if (element instanceof TestrunContent) {
+				return true;
+			}
+			
+			if (element instanceof TestResultContent) {
+				return true;
+			}
+			
+			if (element instanceof FailureContent) {
+				return true;
+			}
+			
+			return false;
+		}		
+	}
+	
+	
 
 	protected class SuiteFilter extends ViewerFilter {
 
@@ -252,6 +270,7 @@ public class TestView extends ViewPart implements IRttListener {
 		Tree tree = contentViewer.getTree();
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		contentViewer.setComparator(new TestrunComparator());
+		contentViewer.setFilters(new ViewerFilter[] { new TestrunFilter() });
 
 		MenuManager menuManager = new MenuManager();
 		getSite().setSelectionProvider(contentViewer);
@@ -305,17 +324,19 @@ public class TestView extends ViewPart implements IRttListener {
 
 	@Override
 	public void update(ProjectContent projectContent) {
-		List<IContent> childs = new ArrayList<IContent>();
-		for (IContent content : projectContent.getLogContents()) {
-			System.out.println("Content: " + content.getClass());
-			if (content instanceof TestrunContent) {
-				childs.add(content);
-			}
-		}
+//		if (projectContent != null) {
+//			List<IContent> childs = new ArrayList<IContent>();
+//			for (IContent content : projectContent.getLogDirectory().getChildren()) {
+//				System.out.println("Content: " + content.getClass());
+//				if (content instanceof TestrunContent) {
+//					childs.add(content);
+//				}
+//			}
+//			
+//			contentViewer.setInput(new SimpleTypedContent(projectContent,
+//					ContentType.LOG_DIRECTORY, childs));
+//		}
 		
-		contentViewer.setInput(new SimpleTypedContent(projectContent,
-				ContentType.LOG_DIRECTORY, childs));
-		contentViewer.expandAll();
+		contentViewer.setInput(projectContent.getLogDirectory());
 	}
-
 }

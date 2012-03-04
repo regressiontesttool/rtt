@@ -22,6 +22,10 @@ public class TestsuiteContent extends AbstractContent {
 		super(parent);
 		this.testsuite = testsuite;
 		
+		loadContent();		
+	}
+	
+	private void loadContent() {
 		if (testsuite.getTestcase() != null) {
 			for (Testcase testcase : testsuite.getTestcase()) {
 				if (testcase.isDeleted() == false) {
@@ -29,6 +33,11 @@ public class TestsuiteContent extends AbstractContent {
 				}
 			}
 		}
+	}
+	
+	private void reload() {
+		childs.clear();
+		loadContent();
 	}
 
 	@Override
@@ -74,9 +83,10 @@ public class TestsuiteContent extends AbstractContent {
 		
 		project.save();
 		
-		// FIXME do reload
-//		projectContent.reload();
+		reload();
 	}
+
+	
 
 	public void removeTestcase(String caseName) throws RTTException {
 		RttProject project = this.getProject();
@@ -84,8 +94,7 @@ public class TestsuiteContent extends AbstractContent {
 		project.removeTestcase(testsuite.getName(), caseName);
 		project.save();
 		
-		// FIXME do reload
-//		projectContent.reload();
+		reload();
 	}
 
 }

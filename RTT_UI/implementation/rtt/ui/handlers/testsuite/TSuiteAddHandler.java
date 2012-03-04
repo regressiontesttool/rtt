@@ -4,6 +4,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
 
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
@@ -31,6 +32,7 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 			if (suiteName != null && !suiteName.equals("")) {
 				try {
 					projectContent.addTestsuite(suiteName);
+					RttPluginUI.refreshListener();
 				} catch (Exception e) {
 					throw new ExecutionException("Could not add test suite", e);
 				}

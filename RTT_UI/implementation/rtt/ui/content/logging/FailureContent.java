@@ -21,7 +21,6 @@ import org.eclipse.ui.IWorkbenchPage;
 
 import regression.test.TestPackage;
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.history.Version;
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.FailureType;
 import rtt.core.loader.ArchiveLoader;
@@ -35,6 +34,9 @@ import rtt.ui.model.RttProject;
 
 public class FailureContent extends AbstractContent implements IClickableContent, IColumnableContent {
 	
+	private String suiteName;
+	private String caseName;
+	
 	private ReferenceManager refManager;
 	private TestManager testManager;
 	private Integer testVersion;
@@ -45,26 +47,12 @@ public class FailureContent extends AbstractContent implements IClickableContent
 	public FailureContent(TestResultContent parent, Failure failure) {
 		super(parent);
 		
-		this.failure = failure;
+		this.failure = failure;		
 		
-		this.testVersion = parent.getTestVersion();
-		
-		RttProject project = parent.getProject();
-		
-		ArchiveLoader loader = project.getLoader();
-		String suiteName = parent.getSuiteName();
-		String caseName = parent.getCaseName();
-		Configuration activeConfig = project.getActiveConfiguration();
-		
-		refManager = new ReferenceManager(loader, suiteName, caseName, activeConfig);
-		testManager = new TestManager(loader, suiteName, caseName, activeConfig);
-		
-		for (Version version : testManager.getHistory().getVersion()) {
-			if (version.getNr() == parent.getTestVersion()) {
-				this.testVersion = parent.getTestVersion();
-				this.refVersion = version.getReference();
-			}
-		}
+		suiteName = parent.getSuiteName();
+		caseName = parent.getCaseName();
+		refVersion = parent.getRefVersion();
+		testVersion = parent.getTestVersion();
 	}
 
 	@Override
@@ -87,6 +75,16 @@ public class FailureContent extends AbstractContent implements IClickableContent
 
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
+		RttProject project = this.getProject();
+		
+		if (refManager == null || testManager == null) {
+			ArchiveLoader loader = project.getLoader();
+			Configuration activeConfig = project.getActiveConfiguration();
+			
+			refManager = new ReferenceManager(loader, suiteName, caseName, activeConfig);
+			testManager = new TestManager(loader, suiteName, caseName, activeConfig);
+		}				
+		
 		final ResourceSet resourceSet1 = new ResourceSetImpl();
 		final ResourceSet resourceSet2 = new ResourceSetImpl();
 		

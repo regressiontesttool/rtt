@@ -45,6 +45,8 @@ public class GenerateTestRunnable extends AbstractTestRunnable implements IRunna
 			throw new InterruptedException("Errors occured during generation. Check Error Log for details.");
 		}
 		
+		projectContent.reload(true);
+		
 		monitor.done();
 	}
 }

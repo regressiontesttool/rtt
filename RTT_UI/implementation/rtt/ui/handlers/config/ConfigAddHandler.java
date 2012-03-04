@@ -6,6 +6,7 @@ import org.eclipse.jface.dialogs.Dialog;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.exceptions.RTTException;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
@@ -22,7 +23,8 @@ public class ConfigAddHandler extends AbstractSelectionHandler {
 		if (configDialog.open() == Dialog.OK) {
 			try {
 				Configuration config = configDialog.getConfiguration();
-				projectContent.addConfiguration(config, configDialog.isDefault());				
+				projectContent.addConfiguration(config, configDialog.isDefault());
+				RttPluginUI.refreshListener();
 			} catch (RTTException e) {
 				throw new ExecutionException("Could not add configuration.", e);
 			}

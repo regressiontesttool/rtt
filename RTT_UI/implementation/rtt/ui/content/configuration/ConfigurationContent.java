@@ -22,8 +22,12 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 	public ConfigurationContent(IContent parent, Configuration config) {
 		super(parent);
 		this.config = config;
-		this.isActive = false;
-
+		this.isActive = false;	
+		
+		loadContent();
+	}
+	
+	private void loadContent() {
 		if (config.getLexerClass() != null) {
 			childs.add(new SimpleTypedContent(this, ContentType.LEXERCLASS,
 					config.getLexerClass().getValue()));
@@ -37,6 +41,11 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 		if (config.getClasspath() != null) {
 			childs.add(new ClasspathContent(this, config.getClasspath()));
 		}
+	}
+	
+	private void reload() {
+		childs.clear();
+		loadContent();
 	}
 
 	@Override
@@ -81,12 +90,10 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	public void addClasspathEntry(String value) throws RTTException {
 		RttProject project = this.getProject();
-		project.save();
 		project.addClassPathEntry(config.getName(), value);
+		project.save();
 		
-		// FIXME do reload
-//		projectContent.reload(true); 
-		
+		reload();
 	}
 
 	public void removeClasspathEntry(String value) throws RTTException {
@@ -94,15 +101,13 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 		project.removeClasspathEntry(config.getName(), value);
 		project.save();
 		
-		// FIXME do reload
-//		projectContent.reload(true);
+		reload();
 	}
 
 	public void changeActive() {
 		RttProject project = this.getProject();
 		project.setActiveConfiguration(config.getName());
 		
-		// FIXME do reload
-//		projectContent.reload();
+		reload();
 	}
 }

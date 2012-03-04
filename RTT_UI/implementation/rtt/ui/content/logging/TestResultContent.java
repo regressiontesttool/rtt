@@ -18,7 +18,7 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 	public TestResultContent(IContent parent, Result result) {
 		super(parent);
 		this.result = result;
-		icon = getContentIcon(result);	
+		icon = getContentIcon(result);
 		
 		for (Failure failure : result.getFailure()) {
 			childs.add(new FailureContent(this, failure));
@@ -33,8 +33,12 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 		return result.getTestcase();
 	}
 	
+	protected Integer getRefVersion() {
+		return result.getRefVersion();
+	}
+	
 	protected Integer getTestVersion() {
-		return result.getDataVersion();
+		return result.getTestVersion();
 	}
 
 	@Override

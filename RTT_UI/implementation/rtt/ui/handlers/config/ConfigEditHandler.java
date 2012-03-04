@@ -6,6 +6,7 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.Dialog;
 
 import rtt.core.archive.configuration.Configuration;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.configuration.ConfigurationContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.dialogs.ConfigurationDialog;
@@ -26,6 +27,7 @@ public class ConfigEditHandler extends AbstractSelectionHandler implements IHand
 			try {				
 				Configuration config = configContent.getConfiguration();
 				projectContent.addConfiguration(config, configDialog.isDefault());
+				RttPluginUI.refreshListener();
 			} catch (Exception e) {
 				throw new ExecutionException("Could not modify configuration.", e);
 			}

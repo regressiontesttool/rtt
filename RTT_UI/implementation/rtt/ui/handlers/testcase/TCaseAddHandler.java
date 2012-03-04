@@ -8,6 +8,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
 import rtt.core.exceptions.RTTException;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 
@@ -33,12 +34,14 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 		if (resDialog.open() == ResourceSelectionDialog.OK) {
 			try {
 				suite.addTestcase(resDialog.getResult());
+				RttPluginUI.refreshListener();
 			} catch (RTTException e) {
 				throw new ExecutionException("Errors occured during " +
 						"test case creation. Check error log for details.", e);
 			}
 		}
-
+		
+		
 		return null;
 	}
 }

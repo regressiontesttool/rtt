@@ -1,24 +1,15 @@
 package rtt.ui.content.main;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Path;
-import rtt.core.archive.logging.ArchiveLog;
-import rtt.core.archive.logging.Entry;
-import rtt.core.archive.logging.EntryType;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
-import rtt.core.manager.data.LogManager;
 import rtt.ui.content.IContent;
-import rtt.ui.content.IContentObserver;
 import rtt.ui.content.configuration.ConfigurationContent;
-import rtt.ui.content.logging.LogEntryContent;
-import rtt.ui.content.logging.TestrunContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.model.RttProject;
@@ -28,23 +19,24 @@ public class ProjectContent extends AbstractContent {
 	private RttProject project;
 	private List<IContent> testsuiteContents;
 	private List<IContent> configContents;
-	private List<IContent> logContents;
+	
+	private LogDirectoryContent logDirectory;
 
-	private Map<String, IContentObserver> observers;
+//	private Map<String, IContentObserver> observers;
 
 	public ProjectContent(RttProject project) {
 		super(null);
 
-		this.observers = new HashMap<String, IContentObserver>();
+//		this.observers = new HashMap<String, IContentObserver>();
 		this.project = project;
 
-		loadContents();
+		loadContents();		
+		logDirectory = new LogDirectoryContent(this);
 	}
 
 	private void loadContents() {
 		testsuiteContents = loadTestsuites();
 		configContents = loadConfigs();
-		logContents = loadLog();
 
 		childs.add(new SimpleTypedContent(this,
 				ContentType.CONFIGURATION_DIRECTORY, configContents));
@@ -63,8 +55,8 @@ public class ProjectContent extends AbstractContent {
 		Configuration activeConfig = project.getArchive()
 				.getActiveConfiguration();
 		Configuration defaultConfig = project.getArchive()
-				.getDefaultConfiguration();
-
+				.getDefaultConfiguration();		
+		
 		List<IContent> contents = new ArrayList<IContent>();
 
 		if (configs != null) {
@@ -102,30 +94,6 @@ public class ProjectContent extends AbstractContent {
 		return contents;
 	}
 
-	private List<IContent> loadLog() {
-		List<IContent> contents = new ArrayList<IContent>();
-
-		LogManager logManager = project.getArchive().getLogManager();
-		if (logManager != null) {
-			ArchiveLog log = logManager.getData();
-			if (log == null || log.getEntry().isEmpty()) {
-				contents.add(new EmptyContent("No log entries found."));
-			} else {
-				for (Entry entry : log.getEntry()) {
-					if (entry.getType() == EntryType.TESTRUN) {
-						contents.add(new TestrunContent(this, entry));
-					} else {
-						contents.add(new LogEntryContent(this, entry));
-					}					
-				}
-			}
-		} else {
-			contents.add(new EmptyContent("No archive log found."));
-		}
-
-		return contents;
-	}
-
 	public String getText() {
 		return project.getName();
 	}
@@ -148,37 +116,40 @@ public class ProjectContent extends AbstractContent {
 		return configContents;
 	}
 
-	public List<IContent> getLogContents() {
-		return logContents;
+	public LogDirectoryContent getLogDirectory() {
+		return logDirectory;
 	}
 
 	public void reload() {
-		reload(true);
+		reload(false);	
 	}
 
-	public void reload(boolean updateObserver) {
+	public void reload(boolean reloadLog) {
 		childs.clear();
-
 		loadContents();
-
-		if (updateObserver) {
-			fireContentChanged();
+		
+		if (reloadLog) {
+			logDirectory.reload();
 		}
+
+//		if (updateObserver) {
+//			fireContentChanged();
+//		}
 	}
 
-	public synchronized void addObserver(IContentObserver observer) {
-		observers.put(observer.getObserverID(), observer);
-	}
+//	public synchronized void addObserver(IContentObserver observer) {
+//		observers.put(observer.getObserverID(), observer);
+//	}
+//
+//	public synchronized void removeObserver(IContentObserver observer) {
+//		observers.remove(observer.getObserverID());
+//	}
 
-	public synchronized void removeObserver(IContentObserver observer) {
-		observers.remove(observer.getObserverID());
-	}
-
-	public synchronized void fireContentChanged() {
-		for (IContentObserver observer : observers.values()) {
-			observer.update(this);
-		}
-	}
+//	public synchronized void fireContentChanged() {
+//		for (IContentObserver observer : observers.values()) {
+//			observer.update(this);
+//		}
+//	}
 
 	public void addConfiguration(Configuration config, boolean makeDefault)
 			throws RTTException {
@@ -198,44 +169,31 @@ public class ProjectContent extends AbstractContent {
 		project.addConfiguration(lexerClass, parserClass, configName,
 				makeDefault, cp);
 		project.save();
-
-		// FIXME do reload
-		// projectContent.reload();
+		
+		reload();
 	}
 
 	public void addTestsuite(String suiteName) throws RTTException {
-
 		project.addTestsuite(suiteName);
-		project.save();
-
-		// FIXME do reload
-		// projectContent.reload();
+		project.save();		
+		reload(true);
 	}
 
 	public void removeTestsuite(String suiteName) throws RTTException {
 
 		project.removeTestsuite(suiteName);
 		project.save();
-
-		// FIXME do reload
-		// projectContent.reload();
+		reload(true);
 	}
 
 	public void runTest(String suiteName) throws RTTException {
-		RttProject project = this.getProject();
 		project.runTests(suiteName, true);
 		project.save();
-
-		// FIXME do reload
-		// projectContent.reload(false);
 	}
 
 	public List<Throwable> generateTest(String suiteName) throws RTTException {
-		RttProject project = this.getProject();
 		List<Throwable> exceptions = project.generateTests(suiteName);
 		project.save();
-
-		// FIXME do reload
 
 		return exceptions;
 	}

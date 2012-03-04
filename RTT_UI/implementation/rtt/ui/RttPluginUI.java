@@ -80,13 +80,25 @@ public class RttPluginUI extends AbstractUIPlugin {
 		try {
 			RttProject newProject = new RttProject(project);
 			projectDirectory.addProject(new ProjectContent(newProject));
+			refreshListener();
 			
-			for (IRttListener listener : listeners) {
-				listener.refresh();
-			}
 		} catch (Exception exception) {
 			RttLog.log(exception);
 		}
+	}	
+	
+	public static void refreshListener() {
+		getDefault().refreshListenerInternal();
+	}
+
+	private void refreshListenerInternal()  {
+		for (IRttListener listener : listeners) {
+			listener.refresh();
+		}
+	}
+	
+	public static ProjectContent getCurrentProjectContent() {
+		return getDefault().currentProjectContent;
 	}
 	
 	public static void setCurrentProjectContent(ProjectContent newContent) {
@@ -146,9 +158,5 @@ public class RttPluginUI extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
-
-	public static ProjectContent getCurrentProjectContent() {
-		return getDefault().currentProjectContent;
 	}
 }

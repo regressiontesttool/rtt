@@ -6,6 +6,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 
 import rtt.core.exceptions.RTTException;
+import rtt.ui.RttPluginUI;
 import rtt.ui.content.configuration.ConfigurationContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 
@@ -25,6 +26,7 @@ public class ClasspathEntryAddHandler extends AbstractSelectionHandler {
 			if (value != null && !value.equals("")) {
 				try {
 					config.addClasspathEntry(value);
+					RttPluginUI.refreshListener();
 				} catch (RTTException e) {
 					throw new ExecutionException(
 							"Could not add class path entry.", e);
