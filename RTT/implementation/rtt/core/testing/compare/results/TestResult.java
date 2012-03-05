@@ -12,13 +12,16 @@ public class TestResult {
 	ResultType type;
 	String suiteName;
 	String caseName;
-	Integer dataVersion;
+	
+	Integer refVersion;
+	Integer testVersion;
 	
 	List<ITestFailure> failures;
 
-	public TestResult(ResultType type, Integer dataVersion) {
+	public TestResult(ResultType type, Integer refVersion, Integer testVersion) {
 		this.type = type;
-		this.dataVersion = dataVersion;
+		this.refVersion = refVersion;
+		this.testVersion = testVersion;
 		
 		failures = new ArrayList<ITestFailure>();
 	}
@@ -39,8 +42,12 @@ public class TestResult {
 		this.caseName = caseName;
 	}
 	
-	public Integer getDataVersion() {
-		return dataVersion;
+	public Integer getRefVersion() {
+		return refVersion;
+	}
+	
+	public Integer getTestVersion() {
+		return testVersion;
 	}
 	
 	public ResultType getType() {

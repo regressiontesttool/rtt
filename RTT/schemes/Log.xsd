@@ -56,16 +56,24 @@
 
 	<xs:complexType name="result">
 		<xs:sequence>
+			<xs:element name="comment" type="rtt:comment" minOccurs="0"
+				maxOccurs="1" />
 			<xs:element name="failure" type="rtt:failure" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="testcase" type="xs:string" use="required" />
 		<xs:attribute name="testsuite" type="xs:string" use="required" />
 
-		<xs:attribute name="note" type="xs:string" />
-		<xs:attribute name="dataVersion" type="xs:int" />
-		
+		<xs:attribute name="refVersion" type="xs:int" use="required" />
+		<xs:attribute name="testVersion" type="xs:int" use="required" />
+
 		<xs:attribute name="type" type="rtt:resultType" />
+	</xs:complexType>
+
+	<xs:complexType name="comment">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:simpleType name="resultType">
@@ -81,7 +89,7 @@
 		<xs:attribute name="msg" type="xs:string" />
 		<xs:attribute name="type" type="rtt:failureType" />
 	</xs:complexType>
-	
+
 	<xs:simpleType name="failureType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="PARSER" />

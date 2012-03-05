@@ -97,7 +97,9 @@ public class LogManager extends DataManager<ArchiveLog> {
 			Result resultEntry = new Result();
 			resultEntry.setTestcase(result.getCaseName());
 			resultEntry.setTestsuite(result.getSuiteName());
-			resultEntry.setDataVersion(result.getDataVersion());
+			
+			resultEntry.setRefVersion(result.getRefVersion());
+			resultEntry.setTestVersion(result.getTestVersion());
 
 			switch (result.getType()) {
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
+import rtt.core.archive.history.Version;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.testsuite.Testcase;
@@ -80,9 +81,17 @@ public class Tester {
 
 		boolean somethingTested = false;
 		boolean testSuccess = true;
+		
+		Integer testVersion = testManager.getCurrentNr();
+		Integer refVersion = -1;
+		for (Version v : testManager.getHistory().getVersion()) {
+			if (v.getNr() == testVersion) {
+				refVersion = v.getReference();
+			}
+		}		
 
 		TestResult result = new TestResult(ResultType.FAILURE,
-				testManager.getCurrentNr());
+				refVersion, testVersion);
 
 		if (testManager.isUpToDate()) {
 			try {
@@ -122,10 +131,10 @@ public class Tester {
 			// + "'.");
 
 			result = new TestResult(ResultType.SKIPPED,
-					testManager.getCurrentNr());
+					refVersion, testVersion);
 		} else if (testSuccess) {
 			result = new TestResult(ResultType.SUCCESS,
-					testManager.getCurrentNr());
+					refVersion, testVersion);
 		}
 
 		result.setCaseName(caseName);
