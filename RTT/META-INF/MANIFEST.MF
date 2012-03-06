@@ -37,3 +37,4 @@ Export-Package: rtt.annotations,
    rtt.core.archive.output",
  rtt.core.manager.data,
  rtt.core.utils
+Bundle-Vendor: Software Technology Group - Technische Universität Dresden - Germany
