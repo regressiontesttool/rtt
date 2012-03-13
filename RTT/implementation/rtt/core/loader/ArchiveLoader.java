@@ -8,8 +8,7 @@ import rtt.core.utils.DebugLog;
 
 public abstract class ArchiveLoader {
 
-	public static String baseDir = null;
-
+	private String baseDir = null;
 	private File baseFile;
 
 	public ArchiveLoader() {
@@ -52,6 +51,10 @@ public abstract class ArchiveLoader {
 			DebugLog.printTrace(e);
 			return null;
 		}
+	}
+	
+	public String getBaseDir() {
+		return baseDir;
 	}
 
 	protected abstract OutputStream doGetOutput(File file) throws Exception;

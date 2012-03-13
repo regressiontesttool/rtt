@@ -25,8 +25,8 @@ public class RTTClasspathContainer implements IClasspathContainer {
 	private List<IClasspathEntry> entries;
 
 	public RTTClasspathContainer(IPath containerID, IJavaProject javaProject) {
-		System.out.println("ContainerID: " + containerID);
-		System.out.println("Project: " + javaProject);
+//		System.out.println("ContainerID: " + containerID);
+//		System.out.println("Project: " + javaProject);
 
 		entries = new ArrayList<IClasspathEntry>();
 
@@ -63,8 +63,7 @@ public class RTTClasspathContainer implements IClasspathContainer {
 
 	@Override
 	public int getKind() {
-		// TODO Auto-generated method stub
-		return 0;
+		return K_APPLICATION;
 	}
 
 	@Override

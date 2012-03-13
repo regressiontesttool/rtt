@@ -64,7 +64,7 @@ public class DataGenerator {
 		return parOut;
 	}
 
-	public static LexerExecuter getLexerExecuter(Configuration config)
+	public static LexerExecuter getLexerExecuter(Configuration config, String baseDir)
 			throws RTTException {
 
 		try {
@@ -77,7 +77,7 @@ public class DataGenerator {
 						+ config.getLexerClass().getValue());
 
 				return new LexerExecuter(lexerClass.getValue(),
-						config.getClasspath(), ArchiveLoader.baseDir);
+						config.getClasspath(), baseDir);
 			}
 
 		} catch (Exception e) {
@@ -88,7 +88,7 @@ public class DataGenerator {
 		return null;
 	}
 
-	public static ParserExecuter getParserExecuter(Configuration config)
+	public static ParserExecuter getParserExecuter(Configuration config, String baseDir)
 			throws RTTException {
 
 		try {
@@ -101,7 +101,7 @@ public class DataGenerator {
 						+ config.getParserClass().getValue());
 
 				return new ParserExecuter(parserClass.getValue(),
-						config.getClasspath(), ArchiveLoader.baseDir);
+						config.getClasspath(), baseDir);
 			}
 
 		} catch (Exception e) {

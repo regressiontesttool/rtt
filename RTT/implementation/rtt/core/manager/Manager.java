@@ -60,6 +60,7 @@ public class Manager {
 	File archivePath;
 	Archive currentArchive;
 	LogManager currentLog;
+	private String baseDir;
 
 	public static boolean verbose = true;
 
@@ -112,7 +113,10 @@ public class Manager {
 		}
 
 		try {
-			return new ZipArchiveLoader(aPath.getParent(), aPath.getName());
+			ArchiveLoader loader = new ZipArchiveLoader(aPath.getParent(), aPath.getName());
+			this.baseDir = loader.getBaseDir();
+			
+			return loader;
 		} catch (Exception e) {
 			throw new RTTException(Type.ARCHIVE,
 					"Could not start archive loader", e);
@@ -237,8 +241,8 @@ public class Manager {
 		List<Throwable> generationExceptions = new ArrayList<Throwable>();
 		List<Detail> genInfos = new ArrayList<Detail>();
 		
-		LexerExecuter lexer = DataGenerator.getLexerExecuter(config);
-		ParserExecuter parser = DataGenerator.getParserExecuter(config);
+		LexerExecuter lexer = DataGenerator.getLexerExecuter(config, baseDir);
+		ParserExecuter parser = DataGenerator.getParserExecuter(config, baseDir);
 
 		for (Testcase tcase : suite.getTestcase()) {
 			if (tcase.isDeleted()) {
@@ -373,8 +377,8 @@ public class Manager {
 		Configuration configuration = currentArchive.getActiveConfiguration();
 		List<TestResult> results = new ArrayList<TestResult>();
 		
-		LexerExecuter lexer = DataGenerator.getLexerExecuter(configuration);
-		ParserExecuter parser = DataGenerator.getParserExecuter(configuration);
+		LexerExecuter lexer = DataGenerator.getLexerExecuter(configuration, baseDir);
+		ParserExecuter parser = DataGenerator.getParserExecuter(configuration, baseDir);
 
 		for (Testcase tcase : suite.getTestcase()) {
 			if (tcase.isDeleted()) {

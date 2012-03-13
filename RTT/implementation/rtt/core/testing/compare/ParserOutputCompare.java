@@ -65,7 +65,7 @@ public class ParserOutputCompare {
 		List<Tree> expTrees = new LinkedList<Tree>(expected.getTree());
 		Map<Tree, Tree> tests = new HashMap<Tree, Tree>();
 
-		// testen, ob gleichviele bäume zurückgegeben wurden
+		// testen, ob gleichviele bï¿½ume zurï¿½ckgegeben wurden
 
 		if (wasTrees.size() > expTrees.size())
 			result.add(new ParserTestFailure(wasTrees.size() - expTrees.size()
@@ -148,6 +148,14 @@ public class ParserOutputCompare {
 	private ParserTestFailure compareNode(Node was, Node expected, 
 			NodePath curPath, boolean testInformational) {
 
+		if (was == null || expected == null) {
+			return new ParserTestFailure("Generated node, expected node or both nodes were null.");
+		}
+		
+		if (expected.getAttributes() == null && was.getAttributes() == null) {
+			return null;
+		}
+		
 		List<Attribute> expectedAttributes = expected.getAttributes().getAttribute();
 		List<Attribute> wasAttributes = was.getAttributes().getAttribute();
 		

@@ -39,12 +39,13 @@ public abstract class Executer {
 			int idx = 0;
 			for (Path p : cp.getPath()) {
 				File f = new File(p.getValue()); // test, if absolut
-				if (!f.exists())
-					f = new File(path + File.separator + p.getValue());
 				if (!f.exists()) {
-					DebugLog.log("Classpath does not exist: "
-							+ p.getValue());
-					continue;
+					f = new File(path + File.separator + p.getValue());					
+					if (!f.exists()) {
+						DebugLog.log("Classpath does not exist: "
+								+ p.getValue());
+						continue;
+					}
 				}
 				urls[idx++] = (f.toURI().toURL());
 			}
