@@ -15,9 +15,10 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.ProjectDirectoryContent;
+import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.viewer.ContentTreeViewer;
 
-public class ProjectView extends ViewPart implements ISelectionListener, IRttListener {
+public class ProjectView extends ViewPart implements ISelectionListener, IRttListener<ProjectContent> {
 
 	public static final String ID = "rtt.ui.views.ProjectView";
 	private ContentTreeViewer projectViewer;
@@ -37,14 +38,14 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 		getSite().setSelectionProvider(projectViewer);
 		getSite().getPage().addSelectionListener(this);
 		
-		RttPluginUI.addListener(this);		
+		RttPluginUI.getProjectManager().addListener(this);		
 		setViewerData(RttPluginUI.getProjectDirectory());
 	}
 	
 	@Override
 	public void dispose() {
 		getSite().getPage().removeSelectionListener(this);
-		RttPluginUI.removeListener(this);
+		RttPluginUI.getProjectManager().removeListener(this);
 		super.dispose();
 	}
 	
@@ -58,13 +59,18 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 		if (part == this && selection instanceof IStructuredSelection) {
 			IStructuredSelection sselection = (IStructuredSelection) selection;
 			Object selectedObject = sselection.getFirstElement();
-
+			
 			if (selectedObject != null && (selectedObject instanceof IContent)) {
-				ProjectContent selectedContent = ((IContent) selectedObject)
-						.getContent(ProjectContent.class);
+				IContent content = (IContent) selectedObject;
 				
-				if (selectedContent != null) {
-					RttPluginUI.setCurrentProjectContent(selectedContent);
+				TestsuiteContent suiteContent = content.getContent(TestsuiteContent.class);				
+				if (suiteContent != null) {
+					RttPluginUI.getSuiteManager().setCurrentContent(suiteContent);
+				}
+				
+				ProjectContent projectContent = content.getContent(ProjectContent.class);
+				if (projectContent != null) {
+					RttPluginUI.getProjectManager().setCurrentContent(projectContent);
 				}
 			}
 		}
@@ -84,23 +90,5 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 	public void update(ProjectContent projectContent) {
 //		projectViewer.refresh(true);
 	}
-	
-
-//	@Override
-//	public String getObserverID() {
-//		return ID;
-//	}
-
-//	@Override
-//	public void update(IContent content) {
-//		projectViewer.refresh(true);
-//		projectViewer.expandToLevel(3);
-//	}
-//
-//	@Override
-//	public void updateContent(ProjectContent currentProjectContent) {
-//		projectViewer.refresh(true);
-//		projectViewer.expandToLevel(3);
-//	}
 
 }

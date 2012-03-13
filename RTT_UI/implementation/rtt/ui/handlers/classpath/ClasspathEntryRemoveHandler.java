@@ -20,7 +20,7 @@ public class ClasspathEntryRemoveHandler extends AbstractSelectionHandler {
 		if (entry.getType() == ContentType.CLASSPATHENTRY) {
 			try {
 				config.removeClasspathEntry(entry.getText());
-				RttPluginUI.refreshListener();
+				RttPluginUI.refreshManager();
 			} catch (RTTException e) {
 				throw new ExecutionException("Could not remove class path entry.", e);
 			}

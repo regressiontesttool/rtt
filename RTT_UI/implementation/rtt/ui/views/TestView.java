@@ -1,7 +1,11 @@
 package rtt.ui.views;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -23,24 +27,94 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
 import rtt.ui.IRttListener;
+import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.logging.FailureContent;
-import rtt.ui.content.logging.TestResultContent;
+import rtt.ui.content.IContent;
 import rtt.ui.content.logging.TestrunContent;
 import rtt.ui.content.main.ProjectContent;
+import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
 import rtt.ui.utils.RunTestRunnable;
 import rtt.ui.viewer.ContentTreeViewer;
-import rtt.ui.viewer.TestsuiteComboViewer;
+import rtt.ui.views.utils.SuiteFilter;
 
-public class TestView extends ViewPart implements IRttListener {
+public class TestView extends ViewPart {
 	
+	private class TestViewProjectListener implements IRttListener<ProjectContent> {
+		
+		public TestViewProjectListener() {
+			RttPluginUI.getProjectManager().addListener(this);
+		}
+		
+		protected void removeListener() {
+			RttPluginUI.getProjectManager().removeListener(this);
+		}
+		
+		@Override
+		public void refresh() {
+			contentViewer.refresh(true);
+		}
+
+		@Override
+		public void update(ProjectContent content) {
+			if (content != null) {
+				contentViewer.setInput(content.getLogDirectory());
+				List<IContent> contentList = content.getTestsuiteContents();
+
+				if (contentList.size() > 0) {
+					int i = 0;
+					String suiteNames[] = new String[contentList.size()];
+
+					for (IContent suiteContent : contentList) {
+						suiteNames[i] = suiteContent.getText();
+						i++;
+					}
+
+					suiteCombo.setItems(suiteNames);
+					suiteCombo.select(0);
+					suiteCombo.setEnabled(true);
+
+					contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
+							suiteNames[0]) });
+				} else {
+					suiteCombo.setItems(new String[0]);
+					suiteCombo.setEnabled(false);
+				}
+			}
+		}
+		
+	}
+	
+	private class TestViewTestsuiteListener implements IRttListener<TestsuiteContent> {
+		
+		public TestViewTestsuiteListener() {
+			RttPluginUI.getSuiteManager().addListener(this);
+		}
+		
+		protected void removeListener() {
+			RttPluginUI.getSuiteManager().removeListener(this);
+		}
+
+		@Override
+		public void refresh() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void update(TestsuiteContent content) {
+			if (content != null) {
+				System.out.println("Update: " + content.getText());
+			}			
+		}
+		
+	}
+
 	private static class TestrunComparator extends ViewerComparator {
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
-			if (e1 instanceof TestrunContent
-					&& e2 instanceof TestrunContent) {
+			if (e1 instanceof TestrunContent && e2 instanceof TestrunContent) {
 				TestrunContent testrun1 = (TestrunContent) e1;
 				TestrunContent testrun2 = (TestrunContent) e2;
 
@@ -51,119 +125,52 @@ public class TestView extends ViewPart implements IRttListener {
 			return super.compare(viewer, e1, e2);
 		}
 	}
-	
-	private static class TestrunFilter extends ViewerFilter {
-
-		@Override
-		public boolean select(Viewer viewer, Object parentElement,
-				Object element) {
-			
-			if (element instanceof TestrunContent) {
-				return true;
-			}
-			
-			if (element instanceof TestResultContent) {
-				return true;
-			}
-			
-			if (element instanceof FailureContent) {
-				return true;
-			}
-			
-			return false;
-		}		
-	}
-	
-	
-
-	protected class SuiteFilter extends ViewerFilter {
-
-		private String suiteName;
-		private String configName;
-
-		public SuiteFilter(String suiteName, String configName) {
-			this.suiteName = suiteName;
-			this.configName = configName;
-		}
-
-		@Override
-		public boolean select(Viewer viewer, Object parentElement,
-				Object element) {
-
-			if (element instanceof TestResultContent) {
-				return true;
-			}
-			
-			if (element instanceof FailureContent) {
-				return true;
-			}
-
-			if (element instanceof TestrunContent) {
-				TestrunContent testrunContent = (TestrunContent) element;
-				if (testrunContent.getTestsuite() == null
-						|| testrunContent.getConfiguration() == null) {
-					return true;
-				}
-
-				if (!testrunContent.getTestsuite().equals(suiteName)) {
-					return false;
-				}
-
-				if (!testrunContent.getConfiguration().equals(configName)) {
-					return false;
-				}
-
-				return true;
-			}
-
-			return false;
-		}
-	}
 
 	public final static String ID = "rtt.ui.views.TestView";
-	private TestsuiteComboViewer suiteComboViewer;
 
-	public TestView() {	}
+	public TestView() {
+	}
 
 	private ContentTreeViewer contentViewer;
+	private Combo suiteCombo;
+	
+	private TestViewProjectListener projectListener;
+	private TestViewTestsuiteListener suiteListener;
 
-//	protected void loadContent(final ProjectContent currentContent) {	
-//		if (currentContent != null && currentContent.getProject() != null) {
-//			RttProject project = currentContent.getProject();
-//
-//			LogManager logManager = project.getArchive().getLogManager();
-//
-//			if (logManager != null) {
-//				ArchiveLog log = logManager.getData();
-//
-//				for (Entry entry : log.getEntry()) {
-//					if (entry.getType() == EntryType.TESTRUN) {
-//						childs.add(new TestrunContent(currentContent, entry));
-//					}
-//				}
-//
-//				if (childs.isEmpty()) {
-//					childs.add(new EmptyContent("No log entries found."));
-//				}
-//			}
-//		} else {
-//			childs.add(new EmptyContent("No archive log found."));
-//		}
+	// protected void loadContent(final ProjectContent currentContent) {
+	// if (currentContent != null && currentContent.getProject() != null) {
+	// RttProject project = currentContent.getProject();
+	//
+	// LogManager logManager = project.getArchive().getLogManager();
+	//
+	// if (logManager != null) {
+	// ArchiveLog log = logManager.getData();
+	//
+	// for (Entry entry : log.getEntry()) {
+	// if (entry.getType() == EntryType.TESTRUN) {
+	// childs.add(new TestrunContent(currentContent, entry));
+	// }
+	// }
+	//
+	// if (childs.isEmpty()) {
+	// childs.add(new EmptyContent("No log entries found."));
+	// }
+	// }
+	// } else {
+	// childs.add(new EmptyContent("No archive log found."));
+	// }
 
-		
-		
-		
-//		int lastSelection = suiteComboViewer.getCombo().getSelectionIndex();
-//
-//		suiteComboViewer.setInput(currentContent.getTestsuiteContents()
-//				.toArray());
-//		
-//		if (lastSelection > -1) {
-//			suiteComboViewer.getCombo().select(lastSelection);
-//		} else {
-//			suiteComboViewer.getCombo().select(0);
-//		}
-//	}
+	// int lastSelection = suiteComboViewer.getCombo().getSelectionIndex();
+	//
+	// suiteComboViewer.setInput(currentContent.getTestsuiteContents()
+	// .toArray());
+	//
+	// if (lastSelection > -1) {
+	// suiteComboViewer.getCombo().select(lastSelection);
+	// } else {
+	// suiteComboViewer.getCombo().select(0);
+	// }
+	// }
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -184,58 +191,60 @@ public class TestView extends ViewPart implements IRttListener {
 		Label suiteLabel = new Label(runGroup, SWT.NONE);
 		suiteLabel.setText("Testsuite:");
 
-		Combo suiteCombo = new Combo(runGroup, SWT.READ_ONLY);
-		suiteCombo.setItems(new String[] { "eins", "zwei" });
+		suiteCombo = new Combo(runGroup, SWT.READ_ONLY);
 		suiteCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		suiteCombo.select(0);
+
 		suiteCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-//				contentViewer.setFilters(new ViewerFilter[] {
-//						
-//				});
+				System.out.println(suiteCombo.getText());
+
+				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
+						suiteCombo.getText()) });
 				contentViewer.getControl().setFocus();
 			}
 		});
-		
-//		suiteComboViewer = new TestsuiteComboViewer(runGroup, SWT.READ_ONLY);
-//		final Combo suiteCombo = suiteComboViewer.getCombo();
-//		suiteCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-//				false, 1, 1));
-//		suiteCombo.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(suiteCombo.) });
-//				contentViewer.getControl().setFocus();
-//			}
-//		});
-//
-//		suiteComboViewer.addSe
-//				.addSelectionChangedListener(new ISelectionChangedListener() {
-//
-//					@Override
-//					public void selectionChanged(SelectionChangedEvent event) {
-//						ProjectContent currentContent = ProjectFinder.getCurrentProjectContent();
-//						if (currentContent.getProject() != null
-//								&& currentContent.getProject()
-//										.getActiveConfiguration() != null) {
-//
-//							String configName = currentContent.getProject()
-//									.getActiveConfiguration().getName();
-//
-//							String suiteName = suiteComboViewer
-//									.getSelectedTestsuite();
-//
-//							System.out.println("Filter runs: config="
-//									+ configName + ", suite=" + suiteName);
-//
-//							contentViewer
-//									.setFilters(new ViewerFilter[] { new SuiteFilter(
-//											suiteName, configName) });
-//						}
-//					}
-//				});
+
+		// suiteComboViewer = new TestsuiteComboViewer(runGroup, SWT.READ_ONLY);
+		// final Combo suiteCombo = suiteComboViewer.getCombo();
+		// suiteCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		// false, 1, 1));
+		// suiteCombo.addSelectionListener(new SelectionAdapter() {
+		// @Override
+		// public void widgetSelected(SelectionEvent e) {
+		// contentViewer.setFilters(new ViewerFilter[] { new
+		// SuiteFilter(suiteCombo.) });
+		// contentViewer.getControl().setFocus();
+		// }
+		// });
+		//
+		// suiteComboViewer.addSe
+		// .addSelectionChangedListener(new ISelectionChangedListener() {
+		//
+		// @Override
+		// public void selectionChanged(SelectionChangedEvent event) {
+		// ProjectContent currentContent =
+		// ProjectFinder.getCurrentProjectContent();
+		// if (currentContent.getProject() != null
+		// && currentContent.getProject()
+		// .getActiveConfiguration() != null) {
+		//
+		// String configName = currentContent.getProject()
+		// .getActiveConfiguration().getName();
+		//
+		// String suiteName = suiteComboViewer
+		// .getSelectedTestsuite();
+		//
+		// System.out.println("Filter runs: config="
+		// + configName + ", suite=" + suiteName);
+		//
+		// contentViewer
+		// .setFilters(new ViewerFilter[] { new SuiteFilter(
+		// suiteName, configName) });
+		// }
+		// }
+		// });
 
 		Button btnGenerate = new Button(runGroup, SWT.NONE);
 		btnGenerate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -270,42 +279,50 @@ public class TestView extends ViewPart implements IRttListener {
 		Tree tree = contentViewer.getTree();
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		contentViewer.setComparator(new TestrunComparator());
-		contentViewer.setFilters(new ViewerFilter[] { new TestrunFilter() });
 
 		MenuManager menuManager = new MenuManager();
 		getSite().setSelectionProvider(contentViewer);
 		Menu menu = menuManager.createContextMenu(contentViewer.getControl());
 		contentViewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, contentViewer);
+
+		projectListener = new TestViewProjectListener();
+		projectListener.update(RttPluginUI.getProjectManager().getCurrentContent());
 		
-		update(RttPluginUI.getCurrentProjectContent());
-		RttPluginUI.addListener(this);
+		suiteListener = new TestViewTestsuiteListener();
+		suiteListener.update(RttPluginUI.getSuiteManager().getCurrentContent());
 	}
-	
+
 	@Override
 	public void dispose() {
-		RttPluginUI.removeListener(this);
+		projectListener.removeListener();
+		projectListener = null;
+		
+		suiteListener.removeListener();
+		suiteListener = null;
+		
 		super.dispose();
 	}
 
 	protected void doButtonClick(AbstractTestRunnable runnable) {
 		Shell parentShell = getSite().getShell();
-		if (suiteComboViewer.isTestsuiteSelected()) {
-//			runnable.setProjectContent(ProjectFinder.getCurrentProjectContent());
-//			runnable.setSuiteName(suiteComboViewer.getSelectedTestsuite());
-//
-//			ProgressMonitorDialog dialog = new ProgressMonitorDialog(
-//					parentShell);
-//
-//			try {
-//				dialog.run(true, false, runnable);
-//				ProjectFinder.fireChangeEvent();
-//			} catch (Exception e) {
-//				MessageDialog.openError(parentShell,
-//						runnable.getMessageTitle(), e.getMessage());
-//				RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
-//						.getMessage(), e));
-//			}
+		String suiteName = suiteCombo.getText();
+
+		if (suiteName != null && !suiteName.equals("")) {
+			runnable.setProjectContent(RttPluginUI.getProjectManager().getCurrentContent());
+			runnable.setSuiteName(suiteName);
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(
+					parentShell);
+
+			try {
+				dialog.run(true, false, runnable);
+				RttPluginUI.refreshManager();
+			} catch (Exception e) {
+				MessageDialog.openError(parentShell,
+						runnable.getMessageTitle(), e.getMessage());
+				RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
+						.getMessage(), e));
+			}
 		} else {
 			MessageDialog.openInformation(parentShell,
 					runnable.getMessageTitle(), "No test suite selected.");
@@ -316,27 +333,5 @@ public class TestView extends ViewPart implements IRttListener {
 	public void setFocus() {
 		contentViewer.getControl().setFocus();
 	}
-
-	@Override
-	public void refresh() {
-		contentViewer.refresh(true);
-	}
-
-	@Override
-	public void update(ProjectContent projectContent) {
-//		if (projectContent != null) {
-//			List<IContent> childs = new ArrayList<IContent>();
-//			for (IContent content : projectContent.getLogDirectory().getChildren()) {
-//				System.out.println("Content: " + content.getClass());
-//				if (content instanceof TestrunContent) {
-//					childs.add(content);
-//				}
-//			}
-//			
-//			contentViewer.setInput(new SimpleTypedContent(projectContent,
-//					ContentType.LOG_DIRECTORY, childs));
-//		}
-		
-		contentViewer.setInput(projectContent.getLogDirectory());
-	}
 }
+

@@ -41,7 +41,7 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 					.getMessage(), e));
 		}
 		
-		RttPluginUI.refreshListener();
+		RttPluginUI.refreshManager();
 
 		return null;
 	}

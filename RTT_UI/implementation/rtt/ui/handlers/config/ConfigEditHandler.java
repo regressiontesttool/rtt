@@ -33,7 +33,7 @@ public class ConfigEditHandler extends AbstractSelectionHandler implements
 				Configuration config = configContent.getConfiguration();
 				projectContent.addConfiguration(config,
 						configDialog.isDefault());
-				RttPluginUI.refreshListener();
+				RttPluginUI.refreshManager();
 			} catch (Exception exception) {
 				throw new ExecutionException("Could not modify configuration.",
 						exception);

@@ -31,7 +31,7 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 			if (suiteName != null && !suiteName.equals("")) {
 				try {
 					projectContent.addTestsuite(suiteName);
-					RttPluginUI.refreshListener();
+					RttPluginUI.refreshManager();
 				} catch (Exception e) {
 					throw new ExecutionException("Could not add test suite", e);
 				}

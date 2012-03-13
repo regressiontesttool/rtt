@@ -121,20 +121,9 @@ public class ProjectContent extends AbstractContent {
 	}
 
 	public void reload() {
-		reload(false);	
-	}
-
-	public void reload(boolean reloadLog) {
 		childs.clear();
 		loadContents();
-		
-		if (reloadLog) {
-			logDirectory.reload();
-		}
-
-//		if (updateObserver) {
-//			fireContentChanged();
-//		}
+		logDirectory.reload();
 	}
 
 //	public synchronized void addObserver(IContentObserver observer) {
@@ -175,15 +164,17 @@ public class ProjectContent extends AbstractContent {
 
 	public void addTestsuite(String suiteName) throws RTTException {
 		project.addTestsuite(suiteName);
-		project.save();		
-		reload(true);
+		project.save();
+		
+		reload();
 	}
 
 	public void removeTestsuite(String suiteName) throws RTTException {
 
 		project.removeTestsuite(suiteName);
 		project.save();
-		reload(true);
+		
+		reload();
 	}
 
 	public void runTest(String suiteName) throws RTTException {

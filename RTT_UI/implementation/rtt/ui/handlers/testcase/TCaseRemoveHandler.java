@@ -18,7 +18,7 @@ public class TCaseRemoveHandler extends AbstractSelectionHandler {
 		
 		try {
 			suite.removeTestcase(tcase.getText());
-			RttPluginUI.refreshListener();
+			RttPluginUI.refreshManager();
 		} catch (Exception e) {
 			throw new ExecutionException("Could not remove test case.", e);
 		}

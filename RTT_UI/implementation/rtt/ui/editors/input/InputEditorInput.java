@@ -103,7 +103,8 @@ public class InputEditorInput implements IStorageEditorInput {
 			public InputStream getContents() throws CoreException {
 				if (manager == null) {
 					ProjectContent projectContent = RttPluginUI
-							.getCurrentProjectContent();
+							.getProjectManager().getCurrentContent();
+					
 					RttProject project = projectContent.getProject();
 
 					manager = new InputManager(project.getLoader(), suiteName,

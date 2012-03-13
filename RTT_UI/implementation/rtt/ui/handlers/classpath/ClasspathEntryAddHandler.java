@@ -26,7 +26,7 @@ public class ClasspathEntryAddHandler extends AbstractSelectionHandler {
 			if (value != null && !value.equals("")) {
 				try {
 					config.addClasspathEntry(value);
-					RttPluginUI.refreshListener();
+					RttPluginUI.refreshManager();
 				} catch (RTTException e) {
 					throw new ExecutionException(
 							"Could not add class path entry.", e);

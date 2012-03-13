@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -34,7 +35,7 @@ import rtt.ui.content.history.HistoryContent.VersionType;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.ContentTreeViewer;
 
-public class VersionView extends ViewPart implements IRttListener {
+public class VersionView extends ViewPart implements IRttListener<ProjectContent> {
 
 	public static final String ID = "rtt.ui.views.VersionView";
 	
@@ -66,17 +67,10 @@ public class VersionView extends ViewPart implements IRttListener {
 		suiteCombo = new Combo(composite, SWT.READ_ONLY);
 		suiteCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		suiteCombo.addSelectionListener(new SelectionListener() {
-			
+		suiteCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				loadTestsuite(suiteCombo.getSelectionIndex());				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 
@@ -118,7 +112,7 @@ public class VersionView extends ViewPart implements IRttListener {
 
 	protected void loadTestsuite(int selectionIndex) {
 		if (selectionIndex > 0) {
-			ProjectContent currentProject = RttPluginUI.getCurrentProjectContent();
+			ProjectContent currentProject = RttPluginUI.getProjectManager().getCurrentContent();
 			String suiteName = suiteNames[selectionIndex];
 			
 			if (suiteName != null && suiteName.equals("") == false) {
@@ -153,7 +147,7 @@ public class VersionView extends ViewPart implements IRttListener {
 			final String caseName = caseNames[selectionIndex];
 			final String suiteName = suiteNames[suiteCombo.getSelectionIndex()];
 			
-			final ProjectContent currentProject = RttPluginUI.getCurrentProjectContent();
+			final ProjectContent currentProject = RttPluginUI.getProjectManager().getCurrentContent();
 			
 			Archive archive = currentProject.getProject().getArchive();
 			final Configuration activeConfig = currentProject.getProject().getActiveConfiguration();

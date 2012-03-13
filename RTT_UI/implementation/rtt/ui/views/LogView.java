@@ -35,7 +35,7 @@ import rtt.ui.viewer.ContentDoubleClickListener;
 import rtt.ui.viewer.ContentTreeViewer;
 import rtt.ui.viewer.ContentViewerFilter;
 
-public class LogView extends ViewPart implements IRttListener {
+public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 	
 	private static class ContentViewerComperator extends ViewerComparator {
 		@Override
@@ -112,8 +112,8 @@ public class LogView extends ViewPart implements IRttListener {
 		contentViewer.setContentProvider(new ContentTreeViewer.TreeContentProvider());
 		contentViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
 		
-		update(RttPluginUI.getCurrentProjectContent());
-		RttPluginUI.addListener(this);
+		update(RttPluginUI.getProjectManager().getCurrentContent());
+		RttPluginUI.getProjectManager().addListener(this);
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class LogView extends ViewPart implements IRttListener {
 	
 	@Override
 	public void dispose() {
-		RttPluginUI.removeListener(this);
+		RttPluginUI.getProjectManager().removeListener(this);
 		super.dispose();
 	}
 

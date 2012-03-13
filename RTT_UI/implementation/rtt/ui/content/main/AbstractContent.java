@@ -57,7 +57,7 @@ public abstract class AbstractContent implements IContent {
 			return EMPTY_ARRAY;
 		}
 		
-		System.out.println(this.getClass().getSimpleName() + ": getChildren");
+//		System.out.println(this.getClass().getSimpleName() + ": getChildren");
 		
 		return childs.toArray(new IContent[childs.size()]);
 	}
@@ -82,7 +82,7 @@ public abstract class AbstractContent implements IContent {
 			return ((IContent) parent).getContent(clazz);
 		}
 		
-		throw new RuntimeException("No '" + clazz + "' content found in " + this.getClass());
+		return null;
 	}
 	
 	protected abstract ContentIcon getIcon();

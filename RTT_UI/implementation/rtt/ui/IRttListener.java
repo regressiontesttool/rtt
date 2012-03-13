@@ -1,10 +1,10 @@
 package rtt.ui;
 
-import rtt.ui.content.main.ProjectContent;
+import rtt.ui.content.IContent;
 
-public interface IRttListener {
+public interface IRttListener<T extends IContent> {
 	
 	void refresh();
-	void update(ProjectContent projectContent);
+	void update(T content);
 
 }

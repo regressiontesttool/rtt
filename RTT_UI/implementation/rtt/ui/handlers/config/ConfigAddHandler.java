@@ -28,7 +28,7 @@ public class ConfigAddHandler extends AbstractSelectionHandler {
 			try {
 				config = configDialog.getConfiguration();
 				projectContent.addConfiguration(config, configDialog.isDefault());
-				RttPluginUI.refreshListener();
+				RttPluginUI.refreshManager();
 			} catch (RTTException e) {
 				throw new ExecutionException("Could not add configuration.", e);
 			}

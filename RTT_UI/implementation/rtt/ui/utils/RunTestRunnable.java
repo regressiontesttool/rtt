@@ -34,7 +34,7 @@ public class RunTestRunnable extends AbstractTestRunnable implements IRunnableWi
 			throw new InterruptedException("Errors occured during test execution. Check Error Log for details.");
 		}
 		
-		projectContent.reload(true);
+		projectContent.reload();
 
 		monitor.done();		
 	}

@@ -17,7 +17,7 @@ public class TSuiteRemoveHandler extends AbstractSelectionHandler {
 		
 		try {
 			projectContent.removeTestsuite(suite.getText());
-			RttPluginUI.refreshListener();
+			RttPluginUI.refreshManager();
 		} catch (Exception e) {
 			throw new ExecutionException("Could not remove test suite.", e);
 		}

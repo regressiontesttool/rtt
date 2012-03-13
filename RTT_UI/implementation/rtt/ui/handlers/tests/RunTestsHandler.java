@@ -38,7 +38,7 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 					.getMessage(), e));
 		}
 		
-		RttPluginUI.refreshListener();
+		RttPluginUI.refreshManager();
 
 		return null;
 	}

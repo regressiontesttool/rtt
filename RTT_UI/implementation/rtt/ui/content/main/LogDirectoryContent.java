@@ -24,6 +24,7 @@ public class LogDirectoryContent extends AbstractContent implements IContent {
 		if (logManager != null) {
 			ArchiveLog log = logManager.getData();
 			if (log == null || log.getEntry().isEmpty()) {
+				isEmpty = true;
 				childs.add(new EmptyContent("No log entries found."));
 			} else {
 				for (Entry entry : log.getEntry()) {
@@ -37,7 +38,6 @@ public class LogDirectoryContent extends AbstractContent implements IContent {
 				}
 			}
 		} else {
-			isEmpty = true;
 			childs.add(new EmptyContent("No archive log found."));
 		}
 	}

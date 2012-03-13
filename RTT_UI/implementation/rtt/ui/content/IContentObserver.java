@@ -1,8 +1,8 @@
 package rtt.ui.content;
 
 
-public interface IContentObserver {
+public interface IContentObserver<T extends IContent> {
 	
 	String getObserverID();
-	void update(IContent content);
+	void update(T content);
 }

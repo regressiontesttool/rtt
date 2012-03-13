@@ -13,7 +13,7 @@ public class ConfigSetActiveHandler extends AbstractSelectionHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ConfigurationContent config = getSelectedObject(ConfigurationContent.class, event);
 		config.changeActive();
-		RttPluginUI.refreshListener();
+		RttPluginUI.refreshManager();
 		
 		return null;
 	}

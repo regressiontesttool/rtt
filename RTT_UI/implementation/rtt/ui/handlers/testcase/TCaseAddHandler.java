@@ -34,7 +34,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 		if (resDialog.open() == ResourceSelectionDialog.OK) {
 			try {
 				suite.addTestcase(resDialog.getResult());
-				RttPluginUI.refreshListener();
+				RttPluginUI.refreshManager();
 			} catch (RTTException e) {
 				throw new ExecutionException("Errors occured during " +
 						"test case creation. Check error log for details.", e);
