@@ -16,13 +16,17 @@ public class ConfigAddHandler extends AbstractSelectionHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ProjectContent projectContent = this.getProjectContent(event);
+		Configuration config = projectContent.createEmptyConfiguration();
 		
 		ConfigurationDialog configDialog = new ConfigurationDialog(
-				getParentShell(event), projectContent);
+				getParentShell(event), projectContent, config);
+		
+		configDialog.setTitle("Add configuration");
+		configDialog.setMessage("Create a new configuration ...");
 
 		if (configDialog.open() == Dialog.OK) {
 			try {
-				Configuration config = configDialog.getConfiguration();
+				config = configDialog.getConfiguration();
 				projectContent.addConfiguration(config, configDialog.isDefault());
 				RttPluginUI.refreshListener();
 			} catch (RTTException e) {

@@ -2,23 +2,31 @@ package rtt.ui.content.logging;
 
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.compare.CompareUI;
 import org.eclipse.emf.compare.diff.metamodel.ComparisonResourceSnapshot;
 import org.eclipse.emf.compare.diff.metamodel.DiffFactory;
 import org.eclipse.emf.compare.diff.metamodel.DiffModel;
 import org.eclipse.emf.compare.diff.service.DiffService;
+import org.eclipse.emf.compare.match.MatchOptions;
+import org.eclipse.emf.compare.match.engine.IMatchScope;
+import org.eclipse.emf.compare.match.engine.IMatchScopeProvider;
+import org.eclipse.emf.compare.match.filter.IResourceFilter;
 import org.eclipse.emf.compare.match.metamodel.MatchModel;
 import org.eclipse.emf.compare.match.service.MatchService;
 import org.eclipse.emf.compare.ui.editor.ModelCompareEditorInput;
 import org.eclipse.emf.compare.util.ModelUtils;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbenchPage;
 
+import regression.test.Attribute;
 import regression.test.TestPackage;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.logging.Failure;
@@ -33,6 +41,53 @@ import rtt.ui.content.main.ContentIcon;
 import rtt.ui.model.RttProject;
 
 public class FailureContent extends AbstractContent implements IClickableContent, IColumnableContent {
+	
+	private static class MyMatchScope implements IMatchScope {
+
+		@Override
+		public boolean isInScope(EObject eObject) {
+			if (eObject instanceof Attribute) {
+				Attribute attribute = (Attribute) eObject;
+				if (attribute.isInformational()) {
+
+//					System.out.println("isInScope:" + eObject);
+					return false;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public boolean isInScope(Resource resource) {
+			return true;
+		}
+		
+	}
+	
+	private static class MyScopeProvider implements IMatchScopeProvider {
+
+		@Override
+		public IMatchScope getLeftScope() {
+			return new MyMatchScope();
+		}
+
+		@Override
+		public IMatchScope getRightScope() {
+			return new MyMatchScope();
+		}
+
+		@Override
+		public IMatchScope getAncestorScope() {
+			return new MyMatchScope();
+		}
+
+		@Override
+		public void applyResourceFilter(IResourceFilter filter) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 	
 	private String suiteName;
 	private String caseName;
@@ -98,7 +153,10 @@ public class FailureContent extends AbstractContent implements IClickableContent
 			InputStream testInput = testManager.getParserOutputStream(testVersion);
 			EObject resultModel = ModelUtils.load(testInput, "result.rtt", resourceSet2);
 			
-			final MatchModel match = MatchService.doMatch(referenceModel, resultModel, null);
+			Map<String, Object> options = new HashMap<String, Object>();
+			options.put(MatchOptions.OPTION_MATCH_SCOPE_PROVIDER, new MyScopeProvider());
+			
+			final MatchModel match = MatchService.doMatch(resultModel, referenceModel, options);
 			final DiffModel diff = DiffService.doDiff(match, false);
 			
 			final ComparisonResourceSnapshot snapshot = DiffFactory.eINSTANCE.createComparisonResourceSnapshot();

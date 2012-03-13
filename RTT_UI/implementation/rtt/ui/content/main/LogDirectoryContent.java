@@ -10,12 +10,16 @@ import rtt.ui.content.logging.TestrunContent;
 
 public class LogDirectoryContent extends AbstractContent implements IContent {	
 
+	private boolean isEmpty;
+
 	public LogDirectoryContent(ProjectContent parent) {
 		super(parent);
 		loadContents();		
 	}
 	
 	private void loadContents() {
+		isEmpty = false;
+		
 		LogManager logManager = getProject().getArchive().getLogManager();
 		if (logManager != null) {
 			ArchiveLog log = logManager.getData();
@@ -33,6 +37,7 @@ public class LogDirectoryContent extends AbstractContent implements IContent {
 				}
 			}
 		} else {
+			isEmpty = true;
 			childs.add(new EmptyContent("No archive log found."));
 		}
 	}
@@ -40,6 +45,10 @@ public class LogDirectoryContent extends AbstractContent implements IContent {
 	protected void reload() {
 		childs.clear();
 		loadContents();
+	}
+	
+	public boolean isEmpty() {
+		return isEmpty;
 	}
 
 	@Override

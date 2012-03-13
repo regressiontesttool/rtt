@@ -8,6 +8,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -54,8 +56,9 @@ public class RttPluginUI extends AbstractUIPlugin {
 		for (IProject project : root.getProjects()) {
 			try {
 				IProjectDescription description = project.getDescription();
-				if (description.hasNature(RttNature.NATURE_ID)) {
-					RttProject newProject = new RttProject(project);
+				if (description.hasNature(RttNature.NATURE_ID) && description.hasNature(JavaCore.NATURE_ID)) {
+					IJavaProject javaProject = JavaCore.create(project);
+					RttProject newProject = new RttProject(javaProject);
 					ProjectContent content = new ProjectContent(newProject);
 					projects.add(content);
 					
@@ -78,10 +81,12 @@ public class RttPluginUI extends AbstractUIPlugin {
 	
 	private void addProjectInternal(IProject project) {
 		try {
-			RttProject newProject = new RttProject(project);
-			projectDirectory.addProject(new ProjectContent(newProject));
-			refreshListener();
-			
+			if (project.hasNature(JavaCore.NATURE_ID)) {
+				IJavaProject javaProject = JavaCore.create(project);
+				RttProject newProject = new RttProject(javaProject);
+				projectDirectory.addProject(new ProjectContent(newProject));
+				refreshListener();
+			}			
 		} catch (Exception exception) {
 			RttLog.log(exception);
 		}

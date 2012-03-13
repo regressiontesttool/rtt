@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -25,7 +26,7 @@ public class RttNature implements IProjectNature {
 	}
 
 	private void generateArchive() throws CoreException {
-		IFolder folder = project.getFolder("./.rtt/");
+		IFolder folder = project.getFolder("./rtt/");
 
 		if (!folder.exists()) {
 			ContainerGenerator gen = new ContainerGenerator(
@@ -45,9 +46,10 @@ public class RttNature implements IProjectNature {
 						"Could not create archive file: " + archive, e));
 			}
 		}
-
+		folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+		
 		RttPreferenceStore.put(project, RttPreferenceStore.PREF_ARCHIVE_PATH,
-				archive.getLocation().toOSString());
+				archive.getProjectRelativePath().toPortableString());
 
 	}
 

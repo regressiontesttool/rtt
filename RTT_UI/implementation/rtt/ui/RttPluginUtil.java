@@ -2,8 +2,10 @@ package rtt.ui;
 
 import java.io.File;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
@@ -66,18 +68,17 @@ public class RttPluginUtil {
 		return null;
 	}
 
-	public static File getArchiveFile(IProject project) {
-
-		IEclipsePreferences pref = RttPreferenceStore.getPreferences(project);
-
-		if (pref != null) {
-			String archivePath = pref.get(RttPreferenceStore.PREF_ARCHIVE_PATH, "");
-			if (archivePath != null && !archivePath.equals("")) {
-				return new File(
-						pref.get(RttPreferenceStore.PREF_ARCHIVE_PATH, null));
-			}			
+	public static IFile getArchiveFile(IProject project) {
+		String archivePath = RttPreferenceStore.get(project, RttPreferenceStore.PREF_ARCHIVE_PATH, "");
+		
+		if (archivePath != null && !archivePath.equals("")) {
+			IPath path = Path.fromPortableString(archivePath);
+			IFile archiveFile = project.getFile(path);
+			if (archiveFile != null && archiveFile.exists()) {
+				return archiveFile;
+			}
 		}
-
+		
 		return null;
 
 	}

@@ -197,4 +197,8 @@ public class ProjectContent extends AbstractContent {
 
 		return exceptions;
 	}
+
+	public Configuration createEmptyConfiguration() {		
+		return project.createEmptyConfiguration();
+	}
 }

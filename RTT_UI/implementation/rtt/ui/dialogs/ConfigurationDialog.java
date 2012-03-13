@@ -1,18 +1,10 @@
 package rtt.ui.dialogs;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
-import org.eclipse.jdt.ui.IJavaElementSearchConstants;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -32,92 +24,22 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.eclipse.ui.dialogs.ResourceSelectionDialog;
-import org.eclipse.ui.dialogs.SelectionDialog;
 
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.configuration.LexerClass;
-import rtt.core.archive.configuration.ParserClass;
 import rtt.core.archive.configuration.Path;
 import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ClasspathContent;
-import rtt.ui.content.configuration.ConfigurationContent;
 import rtt.ui.content.main.EmptyContent;
 import rtt.ui.content.main.ProjectContent;
+import rtt.ui.dialogs.ResourceSelectionAdapter.DialogType;
+import rtt.ui.model.RttProject;
 import rtt.ui.viewer.BaseContentLabelProvider;
 import rtt.ui.viewer.BaseContentProvider;
 
 public class ConfigurationDialog extends TitleAreaDialog {
 	
-	// TODO better search scope
-	static final IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
-	static final IRunnableContext context = PlatformUI.getWorkbench().getProgressService();
-	
-	private class ClassSelectionAdapter extends SelectionAdapter {		
-		
-		private Text text;
-		private Shell shell;
-		
-		public ClassSelectionAdapter(Text text) {
-			super();
-			this.text = text;
-			shell = getParentShell();
-		}
-
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			try {
-				SelectionDialog selectionDialog = JavaUI.createTypeDialog(shell,context,scope,
-								IJavaElementSearchConstants.CONSIDER_CLASSES_AND_INTERFACES,
-								false);
-				
-				if (selectionDialog.open() == Dialog.OK) {
-					for (Object o : selectionDialog.getResult()) {
-						if (o instanceof IType) {
-							IType type = (IType) o;
-							text.setText(type.getFullyQualifiedName());
-						}						
-					}
-				}
-			} catch (JavaModelException exception) {
-				exception.printStackTrace();
-			}		
-		}
-	}
-	
-	private class ResourceSelectionAdapter extends SelectionAdapter {
-		private SelectionDialog dialog;
-		
-		public ResourceSelectionAdapter(SelectionDialog dialog) {
-			this.dialog = dialog;
-		}
-		
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			if (dialog.open() == Dialog.OK) {
-				for (Object o : dialog.getResult()) {
-					Path path = new Path();
-					
-					if (o instanceof IResource) {
-						IResource file = (IResource) o;
-						
-						path.setValue(file.getLocation().toPortableString());
-						tempClasspath.getPath().add(path);
-					}
-					
-					if (o instanceof IPath) {
-						IPath folderPath = (IPath) o;
-						path.setValue("." + folderPath.toPortableString());
-						tempClasspath.getPath().add(path);
-					}
-				}			
-				listViewer.setInput(new ClasspathContent(null, tempClasspath));
-			}
-		}
-	}
+	private IJavaSearchScope scope = SearchEngine.createWorkspaceScope();	
 	
 	private Text nameText;
 	private Text lexerText;
@@ -131,54 +53,26 @@ public class ConfigurationDialog extends TitleAreaDialog {
 
 	private String title;
 	private String message;
-	private boolean isDefault;	
+	private boolean isDefault;
+	
+	private RttProject project;	
 	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public ConfigurationDialog(Shell parentShell, ConfigurationContent content) {
-		super(parentShell);
-		initDialog(parentShell);
+	public ConfigurationDialog(Shell parentShell, ProjectContent projectContent, Configuration config) {
+		super(parentShell);	
 		
-		this.title = "Edit configuration";
-		this.message = "Modify an existing configuration ...";		
+		setShellStyle(SWT.DIALOG_TRIM);
+		setHelpAvailable(false);
+		red = new Color(null, 255, 150, 150);
 		
-		config = content.getConfiguration();
-		initTempClasspath(config);
-	}
-	
-	/**
-	 * Create the dialog.
-	 * @param parentShell
-	 * @wbp.parser.constructor
-	 */
-	public ConfigurationDialog(Shell parentShell, ProjectContent content) {
-		super(parentShell);
-		initDialog(parentShell);
+		this.project = projectContent.getProject();
+		scope = SearchEngine.createJavaSearchScope(
+				new IJavaElement[] { project.getJavaProject() }, true);
 		
-		this.title = "New configuration";
-		this.message = "Create a new configuration for testing ...";
-		
-		this.config = new Configuration();
-		config.setName("myConfig");
-		config.setClasspath(new Classpath());
-		
-		LexerClass lexer = new LexerClass();
-		lexer.setValue("");
-		config.setLexerClass(lexer);
-		
-		ParserClass parser = new ParserClass();
-		parser.setValue("");
-		config.setParserClass(parser);
-		
-		Classpath classpath = new Classpath();
-		Path path = new Path();
-		System.out.println(content.getProject().find("bin").toPortableString());
-		path.setValue(content.getProject().find("bin").toPortableString());
-		classpath.getPath().add(path);
-		config.setClasspath(classpath);
-		
+		this.config = config;		
 		initTempClasspath(config);
 	}
 	
@@ -195,34 +89,55 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		}
 	}
 	
-	private void initDialog(Shell parentShell) {
-		setShellStyle(SWT.DIALOG_TRIM);
-		setHelpAvailable(false);
-		red = new Color(null, 255, 150, 150);
-	}
-	
 	@Override
 	protected void finalize() throws Throwable {
 		red.dispose();
 		super.finalize();
 	}
 	
-	private void addTextListener(final Text text) {
-		text.addModifyListener(new ModifyListener() {
+	private ModifyListener getModifyListener() {
+		return new ModifyListener() {
+			
+			private boolean hasContent(Text text) {
+				String content = text.getText().trim();
+				boolean hasContent = !content.equals("");
+				
+				if (hasContent) {
+					text.setBackground(null);
+				} else {
+					text.setBackground(red);
+				}
+				
+				return hasContent;
+			}
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if (text.getText().trim().equals("")) {
-					setErrorMessage("Please check marked text box(es)");
-					text.setBackground(red);
-					getButton(OK).setEnabled(false);
-				} else {
+				
+				boolean nameHasContent = hasContent(nameText);
+				boolean lexerHasContent = hasContent(lexerText);
+				boolean parserHasContent = hasContent(parserText);
+				
+				// if name is empty disable ok button, else disable only if lexer AND parser is empty
+				getButton(OK).setEnabled(nameHasContent && (lexerHasContent || parserHasContent));
+				
+				if (nameHasContent && lexerHasContent && parserHasContent) {
 					setErrorMessage(null);
-					text.setBackground(null);
-					getButton(OK).setEnabled(true);
+				} else {
+					setErrorMessage("Please check marked text box(es)");
 				}
 			}
-		});
+		};
+	}
+	
+	@Override
+	public void setTitle(String newTitle) {
+		this.title = newTitle;
+	}
+	
+	@Override
+	public void setMessage(String newMessage) {
+		this.message = newMessage;
 	}
 
 	/**
@@ -231,8 +146,9 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		setMessage(message);
-		setTitle(title);
+		super.setMessage(message, IMessageProvider.INFORMATION);
+		super.setTitle(title);
+		
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
 		container.setLayout(new GridLayout(3, false));
@@ -243,11 +159,9 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		nameLabel.setText("Name:");
 		
 		nameText = new Text(container, SWT.BORDER);
+		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		nameText.setText(config.getName());
-		GridData gd_nameText = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_nameText.widthHint = 326;
-		nameText.setLayoutData(gd_nameText);
-		addTextListener(nameText);
+		nameText.addModifyListener(getModifyListener());
 		
 		defaultButton = new Button(container, SWT.CHECK);
 		defaultButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
@@ -261,12 +175,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		lexerText = new Text(container, SWT.BORDER);
 		lexerText.setText(config.getLexerClass().getValue());
 		lexerText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		addTextListener(lexerText);
+		lexerText.addModifyListener(getModifyListener());
 		
 		Button lexerButton = new Button(container, SWT.NONE);
 		lexerButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lexerButton.setText("Find ...");
-		lexerButton.addSelectionListener(new ClassSelectionAdapter(lexerText));
+		lexerButton.addSelectionListener(new ClassSelectionAdapter(getParentShell(), lexerText, scope));
 		
 		Label parserLabel = new Label(container, SWT.NONE);
 		parserLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -275,18 +189,18 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		parserText = new Text(container, SWT.BORDER);
 		parserText.setText(config.getParserClass().getValue());		
 		parserText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		addTextListener(parserText);
+		parserText.addModifyListener(getModifyListener());
 		
 		Button parserButton = new Button(container, SWT.NONE);
 		parserButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 0, 1));
 		parserButton.setText("Find ...");
-		parserButton.addSelectionListener(new ClassSelectionAdapter(parserText));
+		parserButton.addSelectionListener(new ClassSelectionAdapter(getParentShell(), parserText, scope));
 		
 		Label classpathLabel = new Label(container, SWT.NONE);
 		classpathLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		classpathLabel.setText("Classpath:");
 		
-		listViewer = new ListViewer(container);
+		listViewer = new ListViewer(container, SWT.SINGLE);
 		listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		listViewer.setContentProvider(new BaseContentProvider());
 		listViewer.setLabelProvider(new BaseContentLabelProvider());
@@ -299,14 +213,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		Button btnAddFile = new Button(classpathComposite, SWT.NONE);
 		btnAddFile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnAddFile.setText("Add file ...");
-		btnAddFile.addSelectionListener(new ResourceSelectionAdapter(new ResourceSelectionDialog(
-						getParentShell(), ResourcesPlugin.getWorkspace().getRoot(), "Test")));
+		btnAddFile.addSelectionListener(ResourceSelectionAdapter.createAdapter(DialogType.RESOURCE, this));
 		
 		Button btnAddFolder = new Button(classpathComposite, SWT.NONE);
 		btnAddFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnAddFolder.setText("Add folder ...");
-		btnAddFolder.addSelectionListener(new ResourceSelectionAdapter(new ContainerSelectionDialog(
-				getParentShell(), ResourcesPlugin.getWorkspace().getRoot(), false, "Test")));
+		btnAddFolder.addSelectionListener(ResourceSelectionAdapter.createAdapter(DialogType.CONTAINER, this));
 		
 		Composite composite = new Composite(classpathComposite, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -315,6 +227,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		btnRemove.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnRemove.setText("Remove");
 		btnRemove.setEnabled(false);
+		
+		Composite spacer = new Composite(container, SWT.NONE);
+		GridData gd_spacer = new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1);
+		gd_spacer.heightHint = 30;
+		spacer.setLayoutData(gd_spacer);
+		
 		btnRemove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -356,19 +274,8 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 
 		return area;
-	}
-
-	/**
-	 * Create contents of the button bar.
-	 * @param parent
-	 */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-				true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
-	}
+	}	
+	
 	
 	@Override
 	protected void okPressed() {
@@ -387,7 +294,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(500, 430);
+		return new Point(500, 450);
 	}
 
 	public Configuration getConfiguration() {
@@ -396,5 +303,17 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	
 	public boolean isDefault() {
 		return isDefault;
+	}
+
+	protected RttProject getProject() {
+		return project;
+	}
+
+	protected Classpath getTempClasspath() {
+		return tempClasspath;
+	}
+
+	protected ListViewer getViewer() {
+		return listViewer;
 	}
 }

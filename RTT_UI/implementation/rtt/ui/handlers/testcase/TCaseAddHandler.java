@@ -26,7 +26,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 				event);
 
 		ResourceSelectionDialog resDialog = new ResourceSelectionDialog(
-				getParentShell(event), suite.getProject().getWorkspaceProject(),
+				getParentShell(event), suite.getProject().getJavaProject().getProject(),
 				"Select File...");
 
 		resDialog.setBlockOnOpen(true);

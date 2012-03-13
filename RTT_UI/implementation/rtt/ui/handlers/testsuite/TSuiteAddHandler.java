@@ -7,11 +7,10 @@ import org.eclipse.jface.dialogs.InputDialog;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
-import rtt.ui.model.RttProject;
 
 public class TSuiteAddHandler extends AbstractSelectionHandler {
 	
-	//CHRISTIAN
+	//FIXME delete before shipping
 	private final String initialValue = "testSuite";
 
 	@Override

@@ -152,14 +152,11 @@ public class AttributeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Attribute)object).getName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Attribute_type") :
-			getString("_UI_Attribute_type") + " " + label;
+		Attribute attribute = (Attribute) object;
+		return attribute.getName() + " = " + attribute.getValue();
 	}
 
 	/**

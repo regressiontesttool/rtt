@@ -29,6 +29,7 @@ import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.logging.LogDetailContent;
 import rtt.ui.content.logging.LogEntryContent;
+import rtt.ui.content.main.LogDirectoryContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.ContentDoubleClickListener;
 import rtt.ui.viewer.ContentTreeViewer;
@@ -175,7 +176,10 @@ public class LogView extends ViewPart implements IRttListener {
 	@Override
 	public void update(ProjectContent projectContent) {
 		if (projectContent != null) {
-			contentViewer.setInput(projectContent.getLogDirectory());
+			LogDirectoryContent logDirectory = projectContent.getLogDirectory();
+			
+			combo.setEnabled(!logDirectory.isEmpty());			
+			contentViewer.setInput(logDirectory);
 		}		
 	}
 

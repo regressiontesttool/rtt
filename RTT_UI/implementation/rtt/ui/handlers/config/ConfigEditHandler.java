@@ -12,24 +12,31 @@ import rtt.ui.content.main.ProjectContent;
 import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
 
-public class ConfigEditHandler extends AbstractSelectionHandler implements IHandler {
+public class ConfigEditHandler extends AbstractSelectionHandler implements
+		IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ProjectContent projectContent = this.getProjectContent(event);
 		ConfigurationContent configContent = getSelectedObject(
 				ConfigurationContent.class, event);
-		
+
 		ConfigurationDialog configDialog = new ConfigurationDialog(
-				getParentShell(event), configContent);
+				getParentShell(event), projectContent,
+				configContent.getConfiguration());
+		
+		configDialog.setTitle("Edit configuration");
+		configDialog.setMessage("Modify an existing configuration ...");
 
 		if (configDialog.open() == Dialog.OK) {
-			try {				
+			try {
 				Configuration config = configContent.getConfiguration();
-				projectContent.addConfiguration(config, configDialog.isDefault());
+				projectContent.addConfiguration(config,
+						configDialog.isDefault());
 				RttPluginUI.refreshListener();
-			} catch (Exception e) {
-				throw new ExecutionException("Could not modify configuration.", e);
+			} catch (Exception exception) {
+				throw new ExecutionException("Could not modify configuration.",
+						exception);
 			}
 		}
 

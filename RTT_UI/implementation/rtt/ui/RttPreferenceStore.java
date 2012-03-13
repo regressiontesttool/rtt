@@ -33,7 +33,7 @@ public class RttPreferenceStore {
 			try {
 				pref.flush();
 			} catch (BackingStoreException e) {
-				e.printStackTrace();
+				RttLog.log(e);
 			}
 		}		
 	}
