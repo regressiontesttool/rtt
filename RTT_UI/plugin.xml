@@ -319,7 +319,7 @@
             <visibleWhen
                   checkEnabled="false">
                <reference
-                     definitionId="rtt.ui.definitions.type.testsuiteDir">
+                     definitionId="rtt.ui.definitions.selection.testsuite_directory">
                </reference>
             </visibleWhen>
          </command>
@@ -471,6 +471,22 @@
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="rtt.ui.definitions.selection.testsuite_directory">
+         <with
+               variable="activeMenuSelection">
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <instanceof
+                     value="rtt.ui.content.main.TestsuiteDirectory">
+               </instanceof>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </with>
+      </definition>
       <definition
             id="rtt.ui.definitions.selection.testsuite">
          <with
@@ -694,18 +710,6 @@
       <requires-nature
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               id="rtt.ui.views.SampleView"
-               ratio="0.5"
-               relationship="right"
-               relative="org.eclipse.ui.views.TaskList">
-         </view>
-      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

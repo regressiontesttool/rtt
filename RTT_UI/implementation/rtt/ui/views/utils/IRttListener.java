@@ -1,4 +1,4 @@
-package rtt.ui;
+package rtt.ui.views.utils;
 
 import rtt.ui.content.IContent;
 

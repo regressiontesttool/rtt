@@ -6,42 +6,39 @@ import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Path;
-import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
 import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ConfigurationContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
-import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.model.RttProject;
 
 public class ProjectContent extends AbstractContent {
 
 	private RttProject project;
-	private List<IContent> testsuiteContents;
+	
 	private List<IContent> configContents;
 	
-	private LogDirectoryContent logDirectory;
-
-//	private Map<String, IContentObserver> observers;
+	private LogDirectory logDirectory;
+	private TestsuiteDirectory testsuiteDirectory;
 
 	public ProjectContent(RttProject project) {
 		super(null);
-
-//		this.observers = new HashMap<String, IContentObserver>();
+		
 		this.project = project;
 
+		logDirectory = new LogDirectory(this);
+		testsuiteDirectory = new TestsuiteDirectory(this);
+		
 		loadContents();		
-		logDirectory = new LogDirectoryContent(this);
 	}
 
 	private void loadContents() {
-		testsuiteContents = loadTestsuites();
 		configContents = loadConfigs();
 
 		childs.add(new SimpleTypedContent(this,
 				ContentType.CONFIGURATION_DIRECTORY, configContents));
-		childs.add(new SimpleTypedContent(this,
-				ContentType.TESTSUITE_DIRECTORY, testsuiteContents));
+		
+		childs.add(testsuiteDirectory);
 	}
 
 	@Override
@@ -81,19 +78,6 @@ public class ProjectContent extends AbstractContent {
 		return contents;
 	}
 
-	private List<IContent> loadTestsuites() {
-		List<Testsuite> suites = project.getArchive().getTestsuites(false);
-		List<IContent> contents = new ArrayList<IContent>();
-
-		if (suites != null) {
-			for (Testsuite testsuite : suites) {
-				contents.add(new TestsuiteContent(this, testsuite));
-			}
-		}
-
-		return contents;
-	}
-
 	public String getText() {
 		return project.getName();
 	}
@@ -108,37 +92,25 @@ public class ProjectContent extends AbstractContent {
 		return project;
 	}
 
-	public List<IContent> getTestsuiteContents() {
-		return testsuiteContents;
-	}
-
 	public List<IContent> getConfigContents() {
 		return configContents;
 	}
 
-	public LogDirectoryContent getLogDirectory() {
+	public LogDirectory getLogDirectory() {
 		return logDirectory;
+	}
+	
+	public TestsuiteDirectory getTestsuiteDirectory() {
+		return testsuiteDirectory;
 	}
 
 	public void reload() {
-		childs.clear();
-		loadContents();
 		logDirectory.reload();
+		testsuiteDirectory.reload();
+		
+		childs.clear();
+		loadContents();		
 	}
-
-//	public synchronized void addObserver(IContentObserver observer) {
-//		observers.put(observer.getObserverID(), observer);
-//	}
-//
-//	public synchronized void removeObserver(IContentObserver observer) {
-//		observers.remove(observer.getObserverID());
-//	}
-
-//	public synchronized void fireContentChanged() {
-//		for (IContentObserver observer : observers.values()) {
-//			observer.update(this);
-//		}
-//	}
 
 	public void addConfiguration(Configuration config, boolean makeDefault)
 			throws RTTException {

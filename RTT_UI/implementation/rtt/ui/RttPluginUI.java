@@ -20,6 +20,7 @@ import rtt.ui.content.main.ProjectDirectoryContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.core.RttNature;
 import rtt.ui.model.RttProject;
+import rtt.ui.views.utils.RttListenerManager;
 
 /**
  * The activator class controls the plug-in life cycle

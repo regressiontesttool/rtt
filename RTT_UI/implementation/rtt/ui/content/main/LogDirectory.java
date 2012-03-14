@@ -8,11 +8,11 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.logging.LogEntryContent;
 import rtt.ui.content.logging.TestrunContent;
 
-public class LogDirectoryContent extends AbstractContent implements IContent {	
+public class LogDirectory extends AbstractContent implements IContent {	
 
 	private boolean isEmpty;
 
-	public LogDirectoryContent(ProjectContent parent) {
+	public LogDirectory(ProjectContent parent) {
 		super(parent);
 		loadContents();		
 	}
@@ -34,7 +34,7 @@ public class LogDirectoryContent extends AbstractContent implements IContent {
 					} else {
 						childs.add(new LogEntryContent(this, entry));
 					}
-					System.out.println(entry.getType().toString() + ": " + (System.currentTimeMillis() - start));
+//					System.out.println(entry.getType().toString() + ": " + (System.currentTimeMillis() - start));
 				}
 			}
 		} else {

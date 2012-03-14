@@ -1,4 +1,4 @@
-package rtt.ui;
+package rtt.ui.views.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class RttListenerManager<T extends IContent> {
 		listeners.remove(listener);
 	}
 	
-	protected void refreshListener()  {
+	public void refreshListener()  {
 		for (IRttListener<T> listener : listeners) {
 			listener.refresh();
 		}

@@ -10,13 +10,13 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
-import rtt.ui.IRttListener;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.ProjectDirectoryContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.viewer.ContentTreeViewer;
+import rtt.ui.views.utils.IRttListener;
 
 public class ProjectView extends ViewPart implements ISelectionListener, IRttListener<ProjectContent> {
 
@@ -78,7 +78,7 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 
 	private void setViewerData(ProjectDirectoryContent content) {		
 		projectViewer.setInput(content);		
-		projectViewer.expandToLevel(3);
+//		projectViewer.expandToLevel(2);
 	}
 
 	@Override

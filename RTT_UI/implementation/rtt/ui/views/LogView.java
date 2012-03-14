@@ -23,17 +23,17 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 
-import rtt.ui.IRttListener;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.logging.LogDetailContent;
 import rtt.ui.content.logging.LogEntryContent;
-import rtt.ui.content.main.LogDirectoryContent;
+import rtt.ui.content.main.LogDirectory;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.ContentDoubleClickListener;
 import rtt.ui.viewer.ContentTreeViewer;
 import rtt.ui.viewer.ContentViewerFilter;
+import rtt.ui.views.utils.IRttListener;
 
 public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 	
@@ -176,7 +176,7 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 	@Override
 	public void update(ProjectContent projectContent) {
 		if (projectContent != null) {
-			LogDirectoryContent logDirectory = projectContent.getLogDirectory();
+			LogDirectory logDirectory = projectContent.getLogDirectory();
 			
 			combo.setEnabled(!logDirectory.isEmpty());			
 			contentViewer.setInput(logDirectory);
