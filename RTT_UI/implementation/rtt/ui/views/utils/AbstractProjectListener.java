@@ -15,6 +15,8 @@ public abstract class AbstractProjectListener implements IRttListener<ProjectCon
 	}
 
 	@Override
-	public void refresh() {}
+	public void refresh() {
+		System.out.println("Refresh - ProjectListener");		
+	}
 
 }

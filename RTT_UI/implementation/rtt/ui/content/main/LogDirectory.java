@@ -42,7 +42,7 @@ public class LogDirectory extends AbstractContent implements IContent {
 		}
 	}
 	
-	protected void reload() {
+	public void reload() {
 		childs.clear();
 		loadContents();
 	}

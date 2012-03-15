@@ -52,55 +52,68 @@ public class TestView extends ViewPart implements ISelectionListener {
 		public void refresh() {
 			contentViewer.refresh(true);
 			comboViewer.refresh(true);
+
+			super.refresh();
 		}
 
 		@Override
 		public void update(ProjectContent content) {
 			if (content != null) {
-				TestsuiteDirectory suiteDirectory = content.getTestsuiteDirectory();
+				TestsuiteDirectory suiteDirectory = content
+						.getTestsuiteDirectory();
 				comboViewer.setInput(suiteDirectory);
 				comboViewer.getControl().setEnabled(!suiteDirectory.isEmpty());
 				
+				contentViewer.setInput(content.getLogDirectory());
+
 				if (suiteDirectory.isEmpty() == false) {
-					comboViewer.setSelection(new StructuredSelection(
-							suiteDirectory.getTestsuite(0)));
+					TestsuiteContent suite = suiteDirectory.getTestsuite(0);
+//					RttPluginUI.getSuiteManager().setCurrentContent(suite);
+					
+//					comboViewer.setSelection(new StructuredSelection(suite));
+					contentViewer
+							.setFilters(new ViewerFilter[] { new SuiteFilter(
+									suite.getText()) });
 				}
+
 				
-//				List<IContent> contentList = content.getTestsuiteContents();
-//				if (contentList.size() > 0) {
-//
-//					IContent firstElement = contentList.get(0);
-//					
-//					comboViewer.getControl().setEnabled(true);
-//
-//					contentViewer.setInput(content.getLogDirectory());
-//					contentViewer
-//							.setFilters(new ViewerFilter[] { new SuiteFilter(
-//									firstElement.getText()) });
-//					contentViewer.getControl().setEnabled(true);
-//				} else {
-//					comboViewer.getControl().setEnabled(false);
-//					contentViewer.setInput(new Object[0]);
-//					contentViewer.getControl().setEnabled(false);
-//				}
+
+				// List<IContent> contentList = content.getTestsuiteContents();
+				// if (contentList.size() > 0) {
+				//
+				// IContent firstElement = contentList.get(0);
+				//
+				// comboViewer.getControl().setEnabled(true);
+				//
+				// contentViewer.setInput(content.getLogDirectory());
+				// contentViewer
+				// .setFilters(new ViewerFilter[] { new SuiteFilter(
+				// firstElement.getText()) });
+				// contentViewer.getControl().setEnabled(true);
+				// } else {
+				// comboViewer.getControl().setEnabled(false);
+				// contentViewer.setInput(new Object[0]);
+				// contentViewer.getControl().setEnabled(false);
+				// }
 			}
 		}
 	}
 
 	private class TestsuiteListener extends AbstractTestsuiteListener {
-		
+
 		@Override
 		public void refresh() {
 			comboViewer.refresh(true);
+
+			super.refresh();
 		}
 
 		@Override
 		public void update(TestsuiteContent content) {
 			if (content != null) {
 				comboViewer.setSelection(new StructuredSelection(content));
-				// contentViewer.setFilters(new ViewerFilter[] { new
-				// SuiteFilter(
-				// content.getText()) });
+				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
+						content.getText()) });
 			}
 		}
 	}
@@ -160,7 +173,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 				1));
 		comboViewer.setLabelProvider(new BaseContentLabelProvider());
 		comboViewer.setContentProvider(new BaseContentProvider());
-
+		
 		Button btnGenerate = new Button(runGroup, SWT.NONE);
 		btnGenerate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 2, 1));
@@ -199,9 +212,9 @@ public class TestView extends ViewPart implements ISelectionListener {
 		Menu menu = menuManager.createContextMenu(contentViewer.getControl());
 		contentViewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, contentViewer);
-
+		
+		getSite().getPage().addSelectionListener(ID, this);
 		getSite().setSelectionProvider(comboViewer);
-		getSite().getPage().addSelectionListener(this);
 
 		projectListener = new ProjectListener();
 		suiteListener = new TestsuiteListener();
@@ -209,6 +222,9 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void dispose() {
+		
+		getSite().getPage().removeSelectionListener(ID, this);
+
 		projectListener.removeListener();
 		projectListener = null;
 
@@ -251,16 +267,11 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (part == this && selection instanceof IStructuredSelection) {
-			IStructuredSelection sselection = (IStructuredSelection) selection;
-			Object selectedObject = sselection.getFirstElement();
+		IStructuredSelection sSelection = (IStructuredSelection) selection;
 
-			if (selectedObject != null
-					&& (selectedObject instanceof TestsuiteContent)) {
-				TestsuiteContent content = (TestsuiteContent) selectedObject;
-				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
-						content.getText()) });
-			}
+		if (sSelection.getFirstElement() instanceof TestsuiteContent) {
+			TestsuiteContent content = (TestsuiteContent) sSelection.getFirstElement();
+			RttPluginUI.getSuiteManager().setCurrentContent(content);
 		}
 	}
 }

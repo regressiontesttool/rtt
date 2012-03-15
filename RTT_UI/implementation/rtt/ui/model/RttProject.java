@@ -95,12 +95,12 @@ public class RttProject {
 		manager.removeClassPathEntry(configName, entry);
 	}
 
-	public void addTestsuite(String suiteName) throws RTTException {
-		manager.createTestSuite(suiteName);
+	public boolean addTestsuite(String suiteName) throws RTTException {
+		return manager.createTestSuite(suiteName);
 	}
 
-	public void removeTestsuite(String suiteName) throws RTTException {
-		manager.removeTestsuite(suiteName);
+	public boolean removeTestsuite(String suiteName) throws RTTException {
+		return manager.removeTestsuite(suiteName);
 	}
 
 	public void addTestcase(String text, IFile file) throws RTTException {

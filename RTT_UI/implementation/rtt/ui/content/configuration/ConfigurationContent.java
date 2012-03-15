@@ -43,7 +43,7 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 		}
 	}
 	
-	private void reload() {
+	public void reload() {
 		childs.clear();
 		loadContent();
 	}

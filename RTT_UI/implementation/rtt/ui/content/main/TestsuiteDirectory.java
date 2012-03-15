@@ -3,6 +3,7 @@ package rtt.ui.content.main;
 import java.util.List;
 
 import rtt.core.archive.testsuite.Testsuite;
+import rtt.ui.content.IContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 
 public class TestsuiteDirectory extends AbstractContent {
@@ -22,9 +23,21 @@ public class TestsuiteDirectory extends AbstractContent {
 		}
 	}
 	
+	@Override
 	public void reload() {
-		childs.clear();
-		loadContents();
+		for (IContent content : childs) {
+			content.reload();
+		}
+	}
+	
+	public void addTestsuite(Testsuite newSuite) {
+		if (newSuite != null) {
+			childs.add(new TestsuiteContent(this, newSuite));
+		}
+	}
+	
+	public void removeTestsuite(TestsuiteContent suite) {
+		childs.remove(suite);
 	}
 	
 	public boolean isEmpty() {

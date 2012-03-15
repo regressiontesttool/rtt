@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,6 +40,8 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		public void refresh() {
 			comboViewer.refresh();
 //			treeViewer.refresh(true);
+			
+			super.refresh();
 		}
 
 		@Override
@@ -49,8 +52,10 @@ public class VersionView extends ViewPart implements ISelectionListener {
 				comboViewer.getControl().setEnabled(!suiteDirectory.isEmpty());
 				
 				if (suiteDirectory.isEmpty() == false) {
-					comboViewer.setSelection(new StructuredSelection(
-							suiteDirectory.getTestsuite(0)));
+//					comboViewer.setSelection(new StructuredSelection(
+//							suiteDirectory.getTestsuite(0)));
+					
+//					RttPluginUI.getSuiteManager().setCurrentContent(suiteDirectory.getTestsuite(0));
 				}
 			}
 		}
@@ -102,7 +107,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 				1));
 		comboViewer.setLabelProvider(new BaseContentLabelProvider());
 		comboViewer.setContentProvider(new BaseContentProvider());
-
+		
 		Label caseLabel = new Label(composite, SWT.NONE);
 		caseLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 				false, 1, 1));
@@ -134,6 +139,8 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tree.setEnabled(false);
 		
+		getSite().setSelectionProvider(comboViewer);
+		getSite().getPage().addSelectionListener(ID, this);
 		
 		projectListener = new ProjectListener();
 		suiteListener = new TestsuiteListener();
@@ -141,6 +148,8 @@ public class VersionView extends ViewPart implements ISelectionListener {
 	
 	@Override
 	public void dispose() {
+		getSite().getPage().removeSelectionListener(ID, this);
+		
 		projectListener.removeListener();
 		projectListener = null;
 		
@@ -248,8 +257,12 @@ public class VersionView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// TODO Auto-generated method stub
-		
+		IStructuredSelection sSelection = (IStructuredSelection) selection;
+
+		if (sSelection.getFirstElement() instanceof TestsuiteContent) {
+			TestsuiteContent content = (TestsuiteContent) sSelection.getFirstElement();
+			RttPluginUI.getSuiteManager().setCurrentContent(content);
+		}
 	}
 
 	

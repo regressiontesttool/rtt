@@ -35,7 +35,7 @@ public class TestsuiteContent extends AbstractContent {
 		}
 	}
 	
-	private void reload() {
+	public void reload() {
 		childs.clear();
 		loadContent();
 	}
@@ -85,9 +85,7 @@ public class TestsuiteContent extends AbstractContent {
 		
 		reload();
 	}
-
 	
-
 	public void removeTestcase(String caseName) throws RTTException {
 		RttProject project = this.getProject();
 		

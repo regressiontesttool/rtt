@@ -20,6 +20,7 @@ import rtt.ui.content.main.ProjectDirectoryContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.core.RttNature;
 import rtt.ui.model.RttProject;
+import rtt.ui.views.utils.ProjectListenerManager;
 import rtt.ui.views.utils.RttListenerManager;
 
 /**
@@ -34,7 +35,7 @@ public class RttPluginUI extends AbstractUIPlugin {
 	private static RttPluginUI plugin;
 	
 	private ProjectDirectoryContent projectDirectory;
-	private RttListenerManager<ProjectContent> projectManager;
+	private ProjectListenerManager projectManager;
 	private RttListenerManager<TestsuiteContent> suiteManager;
 	
 	/**
@@ -42,6 +43,7 @@ public class RttPluginUI extends AbstractUIPlugin {
 	 */
 	public RttPluginUI() {
 		suiteManager = new RttListenerManager<TestsuiteContent>();
+		projectManager = new ProjectListenerManager();
 	}
 	
 	public static void addProject(IProject project) {
@@ -103,8 +105,8 @@ public class RttPluginUI extends AbstractUIPlugin {
 					ProjectContent content = new ProjectContent(newProject);
 					projects.add(content);
 					
-					if (projectManager == null) {
-						projectManager = new RttListenerManager<ProjectContent>(content);
+					if (projectManager.getCurrentContent() == null) {
+						projectManager.setCurrentContent(content);
 					}
 				}				
 

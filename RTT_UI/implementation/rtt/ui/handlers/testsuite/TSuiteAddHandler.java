@@ -6,6 +6,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
+import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.handlers.AbstractSelectionHandler;
 
 public class TSuiteAddHandler extends AbstractSelectionHandler {
@@ -16,7 +17,7 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
-		ProjectContent projectContent = this.getProjectContent(event);
+		ProjectContent projectContent = getProjectContent(event);
 		
 		InputDialog inputDialog = new InputDialog(
 				getParentShell(event), 

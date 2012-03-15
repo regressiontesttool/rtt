@@ -31,10 +31,8 @@ public abstract class AbstractContent implements IContent {
 	}
 	
 	@Override
-	public void load() {
-		if (parent != null) {
-			parent.load();
-		}
+	public void reload() {
+		
 	}
 	
 	@Override

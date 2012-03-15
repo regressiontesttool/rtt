@@ -35,8 +35,9 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 		projectViewer.getControl().setMenu(menu);
 		
 		getSite().registerContextMenu(menuManager, projectViewer);
+		
 		getSite().setSelectionProvider(projectViewer);
-		getSite().getPage().addSelectionListener(this);
+		getSite().getPage().addSelectionListener(ID, this);
 		
 		RttPluginUI.getProjectManager().addListener(this);		
 		setViewerData(RttPluginUI.getProjectDirectory());
@@ -63,22 +64,24 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 			if (selectedObject != null && (selectedObject instanceof IContent)) {
 				IContent content = (IContent) selectedObject;
 				
-				TestsuiteContent suiteContent = content.getContent(TestsuiteContent.class);				
-				if (suiteContent != null) {
-					RttPluginUI.getSuiteManager().setCurrentContent(suiteContent);
-				}
+				System.out.println("ProjectView $ Selection Changed");
 				
 				ProjectContent projectContent = content.getContent(ProjectContent.class);
 				if (projectContent != null) {
 					RttPluginUI.getProjectManager().setCurrentContent(projectContent);
 				}
+				
+				TestsuiteContent suiteContent = content.getContent(TestsuiteContent.class);				
+				if (suiteContent != null) {
+					RttPluginUI.getSuiteManager().setCurrentContent(suiteContent);
+				}				
 			}
 		}
 	}
 
 	private void setViewerData(ProjectDirectoryContent content) {		
 		projectViewer.setInput(content);		
-//		projectViewer.expandToLevel(2);
+		projectViewer.expandToLevel(3);
 	}
 
 	@Override

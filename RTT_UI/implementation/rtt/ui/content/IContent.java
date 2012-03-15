@@ -54,9 +54,6 @@ public interface IContent {
 	 * @return a rtt project
 	 */
 	RttProject getProject();
-	
-	/**
-	 * ??
-	 */
-	void load();
+
+	void reload();
 }

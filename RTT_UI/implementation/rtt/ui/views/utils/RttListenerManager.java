@@ -10,11 +10,6 @@ public class RttListenerManager<T extends IContent> {
 	private List<IRttListener<T>> listeners;
 	private T currentContent;
 	
-	public RttListenerManager(T initContent) {
-		this();
-		currentContent = initContent;
-	}
-	
 	public RttListenerManager() {
 		listeners = new ArrayList<IRttListener<T>>();
 	}
@@ -33,14 +28,21 @@ public class RttListenerManager<T extends IContent> {
 		}
 	}
 	
-	public void setCurrentContent(T newContent) {
+	public boolean setCurrentContent(T newContent) {
 		if (currentContent != newContent) {
 			currentContent = newContent;
 			for (IRttListener<T> listener : listeners) {
+				System.out.println("***  Content changend: " + newContent + " - " + listener.getClass());
+				
 				listener.update(newContent);
 			}
+			
+			return true;
 		}
+		
+		return false;
 	}
+	
 	
 	public T getCurrentContent() {
 		return currentContent;

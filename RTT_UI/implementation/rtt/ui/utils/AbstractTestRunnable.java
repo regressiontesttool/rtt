@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import rtt.ui.content.main.ProjectContent;
+import rtt.ui.content.testsuite.TestsuiteContent;
 
 public abstract class AbstractTestRunnable implements IRunnableWithProgress {
 
@@ -29,5 +30,5 @@ public abstract class AbstractTestRunnable implements IRunnableWithProgress {
 	
 	public String getMessageTitle() {
 		return title;
-	}	
+	}
 }

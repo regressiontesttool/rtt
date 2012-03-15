@@ -12,17 +12,16 @@ public class TSuiteRemoveHandler extends AbstractSelectionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectContent projectContent = this.getProjectContent(event);
+		ProjectContent projectContent = getProjectContent(event);
 		TestsuiteContent suite = getSelectedObject(TestsuiteContent.class, event);
 		
 		try {
-			projectContent.removeTestsuite(suite.getText());
+			projectContent.removeTestsuite(suite);
 			RttPluginUI.refreshManager();
 		} catch (Exception e) {
 			throw new ExecutionException("Could not remove test suite.", e);
 		}
 		
 		return null;
-	}
-	
+	}	
 }
