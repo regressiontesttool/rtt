@@ -456,9 +456,8 @@ public class Manager {
 				testSuite, ti);
 	}
 
-	public Testsuite createTestSuite(String suiteName) {
-		currentArchive.addTestsuite(suiteName);
-		return currentArchive.getTestsuite(suiteName, false);
+	public boolean createTestSuite(String suiteName) {
+		return currentArchive.addTestsuite(suiteName);
 	}
 
 	/**
@@ -482,7 +481,10 @@ public class Manager {
 
 		Testsuite t = currentArchive.getTestsuite(suiteName, false);
 		if (t == null) {
-			t = createTestSuite(suiteName);
+			if (createTestSuite(suiteName) == false) {
+				throw new RTTException(Type.TESTSUITE, "Could not create test suite.");
+			}
+			t = currentArchive.getTestsuite(suiteName, false);
 		}
 
 		String caseName = TestsuiteManager.getCaseName(file);
@@ -662,7 +664,7 @@ public class Manager {
 		currentArchive.getLogManager().export(location);
 	}
 
-	public void removeTestsuite(String testSuite) throws RTTException {
+	public boolean removeTestsuite(String testSuite) throws RTTException {
 		if (!isInitialized())
 			throw new RTTException(Type.ARCHIVE, "No archive loaded.");
 
@@ -676,8 +678,12 @@ public class Manager {
 		for (Testcase tc : testcases)
 			removeTest(t, tc);
 
-		currentArchive.removeTestsuite(testSuite);
-		currentLog.addInformational("Testsuite removed: ", testSuite);
+		if (currentArchive.removeTestsuite(testSuite) == false) {
+			return false;
+		}
+		
+		currentLog.addInformational("Testsuite removed: ", testSuite);		
+		return true;		
 	}
 
 	public void removeTest(String testSuit, String testCase)
