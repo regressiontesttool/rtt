@@ -8,7 +8,6 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Path;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
-import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ConfigurationContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
@@ -18,21 +17,21 @@ import rtt.ui.model.RttProject;
 public class ProjectContent extends AbstractContent {
 
 	private RttProject project;
-	
+
 	private List<IContent> configContents;
-	
+
 	private LogDirectory logDirectory;
 	private TestsuiteDirectory suiteDirectory;
 
 	public ProjectContent(RttProject project) {
 		super(null);
-		
+
 		this.project = project;
 
 		logDirectory = new LogDirectory(this);
 		suiteDirectory = new TestsuiteDirectory(this);
-		
-		loadContents();		
+
+		loadContents();
 	}
 
 	private void loadContents() {
@@ -40,7 +39,7 @@ public class ProjectContent extends AbstractContent {
 
 		childs.add(new SimpleTypedContent(this,
 				ContentType.CONFIGURATION_DIRECTORY, configContents));
-		
+
 		childs.add(suiteDirectory);
 	}
 
@@ -49,8 +48,8 @@ public class ProjectContent extends AbstractContent {
 		Configuration activeConfig = project.getArchive()
 				.getActiveConfiguration();
 		Configuration defaultConfig = project.getArchive()
-				.getDefaultConfiguration();		
-		
+				.getDefaultConfiguration();
+
 		List<IContent> contents = new ArrayList<IContent>();
 
 		if (configs != null) {
@@ -96,51 +95,52 @@ public class ProjectContent extends AbstractContent {
 	public LogDirectory getLogDirectory() {
 		return logDirectory;
 	}
-	
+
 	public TestsuiteDirectory getTestsuiteDirectory() {
 		return suiteDirectory;
 	}
-	
+
 	public void addTestsuite(String suiteName) throws RTTException {
 		if (project.addTestsuite(suiteName) == true) {
-			Testsuite newSuite = project.getArchive().getTestsuite(suiteName, false);
+			Testsuite newSuite = project.getArchive().getTestsuite(suiteName,
+					false);
 			project.save();
-			
+
 			suiteDirectory.addTestsuite(newSuite);
 			reload();
-		}		
+		}
 	}
-	
+
 	public void removeTestsuite(TestsuiteContent suite) throws RTTException {
 		if (project.removeTestsuite(suite.getText()) == true) {
 			project.save();
-			
+
 			suiteDirectory.removeTestsuite(suite);
 			reload();
-		}		
+		}
 	}
-	
+
 	public void runTest(String suiteName) throws RTTException {
 		project.runTests(suiteName, true);
 		project.save();
-		
+
 		suiteDirectory.reload();
 	}
 
 	public List<Throwable> generateTest(String suiteName) throws RTTException {
 		List<Throwable> exceptions = project.generateTests(suiteName);
 		project.save();
-		
+
 		suiteDirectory.reload();
 		return exceptions;
 	}
 
 	public void reload() {
 		logDirectory.reload();
-//		suiteDirectory.reload();
-		
+		// suiteDirectory.reload();
+
 		childs.clear();
-		loadContents();		
+		loadContents();
 	}
 
 	public void addConfiguration(Configuration config, boolean makeDefault)
@@ -161,13 +161,20 @@ public class ProjectContent extends AbstractContent {
 		project.addConfiguration(lexerClass, parserClass, configName,
 				makeDefault, cp);
 		project.save();
-		
+
 		reload();
 	}
 
-	
-
-	public Configuration createEmptyConfiguration() {		
+	public Configuration createEmptyConfiguration() {
 		return project.createEmptyConfiguration();
+	}
+
+	public void setConfigActive(ConfigurationContent config) {
+		project.setActiveConfiguration(config.getText());
+		suiteDirectory = new TestsuiteDirectory(this);
+		
+		reload();
+		
+		
 	}
 }

@@ -52,50 +52,32 @@ public class TestView extends ViewPart implements ISelectionListener {
 		public void refresh() {
 			contentViewer.refresh(true);
 			comboViewer.refresh(true);
-
-			super.refresh();
 		}
 
 		@Override
 		public void update(ProjectContent content) {
-			if (content != null) {
+			boolean hasContent = false;
+			
+			if (content != null && content.getTestsuiteDirectory() != null) {
 				TestsuiteDirectory suiteDirectory = content
 						.getTestsuiteDirectory();
-				comboViewer.setInput(suiteDirectory);
-				comboViewer.getControl().setEnabled(!suiteDirectory.isEmpty());
 				
-				contentViewer.setInput(content.getLogDirectory());
-
-				if (suiteDirectory.isEmpty() == false) {
-					TestsuiteContent suite = suiteDirectory.getTestsuite(0);
-//					RttPluginUI.getSuiteManager().setCurrentContent(suite);
-					
-//					comboViewer.setSelection(new StructuredSelection(suite));
-					contentViewer
-							.setFilters(new ViewerFilter[] { new SuiteFilter(
-									suite.getText()) });
-				}
-
+				hasContent = !suiteDirectory.isEmpty();
 				
-
-				// List<IContent> contentList = content.getTestsuiteContents();
-				// if (contentList.size() > 0) {
-				//
-				// IContent firstElement = contentList.get(0);
-				//
-				// comboViewer.getControl().setEnabled(true);
-				//
-				// contentViewer.setInput(content.getLogDirectory());
-				// contentViewer
-				// .setFilters(new ViewerFilter[] { new SuiteFilter(
-				// firstElement.getText()) });
-				// contentViewer.getControl().setEnabled(true);
-				// } else {
-				// comboViewer.getControl().setEnabled(false);
-				// contentViewer.setInput(new Object[0]);
-				// contentViewer.getControl().setEnabled(false);
-				// }
+				if (hasContent) {
+					comboViewer.setInput(suiteDirectory);
+					contentViewer.setInput(content.getLogDirectory());
+				} else {
+					Object[] emptyArray = new Object[0];					
+					comboViewer.setInput(emptyArray);
+					contentViewer.setInput(emptyArray);
+				}				
 			}
+			
+			comboViewer.getControl().setEnabled(hasContent);
+			contentViewer.getControl().setEnabled(hasContent);
+			generateButton.setEnabled(hasContent);
+			runButton.setEnabled(hasContent);		
 		}
 	}
 
@@ -104,8 +86,6 @@ public class TestView extends ViewPart implements ISelectionListener {
 		@Override
 		public void refresh() {
 			comboViewer.refresh(true);
-
-			super.refresh();
 		}
 
 		@Override
@@ -142,6 +122,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 	private ContentTreeViewer contentViewer;
 	private ComboViewer comboViewer;
+	private Button generateButton;
+	private Button runButton;
 
 	private ProjectListener projectListener;
 	private TestsuiteListener suiteListener;
@@ -174,22 +156,22 @@ public class TestView extends ViewPart implements ISelectionListener {
 		comboViewer.setLabelProvider(new BaseContentLabelProvider());
 		comboViewer.setContentProvider(new BaseContentProvider());
 		
-		Button btnGenerate = new Button(runGroup, SWT.NONE);
-		btnGenerate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+		generateButton = new Button(runGroup, SWT.NONE);
+		generateButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 2, 1));
-		btnGenerate.setText("Generate tests ...");
-		btnGenerate.addMouseListener(new MouseAdapter() {
+		generateButton.setText("Generate tests ...");
+		generateButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
 				doButtonClick(new GenerateTestRunnable());
 			}
 		});
 
-		Button btnRun = new Button(runGroup, SWT.NONE);
-		btnRun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
+		runButton = new Button(runGroup, SWT.NONE);
+		runButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
 				1));
-		btnRun.setText("Run tests ...");
-		btnRun.addMouseListener(new MouseAdapter() {
+		runButton.setText("Run tests ...");
+		runButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
 				doButtonClick(new RunTestRunnable());

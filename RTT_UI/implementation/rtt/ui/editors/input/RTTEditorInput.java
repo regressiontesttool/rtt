@@ -8,15 +8,16 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.manager.data.ReferenceManager;
+import rtt.core.manager.data.OutputDataManager;
+import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.ui.model.RttProject;
 
 public class RTTEditorInput implements IEditorInput {
 
-	private ReferenceManager refManager;
+	private OutputDataManager refManager;
 	private int version;
 
-	public RTTEditorInput(ReferenceManager refManager, int version) {
+	public RTTEditorInput(OutputDataManager refManager, int version) {
 		this.refManager = refManager;
 		this.version = version;
 	}
@@ -27,8 +28,8 @@ public class RTTEditorInput implements IEditorInput {
 		ArchiveLoader loader = project.getLoader();
 		Configuration config = project.getActiveConfiguration();
 
-		ReferenceManager refManager = new ReferenceManager(loader, suiteName,
-				caseName, config);
+		OutputDataManager refManager = new OutputDataManager(loader, suiteName,
+				caseName, config, OutputDataType.REFERENCE);
 
 		return new RTTEditorInput(refManager, version);
 	}

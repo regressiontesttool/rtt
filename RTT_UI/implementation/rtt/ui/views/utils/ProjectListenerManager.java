@@ -15,7 +15,7 @@ public class ProjectListenerManager extends
 		if (suiteDirectory != null) {
 			TestsuiteContent suiteContent = suiteDirectory.getTestsuite(0);
 			if (suiteContent != null) {
-				return RttPluginUI.getSuiteManager().setCurrentContent(suiteContent);
+				return RttPluginUI.getSuiteManager().setCurrentContent(suiteContent, true);
 			}
 		}
 		

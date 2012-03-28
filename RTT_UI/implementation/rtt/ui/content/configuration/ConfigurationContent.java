@@ -106,7 +106,7 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	public void changeActive() {
 		RttProject project = this.getProject();
-		project.setActiveConfiguration(config.getName());
+		this.setActive(project.setActiveConfiguration(config.getName()));
 		
 		reload();
 	}

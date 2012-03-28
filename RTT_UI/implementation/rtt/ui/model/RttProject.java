@@ -81,8 +81,8 @@ public class RttProject {
 				makeDefault, true, cp);
 	}
 
-	public void setActiveConfiguration(String configName) {
-		manager.getArchive().setActiveConfiguration(configName);
+	public boolean setActiveConfiguration(String configName) {
+		return manager.getArchive().setActiveConfiguration(configName);
 	}
 
 	public void addClassPathEntry(String configName, String entry)

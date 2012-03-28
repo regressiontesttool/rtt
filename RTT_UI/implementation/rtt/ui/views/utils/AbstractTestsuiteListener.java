@@ -14,10 +14,4 @@ public abstract class AbstractTestsuiteListener implements
 	public void removeListener() {
 		RttPluginUI.getSuiteManager().removeListener(this);
 	}
-
-	@Override
-	public void refresh() {
-		System.out.println("Refresh TestsuiteContent");
-	}
-
 }

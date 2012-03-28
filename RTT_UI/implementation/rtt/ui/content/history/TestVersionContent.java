@@ -23,9 +23,9 @@ import regression.test.TestPackage;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.history.Version;
 import rtt.core.loader.ArchiveLoader;
+import rtt.core.manager.data.OutputDataManager;
 import rtt.core.manager.data.IHistoryManager;
-import rtt.core.manager.data.ReferenceManager;
-import rtt.core.manager.data.TestManager;
+import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
@@ -36,8 +36,8 @@ import rtt.ui.model.RttProject;
 public class TestVersionContent extends AbstractContent implements IClickableContent {
 
 	private Version version;
-	private TestManager testManager;
-	private ReferenceManager refManager;
+	private OutputDataManager testManager;
+	private OutputDataManager refManager;
 	private int refVersion;
 	private int testVersion;
 
@@ -45,7 +45,7 @@ public class TestVersionContent extends AbstractContent implements IClickableCon
 			IHistoryManager manager) {
 		super(parent);
 		this.version = version;
-		this.testManager = (TestManager) manager;
+		this.testManager = (OutputDataManager) manager;
 		
 		RttProject project = parent.getProject();
 		
@@ -54,7 +54,7 @@ public class TestVersionContent extends AbstractContent implements IClickableCon
 		String caseName = testManager.getCaseName();
 		Configuration activeConfig = project.getActiveConfiguration();
 		
-		refManager = new ReferenceManager(loader, suiteName, caseName, activeConfig);
+		refManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.REFERENCE);
 		refVersion = version.getReference();
 		testVersion = version.getNr();
 	}

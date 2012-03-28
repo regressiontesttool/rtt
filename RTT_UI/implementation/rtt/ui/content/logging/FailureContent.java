@@ -32,8 +32,8 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.FailureType;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.manager.data.ReferenceManager;
-import rtt.core.manager.data.TestManager;
+import rtt.core.manager.data.OutputDataManager;
+import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.main.AbstractContent;
@@ -92,8 +92,8 @@ public class FailureContent extends AbstractContent implements IClickableContent
 	private String suiteName;
 	private String caseName;
 	
-	private ReferenceManager refManager;
-	private TestManager testManager;
+	private OutputDataManager refManager;
+	private OutputDataManager testManager;
 	private Integer testVersion;
 	private Integer refVersion;
 	
@@ -136,8 +136,8 @@ public class FailureContent extends AbstractContent implements IClickableContent
 			ArchiveLoader loader = project.getLoader();
 			Configuration activeConfig = project.getActiveConfiguration();
 			
-			refManager = new ReferenceManager(loader, suiteName, caseName, activeConfig);
-			testManager = new TestManager(loader, suiteName, caseName, activeConfig);
+			refManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.REFERENCE);
+			testManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.TEST);
 		}				
 		
 		final ResourceSet resourceSet1 = new ResourceSetImpl();
@@ -170,7 +170,7 @@ public class FailureContent extends AbstractContent implements IClickableContent
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public String getText(int columnIndex) {
 		switch (columnIndex) {

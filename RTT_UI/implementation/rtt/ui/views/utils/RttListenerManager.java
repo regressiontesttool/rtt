@@ -29,7 +29,11 @@ public class RttListenerManager<T extends IContent> {
 	}
 	
 	public boolean setCurrentContent(T newContent) {
-		if (currentContent != newContent) {
+		return setCurrentContent(newContent, false);
+	}
+	
+	protected boolean setCurrentContent(T newContent, boolean force) {
+		if (force || currentContent != newContent) {
 			currentContent = newContent;
 			for (IRttListener<T> listener : listeners) {
 				System.out.println("***  Content changend: " + newContent + " - " + listener.getClass());

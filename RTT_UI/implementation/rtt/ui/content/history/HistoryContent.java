@@ -80,7 +80,7 @@ public class HistoryContent extends AbstractContent implements
 
 	@Override
 	public String decorateText(String text, IContent content) {
-		return text + " (" + manager.getCurrentNr() + ")";
+		return text + " (" + 9999 + ")";
 	}
 
 }

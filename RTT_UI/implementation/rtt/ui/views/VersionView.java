@@ -1,16 +1,15 @@
 package rtt.ui.views;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -19,10 +18,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
-import rtt.core.archive.Archive;
-import rtt.core.archive.testsuite.Testcase;
-import rtt.core.archive.testsuite.Testsuite;
 import rtt.ui.RttPluginUI;
+import rtt.ui.content.IContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestsuiteContent;
@@ -34,11 +31,13 @@ import rtt.ui.views.utils.AbstractTestsuiteListener;
 
 public class VersionView extends ViewPart implements ISelectionListener {
 	
+	protected static final Object[] EMPTY_ARRAY = new Object[0];
+	
 	private class ProjectListener extends AbstractProjectListener {
 		
 		@Override
 		public void refresh() {
-			comboViewer.refresh();
+			suiteComboViewer.refresh();
 //			treeViewer.refresh(true);
 			
 			super.refresh();
@@ -46,27 +45,65 @@ public class VersionView extends ViewPart implements ISelectionListener {
 
 		@Override
 		public void update(ProjectContent content) {
-			if (content != null) {
-				TestsuiteDirectory suiteDirectory = content.getTestsuiteDirectory();
-				comboViewer.setInput(suiteDirectory);
-				comboViewer.getControl().setEnabled(!suiteDirectory.isEmpty());
+			boolean hasContent = false;
+			
+			if (content != null && content.getTestsuiteDirectory() != null) {
+				TestsuiteDirectory suiteDirectory = content
+						.getTestsuiteDirectory();
 				
-				if (suiteDirectory.isEmpty() == false) {
-//					comboViewer.setSelection(new StructuredSelection(
-//							suiteDirectory.getTestsuite(0)));
-					
-//					RttPluginUI.getSuiteManager().setCurrentContent(suiteDirectory.getTestsuite(0));
-				}
+				hasContent = !suiteDirectory.isEmpty();
+				
+				if (hasContent) {
+					suiteComboViewer.setInput(suiteDirectory);
+				} else {
+					suiteComboViewer.setInput(EMPTY_ARRAY);
+					caseComboViewer.setInput(EMPTY_ARRAY);
+				}			
 			}
+			
+			suiteComboViewer.getControl().setEnabled(hasContent);
+			caseComboViewer.getControl().setEnabled(hasContent);
+			
+			treeViewer.setInput(EMPTY_ARRAY);
+			treeViewer.getControl().setEnabled(false);
 		}
 	}
 	
 	private class TestsuiteListener extends AbstractTestsuiteListener {
 		
+		private void setFirstTestcase(TestsuiteContent content) {
+			IContent[] childs = content.getChildren();
+			
+			boolean hasCases = false;
+			
+			if (childs != null && childs.length > 0) {
+				caseComboViewer.setSelection(new StructuredSelection(childs[0]));
+				hasCases = true;
+			}
+			
+			caseComboViewer.getControl().setEnabled(hasCases);
+			historyLoadButton.setEnabled(hasCases);
+		}
+		
+		@Override
+		public void refresh() {
+			suiteComboViewer.refresh(true);
+			caseComboViewer.refresh(true);
+			
+			Object input = caseComboViewer.getInput();
+			if (input != null && input instanceof TestsuiteContent) {
+				TestsuiteContent content = (TestsuiteContent) input;
+				setFirstTestcase(content);
+			}
+		}
+		
 		@Override
 		public void update(TestsuiteContent content) {
 			if (content != null) {
-				comboViewer.setSelection(new StructuredSelection(content));
+				suiteComboViewer.setSelection(new StructuredSelection(content));
+				caseComboViewer.setInput(content);
+				
+				setFirstTestcase(content);
 			}
 		}
 	}
@@ -79,20 +116,16 @@ public class VersionView extends ViewPart implements ISelectionListener {
 	private TestsuiteListener suiteListener;
 
 	private ContentTreeViewer treeViewer;
-	private ComboViewer comboViewer;
-	private Combo caseCombo;
-	
-	private String[] suiteNames;
-	private String[] caseNames;
-	
-	protected final String[] EMPTY_ARRAY = new String[0];
+	private ComboViewer suiteComboViewer;
+	private ComboViewer caseComboViewer;
+	private Button historyLoadButton;
 
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, true));
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
+		composite.setLayout(new GridLayout(3, false));
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 				1, 1));
 
@@ -101,45 +134,43 @@ public class VersionView extends ViewPart implements ISelectionListener {
 				false, 1, 1));
 		suiteLabel.setText("Testsuite:");
 
-		comboViewer = new ComboViewer(composite, SWT.READ_ONLY);
-		Combo combo = comboViewer.getCombo();
+		suiteComboViewer = new ComboViewer(composite, SWT.READ_ONLY);
+		Combo combo = suiteComboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
-		comboViewer.setLabelProvider(new BaseContentLabelProvider());
-		comboViewer.setContentProvider(new BaseContentProvider());
+		suiteComboViewer.setLabelProvider(new BaseContentLabelProvider());
+		suiteComboViewer.setContentProvider(new BaseContentProvider());
+		
+		historyLoadButton = new Button(composite, SWT.PUSH);
+		historyLoadButton.setText("Load history ...");
+		GridData gd_historyLoadButton = new GridData(SWT.RIGHT, SWT.FILL, false, false, 1, 2);
+		gd_historyLoadButton.widthHint = 200;
+		gd_historyLoadButton.minimumWidth = 200;
+		historyLoadButton.setLayoutData(gd_historyLoadButton);
+		historyLoadButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+			}
+		});
 		
 		Label caseLabel = new Label(composite, SWT.NONE);
 		caseLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 				false, 1, 1));
 		caseLabel.setText("Testcase:");
-
-		caseCombo = new Combo(composite, SWT.READ_ONLY);
-		caseCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				1, 1));
-		caseCombo.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				loadTestcase(caseCombo.getSelectionIndex());
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
 		
-//		caseCombo.setItems(new String[] {"Select a project ..."});
-//		caseCombo.select(0);
-//		caseCombo.setEnabled(false);
+		caseComboViewer = new ComboViewer(composite, SWT.READ_ONLY);
+		combo = caseComboViewer.getCombo();
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		caseComboViewer.setLabelProvider(new BaseContentLabelProvider());
+		caseComboViewer.setContentProvider(new BaseContentProvider());		
 
 		treeViewer = new ContentTreeViewer(parent, SWT.BORDER, getSite().getPage());
 		Tree tree = treeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tree.setEnabled(false);
 		
-		getSite().setSelectionProvider(comboViewer);
+		getSite().setSelectionProvider(suiteComboViewer);
 		getSite().getPage().addSelectionListener(ID, this);
 		
 		projectListener = new ProjectListener();
@@ -157,42 +188,6 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		projectListener = null;
 
 		super.dispose();
-	}
-	
-	protected void loadContent(ProjectContent currentProject) {
-		
-	}
-
-	protected void loadTestsuite(int selectionIndex) {
-		if (selectionIndex > 0) {
-			ProjectContent currentProject = RttPluginUI.getProjectManager().getCurrentContent();
-			String suiteName = suiteNames[selectionIndex];
-			
-			if (suiteName != null && suiteName.equals("") == false) {
-				Archive a = currentProject.getProject().getArchive();
-				Testsuite suite = a.getTestsuite(suiteName, false);
-				
-				if (suite != null && suite.getTestcase() != null) {
-					List<Testcase> cases = suite.getTestcase();
-					caseNames = new String[cases.size() + 1];
-					caseNames[0] = "Select ...";
-					
-					for (int i = 1; i < cases.size() + 1; i++) {
-						caseNames[i] = cases.get(i - 1).getName();
-					}
-					
-					caseCombo.setItems(caseNames);
-					caseCombo.select(0);
-					caseCombo.setEnabled(true);					
-				}
-			}
-		} else {
-			caseCombo.setItems(new String[0]);
-			caseCombo.setEnabled(false);
-		}
-		
-		treeViewer.setInput(EMPTY_ARRAY);
-		treeViewer.getTree().setEnabled(false);		
 	}
 	
 	protected void loadTestcase(int selectionIndex) {
@@ -263,7 +258,5 @@ public class VersionView extends ViewPart implements ISelectionListener {
 			TestsuiteContent content = (TestsuiteContent) sSelection.getFirstElement();
 			RttPluginUI.getSuiteManager().setCurrentContent(content);
 		}
-	}
-
-	
+	}	
 }
