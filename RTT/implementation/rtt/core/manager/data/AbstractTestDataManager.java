@@ -1,51 +1,38 @@
 package rtt.core.manager.data;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Calendar;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.history.History;
 import rtt.core.archive.history.Version;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
+import rtt.core.exceptions.RTTException;
+import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
+import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.LexerExecuter;
 import rtt.core.testing.generation.ParserExecuter;
 
-public abstract class AbstractTestDataManager extends DataManager<History> implements IHistoryManager {
+public class AbstractTestDataManager extends DataManager<History> implements IHistoryManager {
 	
-	public enum TestDataType {
+	public enum OutputDataType {
 
 		REFERENCE("ref"),
 		TEST("test");
 			
 		private String path;
 			
-		private TestDataType(String path) {
+		private OutputDataType(String path) {
 			this.path = path;
 		}
 			
 		public String getPath() {
 			return path;
 		}
-	}
-
-	protected class Reference {
-		public Reference(LexerOutput lexOut, ParserOutput parOut, boolean isNew) {
-			this.lexOut = lexOut;
-			this.parOut = parOut;
-			this.isNew = isNew;
-		}
-
-		protected Integer refVersion;
-		protected LexerOutput lexOut;
-		protected ParserOutput parOut;
-		protected boolean isNew = false;
 	}
 
 	public class GenerationInfo {
@@ -56,24 +43,27 @@ public abstract class AbstractTestDataManager extends DataManager<History> imple
 		public boolean parserVersioned = false;
 	}
 
-	protected Map<Integer, Reference> dataMap;
 	protected LexerOutputManager lexManager;
 	protected ParserOutputManager parManager;
-	protected Integer lastNr;
+	
 	protected String path;
 	protected String suiteName;
 	protected String caseName;
+	
+	private InputManager inputManager;
 
 	public AbstractTestDataManager(ArchiveLoader loader, String suiteName,
-			String caseName, Configuration config, String type) {
+			String caseName, Configuration config, OutputDataType type) {
 		super(loader);
 
 		this.suiteName = suiteName;
 		this.caseName = caseName;
 
-		path = LoaderUtils.getPath(suiteName, caseName, config.getName(), type);
+		path = LoaderUtils.getPath(suiteName, caseName, config.getName(), type.getPath());
 		setFetchingStrategy(new SimpleFileFetching("history.xml", path));
 
+		inputManager = new InputManager(loader, suiteName, caseName);
+		
 		lexManager = new LexerOutputManager(loader, LoaderUtils.getPath(path,
 				"lexer"));
 		parManager = new ParserOutputManager(loader, LoaderUtils.getPath(path,
@@ -84,44 +74,10 @@ public abstract class AbstractTestDataManager extends DataManager<History> imple
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		dataMap = new HashMap<Integer, Reference>();
-
-		generateMap(loader);
 	}
-
-	private void generateMap(ArchiveLoader loader) {
-		List<Version> versionList = data.getVersion();
-		if (versionList != null && versionList.isEmpty() == false) {
-			for (Version version : versionList) {
-				LexerOutput oldLex = lexManager.getData(version.getNr());
-				ParserOutput oldPar = parManager.getData(version.getNr());
-
-				Reference ref = new Reference(oldLex, oldPar, false);
-				ref.refVersion = version.getReference();
-
-				dataMap.put(version.getNr(), ref);
-				lastNr = version.getNr();
-			}
-		}
-	}
-
+	
 	@Override
 	public final void doSave(History data) {
-		for (Entry<Integer, Reference> entry : dataMap.entrySet()) {
-			Reference ref = entry.getValue();
-
-			if (ref.isNew) {
-				if (ref.lexOut != null) {
-					lexManager.setData(ref.lexOut, entry.getKey());
-				}
-
-				if (ref.parOut != null) {
-					parManager.setData(ref.parOut, entry.getKey());
-				}
-			}
-		}
-
 		marshall(History.class, data);
 	}
 
@@ -138,16 +94,6 @@ public abstract class AbstractTestDataManager extends DataManager<History> imple
 	}
 	
 	@Override
-	public final Integer getCurrentNr() {
-		return data.getCurrent();
-	}
-	
-	@Override
-	public final History getHistory() {
-		return data;
-	}
-	
-	@Override
 	public String getSuiteName() {
 		return suiteName;
 	}
@@ -157,18 +103,12 @@ public abstract class AbstractTestDataManager extends DataManager<History> imple
 		return caseName;
 	}
 
-	public LexerOutput getLexerOutput() {
-		return getLexerOutput(data.getCurrent());
-	}
-
 	public LexerOutput getLexerOutput(Integer version) {
-		Reference ref = dataMap.get(version);
-
-		if (ref != null) {
-			return ref.lexOut;
-		}
-
-		return null;
+		return lexManager.getData(version);
+	}
+	
+	public ParserOutput getParserOutput(Integer version) {
+		return parManager.getData(version);
 	}
 	
 	public InputStream getLexerOutputStream(Integer version) {
@@ -178,26 +118,83 @@ public abstract class AbstractTestDataManager extends DataManager<History> imple
 	public InputStream getParserOutputStream(Integer version) {
 		return parManager.getStreamData(version);
 	}
-
-	public ParserOutput getParserOutput() {
-		return getParserOutput(data.getCurrent());
-	}
-
-	public ParserOutput getParserOutput(Integer version) {
-		Reference ref = dataMap.get(version);
-
-		if (ref != null) {
-			return ref.parOut;
-		}
-
-		return null;
-	}
+	
+	@Override
+	public History getHistory() {
+		return data;
+	}	
 
 	@Override
 	protected History getEmptyData() {
 		return new History();
 	}
+	
+	public boolean isOutDated(Integer inputVersion) {
+		for (Version version : data.getVersion()) {
+			if (version.getReference() == inputVersion) {
+				return false;
+			}
+		}
+		
+		return true;		
+	}
 
-	public abstract GenerationInfo createData(LexerExecuter lexer, ParserExecuter parser) throws Exception;
-	public abstract boolean isUpToDate();
+	public GenerationInfo createData(LexerExecuter lexer, ParserExecuter parser, Integer inputVersion) throws Exception {
+		GenerationInfo info = new GenerationInfo();
+
+		LexerOutput newLexOut = null;
+		ParserOutput newParOut = null;
+		try {
+			newLexOut = DataGenerator.generateOutput(
+					inputManager.loadData(inputVersion), lexer);
+			newParOut = DataGenerator.generateOutput(
+					inputManager.loadData(inputVersion), parser);
+		} catch (Exception e) {
+			throw new RTTException(Type.GENERATION,
+					"Could not generate output data.", e);
+		}
+
+		info.somethingDone = true;
+
+		boolean replace = false;
+		int lastVersion = 0;
+
+		if (data.getVersion() == null || data.getVersion().isEmpty()) {
+			// previous data are not available, write new one
+			replace = true;
+		} else {
+			// previos data is available, check if data has changed
+			lastVersion = data.getVersion().size();
+
+			LexerOutput oldLexOut = lexManager.getData(lastVersion);
+			ParserOutput oldParOut = parManager.getData(lastVersion);
+
+			if (LexerOutputManager.dataEqual(oldLexOut, newLexOut) == false
+					|| ParserOutputManager.dataEqual(oldParOut, newParOut) == false) {
+				info.lexerVersioned = true;
+				info.parserVersioned = true;
+				replace = true;
+			}
+		}
+
+		if (replace) {
+			Version newVersion = new Version();
+			newVersion.setDate(Calendar.getInstance());
+
+			info.lexerReplaced = true;
+			info.parserReplaced = true;
+
+			lastVersion++;
+
+			newVersion.setNr(lastVersion);
+			newVersion.setReference(inputVersion);
+
+			data.getVersion().add(newVersion);
+
+			lexManager.setData(newLexOut, lastVersion);
+			parManager.setData(newParOut, lastVersion);
+		}
+
+		return info;
+	}
 }

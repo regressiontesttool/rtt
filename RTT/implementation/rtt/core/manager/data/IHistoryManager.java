@@ -4,7 +4,6 @@ import rtt.core.archive.history.History;
 
 public interface IHistoryManager {
 	
-	Integer getCurrentNr();
 	History getHistory();
 	
 	String getSuiteName();

@@ -23,15 +23,16 @@
 
 	<xs:complexType name="testcase">
 		<xs:sequence>
-		<xs:element minOccurs="1" maxOccurs="1" name="versionData"
+		<xs:element minOccurs="0" maxOccurs="unbounded" name="versionData"
 				type="rtt:versionData" />
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="deleted" type="xs:boolean" default="false" />
+		<xs:attribute name="input" type="xs:int" default="0" />
 	</xs:complexType>
 
 	<xs:complexType name="versionData">
-		<xs:attribute name="input" type="xs:int" default="0"/>
+		<xs:attribute name="config" type="xs:string" use="required" />
 		<xs:attribute name="reference" type="xs:int" default="0" />
 		<xs:attribute name="test" type="xs:int" default="0" />
 	</xs:complexType>

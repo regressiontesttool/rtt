@@ -11,6 +11,7 @@ import rtt.core.loader.fetching.HistoryFileFetching;
 public abstract class HistoryDataManager<T> extends DataManager<History> implements IHistoryManager {
 
 	protected HistoryFileFetching strategy;
+	protected int versionCount = 0;
 
 	public HistoryDataManager(ArchiveLoader loader, HistoryFileFetching strategy) {
 		super(loader, strategy);
@@ -20,6 +21,8 @@ public abstract class HistoryDataManager<T> extends DataManager<History> impleme
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		versionCount = data.getVersion().size();
 	}
 
 	@Override
@@ -29,15 +32,9 @@ public abstract class HistoryDataManager<T> extends DataManager<History> impleme
 			history = unmarshall(History.class);
 		} catch (Exception e) {
 			history = new History();
-			history.setCurrent(0);
 		}
 
 		return history;
-	}
-
-	@Override
-	public final Integer getCurrentNr() {
-		return data.getCurrent();
 	}
 	
 	@Override
@@ -65,7 +62,7 @@ public abstract class HistoryDataManager<T> extends DataManager<History> impleme
 	}
 
 	public boolean setData(T newData, boolean force) {
-		Integer versionNr = data.getCurrent();
+		Integer versionNr = versionCount;
 		T oldData = loadData(versionNr);
 
 		if (force || (dataEqual(oldData, newData) == false)) {
@@ -75,7 +72,7 @@ public abstract class HistoryDataManager<T> extends DataManager<History> impleme
 			version.setDate(Calendar.getInstance());
 
 			data.getVersion().add(version);
-			data.setCurrent(versionNr);
+			versionCount = versionNr;
 
 			// CHRISTIAN wirlich schon speichern ?
 			saveData(newData, versionNr);
@@ -88,10 +85,6 @@ public abstract class HistoryDataManager<T> extends DataManager<History> impleme
 
 	public boolean setData(T newData) {
 		return setData(newData, false);
-	}
-
-	public T loadData() {
-		return loadData(getCurrentNr());
 	}
 	
 	public abstract T loadData(Integer version);

@@ -17,11 +17,14 @@ public class TestResult {
 	Integer testVersion;
 	
 	List<ITestFailure> failures;
-
-	public TestResult(ResultType type, Integer refVersion, Integer testVersion) {
+	
+	public TestResult(ResultType type, String suiteName, String caseName) {
 		this.type = type;
-		this.refVersion = refVersion;
-		this.testVersion = testVersion;
+		this.suiteName = suiteName;
+		this.caseName = caseName;
+		
+		this.refVersion = 0;
+		this.testVersion = 0;
 		
 		failures = new ArrayList<ITestFailure>();
 	}
@@ -30,28 +33,32 @@ public class TestResult {
 		return suiteName;
 	}
 
-	public void setSuiteName(String suiteName) {
-		this.suiteName = suiteName;
-	}
-
 	public String getCaseName() {
 		return caseName;
 	}
 
-	public void setCaseName(String caseName) {
-		this.caseName = caseName;
-	}
-	
 	public Integer getRefVersion() {
 		return refVersion;
+	}
+	
+	public void setRefVersion(Integer refVersion) {
+		this.refVersion = refVersion;
 	}
 	
 	public Integer getTestVersion() {
 		return testVersion;
 	}
 	
+	public void setTestVersion(Integer testVersion) {
+		this.testVersion = testVersion;
+	}
+	
 	public ResultType getType() {
 		return type;
+	}
+	
+	public void setType(ResultType type) {
+		this.type = type;
 	}
 	
 	public void addFailure(ITestFailure failure) {

@@ -5,11 +5,10 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import rtt.core.archive.input.Input;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.archive.testsuite.Testsuites;
-import rtt.core.archive.testsuite.VersionData;
-import rtt.core.archive.input.Input;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.Manager.TestCaseMode;
@@ -116,20 +115,21 @@ public class TestsuiteManager extends DataManager<Testsuites> {
 		Testcase testcase = getTestcase(suiteName, caseName, true);
 		TestcaseStatus resultStatus = TestcaseStatus.ERROR;
 		boolean force = false;
-		VersionData versionData = new VersionData();
+		int nextInputVersion = -1;
 		
 		if (testcase == null) {
 			// add a new test case
 
 			testcase = new Testcase();
 			testcase.setName(caseName);
+			nextInputVersion = 1;
 
 			suite.getTestcase().add(testcase);
 			resultStatus = TestcaseStatus.NEW;
 		} else {
 			// test case already existed.
 			resultStatus = TestcaseStatus.UPDATE;
-			versionData = testcase.getVersionData();
+			nextInputVersion = testcase.getInput() + 1;
 			
 			if (testcase.isDeleted()) {
 				testcase.setDeleted(false);
@@ -155,13 +155,9 @@ public class TestsuiteManager extends DataManager<Testsuites> {
 		input.setValue(InputManager.getContent(new FileInputStream(testFile)));
 		if (inputManager.setData(input, force) == true) {
 			inputManager.save();
+			testcase.setInput(nextInputVersion);
 		} else {
 			resultStatus = TestcaseStatus.NONE;
-		}
-		
-		if (versionData != null) {
-			versionData.setInput(inputManager.getCurrentNr());		
-			testcase.setVersionData(versionData);
 		}
 
 		return resultStatus;

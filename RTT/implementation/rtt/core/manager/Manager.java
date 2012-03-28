@@ -30,11 +30,11 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.ZipArchiveLoader;
+import rtt.core.manager.data.AbstractTestDataManager;
+import rtt.core.manager.data.AbstractTestDataManager.GenerationInfo;
+import rtt.core.manager.data.AbstractTestDataManager.OutputDataType;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.LogManager;
-import rtt.core.manager.data.ReferenceManager;
-import rtt.core.manager.data.AbstractTestDataManager.GenerationInfo;
-import rtt.core.manager.data.TestManager;
 import rtt.core.manager.data.TestsuiteManager;
 import rtt.core.manager.data.TestsuiteManager.TestcaseStatus;
 import rtt.core.testing.Tester;
@@ -65,9 +65,10 @@ public class Manager {
 	public static boolean verbose = true;
 
 	public Manager(File archivePath, boolean verbose) {
-		// because sometimes, it is not the same
 
 		this.archivePath = archivePath;
+
+		// because sometimes, it is not the same
 		Thread.currentThread().setContextClassLoader(
 				this.getClass().getClassLoader());
 
@@ -113,9 +114,10 @@ public class Manager {
 		}
 
 		try {
-			ArchiveLoader loader = new ZipArchiveLoader(aPath.getParent(), aPath.getName());
+			ArchiveLoader loader = new ZipArchiveLoader(aPath.getParent(),
+					aPath.getName());
 			this.baseDir = loader.getBaseDir();
-			
+
 			return loader;
 		} catch (Exception e) {
 			throw new RTTException(Type.ARCHIVE,
@@ -240,9 +242,10 @@ public class Manager {
 
 		List<Throwable> generationExceptions = new ArrayList<Throwable>();
 		List<Detail> genInfos = new ArrayList<Detail>();
-		
+
 		LexerExecuter lexer = DataGenerator.getLexerExecuter(config, baseDir);
-		ParserExecuter parser = DataGenerator.getParserExecuter(config, baseDir);
+		ParserExecuter parser = DataGenerator
+				.getParserExecuter(config, baseDir);
 
 		for (Testcase tcase : suite.getTestcase()) {
 			if (tcase.isDeleted()) {
@@ -250,23 +253,43 @@ public class Manager {
 				continue;
 			}
 
-			ReferenceManager refManager = new ReferenceManager(
+			AbstractTestDataManager refManager = new AbstractTestDataManager(
 					currentArchive.getLoader(), suite.getName(),
-					tcase.getName(), config);
+					tcase.getName(), config, OutputDataType.REFERENCE);
 			try {
 				DebugLog.log("Generate tests for [" + suiteName + "/"
 						+ tcase.getName() + "]");
 
-				GenerationInfo genInfo = refManager.createData(lexer, parser);
+				GenerationInfo genInfo = refManager.createData(lexer, parser,
+						tcase.getInput());
 				// CHRISTIAN todo !
 				refManager.save();
-				
-				if (genInfo.lexerReplaced || genInfo.parserReplaced || genInfo.lexerVersioned || genInfo.parserVersioned) {
-					VersionData versionData = tcase.getVersionData();
+
+				if (genInfo.lexerReplaced || genInfo.parserReplaced
+						|| genInfo.lexerVersioned || genInfo.parserVersioned) {
+					
+					String activeConfig = currentArchive
+							.getActiveConfiguration().getName();
+
+					List<VersionData> versionDataList = tcase.getVersionData();
+					VersionData versionData = null;
+					for (VersionData tempData : versionDataList) {
+						if (tempData.getConfig().equals(activeConfig)) {
+							versionData = tempData;
+							break;
+						}
+					}
+
+					if (versionData == null) {
+						versionData = new VersionData();
+						versionData.setConfig(activeConfig);
+					} else {
+						versionDataList.remove(versionData);
+					}
+
 					versionData.setReference(versionData.getReference() + 1);
-					tcase.setVersionData(versionData);
+					versionDataList.add(versionData);
 				}
-				
 
 				if (genInfo.lexerVersioned) {
 					// TestInformation info = new TestInformation();
@@ -301,7 +324,7 @@ public class Manager {
 					if (genInfo.parserReplaced)
 						message += "Parser ";
 
-					info.setMsg(message += "Results for testcase ["
+					info.setMsg(message += "Reference data for testcase ["
 							+ tcase.getName() + "] in testsuite ["
 							+ suite.getName() + "] were generated.");
 					info.setPriority(1);
@@ -309,7 +332,7 @@ public class Manager {
 					genInfos.add(info);
 				} else {
 					Detail info = new Detail();
-					info.setMsg("Results for test [" + tcase.getName()
+					info.setMsg("Reference data for test [" + tcase.getName()
 							+ "] in testsuite [" + suite.getName()
 							+ "] were not changed.");
 					info.setPriority(0);
@@ -325,7 +348,7 @@ public class Manager {
 				DebugLog.printTrace(e);
 
 				currentLog.addInformational(
-						"Error during generation of Test Results: " + e,
+						"Error during generation of reference data: " + e,
 						suite.getName() + "/" + tcase.getName());
 
 				generationExceptions.add(e);
@@ -333,8 +356,8 @@ public class Manager {
 		}
 
 		currentLog.addGenInformational(
-				"Testresults generated for configuration: ", config.getName(),
-				genInfos);
+				"Reference data generated for configuration: ",
+				config.getName(), genInfos);
 
 		return generationExceptions;
 	}
@@ -376,57 +399,66 @@ public class Manager {
 
 		Configuration configuration = currentArchive.getActiveConfiguration();
 		List<TestResult> results = new ArrayList<TestResult>();
-		
-		LexerExecuter lexer = DataGenerator.getLexerExecuter(configuration, baseDir);
-		ParserExecuter parser = DataGenerator.getParserExecuter(configuration, baseDir);
+
+		LexerExecuter lexer = DataGenerator.getLexerExecuter(configuration,
+				baseDir);
+		ParserExecuter parser = DataGenerator.getParserExecuter(configuration,
+				baseDir);
 
 		for (Testcase tcase : suite.getTestcase()) {
 			if (tcase.isDeleted()) {
 				// CHRISTIAN quick n dirty
 				continue;
-			}						
+			}
 
-			TestManager testManager = new TestManager(
-					currentArchive.getLoader(), suite.getName(),
-					tcase.getName(), configuration);
+			try {
+				AbstractTestDataManager testManager = new AbstractTestDataManager(
+						currentArchive.getLoader(), suite.getName(),
+						tcase.getName(), configuration, OutputDataType.TEST);
 
-			testManager.createData(lexer, parser);
+				testManager.createData(lexer, parser, tcase.getInput());
 
-			// CHRISTIAN todo !
-			testManager.save();
-			
-			VersionData versionData = tcase.getVersionData();
-			versionData.setTest(versionData.getTest() + 1);
-			tcase.setVersionData(versionData);
+				testManager.save();
 
-			DebugLog.log("Running tests for [" + suiteName + "/"
-					+ tcase.getName() + "]");
-
-			Tester t = new Tester(currentArchive.getLoader(), matching);
-			TestResult caseResults = t.test(suite, tcase, configuration);
-
-			if (caseResults != null) {
-				// System.err.println("Errors occured ("+results.size()+")");
-				
-				if (caseResults.getType() == ResultType.FAILURE) {
-					List<ITestFailure> failures = caseResults.getFailures();
-					for (ITestFailure failure : failures) {
-						System.err.println("\n[Error](in Testcase '"
-								+ tcase.getName() + "', Testsuite '"
-								+ suite.getName() + "')");
-						System.err.println(failure.getMessage());
-
-						result = false;
+				for (VersionData versionData : tcase.getVersionData()) {
+					if (versionData.getConfig().equals(configuration.getName())) {
+						versionData.setTest(versionData.getTest() + 1);
 					}
 				}
-				
-				results.add(caseResults);
-			}		
-		}
 
-		if (result == true) {
-			if (Manager.verbose)
-				System.out.println("No errors occured");
+				DebugLog.log("Running tests for [" + suiteName + "/"
+						+ tcase.getName() + "]");
+
+				Tester t = new Tester(currentArchive.getLoader(), matching);
+				TestResult caseResults = t.test(suite, tcase, configuration);
+
+				if (caseResults != null) {
+					// System.err.println("Errors occured ("+results.size()+")");
+
+					if (caseResults.getType() == ResultType.FAILURE) {
+						List<ITestFailure> failures = caseResults.getFailures();
+						for (ITestFailure failure : failures) {
+							System.err.println("\n[Error](in Testcase '"
+									+ tcase.getName() + "', Testsuite '"
+									+ suite.getName() + "')");
+							System.err.println(failure.getMessage());
+
+							result = false;
+						}
+					}
+
+					results.add(caseResults);
+				}
+
+				if (result == true) {
+					if (Manager.verbose)
+						System.out.println("No errors occured");
+				}
+			} catch (Exception e) {
+//				currentLog.addInformational(
+//						"Error during testing: " + e,
+//						suite.getName() + "/" + tcase.getName());
+			}
 		}
 
 		currentLog.addTestrunResult(results, configuration.getName(), suiteName);
@@ -471,8 +503,8 @@ public class Manager {
 	 * @return testinformation
 	 * @throws Exception
 	 */
-	public List<Detail> addFile(File file, String suiteName,
-			TestCaseMode mode) throws RTTException {
+	public List<Detail> addFile(File file, String suiteName, TestCaseMode mode)
+			throws RTTException {
 
 		if (!isInitialized())
 			throw new RTTException(Type.ARCHIVE, "No archive loaded.");
@@ -482,7 +514,8 @@ public class Manager {
 		Testsuite t = currentArchive.getTestsuite(suiteName, false);
 		if (t == null) {
 			if (createTestSuite(suiteName) == false) {
-				throw new RTTException(Type.TESTSUITE, "Could not create test suite.");
+				throw new RTTException(Type.TESTSUITE,
+						"Could not create test suite.");
 			}
 			t = currentArchive.getTestsuite(suiteName, false);
 		}
@@ -681,9 +714,9 @@ public class Manager {
 		if (currentArchive.removeTestsuite(testSuite) == false) {
 			return false;
 		}
-		
-		currentLog.addInformational("Testsuite removed: ", testSuite);		
-		return true;		
+
+		currentLog.addInformational("Testsuite removed: ", testSuite);
+		return true;
 	}
 
 	public void removeTest(String testSuit, String testCase)
