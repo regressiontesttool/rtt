@@ -30,9 +30,9 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.ZipArchiveLoader;
-import rtt.core.manager.data.AbstractTestDataManager;
-import rtt.core.manager.data.AbstractTestDataManager.GenerationInfo;
-import rtt.core.manager.data.AbstractTestDataManager.OutputDataType;
+import rtt.core.manager.data.OutputDataManager;
+import rtt.core.manager.data.OutputDataManager.GenerationInfo;
+import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.LogManager;
 import rtt.core.manager.data.TestsuiteManager;
@@ -253,7 +253,7 @@ public class Manager {
 				continue;
 			}
 
-			AbstractTestDataManager refManager = new AbstractTestDataManager(
+			OutputDataManager refManager = new OutputDataManager(
 					currentArchive.getLoader(), suite.getName(),
 					tcase.getName(), config, OutputDataType.REFERENCE);
 			try {
@@ -412,7 +412,7 @@ public class Manager {
 			}
 
 			try {
-				AbstractTestDataManager testManager = new AbstractTestDataManager(
+				OutputDataManager testManager = new OutputDataManager(
 						currentArchive.getLoader(), suite.getName(),
 						tcase.getName(), configuration, OutputDataType.TEST);
 

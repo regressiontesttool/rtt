@@ -11,8 +11,8 @@ import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.manager.data.AbstractTestDataManager;
-import rtt.core.manager.data.AbstractTestDataManager.OutputDataType;
+import rtt.core.manager.data.OutputDataManager;
+import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.core.testing.compare.LexerOutputCompare;
 import rtt.core.testing.compare.ParserOutputCompare;
 import rtt.core.testing.compare.results.LexerTestFailure;
@@ -51,8 +51,8 @@ public class Tester {
 		String suiteName = suite.getName();
 		String caseName = tcase.getName();
 		
-		AbstractTestDataManager refManager = new AbstractTestDataManager(loader, suiteName, caseName, config, OutputDataType.REFERENCE);
-		AbstractTestDataManager testManager = new AbstractTestDataManager(loader, suiteName, caseName, config, OutputDataType.TEST);
+		OutputDataManager refManager = new OutputDataManager(loader, suiteName, caseName, config, OutputDataType.REFERENCE);
+		OutputDataManager testManager = new OutputDataManager(loader, suiteName, caseName, config, OutputDataType.TEST);
 		
 		TestResult result = new TestResult(ResultType.SKIPPED, suiteName, tcase.getName());
 		

@@ -17,7 +17,7 @@ import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.LexerExecuter;
 import rtt.core.testing.generation.ParserExecuter;
 
-public class AbstractTestDataManager extends DataManager<History> implements IHistoryManager {
+public class OutputDataManager extends DataManager<History> implements IHistoryManager {
 	
 	public enum OutputDataType {
 
@@ -52,7 +52,7 @@ public class AbstractTestDataManager extends DataManager<History> implements IHi
 	
 	private InputManager inputManager;
 
-	public AbstractTestDataManager(ArchiveLoader loader, String suiteName,
+	public OutputDataManager(ArchiveLoader loader, String suiteName,
 			String caseName, Configuration config, OutputDataType type) {
 		super(loader);
 
