@@ -6,5 +6,9 @@
    <feature url="features/rtt.feature_1.0.0.201202291922.jar" id="rtt.feature" version="1.0.0.201202291922">
       <category name="rtt.category"/>
    </feature>
-   <category-def name="rtt.category" label=""/>
+   <category-def name="rtt.category" label="">
+      <description>
+         Regression Test Tool (RTT) Eclipse Plugin. RTT is a regression test tool for tree-structured repositories. It provides a set of Java annotations used to specify the repository components to test and a test infrastructure for creating, updating and performing tests.
+      </description>
+   </category-def>
 </site>
