@@ -6,11 +6,7 @@
       provider-name="Software Technology Group - Technische Universität Dresden - Germany">
 
    <description url="http://code.google.com/p/rtt/">
-      Regression Test Tool (RTT) Eclipse Plugin. RTT is a regression
-test tool for tree-structured repositories. It provides a set
-of Java annotations used to specify the repository components
-to test and a test infrastructure for creating, updating and
-performing tests.
+      Regression Test Tool (RTT) Eclipse Plugin. RTT is a regression test tool for tree-structured repositories. It provides a set of Java annotations used to specify the repository components to test and a test infrastructure for creating, updating and performing tests.
    </description>
 
    <copyright url="http://www.opensource.org/licenses/mit-license.php">
