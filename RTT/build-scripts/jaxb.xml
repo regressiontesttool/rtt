@@ -15,7 +15,7 @@
 	<dirname file="${ant.file.jaxb-taks}" property="tasks.base" />
 
 	<!-- Home of JDK and JAXB Compiler (xjc)-->
-	<property name="jdk.home" location="C:/Program Files (x86)/Java/jdk1.6.0_26" />
+	<property name="jdk.home" location="${java.home}" />
 	<property name="xjc.home" location="${jdk.home}/bin/xjc" />
 
 	<!-- Some important directories -->
