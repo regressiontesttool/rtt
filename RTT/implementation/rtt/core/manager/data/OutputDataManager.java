@@ -197,4 +197,27 @@ public class OutputDataManager extends DataManager<History> implements IHistoryM
 
 		return info;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof OutputDataManager) {
+			OutputDataManager manager = (OutputDataManager) obj;
+			
+			if (!manager.suiteName.equals(this.suiteName)) {
+				return false;
+			}
+			
+			if (!manager.caseName.equals(this.caseName)) {
+				return false;
+			}
+			
+			if (manager.loader != this.loader) {
+				return false;
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
 }
