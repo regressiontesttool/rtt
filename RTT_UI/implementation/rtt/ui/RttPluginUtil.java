@@ -1,12 +1,18 @@
 package rtt.ui;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.compare.util.ModelUtils;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
+import regression.test.TestPackage;
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
 
@@ -80,7 +86,14 @@ public class RttPluginUtil {
 		}
 		
 		return null;
-
+	}
+	
+	public static ResourceSet createResourceSet(InputStream input, String fileTitle) throws IOException {
+		final ResourceSet resourceSet = new ResourceSetImpl();
+		resourceSet.getPackageRegistry().put(TestPackage.eNS_URI, TestPackage.eINSTANCE);
+		ModelUtils.load(input, fileTitle, resourceSet);
+		
+		return resourceSet;
 	}
 
 }

@@ -642,21 +642,9 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="rtt.ui.editors.TestCaseEditorPart"
+            class="rtt.ui.editors.ReferenceEditor"
             default="false"
             icon="icons/sample.gif"
-            id="rtt.ui.editor"
-            name="RTT Editor">
-      </editor>
-      <editor
-            class="rtt.ui.editors.TreeItemEditorPart"
-            default="false"
-            id="rtt.ui.editor.treeItem"
-            name="TreeItemEditor">
-      </editor>
-      <editor
-            class="rtt.ui.editors.MasterDetailFormEditor"
-            default="false"
             id="rtt.ui.editors.formeditor"
             name="RTT Editor">
       </editor>

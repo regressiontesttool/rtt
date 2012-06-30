@@ -136,14 +136,10 @@ public class TokenItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Token)object).getFullName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Token_type") :
-			getString("_UI_Token_type") + " " + label;
+		return super.getText(object);
 	}
 
 	/**

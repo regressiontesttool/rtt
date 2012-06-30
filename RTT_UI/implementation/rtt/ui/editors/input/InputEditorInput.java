@@ -15,6 +15,7 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.model.RttProject;
 
+@SuppressWarnings("rawtypes")
 public class InputEditorInput implements IStorageEditorInput {
 
 	String suiteName;
@@ -37,7 +38,6 @@ public class InputEditorInput implements IStorageEditorInput {
 
 	@Override
 	public Object getAdapter(Class adapter) {
-		System.out.println("Adapt: " + adapter);
 		return null;
 	}
 

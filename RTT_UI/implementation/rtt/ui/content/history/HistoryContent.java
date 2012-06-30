@@ -14,8 +14,8 @@ public class HistoryContent extends AbstractContent implements
 		IDecoratableContent {
 
 	public enum VersionType {
-		INPUT("Input", ContentIcon.INPUT_HISTORY), REFERENCE("Reference",
-				ContentIcon.REFERENCE_HISTORY), TEST("Test",
+		INPUT("Inputs", ContentIcon.INPUT_HISTORY), REFERENCE("References",
+				ContentIcon.REFERENCE_HISTORY), TEST("Tests",
 				ContentIcon.TEST_HISTORY);
 
 		protected String baseText;
@@ -27,21 +27,21 @@ public class HistoryContent extends AbstractContent implements
 		}
 	}
 
-	private IHistoryManager manager;
 	private VersionType type;
+	private int childCount;
 
 	public HistoryContent(IContent parent, IHistoryManager manager,
 			VersionType type) {
 
 		super(parent);
-		this.manager = manager;
 		this.type = type;
+		this.childCount = 0;
 
 		if (manager.getHistory() != null) {
 			for (Version version : manager.getHistory().getVersion()) {
 				childs.add(getChild(version, type, manager));
+				childCount++;
 			}
-
 		}
 	}
 
@@ -59,7 +59,7 @@ public class HistoryContent extends AbstractContent implements
 			return new TestVersionContent(this, version, manager);
 		}
 		
-		return new SimpleVersionContent(this, version);
+		return new SimpleVersionContent(this, version, manager);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class HistoryContent extends AbstractContent implements
 
 	@Override
 	public String decorateText(String text, IContent content) {
-		return text + " (" + 9999 + ")";
+		return text + " (" + childCount + ")";
 	}
 
 }

@@ -12,7 +12,7 @@ public enum ContentIcon {
 	TESTCASE("icons/testcase.gif"),
 	
 	CLASSPATH("icons/classpath.gif"),
-	CONFIG("icons/config.gif"),
+	CONFIG("icons/config_full.gif", "icons/config_empty.gif"),
 	
 	INPUT("icons/input.gif"),
 	LEXER("icons/lexer.gif"),

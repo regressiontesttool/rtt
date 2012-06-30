@@ -1,5 +1,12 @@
 package rtt.ui.views;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -18,10 +25,19 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import rtt.core.archive.Archive;
+import rtt.core.archive.configuration.Configuration;
+import rtt.core.loader.ArchiveLoader;
+import rtt.core.manager.data.InputManager;
+import rtt.core.manager.data.OutputDataManager;
+import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
+import rtt.ui.content.history.HistoryContent;
+import rtt.ui.content.history.HistoryContent.VersionType;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
+import rtt.ui.content.testsuite.TestcaseContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.viewer.BaseContentLabelProvider;
 import rtt.ui.viewer.BaseContentProvider;
@@ -150,7 +166,13 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		historyLoadButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
+				ISelection sel = caseComboViewer.getSelection();
+				if (sel instanceof IStructuredSelection) {
+					Object item = ((IStructuredSelection)sel).getFirstElement();
+					if (item instanceof TestcaseContent) {
+						loadTestcase((TestcaseContent) item);
+					}
+				}
 			}
 		});
 		
@@ -190,58 +212,57 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		super.dispose();
 	}
 	
-	protected void loadTestcase(int selectionIndex) {
-		if (selectionIndex > 0) {
-//			final String caseName = caseNames[selectionIndex];
-//			final String suiteName = suiteNames[suiteCombo.getSelectionIndex()];
-//			
-//			final ProjectContent currentProject = RttPluginUI.getProjectManager().getCurrentContent();
-//			
-//			Archive archive = currentProject.getProject().getArchive();
-//			final Configuration activeConfig = currentProject.getProject().getActiveConfiguration();
-//			final List<IContent> childs = new ArrayList<IContent>();
-//			
-//			System.out.println("Archive: " + archive);
-//			System.out.println("Config:"  +  activeConfig);
-//			
-//			if (archive != null) {
-//				
-//				final ArchiveLoader loader = archive.getLoader();
-//				
-//				
-//				ProgressMonitorDialog dialog = new ProgressMonitorDialog(getSite().getShell());
-//				try {
-//					dialog.run(true, false, new IRunnableWithProgress() {
-//						
-//						@Override
-//						public void run(IProgressMonitor monitor) throws InvocationTargetException,
-//								InterruptedException {
-//							monitor.beginTask("Loading history ...", IProgressMonitor.UNKNOWN);
-//							
-//							InputManager inputManager = new InputManager(loader, suiteName, caseName);
-//							childs.add(new HistoryContent(currentProject, inputManager, VersionType.INPUT));
-//							
-//							ReferenceManager refManager = new ReferenceManager(loader, suiteName, caseName, activeConfig);
-//							childs.add(new HistoryContent(currentProject, refManager, VersionType.REFERENCE));
-//							
-//							TestManager testManager = new TestManager(loader, suiteName, caseName, activeConfig);
-//							childs.add(new HistoryContent(currentProject, testManager, VersionType.TEST));
-//							
-//							monitor.done();
-//						}
-//					});
-//				} catch (InvocationTargetException e) {
-//					e.printStackTrace();
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}				
-//			}		
-//			
-//			treeViewer.setInput(childs.toArray());
-//			treeViewer.getTree().setEnabled(true);
-//		} else {
-//			treeViewer.setInput(EMPTY_ARRAY);
-//			treeViewer.getTree().setEnabled(false);
+	protected void loadTestcase(TestcaseContent item) {
+		if (item != null) {
+			final String caseName = item.getCaseName();
+			final String suiteName = item.getSuiteName();
+			
+			final ProjectContent currentProject = RttPluginUI.getProjectManager().getCurrentContent();
+			
+			Archive archive = currentProject.getProject().getArchive();
+			final Configuration activeConfig = currentProject.getProject().getActiveConfiguration();
+			final List<IContent> childs = new ArrayList<IContent>();
+			
+			System.out.println("Archive: " + archive);
+			System.out.println("Config:"  +  activeConfig);
+			
+			if (archive != null) {
+				
+				final ArchiveLoader loader = archive.getLoader();				
+				
+				ProgressMonitorDialog dialog = new ProgressMonitorDialog(getSite().getShell());
+				try {
+					dialog.run(true, false, new IRunnableWithProgress() {
+						
+						@Override
+						public void run(IProgressMonitor monitor) throws InvocationTargetException,
+								InterruptedException {
+							monitor.beginTask("Loading history ...", IProgressMonitor.UNKNOWN);
+							
+							InputManager inputManager = new InputManager(loader, suiteName, caseName);
+							childs.add(new HistoryContent(currentProject, inputManager, VersionType.INPUT));
+							
+							OutputDataManager refManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.REFERENCE);
+							childs.add(new HistoryContent(currentProject, refManager, VersionType.REFERENCE));
+							
+							OutputDataManager testManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.TEST);
+							childs.add(new HistoryContent(currentProject, testManager, VersionType.TEST));
+							
+							monitor.done();
+						}
+					});
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}				
+			}		
+			
+			treeViewer.setInput(childs.toArray());
+			treeViewer.getTree().setEnabled(true);
+		} else {
+			treeViewer.setInput(EMPTY_ARRAY);
+			treeViewer.getTree().setEnabled(false);
 		}
 	}
 

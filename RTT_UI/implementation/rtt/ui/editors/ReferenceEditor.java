@@ -9,37 +9,29 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 import rtt.ui.RttPluginUI;
-import rtt.ui.editors.input.LexerOutputDetailInput;
-import rtt.ui.editors.input.ParserOutputDetailInput;
-import rtt.ui.editors.input.RTTEditorInput;
+import rtt.ui.editors.input.ReferenceEditorInput;
 
-public class MasterDetailFormEditor extends FormEditor {
+public class ReferenceEditor extends FormEditor {
 
 	public static final String ID = "rtt.ui.editors.formeditor";
-	public static final String LEXER_ID = "rtt.ui.editors.lexer";
-	public static final String PARSER_ID = "rtt.ui.editors.parser";
+	public static final String LEXER_PAGE_ID = "rtt.ui.editors.lexer";
+	public static final String PARSER_PAGE_ID = "rtt.ui.editors.parser";
 
-	private RTTEditorInput editorInput;
-
-	public MasterDetailFormEditor() {
-
-	}
+	private ReferenceEditorInput editorInput;
 
 	@Override
 	protected void addPages() {
 
 		try {
-			RTTFormPage lexPage = new RTTFormPage(this, LEXER_ID, "Lexer");
-			lexPage.input = new LexerOutputDetailInput(LEXER_ID,
-					editorInput.getLexerOutput());
+			ReferenceEditorPage lexPage = new ReferenceEditorPage(this, LEXER_PAGE_ID, "Lexer");
+			lexPage.preparePageInput(editorInput.getLexerOutputStream());
 
-			RTTFormPage parPage = new RTTFormPage(this, PARSER_ID, "Parser");
-			parPage.input = new ParserOutputDetailInput(PARSER_ID,
-					editorInput.getParserOuput());
+			ReferenceEditorPage parPage = new ReferenceEditorPage(this, PARSER_PAGE_ID, "Parser");
+			parPage.preparePageInput(editorInput.getParserOutputStream());
 
 			addPage(lexPage);
 			addPage(parPage);
-		} catch (PartInitException e) {
+		} catch (Exception e) {
 			ErrorDialog.openError(getSite().getShell(), "Error",
 					"Could not open editor", new Status(Status.ERROR,
 							RttPluginUI.PLUGIN_ID, e.getMessage(), e));
@@ -50,12 +42,14 @@ public class MasterDetailFormEditor extends FormEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 
-		if (input instanceof RTTEditorInput) {
-			editorInput = (RTTEditorInput) input;
+		if (input instanceof ReferenceEditorInput) {
+			editorInput = (ReferenceEditorInput) input;
 		} else {
 			throw new PartInitException(new Status(Status.ERROR,
 					RttPluginUI.PLUGIN_ID, "Wrong Editor input: " + input));
 		}
+		
+		
 
 		super.init(site, input);
 		super.setPartName(input.getName());

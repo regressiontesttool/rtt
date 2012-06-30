@@ -113,14 +113,10 @@ public class TreeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Tree)object).getFullName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Tree_type") :
-			getString("_UI_Tree_type") + " " + label;
+		return super.getText(object);
 	}
 
 	/**

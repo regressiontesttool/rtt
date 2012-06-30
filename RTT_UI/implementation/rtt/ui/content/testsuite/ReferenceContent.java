@@ -12,10 +12,11 @@ import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
-import rtt.ui.editors.MasterDetailFormEditor;
-import rtt.ui.editors.input.RTTEditorInput;
+import rtt.ui.editors.ReferenceEditor;
+import rtt.ui.editors.input.ReferenceEditorInput;
 
-public class ReferenceContent extends AbstractContent implements IClickableContent {
+public class ReferenceContent extends AbstractContent implements
+		IClickableContent {
 
 	private String suiteName;
 	private String caseName;
@@ -33,15 +34,14 @@ public class ReferenceContent extends AbstractContent implements IClickableConte
 	public void doDoubleClick(IWorkbenchPage currentPage) {
 
 		try {
-			IEditorPart part = IDE.openEditor(currentPage, RTTEditorInput
-					.getReference(getProject(), suiteName, caseName, version),
-					MasterDetailFormEditor.ID, true);
+			IEditorPart part = IDE.openEditor(currentPage,
+					new ReferenceEditorInput(getProject(), suiteName, caseName,
+							version), ReferenceEditor.ID, true);
 			
-			if (part != null && part instanceof MasterDetailFormEditor) {
-				((MasterDetailFormEditor) part)
-						.setActivePage(MasterDetailFormEditor.PARSER_ID);
+			if (part instanceof ReferenceEditor) {
+				((ReferenceEditor) part)
+						.setActivePage(ReferenceEditor.PARSER_PAGE_ID);
 			}
-
 		} catch (PartInitException e) {
 			ErrorDialog.openError(currentPage.getActivePart().getSite()
 					.getShell(), "Error", "Could not open editor", new Status(

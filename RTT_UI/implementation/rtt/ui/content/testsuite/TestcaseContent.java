@@ -39,4 +39,12 @@ public class TestcaseContent extends AbstractContent {
 	public Testcase getTestcase() {
 		return testcase;
 	}
+
+	public String getCaseName() {
+		return testcase.getName();
+	}
+	
+	public String getSuiteName() {
+		return parent.getText();
+	}
 }
