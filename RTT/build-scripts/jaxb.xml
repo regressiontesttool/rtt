@@ -14,18 +14,22 @@
 
 	<dirname file="${ant.file.jaxb-taks}" property="tasks.base" />
 
-	<!-- Home of JDK and JAXB Compiler (xjc)-->
-	<property name="jdk.home" location="${java.home}" />
-	<property name="xjc.home" location="${jdk.home}/bin/xjc" />
-
 	<!-- Some important directories -->
 	<property name="project.dir" location="${tasks.base}/.." />
 	<property name="rtt.src-gen" location="${project.dir}/src-gen" />
 	<property name="rtt.schemes" location="${project.dir}/schemes" />
+	<property name="rtt.sources" location="${project.dir}/sources" />
+	<property name="rtt.libraries" location="${rtt.sources}/libraries" />
 
 	<!-- Some package definintions -->
 	<property name="package.core" location="${rtt.src-gen}/rtt/core" />
 	<property name="package.archive" location="${package.core}/archive" />
+
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		<classpath>
+			<fileset dir="${rtt.libraries}/jaxb" includes="*.jar" />
+		</classpath>
+	</taskdef>
 
 	<!-- Removes all classes of JAXB -->
 	<target name="Clean XJC">
@@ -36,7 +40,7 @@
 		<antcall target="Clean History" />
 		<antcall target="Clean Logging" />
 	</target>
-	
+
 	<!-- Generate JAXB implementation -->
 	<target name="XJC ALL">
 		<antcall target="XJC Config" />
@@ -69,14 +73,10 @@
 		<attribute name="schema" />
 		<element name="xjc-args" implicit="yes" optional="yes" />
 		<sequential>
-			<exec executable="${xjc.home}">
-				<arg value="-p" />
-				<arg value="rtt.core.archive.@{package}" />
-				<arg value="-d" />
-				<arg value="${rtt.src-gen}" />
-				<arg value="${rtt.schemes}${file.separator}@{schema}" />
+			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="rtt.core.archive.@{package}">
+				<produces dir="${rtt.src-gen}" includes="**/@{package}/*.java"/>
 				<xjc-args />
-			</exec>
+			</xjc>
 		</sequential>
 	</macrodef>
 
@@ -87,7 +87,7 @@
 		<JAXBClean package="configuration" />
 	</target>
 
-	<target name="XJC Config" depends="Clean Config">
+	<target name="XJC Config">
 		<JAXBCreate package="configuration" schema="Configuration.xsd" />
 	</target>
 
@@ -98,7 +98,7 @@
 		<JAXBClean package="testsuite" />
 	</target>
 
-	<target name="XJC Testsuite" depends="Clean Testsuite">
+	<target name="XJC Testsuite">
 		<JAXBCreate package="testsuite" schema="TestSuite.xsd" />
 	</target>
 
@@ -109,7 +109,7 @@
 		<JAXBClean package="input" />
 	</target>
 
-	<target name="XJC Input" depends="Clean Input">
+	<target name="XJC Input">
 		<JAXBCreate package="input" schema="Input.xsd" />
 	</target>
 
@@ -120,7 +120,7 @@
 		<JAXBClean package="output" />
 	</target>
 
-	<target name="XJC Output" depends="Clean Output">
+	<target name="XJC Output">
 		<JAXBCreate package="output" schema="Output.xsd" />
 	</target>
 
@@ -131,10 +131,9 @@
 		<JAXBClean package="history" />
 	</target>
 
-	<target name="XJC History" depends="Clean History">
+	<target name="XJC History">
 		<JAXBCreate package="history" schema="History.xsd">
-			<arg value="-b" />
-			<arg value="${rtt.schemes}${file.separator}History.xjb" />
+			<binding file="${rtt.schemes}${file.separator}History.xjb" />
 		</JAXBCreate>
 	</target>
 
@@ -145,10 +144,9 @@
 		<JAXBClean package="logging" />
 	</target>
 
-	<target name="XJC Logging" depends="Clean Logging">
+	<target name="XJC Logging">
 		<JAXBCreate package="logging" schema="Log.xsd">
-			<arg value="-b" />
-			<arg value="${rtt.schemes}${file.separator}Log.xjb" />
+			<binding file="${rtt.schemes}${file.separator}Log.xjb" />
 		</JAXBCreate>
 	</target>
 
