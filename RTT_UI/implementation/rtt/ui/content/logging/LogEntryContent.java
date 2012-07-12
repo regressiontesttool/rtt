@@ -48,6 +48,9 @@ public class LogEntryContent extends AbstractContent implements
 		case TESTRUN:
 			return ContentIcon.TESTRUN;
 			
+		case ARCHIVE:
+			return ContentIcon.ARCHIVE;
+			
 		default:
 			return ContentIcon.PLACEHOLDER;
 		}

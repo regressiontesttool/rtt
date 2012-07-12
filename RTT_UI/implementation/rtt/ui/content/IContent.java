@@ -56,4 +56,5 @@ public interface IContent {
 	RttProject getProject();
 
 	void reload();
+	void notifyChanges();
 }

@@ -30,7 +30,8 @@ public enum ContentIcon {
 	
 	INFO("icons/info.gif"),
 	GENERATION("icons/generation.gif"),
-	TESTRUN("icons/testrun.gif"),
+	TESTRUN("icons/testrun.gif"), 
+	ARCHIVE("icons/archive.gif"),
 	
 	VERSION("icons/version.gif"),
 	INPUT_HISTORY("icons/input_version.gif"),

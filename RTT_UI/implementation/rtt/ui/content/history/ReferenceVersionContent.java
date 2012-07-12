@@ -8,8 +8,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
 import rtt.core.archive.history.Version;
-import rtt.core.manager.data.IHistoryManager;
-import rtt.core.manager.data.OutputDataManager;
+import rtt.core.manager.data.history.IHistoryManager;
+import rtt.core.manager.data.history.OutputDataManager;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;

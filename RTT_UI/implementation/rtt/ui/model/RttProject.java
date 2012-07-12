@@ -1,5 +1,6 @@
 package rtt.ui.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,9 +104,8 @@ public class RttProject {
 		return manager.removeTestsuite(suiteName);
 	}
 
-	public void addTestcase(String text, IFile file) throws RTTException {
-		manager.addFile(file.getLocation().toFile(), text,
-				TestCaseMode.OVERWRITE);
+	public List<RTTException> addTestcase(String suiteName, List<File> files) {
+		return manager.addAllFiles(files, suiteName, TestCaseMode.OVERWRITE);		
 	}
 
 	public void removeTestcase(String suiteName, String caseName)

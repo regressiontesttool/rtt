@@ -6,7 +6,6 @@ import org.eclipse.jface.dialogs.InputDialog;
 
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.handlers.AbstractSelectionHandler;
 
 public class TSuiteAddHandler extends AbstractSelectionHandler {

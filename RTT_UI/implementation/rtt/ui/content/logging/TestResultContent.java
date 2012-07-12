@@ -3,6 +3,7 @@ package rtt.ui.content.logging;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.graphics.Image;
 
+import rtt.core.archive.logging.Comment;
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.Result;
 import rtt.ui.content.IColumnableContent;
@@ -40,6 +41,17 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 	protected Integer getTestVersion() {
 		return result.getTestVersion();
 	}
+	
+	public String getComment() {
+		String commentText = "";
+		
+		Comment comment = result.getComment();
+		if (comment != null && comment.getValue() != null) {
+			 commentText = comment.getValue();
+		}
+		
+		return commentText;
+	}
 
 	@Override
 	public String getText() {
@@ -74,8 +86,14 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 			return result.getType().toString();
 
 		case 1:
-			return "Testcase: " + result.getTestcase() + " - Testsuite: " + result.getTestsuite();
-
+			String message = "Testcase: " + result.getTestcase() + " - Testsuite: " + result.getTestsuite();
+			
+			if (!getComment().equals("")) {
+				message += " (" + getComment() + ")";
+			}
+			
+			return message;
+			
 		default:
 			return "";
 		}
@@ -89,4 +107,12 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 		
 		return null;
 	}
+
+	public void setComment(String commentText) {
+		Comment comment = new Comment();
+		comment.setValue(commentText);
+		result.setComment(comment);
+	}
+
+	
 }

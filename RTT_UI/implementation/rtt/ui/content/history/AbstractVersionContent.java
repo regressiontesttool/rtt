@@ -6,7 +6,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.history.Version;
-import rtt.core.manager.data.IHistoryManager;
+import rtt.core.manager.data.history.IHistoryManager;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
 import rtt.ui.content.main.AbstractContent;

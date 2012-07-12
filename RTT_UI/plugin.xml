@@ -5,18 +5,18 @@
          point="org.eclipse.ui.views">
       <category
             id="rtt.ui.views.category.standard"
-            name="RTT">
+            name="%category.normal.name">
       </category>
       <category
             id="rtt.ui.views.category.experimental"
-            name="RTT (experimental)">
+            name="%category.experimental.name">
       </category>
       <view
             category="rtt.ui.views.category.standard"
             class="rtt.ui.views.ProjectView"
             icon="icons/sample.gif"
             id="rtt.ui.views.ProjectView"
-            name="Testprojects"
+            name="%view.projects.name"
             restorable="true">
       </view>
       <view
@@ -24,7 +24,7 @@
             class="rtt.ui.views.LogView"
             icon="icons/sample.gif"
             id="rtt.ui.views.LogView"
-            name="Log"
+            name="%view.logs.name"
             restorable="true">
       </view>
       <view
@@ -32,7 +32,7 @@
             class="rtt.ui.views.VersionView"
             icon="icons/sample.gif"
             id="rtt.ui.views.VersionView"
-            name="Versions"
+            name="%view.versions.name"
             restorable="true">
       </view>
       <view
@@ -40,70 +40,60 @@
             class="rtt.ui.views.TestView"
             icon="icons/sample.gif"
             id="rtt.ui.views.TestView"
-            name="Testing"
+            name="%view.testing.name"
             restorable="true">
       </view>
-      <view
-            class="rtt.ui.view.ResultView"
-            id="rtt.ui.views.ResultView"
-            name="Results"
-            restorable="true">
-      </view>
-      <category
-            id="rtt.ui"
-            name="Sample Category">
-      </category>ew>
      
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
             id="rtt.ui.commands.initArchive"
-            name="Initialize Archive">
+            name="%commands.initArchive.name">
       </command>
       <command
             id="rtt.ui.commands.config.add"
-            name="Add Configuration">
+            name="%commands.config.add.name">
       </command>
       <command
             id="rtt.ui.commands.config.edit"
-            name="Edit Config">
+            name="%commands.config.edit.name">
       </command>
       <command
             id="rtt.ui.commands.config.setActive"
-            name="Set Active">
+            name="%commands.config.setActive.name">
       </command>
       <command
             id="rtt.ui.commands.tests.generate"
-            name="Generate Tests">
+            name="%commands.tests.generate.name">
       </command>
       <command
             id="rtt.ui.commands.tests.run"
-            name="Run Tests">
+            name="%commands.tests.run.name">
       </command>
       <command
             id="rtt.ui.commands.testsuite.add"
-            name="Add Test Suite">
+            name="%commands.testsuite.add.name">
       </command>
       <command
             id="rtt.ui.commands.testsuite.remove"
-            name="Remove Test Suite">
+            name="%commands.testsuite.remove.name">
       </command>
       <command
             id="rtt.ui.commands.testcase.add"
-            name="Add Test Cases">
+            name="%commands.testcase.add.name">
       </command>
       <command
             id="rtt.ui.commands.testcase.remove"
-            name="Remove Test Case">
-      </command>
-      <command
-            id="rtt.ui.commands.classpath.add"
-            name="Add Classpath Entry">
+            name="%commands.testcase.remove.name">
       </command>
       <command
             id="rtt.ui.commands.classpath.remove"
-            name="Remove Classpath Entry">
+            name="%commands.classpath.remove.name">
+      </command>
+      <command
+            id="rtt.ui.commands.comment"
+            name="%commands.comment.name">
       </command>
    </extension>
    <extension
@@ -117,7 +107,7 @@
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
          <menu
-               label="RTT">
+               label="%menu.label">
             <visibleWhen
                   checkEnabled="false">
                <with
@@ -214,6 +204,16 @@
       </menuContribution>
       <menuContribution
             locationURI="popup:rtt.ui.views.LogView">
+         <command
+               commandId="rtt.ui.commands.comment"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="rtt.ui.definitions.selection.testresult">
+               </reference>
+            </visibleWhen>
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="popup:rtt.ui.views.ProjectView">
@@ -238,16 +238,9 @@
                   <reference
                         definitionId="rtt.ui.definitions.selection.config">
                   </reference>
-                  <and>
-                     <reference
-                           definitionId="rtt.ui.definitions.configParent">
-                     </reference>
-                     <not>
-                        <reference
-                              definitionId="rtt.ui.definitions.selection.classpath">
-                        </reference>
-                     </not>
-                  </and>
+                  <reference
+                        definitionId="rtt.ui.definitions.configParent">
+                  </reference>
                </or>
             </visibleWhen>
          </command>
@@ -261,28 +254,10 @@
                   <reference
                         definitionId="rtt.ui.definitions.selection.config">
                   </reference>
-                  <and>
-                     <reference
-                           definitionId="rtt.ui.definitions.configParent">
-                     </reference>
-                     <not>
-                        <reference
-                              definitionId="rtt.ui.definitions.selection.classpath">
-                        </reference>
-                     </not>
-                  </and>
+                  <reference
+                        definitionId="rtt.ui.definitions.configParent">
+                  </reference>
                </or>
-            </visibleWhen>
-         </command>
-         <command
-               commandId="rtt.ui.commands.classpath.add"
-               id="classpath.add"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.classpath">
-               </reference>
             </visibleWhen>
          </command>
          <command
@@ -449,14 +424,15 @@
          </class>
       </handler>
       <handler
-            commandId="rtt.ui.commands.classpath.add">
-         <class
-               class="rtt.ui.handlers.classpath.ClasspathEntryAddHandler"></class>
-      </handler>
-      <handler
             commandId="rtt.ui.commands.classpath.remove">
          <class
                class="rtt.ui.handlers.classpath.ClasspathEntryRemoveHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="rtt.ui.commands.comment">
+         <class
+               class="rtt.ui.handlers.tests.CommentHandler">
          </class>
       </handler>
    </extension>
@@ -466,7 +442,7 @@
             class="rtt.ui.perspectives.ProjectPerspectiveFactory"
             icon="icons/sample.gif"
             id="rtt.ui.perspective.projectPerspective"
-            name="RTT">
+            name="%perspective.name">
       </perspective>
    </extension>
    <extension
@@ -512,22 +488,6 @@
                   operator="and">
                <instanceof
                      value="rtt.ui.content.testsuite.TestcaseContent">
-               </instanceof>
-            </iterate>
-            <count
-                  value="1">
-            </count>
-         </with>
-      </definition>
-      <definition
-            id="rtt.ui.definitions.selection.project">
-         <with
-               variable="activeMenuSelection">
-            <iterate
-                  ifEmpty="false"
-                  operator="and">
-               <instanceof
-                     value="rtt.ui.core.internal.treeItem.ProjectTreeItem">
                </instanceof>
             </iterate>
             <count
@@ -638,6 +598,22 @@
             </count>
          </with>
       </definition>
+      <definition
+            id="rtt.ui.definitions.selection.testresult">
+         <with
+               variable="activeMenuSelection">
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <instanceof
+                     value="rtt.ui.content.logging.TestResultContent">
+               </instanceof>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </with>
+      </definition>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -646,7 +622,7 @@
             default="false"
             icon="icons/sample.gif"
             id="rtt.ui.editors.formeditor"
-            name="RTT Editor">
+            name="%editor.name">
       </editor>
    </extension>
    <extension
@@ -688,7 +664,7 @@
    </extension>
    <extension
          id="projectnature"
-         name="RTT Project Nature"
+         name="%extension.name"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run

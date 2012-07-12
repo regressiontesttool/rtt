@@ -28,19 +28,25 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 	}
 	
 	private void loadContent() {
+		
 		if (config.getLexerClass() != null) {
-			childs.add(new SimpleTypedContent(this, ContentType.LEXERCLASS,
-					config.getLexerClass().getValue()));
+			addExecutor(ContentType.LEXERCLASS, config.getLexerClass().getValue());
 		}
 
 		if (config.getParserClass() != null) {
-			childs.add(new SimpleTypedContent(this, ContentType.PARSERCLASS,
-					config.getParserClass().getValue()));
+			addExecutor(ContentType.PARSERCLASS, config.getParserClass().getValue());
 		}
 
 		if (config.getClasspath() != null) {
 			childs.add(new ClasspathContent(this, config.getClasspath()));
 		}
+	}
+	
+	private void addExecutor(ContentType type, String text) {
+		if (text == null || text.equals("")) {
+			text = "<None>";
+		}
+		childs.add(new SimpleTypedContent(this, type, text));
 	}
 	
 	public void reload() {

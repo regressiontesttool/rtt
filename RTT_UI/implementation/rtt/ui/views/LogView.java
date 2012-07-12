@@ -1,5 +1,6 @@
 package rtt.ui.views;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -19,6 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
@@ -111,6 +113,13 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 		contentViewer.setComparator(new ContentViewerComperator());
 		contentViewer.setContentProvider(new ContentTreeViewer.TreeContentProvider());
 		contentViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
+		
+		// register context menu for comments
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(contentViewer.getControl());
+		contentViewer.getControl().setMenu(menu);		
+		getSite().registerContextMenu(menuManager, contentViewer);
+		getSite().setSelectionProvider(contentViewer);
 		
 		update(RttPluginUI.getProjectManager().getCurrentContent());
 		RttPluginUI.getProjectManager().addListener(this);

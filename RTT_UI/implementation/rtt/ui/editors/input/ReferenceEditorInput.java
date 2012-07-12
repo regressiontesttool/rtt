@@ -8,8 +8,8 @@ import org.eclipse.ui.IPersistableElement;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.manager.data.OutputDataManager;
-import rtt.core.manager.data.OutputDataManager.OutputDataType;
+import rtt.core.manager.data.history.OutputDataManager;
+import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.model.RttProject;
 
 public class ReferenceEditorInput implements IEditorInput {

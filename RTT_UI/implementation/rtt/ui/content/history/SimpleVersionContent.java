@@ -1,7 +1,7 @@
 package rtt.ui.content.history;
 
 import rtt.core.archive.history.Version;
-import rtt.core.manager.data.IHistoryManager;
+import rtt.core.manager.data.history.IHistoryManager;
 import rtt.ui.content.IContent;
 
 public class SimpleVersionContent extends AbstractVersionContent<IHistoryManager> {

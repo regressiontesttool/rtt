@@ -1,5 +1,6 @@
 package rtt.ui.content.main;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +9,8 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Path;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
+import rtt.core.exceptions.RTTException.Type;
+import rtt.ui.RttLog;
 import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ConfigurationContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
@@ -173,8 +176,29 @@ public class ProjectContent extends AbstractContent {
 		project.setActiveConfiguration(config.getText());
 		suiteDirectory = new TestsuiteDirectory(this);
 		
+		reload();		
+	}
+
+	public void addTestcases(String suiteName, List<File> files) throws RTTException {
+		List<RTTException> exceptions = project.addTestcase(suiteName, files);
+		
+		if (exceptions.isEmpty() == false) {
+			for (Exception exception : exceptions) {
+				RttLog.log(exception);
+			}
+			
+			String message = "Some files could not be added to the test suite. See Error Log for more information";			
+			throw new RTTException(Type.TESTCASE, message);
+		}
+		
+		project.save();
 		reload();
+	}
+
+	public void removeTestcase(String suiteName, String caseName) throws RTTException {
+		project.removeTestcase(suiteName, caseName);
+		project.save();
 		
-		
+		reload();
 	}
 }

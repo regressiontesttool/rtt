@@ -1,5 +1,6 @@
 package rtt.ui.content.testsuite;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,10 @@ import org.eclipse.core.resources.IFile;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
-import rtt.core.exceptions.RTTException.Type;
-import rtt.ui.RttLog;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
-import rtt.ui.model.RttProject;
+import rtt.ui.content.main.ProjectContent;
 
 public class TestsuiteContent extends AbstractContent {
 	private Testsuite testsuite;
@@ -51,46 +50,27 @@ public class TestsuiteContent extends AbstractContent {
 	}
 
 	public void addTestcase(Object[] objects) throws RTTException {
-		RttProject project = this.getProject();
-		List<Exception> exceptions = new ArrayList<Exception>();
-		int savedTestCases = 0;
+		List<File> files = new ArrayList<File>();
 		
 		for (Object object : objects) {
-			try  {
-				if (object instanceof IFile) {
-					project.addTestcase(testsuite.getName(), (IFile) object);
-					savedTestCases++;
-				}							
-			} catch (RTTException e) {
-				exceptions.add(e);
+			if (object instanceof IFile) {
+				files.add(((IFile) object).getLocation().toFile());
 			}
 		}
 		
-		if (exceptions.isEmpty() == false) {
-			for (Exception exception : exceptions) {
-				RttLog.log(exception);
-			}
-			
-			String message = "";
-			if (savedTestCases > 0) {
-				message = "Some files could not be added to the test suite. See Error Log for more information";
-			} else {
-				message = "No file added to the test suite. See Error Log for more information.";
-			}
-			
-			throw new RTTException(Type.TESTCASE, message);
+		ProjectContent projectContent = getContent(ProjectContent.class);
+		if (projectContent != null) {
+			projectContent.addTestcases(testsuite.getName(), files);
 		}
-		
-		project.save();
 		
 		reload();
 	}
 	
 	public void removeTestcase(String caseName) throws RTTException {
-		RttProject project = this.getProject();
-		
-		project.removeTestcase(testsuite.getName(), caseName);
-		project.save();
+		ProjectContent projectContent = getContent(ProjectContent.class);
+		if (projectContent != null) {
+			projectContent.removeTestcase(testsuite.getName(), caseName);
+		}
 		
 		reload();
 	}

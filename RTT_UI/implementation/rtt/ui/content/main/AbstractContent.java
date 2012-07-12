@@ -35,6 +35,10 @@ public abstract class AbstractContent implements IContent {
 		
 	}
 	
+	public void notifyChanges() {
+		
+	}
+	
 	@Override
 	public IContent getParent() {
 		return parent;
@@ -54,8 +58,6 @@ public abstract class AbstractContent implements IContent {
 		if (childs == null) {
 			return EMPTY_ARRAY;
 		}
-		
-//		System.out.println(this.getClass().getSimpleName() + ": getChildren");
 		
 		return childs.toArray(new IContent[childs.size()]);
 	}

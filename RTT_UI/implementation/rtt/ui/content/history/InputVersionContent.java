@@ -4,8 +4,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 import rtt.core.archive.history.Version;
-import rtt.core.manager.data.IHistoryManager;
-import rtt.core.manager.data.InputManager;
+import rtt.core.manager.data.history.IHistoryManager;
+import rtt.core.manager.data.history.InputManager;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.editors.input.InputEditorInput;

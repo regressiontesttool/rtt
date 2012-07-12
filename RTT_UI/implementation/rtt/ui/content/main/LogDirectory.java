@@ -4,11 +4,10 @@ import rtt.core.archive.logging.ArchiveLog;
 import rtt.core.archive.logging.Entry;
 import rtt.core.archive.logging.EntryType;
 import rtt.core.manager.data.LogManager;
-import rtt.ui.content.IContent;
 import rtt.ui.content.logging.LogEntryContent;
 import rtt.ui.content.logging.TestrunContent;
 
-public class LogDirectory extends AbstractContent implements IContent {	
+public class LogDirectory extends AbstractContent {	
 
 	private boolean isEmpty;
 
@@ -28,7 +27,7 @@ public class LogDirectory extends AbstractContent implements IContent {
 				childs.add(new EmptyContent("No log entries found."));
 			} else {
 				for (Entry entry : log.getEntry()) {
-					long start = System.currentTimeMillis();
+//					long start = System.currentTimeMillis();
 					if (entry.getType() == EntryType.TESTRUN) {
 						childs.add(new TestrunContent(this, entry));
 					} else {
