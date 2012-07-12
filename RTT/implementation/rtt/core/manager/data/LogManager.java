@@ -30,8 +30,22 @@ import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.utils.DebugLog;
 
-public class LogManager extends DataManager<ArchiveLog> {
+/**
+ * This manager provides all operations on the {@link ArchiveLog}.
+ * 
+ * @author Christian Oelsner <C.Oelsner@gmail.com>
+ * @see AbstractDataManager
+ * @see ArchiveLog
+ * 
+ */
+public class LogManager extends AbstractDataManager<ArchiveLog> {
 
+	/**
+	 * Creates a new log manager for the given {@link ArchiveLoader}.
+	 * 
+	 * @param loader
+	 *            the {@link ArchiveLoader}
+	 */
 	public LogManager(ArchiveLoader loader) {
 		super(loader, new SimpleFileFetching("log.xml", ""));
 	}
@@ -46,40 +60,82 @@ public class LogManager extends DataManager<ArchiveLog> {
 		marshall(ArchiveLog.class, data);
 	}
 
-	public void addInformational(String message, String suffix) {
-		addInformational(message, suffix, null);
+	@Override
+	protected ArchiveLog getEmptyData() {
+		return new ArchiveLog();
 	}
 
-	public void addInformational(String message, String suffix,
-			List<Detail> testInfo) {
-		Entry info = new Entry();
-		info.setDate(getNow());
-		info.setMsg(message);
-		info.setSuffix(suffix);
-		info.setType(EntryType.INFO);
+	private Entry createEntry(String message, String suffix, EntryType type) {
+		Entry entry = new Entry();
+		entry.setDate(getNow());
+		entry.setMsg(message);
+		entry.setSuffix(suffix);
+		entry.setType(type);
+
+		return entry;
+	}
+	
+	private XMLGregorianCalendar getNow() {
+		try {
+			XMLGregorianCalendar cal = DatatypeFactory.newInstance()
+					.newXMLGregorianCalendar(new GregorianCalendar());
+			cal.normalize();
+
+			return cal;
+		} catch (DatatypeConfigurationException e) {
+			DebugLog.printTrace(e);
+			return null;
+		}
+	}
+
+	/**
+	 * Adds an {@link Entry} to the {@link ArchiveLog}, with a list of
+	 * {@link Detail}s.
+	 * 
+	 * @param type
+	 *            the {@link EntryType}
+	 * @param message
+	 *            the message of the new entry
+	 * @param suffix
+	 *            the suffix of the new entry
+	 * @param details
+	 *            a list of {@link Detail}s
+	 * @see #addEntry(EntryType, String, String)
+	 * @see ArchiveLog
+	 * @see Entry
+	 * @see EntryType
+	 * @see Detail
+	 */
+	public void addEntry(EntryType type, String message, String suffix,
+			List<Detail> details) {
+
+		Entry entry = createEntry(message, suffix, type);
+		if (details != null) {
+			entry.getDetail().addAll(details);
+		}
 
 		DebugLog.log(message + " " + suffix);
 
-		if (testInfo != null) {
-			info.getDetail().addAll(testInfo);
-		}
-		data.getEntry().add(info);
+		data.getEntry().add(entry);
 	}
 
-	public void addGenInformational(String message, String suffix,
-			List<Detail> testInfo) {
-		Entry info = new Entry();
-		info.setDate(getNow());
-		info.setMsg(message);
-		info.setSuffix(suffix);
-		info.setType(EntryType.GENERATION);
-
-		DebugLog.log(message + " " + suffix);
-
-		if (testInfo != null) {
-			info.getDetail().addAll(testInfo);
-		}
-		data.getEntry().add(info);
+	/**
+	 * Adds an {@link Entry} to the {@link ArchiveLog}, without
+	 * 
+	 * @param type
+	 *            the {@link EntryType}
+	 * @param message
+	 *            the message of the new entry
+	 * @param suffix
+	 *            the suffix of the new entry
+	 * @see #addEntry(EntryType, String, String, List)
+	 * @see ArchiveLog
+	 * @see Entry
+	 * @see EntryType
+	 * @see Detail
+	 */
+	public void addEntry(EntryType type, String message, String suffix) {
+		addEntry(type, message, suffix, null);
 	}
 
 	public void addTestrunResult(List<TestResult> testResults,
@@ -93,11 +149,11 @@ public class LogManager extends DataManager<ArchiveLog> {
 		tr.setTestsuite(testsuite);
 
 		for (TestResult result : testResults) {
-			
+
 			Result resultEntry = new Result();
 			resultEntry.setTestcase(result.getCaseName());
 			resultEntry.setTestsuite(result.getSuiteName());
-			
+
 			resultEntry.setRefVersion(result.getRefVersion());
 			resultEntry.setTestVersion(result.getTestVersion());
 
@@ -109,13 +165,13 @@ public class LogManager extends DataManager<ArchiveLog> {
 					Failure failureEntry = new Failure();
 					failureEntry.setMsg(failure.getShortMessage());
 					failureEntry.setPath(failure.getPath());
-					
+
 					if (failure instanceof LexerTestFailure) {
 						failureEntry.setType(FailureType.LEXER);
 					} else if (failure instanceof ParserTestFailure) {
 						failureEntry.setType(FailureType.PARSER);
 					}
-					
+
 					resultEntry.getFailure().add(failureEntry);
 				}
 				resultEntry.setType(ResultType.FAILED);
@@ -129,30 +185,20 @@ public class LogManager extends DataManager<ArchiveLog> {
 				resultEntry.setType(ResultType.SKIPPED);
 				break;
 			}
-			
+
 			tr.getResult().add(resultEntry);
 		}
 		data.getEntry().add(tr);
 	}
 
-	private XMLGregorianCalendar getNow() {
-		try {
-			XMLGregorianCalendar cal = DatatypeFactory.newInstance()
-					.newXMLGregorianCalendar(new GregorianCalendar());
-			cal.normalize();
-
-			return cal;
-		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	protected ArchiveLog getEmptyData() {
-		return new ArchiveLog();
-	}
-
+	/**
+	 * Exports the complete {@link ArchiveLog} to a given location.
+	 * 
+	 * @param location
+	 *            the location, where the log should be exported
+	 * @throws IOException
+	 *             thrown, if any error occur during export
+	 */
 	public void export(File location) throws IOException {
 
 		File dir = location;

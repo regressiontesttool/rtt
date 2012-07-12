@@ -9,10 +9,34 @@ import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.utils.DebugLog;
 import rtt.core.utils.DebugLog.LogType;
 
-public class ConfigurationManager extends DataManager<Configurations> {
+/**
+ * This Manager manages the processing of configurations.
+ * 
+ * @author Christian Oelsner <C.Oelsner@gmail.com>
+ */
+public class ConfigurationManager extends AbstractDataManager<Configurations> {
 
+	/**
+	 * This enumeration contains the result of the setConfiguration action of
+	 * the {@link ConfigurationManager}
+	 * 
+	 * @author Christian Oelsner <C.Oelsner@gmail.com>
+	 * @see ConfigurationManager
+	 * @see ConfigurationManager#setConfiguration(Configuration, boolean)
+	 */
 	public enum ConfigStatus {
-		CREATED, REPLACED, SKIPPED;
+		/**
+		 * A new configuration has been created.
+		 */
+		CREATED, 
+		/**
+		 * A configuration has been replaced.
+		 */
+		REPLACED, 
+		/**
+		 * The configuration has been rejected.
+		 */
+		SKIPPED;
 	}
 
 	public ConfigurationManager(ArchiveLoader loader) {
@@ -29,6 +53,23 @@ public class ConfigurationManager extends DataManager<Configurations> {
 		marshall(Configurations.class, data);
 	}
 
+	/**
+	 * Sets a configuration to the archive.
+	 * <p>
+	 * If no configuration with the same name exists, the configuration will be
+	 * added. If a configuration is already existing, the overwrite flag is used
+	 * to decide what should be done.
+	 * <p>
+	 * A {@link ConfigStatus} element will indicate the result of the operation.
+	 * 
+	 * @param config
+	 *            the configuration, which should be set
+	 * @param overwrite
+	 *            set true to overwrite configuration, if already existing
+	 * @return a {@link ConfigStatus}, indicating the the changes to the archive
+	 * @see Configuration
+	 * @see ConfigStatus
+	 */
 	public ConfigStatus setConfiguration(Configuration config, boolean overwrite) {
 		List<Configuration> configList = data.getConfiguration();
 		Configuration oldConfig = getConfiguration(config.getName());
@@ -38,7 +79,7 @@ public class ConfigurationManager extends DataManager<Configurations> {
 		}
 
 		// create or update config
-		
+
 		if (configList.size() < 1) {
 			data.setDefault(config.getName());
 		}
@@ -54,6 +95,14 @@ public class ConfigurationManager extends DataManager<Configurations> {
 
 	}
 
+	/**
+	 * Returns the configuration of the given name or null, if not found.
+	 * 
+	 * @param name
+	 *            the name of the configuration
+	 * @return a configuration or null
+	 * @see Configuration
+	 */
 	public Configuration getConfiguration(String name) {
 		List<Configuration> configList = data.getConfiguration();
 
@@ -63,16 +112,28 @@ public class ConfigurationManager extends DataManager<Configurations> {
 			}
 		}
 
-		// DebugLog.log(LogType.VERBOSE, "Configuration [" + name
-		// + "] cannot be found");
-
 		return null;
 	}
 
+	/**
+	 * Returns the default configuration of the archive.
+	 * 
+	 * @return the default configuration
+	 * @see Configuration
+	 * @see #getConfiguration(String)
+	 */
 	public Configuration getDefaultConfig() {
 		return getConfiguration(data.getDefault());
 	}
 
+	/**
+	 * Sets a new default configuration for the archive.
+	 * 
+	 * @param configName
+	 *            name of the new default configuration
+	 * @return true, if configuration is set
+	 * @see Configuration
+	 */
 	public boolean setDefaultConfig(String configName) {
 		// CHRISTIAN auskommentiert, wegen ant task fehler (create archive,
 		// create config)
@@ -91,10 +152,16 @@ public class ConfigurationManager extends DataManager<Configurations> {
 		if (defaultConfig == null || defaultConfig.equals(configName)) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
+	/**
+	 * Prints informations about all configurations to the {@link DebugLog}.
+	 * 
+	 * @see Configuration
+	 * @see DebugLog
+	 */
 	public void print() {
 		DebugLog.log(LogType.ALL, "DefaultConfiguration: " + data.getDefault());
 
@@ -117,6 +184,13 @@ public class ConfigurationManager extends DataManager<Configurations> {
 		return new Configurations();
 	}
 
+	/**
+	 * Returns a list with all configurations.
+	 * 
+	 * @return list with all configurations.
+	 * @see Configuration
+	 * @see Configurations#getConfiguration()
+	 */
 	public List<Configuration> getConfigurations() {
 		return data.getConfiguration();
 	}

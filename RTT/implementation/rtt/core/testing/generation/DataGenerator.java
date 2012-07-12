@@ -22,7 +22,7 @@ public class DataGenerator {
 	public static LexerOutput generateOutput(Input data, LexerExecuter lexer)
 			throws Exception {
 
-		LexerOutput lexOut = null;
+		LexerOutput lexOut = new LexerOutput();
 
 		if (lexer != null) {
 			lexOut = new LexerOutput();
@@ -43,7 +43,7 @@ public class DataGenerator {
 	public static ParserOutput generateOutput(Input data, ParserExecuter parser)
 			throws Exception {
 
-		ParserOutput parOut = null;
+		ParserOutput parOut = new ParserOutput();
 
 		if (parser != null) {
 			parOut = new ParserOutput();
@@ -71,7 +71,7 @@ public class DataGenerator {
 
 			LexerClass lexerClass = config.getLexerClass();
 
-			if (lexerClass != null && lexerClass.getValue() != null) {
+			if (lexerClass != null && lexerClass.getValue() != null && !lexerClass.getValue().equals("")) {
 
 				DebugLog.log(LogType.ALL, "Creating lexer class: "
 						+ config.getLexerClass().getValue());
@@ -95,7 +95,7 @@ public class DataGenerator {
 
 			ParserClass parserClass = config.getParserClass();
 
-			if (parserClass != null && parserClass.getValue() != null) {
+			if (parserClass != null && parserClass.getValue() != null && !parserClass.getValue().equals("")) {
 
 				DebugLog.log(LogType.ALL, "Creating parser class: "
 						+ config.getParserClass().getValue());

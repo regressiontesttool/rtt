@@ -1,4 +1,4 @@
-package rtt.core.manager.data;
+package rtt.core.manager.data.history;
 
 import java.io.InputStream;
 import java.util.List;
@@ -7,10 +7,11 @@ import rtt.core.archive.output.ParserOutput;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.OutputFetching;
 import rtt.core.loader.fetching.OutputFetching.OutputType;
+import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.compare.ParserOutputCompare;
 import rtt.core.testing.compare.results.ParserTestFailure;
 
-public class ParserOutputManager extends DataManager<ParserOutput> {
+public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
 	
 	OutputFetching fetching;
 	

@@ -1,4 +1,4 @@
-package rtt.core.manager.data;
+package rtt.core.manager.data.history;
 
 import java.io.BufferedReader;
 import java.io.IOException;

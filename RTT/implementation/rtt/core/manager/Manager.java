@@ -23,6 +23,7 @@ import rtt.core.archive.configuration.LexerClass;
 import rtt.core.archive.configuration.ParserClass;
 import rtt.core.archive.configuration.Path;
 import rtt.core.archive.logging.Detail;
+import rtt.core.archive.logging.EntryType;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.archive.testsuite.VersionData;
@@ -30,13 +31,13 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.ZipArchiveLoader;
-import rtt.core.manager.data.OutputDataManager;
-import rtt.core.manager.data.OutputDataManager.GenerationInfo;
-import rtt.core.manager.data.OutputDataManager.OutputDataType;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.LogManager;
 import rtt.core.manager.data.TestsuiteManager;
 import rtt.core.manager.data.TestsuiteManager.TestcaseStatus;
+import rtt.core.manager.data.history.OutputDataManager;
+import rtt.core.manager.data.history.OutputDataManager.GenerationInfo;
+import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.core.testing.Tester;
 import rtt.core.testing.compare.results.ITestFailure;
 import rtt.core.testing.compare.results.TestResult;
@@ -45,6 +46,7 @@ import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.LexerExecuter;
 import rtt.core.testing.generation.ParserExecuter;
 import rtt.core.utils.DebugLog;
+import rtt.core.utils.DebugLog.LogType;
 
 /**
  * 
@@ -78,6 +80,9 @@ public class Manager {
 	public void createArchive() throws Exception {
 		currentArchive = new Archive(getArchiveLoader(archivePath));
 		currentLog = currentArchive.getLogManager();
+		
+		currentLog.addEntry(EntryType.ARCHIVE, "Archive created.", "");
+		
 		currentArchive.save();
 	}
 
@@ -347,7 +352,7 @@ public class Manager {
 
 				DebugLog.printTrace(e);
 
-				currentLog.addInformational(
+				currentLog.addEntry(EntryType.INFO,
 						"Error during generation of reference data: " + e,
 						suite.getName() + "/" + tcase.getName());
 
@@ -355,7 +360,7 @@ public class Manager {
 			}
 		}
 
-		currentLog.addGenInformational(
+		currentLog.addEntry(EntryType.GENERATION,
 				"Reference data generated for configuration: ",
 				config.getName(), genInfos);
 
@@ -474,22 +479,32 @@ public class Manager {
 	 * @param mode
 	 * @throws Exception
 	 */
-	public void addAllFiles(List<File> files, String testSuite,
-			TestCaseMode mode) throws RTTException {
+	public List<RTTException> addAllFiles(List<File> files, String testSuite,
+			TestCaseMode mode) {
 
 		List<Detail> ti = new LinkedList<Detail>();
+		List<RTTException> exceptions = new ArrayList<RTTException>();
 		for (File f : files) {
-			List<Detail> tmp = addFile(f, testSuite, mode);
-			if (tmp != null)
-				ti.addAll(tmp);
+			try {
+				ti.add(addFile(f, testSuite, mode));
+			} catch (RTTException e) {
+				exceptions.add(e);
+			}			
 		}
 
-		currentLog.addInformational("New Files added for testsuite: ",
+		currentLog.addEntry(EntryType.ARCHIVE, "Testcases added to test suite: ",
 				testSuite, ti);
+		
+		return exceptions;
 	}
 
 	public boolean createTestSuite(String suiteName) {
-		return currentArchive.addTestsuite(suiteName);
+		boolean result = currentArchive.addTestsuite(suiteName);
+		if (result) {
+			currentLog.addEntry(EntryType.ARCHIVE, "Testsuite created: ", suiteName);
+		}
+		
+		return result;
 	}
 
 	/**
@@ -503,19 +518,17 @@ public class Manager {
 	 * @return testinformation
 	 * @throws Exception
 	 */
-	public List<Detail> addFile(File file, String suiteName, TestCaseMode mode)
+	protected Detail addFile(File file, String suiteName, TestCaseMode mode)
 			throws RTTException {
 
 		if (!isInitialized())
 			throw new RTTException(Type.ARCHIVE, "No archive loaded.");
 
-		List<Detail> result = new LinkedList<Detail>();
-
 		Testsuite t = currentArchive.getTestsuite(suiteName, false);
 		if (t == null) {
 			if (createTestSuite(suiteName) == false) {
 				throw new RTTException(Type.TESTSUITE,
-						"Could not create test suite.");
+						"Could not create testsuite.");
 			}
 			t = currentArchive.getTestsuite(suiteName, false);
 		}
@@ -524,34 +537,25 @@ public class Manager {
 		TestcaseStatus status = currentArchive.addTestcase(suiteName, file,
 				mode);
 
+		Detail detail = new Detail();
+		detail.setSuffix(caseName);
+		
 		if (status == TestcaseStatus.UPDATE) {
-			DebugLog.log("Testcase [" + suiteName + "/" + caseName
-					+ "] updated.");
-
-			String msg = "Testcase [" + caseName + "] in [" + suiteName
-					+ "] overwritten.";
-			Detail info = new Detail();
-			info.setMsg(msg);
-			info.setSuffix(caseName);
-			info.setPriority(1);
-			result.add(info);
+			detail.setMsg("Testcase updated: ");					
+			detail.setPriority(1);
 		} else if (status == TestcaseStatus.NEW) {
-			DebugLog.log("Testcase [" + suiteName + "/" + caseName + "] added.");
-
-			Detail info = new Detail();
-			info.setMsg("Testcase added: " + file.getPath() + " as Testcase "
-					+ caseName + " [Testsuite: " + suiteName + "]");
-			info.setSuffix(caseName);
-			info.setPriority(0);
-			result.add(info);
+			detail.setMsg("Testcase added: ");
+			detail.setPriority(0);
 		}
 
-		return result;
+		DebugLog.log(detail.getMsg());
+
+		return detail;
 	}
 
 	public void setDefaultConfiguration(String configName) {
 		if (currentArchive.setDefaultConfiguration(configName) && verbose) {
-			currentLog.addInformational("Default Configuration changed: ",
+			currentLog.addEntry(EntryType.INFO, "Default Configuration changed: ",
 					configName);
 		}
 	}
@@ -682,7 +686,7 @@ public class Manager {
 		}
 
 		if (infos.size() > 0) {
-			currentLog.addInformational("Configuration changed: ", configName,
+			currentLog.addEntry(EntryType.INFO, "Configuration changed: ", configName,
 					infos);
 		}
 
@@ -709,26 +713,26 @@ public class Manager {
 		List<Testcase> testcases = new ArrayList<Testcase>(t.getTestcase());
 
 		for (Testcase tc : testcases)
-			removeTest(t, tc);
+			removeTest(t, tc, false);
 
 		if (currentArchive.removeTestsuite(testSuite) == false) {
 			return false;
 		}
 
-		currentLog.addInformational("Testsuite removed: ", testSuite);
+		currentLog.addEntry(EntryType.ARCHIVE, "Testsuite removed: ", testSuite);
 		return true;
 	}
 
-	public void removeTest(String testSuit, String testCase)
+	public void removeTest(String testSuite, String testCase)
 			throws RTTException {
 		if (!isInitialized())
 			throw new RTTException(Type.ARCHIVE, "No archive loaded.");
 
-		removeTest(currentArchive.getTestsuite(testSuit, false),
-				currentArchive.getTestcase(testSuit, testCase, false));
+		removeTest(currentArchive.getTestsuite(testSuite, false),
+				currentArchive.getTestcase(testSuite, testCase, false), true);
 	}
 
-	public void removeTest(Testsuite testSuit, Testcase testCase)
+	private void removeTest(Testsuite testSuit, Testcase testCase, boolean addLogEntry)
 			throws RTTException {
 
 		if (!isInitialized())
@@ -737,9 +741,11 @@ public class Manager {
 		// versionTest(testSuit, testCase);
 
 		currentArchive.removeTestcase(testSuit.getName(), testCase.getName());
-		currentLog.addInformational("Testcase removed: ", testSuit.getName()
-				+ "/" + testCase.getName());
-
+		
+		if (addLogEntry) {
+			currentLog.addEntry(EntryType.ARCHIVE, "Testcase removed: ", testSuit.getName()
+					+ "/" + testCase.getName());
+		}
 	}
 
 	public void clearClassPaths() throws Exception {

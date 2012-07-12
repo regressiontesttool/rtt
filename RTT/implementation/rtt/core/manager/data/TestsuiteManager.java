@@ -12,9 +12,10 @@ import rtt.core.archive.testsuite.Testsuites;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.Manager.TestCaseMode;
+import rtt.core.manager.data.history.InputManager;
 import rtt.core.utils.DebugLog;
 
-public class TestsuiteManager extends DataManager<Testsuites> {
+public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 
 	public enum TestcaseStatus {
 		NEW, UPDATE, NONE, ERROR;

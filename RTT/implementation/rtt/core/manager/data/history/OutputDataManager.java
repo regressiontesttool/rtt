@@ -1,4 +1,4 @@
-package rtt.core.manager.data;
+package rtt.core.manager.data.history;
 
 import java.io.InputStream;
 import java.util.Calendar;
@@ -6,6 +6,7 @@ import java.util.Calendar;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.history.History;
 import rtt.core.archive.history.Version;
+import rtt.core.archive.input.Input;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.exceptions.RTTException;
@@ -13,11 +14,12 @@ import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
+import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.LexerExecuter;
 import rtt.core.testing.generation.ParserExecuter;
 
-public class OutputDataManager extends DataManager<History> implements IHistoryManager {
+public class OutputDataManager extends AbstractDataManager<History> implements IHistoryManager {
 	
 	public enum OutputDataType {
 
@@ -145,10 +147,10 @@ public class OutputDataManager extends DataManager<History> implements IHistoryM
 		LexerOutput newLexOut = null;
 		ParserOutput newParOut = null;
 		try {
-			newLexOut = DataGenerator.generateOutput(
-					inputManager.loadData(inputVersion), lexer);
-			newParOut = DataGenerator.generateOutput(
-					inputManager.loadData(inputVersion), parser);
+			Input input = inputManager.loadData(inputVersion);
+			
+			newLexOut = DataGenerator.generateOutput(input, lexer);
+			newParOut = DataGenerator.generateOutput(input, parser);
 		} catch (Exception e) {
 			throw new RTTException(Type.GENERATION,
 					"Could not generate output data.", e);

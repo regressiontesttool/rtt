@@ -138,8 +138,9 @@ public class ArchiveContainer {
 	 */
 	public void addTestCase(String suiteName, File caseFile, TestCaseMode mode) throws RTTException  {
 		try {
-			List<Detail> r = manager.addFile(caseFile, suiteName, mode);
-			manager.getArchive().getLogManager().addInformational("File added", "", r);
+			// TODO
+//			List<Detail> r = manager.addFile(caseFile, suiteName, mode);
+//			manager.getArchive().getLogManager().addInformational("File added", "", r);
 		} catch (Exception e) {
 			throw new RTTException(Type.TESTCASE, "Could not add test case.", e);
 		}		

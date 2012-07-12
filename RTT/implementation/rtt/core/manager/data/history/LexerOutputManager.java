@@ -1,4 +1,4 @@
-package rtt.core.manager.data;
+package rtt.core.manager.data.history;
 
 import java.io.InputStream;
 
@@ -6,10 +6,11 @@ import rtt.core.archive.output.LexerOutput;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.OutputFetching;
 import rtt.core.loader.fetching.OutputFetching.OutputType;
+import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.compare.LexerOutputCompare;
 import rtt.core.testing.compare.results.LexerTestFailure;
 
-public class LexerOutputManager extends DataManager<LexerOutput> {
+public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
 	
 	OutputFetching fetching;
 	

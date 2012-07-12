@@ -73,7 +73,7 @@
 		<attribute name="schema" />
 		<element name="xjc-args" implicit="yes" optional="yes" />
 		<sequential>
-			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="rtt.core.archive.@{package}">
+			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="rtt.core.archive.@{package}" removeOldOutput="yes">
 				<produces dir="${rtt.src-gen}" includes="**/@{package}/*.java"/>
 				<xjc-args />
 			</xjc>

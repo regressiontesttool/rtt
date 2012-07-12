@@ -1,4 +1,4 @@
-package rtt.core.manager.data;
+package rtt.core.manager.data.history;
 
 import java.util.Calendar;
 import java.util.List;
@@ -7,8 +7,9 @@ import rtt.core.archive.history.History;
 import rtt.core.archive.history.Version;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.HistoryFileFetching;
+import rtt.core.manager.data.AbstractDataManager;
 
-public abstract class HistoryDataManager<T> extends DataManager<History> implements IHistoryManager {
+public abstract class HistoryDataManager<T> extends AbstractDataManager<History> implements IHistoryManager {
 
 	protected HistoryFileFetching strategy;
 	protected int versionCount = 0;

@@ -8,10 +8,11 @@
  */
 package rtt.core;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import rtt.core.archive.logging.Detail;
 import rtt.core.cli.CommandLineValidator;
 import rtt.core.cli.CommandlineOptions;
 import rtt.core.manager.Manager;
@@ -74,9 +75,9 @@ public class RegressionTestTool {
 		} else if (options.isTest()) {
 			m.runTests(null, true);
 		} else if (options.isAddFile()) {
-			List<Detail> r = m.addFile(options.getAddFile(), options
-					.getTestsuite(), options.isOutput() ? TestCaseMode.OVERWRITE : TestCaseMode.SKIP);
-			m.getArchive().getLogManager().addInformational("File added", "", r);
+			List<File> files = new ArrayList<File>();
+			files.add(options.getAddFile());
+			m.addAllFiles(files, options.getTestsuite(), options.isOutput() ? TestCaseMode.OVERWRITE : TestCaseMode.SKIP);
 		} else if (options.isRemoveTestsuite()) {
 			m.removeTestsuite(options.getRemoveTestsuite());
 		} else if (options.isRemoveTest()) {
