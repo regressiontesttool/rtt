@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import rtt.core.utils.DebugLog;
+import rtt.core.utils.Debug;
 
 public abstract class ArchiveLoader {
 
@@ -14,12 +14,13 @@ public abstract class ArchiveLoader {
 	public ArchiveLoader() {
 	}
 
-	public void setBaseFile(File baseFile) {
-		this.baseFile = baseFile.getAbsoluteFile();
-		if (baseFile.isDirectory()) {
-			baseDir = baseFile.getAbsolutePath();
+	
+	public void setBasePath(File basePath) {
+		this.baseFile = basePath.getAbsoluteFile();
+		if (basePath.isDirectory()) {
+			baseDir = basePath.getAbsolutePath();
 		} else {
-			File parentFile = baseFile.getParentFile();
+			File parentFile = basePath.getParentFile();
 
 			while (parentFile != null && parentFile.isDirectory() == false) {
 				parentFile.getParentFile();
@@ -29,6 +30,20 @@ public abstract class ArchiveLoader {
 		}
 	}
 
+	/**
+	 * This function returns an {@link InputStream} for the given file name. If
+	 * an error occurs during the creation of the stream, this function will
+	 * return {@code null}.
+	 * <p>
+	 * The file will be searched downwards from the base file/base directory.
+	 * 
+	 * @param fileName
+	 *            the name of the file
+	 * @param folders
+	 *            the path of the folder, containing the given file.
+	 * @return an {@link InputStream} or {@code null}
+	 * @see #setBasePath(File)
+	 */
 	public InputStream getInputStream(String fileName, String folders) {
 		try {
 			File file = new File(baseFile.getAbsolutePath() + File.separator
@@ -36,11 +51,24 @@ public abstract class ArchiveLoader {
 
 			return this.doGetInput(file);
 		} catch (Exception e) {
-			DebugLog.printTrace(e);
+			Debug.printTrace(e);
 			return null;
 		}
 	}
 
+	/**
+	 * This function returns a {@link OutputStream} for the given file name. If
+	 * an error occurs during the creation of the stream, this function will
+	 * return {@code null}.
+	 * <p>
+	 * The file will be searched/created downwards from the base file/base directory.
+	 * @param fileName
+	 *            the name of the file
+	 * @param folders
+	 *            the path of the folder, containing the given file.
+	 * @return an {@link OutputStream} or {@code null}
+	 * @see #setBasePath(File)
+	 */
 	public OutputStream getOutputStream(String fileName, String folders) {
 		try {
 			File file = new File(baseFile.getAbsolutePath() + File.separator
@@ -48,12 +76,16 @@ public abstract class ArchiveLoader {
 
 			return this.doGetOutput(file);
 		} catch (Exception e) {
-			DebugLog.printTrace(e);
+			Debug.printTrace(e);
 			return null;
 		}
 	}
-	
-	public String getBaseDir() {
+
+	/**
+	 * Returns the current base directory/file.
+	 * @return a string with a path to the file/directory
+	 */
+	public String getBasePath() {
 		return baseDir;
 	}
 

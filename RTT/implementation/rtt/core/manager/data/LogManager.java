@@ -1,17 +1,24 @@
 package rtt.core.manager.data;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.Writer;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.w3c.dom.Document;
 
 import rtt.core.archive.logging.ArchiveLog;
 import rtt.core.archive.logging.Detail;
@@ -28,7 +35,7 @@ import rtt.core.testing.compare.results.ITestFailure;
 import rtt.core.testing.compare.results.LexerTestFailure;
 import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestResult;
-import rtt.core.utils.DebugLog;
+import rtt.core.utils.Debug;
 
 /**
  * This manager provides all operations on the {@link ArchiveLog}.
@@ -83,7 +90,7 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 
 			return cal;
 		} catch (DatatypeConfigurationException e) {
-			DebugLog.printTrace(e);
+			Debug.printTrace(e);
 			return null;
 		}
 	}
@@ -114,13 +121,13 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 			entry.getDetail().addAll(details);
 		}
 
-		DebugLog.log(message + " " + suffix);
+		Debug.log(message + " " + suffix);
 
 		data.getEntry().add(entry);
 	}
 
 	/**
-	 * Adds an {@link Entry} to the {@link ArchiveLog}, without
+	 * Adds an {@link Entry} to the {@link ArchiveLog}, without details.
 	 * 
 	 * @param type
 	 *            the {@link EntryType}
@@ -139,14 +146,23 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 	}
 
 	public void addTestrunResult(List<TestResult> testResults,
-			String configName, String testsuite) {
+			String configName, String suiteName) {
+		
 		Testrun tr = new Testrun();
 		tr.setDate(getNow());
 		tr.setConfiguration(configName);
 		tr.setType(EntryType.TESTRUN);
-		tr.setMsg("Testrun started with configuration: ");
+		
+		String message = "Testrun started for test suite [" + suiteName + "] ";  
+		if (testResults.isEmpty()) {
+			message += " was empty. Configuration used: ";
+		} else {
+			message += "with configuration: ";
+		}		
+		tr.setMsg(message);
+		
 		tr.setSuffix(configName);
-		tr.setTestsuite(testsuite);
+		tr.setTestsuite(suiteName);
 
 		for (TestResult result : testResults) {
 
@@ -196,38 +212,44 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 	 * 
 	 * @param location
 	 *            the location, where the log should be exported
-	 * @throws IOException
+	 * @throws Exception
 	 *             thrown, if any error occur during export
 	 */
-	public void export(File location) throws IOException {
-
-		File dir = location;
-
-		if (!dir.isDirectory())
-			dir = location.getCanonicalFile().getParentFile();
-		if (location.isDirectory())
-			location = new File(dir.getAbsolutePath() + File.separator
-					+ "log.xml");
-
-		DebugLog.log("Dir:  " + dir + "\nLoc: " + location.getAbsolutePath());
-
-		FileOutputStream logOut = new FileOutputStream(location);
-		marshall(ArchiveLog.class, data, logOut, "log.xslt");
-
-		InputStream logStream = getClass().getResourceAsStream("/log.xslt");
-		File f = new File(dir.getAbsolutePath() + "/log.xslt");
-
-		FileOutputStream fos = new FileOutputStream(f, false);
-		Reader r = new InputStreamReader(logStream);
-		int curByte = -1;
-		while ((curByte = r.read()) != -1) {
-			fos.write(curByte);
+	public void export(File location) throws Exception {
+		
+		String fileName = "log";
+		
+		if (!location.isDirectory()) {
+			fileName = location.getName();
+			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+			
+			location = location.getParentFile();
+			
+			if (fileName.equals("") || location == null) {
+				throw new RuntimeException("The location of export couldn't be found. (was: " + location + ")");
+			}
 		}
-		r.close();
-		fos.close();
-		logStream.close();
+		
+		File resultFile = new File(location.getAbsolutePath() + File.separatorChar + fileName + ".htm");		
+		
+		doSave(data);
+		InputStream logStream = getInputStream();
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = factory.newDocumentBuilder();
+        Document document = db.parse(logStream);   
+        
+        StreamSource styleSource = new StreamSource(getClass().getResourceAsStream("/log.xslt"));
 
-		DebugLog.log("Logging File exported to: " + location);
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer(styleSource);
+        
+        Writer out = new FileWriter(resultFile);
+        
+        DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(out);
+        transformer.transform(source, result);
+
+		Debug.log("Logging File exported to: " + resultFile.getCanonicalPath());
 	}
-
 }

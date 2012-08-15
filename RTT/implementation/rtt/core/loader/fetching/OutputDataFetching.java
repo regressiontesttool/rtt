@@ -1,6 +1,6 @@
 package rtt.core.loader.fetching;
 
-public class OutputFetching implements FileFetchingStrategy {
+public class OutputDataFetching implements IFileFetching {
 	
 	public enum OutputType {
 		LEXER ("lexer"),
@@ -17,7 +17,7 @@ public class OutputFetching implements FileFetchingStrategy {
 	private OutputType type;
 	private Integer version = 0;
 	
-	public OutputFetching(String path, OutputType type) {
+	public OutputDataFetching(String path, OutputType type) {
 		this.type = type;
 		this.path = path;
 	}

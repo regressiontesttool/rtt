@@ -28,33 +28,29 @@ import rtt.core.archive.input.Input;
  * @author Peter Mucha
  * 
  */
-public class LexerExecuter extends Executer {
+public class LexerExecutor extends Executor {
 
-	AnnotationProcessor lexProc;
 	Object lexer;
-	String lexerClass;
+
 	Method nextTokenMethod;
 	Lexer lexerAnnotation;
 
-	public LexerExecuter(String lexerClass, Classpath cp, String baseDir)
+	public LexerExecutor(String lexerClass, Classpath cp, String baseDir)
 			throws Exception {
-
-		Class<?> c = this.loadClass(lexerClass, cp, baseDir);
-
-		this.lexerClass = lexerClass;
-		lexProc = new AnnotationProcessor(c);
-		lexerAnnotation = lexProc.getAnnotation(Lexer.class);
+		
+		super(lexerClass, cp, baseDir);
+		lexerAnnotation = annotationProcessor.getAnnotation(Lexer.class);
 	}
 
 	@Override
 	public void loadInput(Input i) throws Exception {
-		lexer = loadInputImpl(i, Lexer.Initialize.class, lexProc);
+		lexer = loadInputImpl(i, Lexer.Initialize.class, annotationProcessor);
 		nextTokenMethod = null;
 	}
 
 	public Token getToken() throws Exception {
 		if (nextTokenMethod == null)
-			nextTokenMethod = getSingleMethod(Lexer.NextToken.class, lexProc);
+			nextTokenMethod = getSingleMethod(Lexer.NextToken.class, annotationProcessor);
 
 		Object o = nextTokenMethod.invoke(lexer);		
 		Token t = computeToken(o);

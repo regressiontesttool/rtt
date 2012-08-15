@@ -18,18 +18,18 @@ public class ZipArchiveLoader extends ArchiveLoader {
 				new ZipDriver()));
 
 		File archiveFile = new File(folder + File.separator + fileName);
-		setBaseFile(archiveFile);
+		setBasePath(archiveFile);
 	}
 
 	@Override
-	public void setBaseFile(java.io.File baseFile) {
+	public void setBasePath(java.io.File baseFile) {
 		File archiveFile = new File(baseFile);
 		if (archiveFile.isArchive() == false) {
 			throw new IllegalArgumentException(
 					"The base file must be an zip archive");
 		}
 
-		super.setBaseFile(archiveFile);
+		super.setBasePath(archiveFile);
 	}
 
 	@Override

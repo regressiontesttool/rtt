@@ -1,7 +1,7 @@
 package rtt.core.loader.fetching;
 
 
-public class SimpleFileFetching implements FileFetchingStrategy {
+public class SimpleFileFetching implements IFileFetching {
 	
 	private String fileName;
 	private String folders;

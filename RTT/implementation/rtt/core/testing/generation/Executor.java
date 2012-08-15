@@ -21,7 +21,7 @@ import rtt.annotations.AnnotationProcessor;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Path;
 import rtt.core.archive.input.Input;
-import rtt.core.utils.DebugLog;
+import rtt.core.utils.Debug;
 
 
 /**
@@ -29,7 +29,17 @@ import rtt.core.utils.DebugLog;
  * @author Peter Mucha
  * 
  */
-public abstract class Executer {
+public abstract class Executor {
+	
+	protected String className;
+	protected AnnotationProcessor annotationProcessor;
+
+	public Executor(String className, Classpath cp, String baseDir) throws Exception {
+		Class<?> clazz = loadClass(className, cp, baseDir);
+		
+		this.className = className;
+		annotationProcessor = new AnnotationProcessor(clazz);		
+	}
 
 	public Class<?> loadClass(String className, Classpath cp, String baseDir)
 			throws Exception {
@@ -42,7 +52,7 @@ public abstract class Executer {
 				if (!f.exists()) {
 					f = new File(path + File.separator + p.getValue());					
 					if (!f.exists()) {
-						DebugLog.log("Classpath does not exist: "
+						Debug.log("Classpath does not exist: "
 								+ p.getValue());
 						continue;
 					}

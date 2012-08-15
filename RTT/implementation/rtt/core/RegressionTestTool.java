@@ -94,8 +94,8 @@ public class RegressionTestTool {
 			}
 			
 			
-			m.createConfiguration(options.getLexer(), options.getParser(),
-					options.getNewConfiguration(), true, options.isOverwrite(), cpEntries);
+			m.setConfiguration(options.getNewConfiguration(), options.getLexer(),
+					options.getParser(), cpEntries, true, options.isOverwrite());
 
 			
 		}

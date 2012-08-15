@@ -6,7 +6,6 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.testsuite.Testcase;
-import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
@@ -20,8 +19,8 @@ import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestExecutionFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
-import rtt.core.utils.DebugLog;
-import rtt.core.utils.DebugLog.LogType;
+import rtt.core.utils.Debug;
+import rtt.core.utils.Debug.LogType;
 
 public class Tester {
 
@@ -33,12 +32,8 @@ public class Tester {
 		this.loader = loader;
 	}
 
-	public TestResult test(Testsuite suite, Testcase tcase,
+	public TestResult test(String suiteName, Testcase tcase,
 			Configuration config) {
-		
-		if (suite == null) {
-			throw new NullPointerException("Testsuite was null.");
-		}
 
 		if (tcase == null) {
 			throw new NullPointerException("Testcase was null.");
@@ -48,14 +43,15 @@ public class Tester {
 			throw new NullPointerException("Configuration was null.");
 		}
 		
-		String suiteName = suite.getName();
 		String caseName = tcase.getName();
 		
+		// open a reference and test manager
 		OutputDataManager refManager = new OutputDataManager(loader, suiteName, caseName, config, OutputDataType.REFERENCE);
 		OutputDataManager testManager = new OutputDataManager(loader, suiteName, caseName, config, OutputDataType.TEST);
 		
-		TestResult result = new TestResult(ResultType.SKIPPED, suiteName, tcase.getName());
+		TestResult result = new TestResult(ResultType.SKIPPED, suiteName, caseName);
 		
+		// find current version of data for given configuration
 		VersionData versionData = null;
 		for (VersionData tempData : tcase.getVersionData()) {
 			if (tempData.getConfig().equals(config.getName())) {
@@ -63,13 +59,17 @@ public class Tester {
 			}
 		}
 		
+		// if no version data was found, return SKIPPED
 		if (versionData == null) {
 			return result;
 		}
 		
+		// if version data was found, set reference and test version to result
 		result.setRefVersion(versionData.getReference());
 		result.setTestVersion(versionData.getTest());
 		
+		// if the input version is newer than the last used version of the reference manager
+		// then return skipped.
 		if (refManager.isOutDated(tcase.getInput()) || testManager.isOutDated(tcase.getInput())) {
 			return result;
 		}
@@ -77,10 +77,13 @@ public class Tester {
 		boolean testSuccess = true;
 		boolean somethingTested = false;
 		
+		// test lexer
 		try {
-			LexerTestFailure lexerFailure = testLexer(
-					testManager.getLexerOutput(versionData.getTest()),
-					refManager.getLexerOutput(versionData.getReference()));
+			
+			LexerOutput testData = testManager.getLexerOutput(versionData.getTest()); 
+			LexerOutput refData = refManager.getLexerOutput(versionData.getReference()); 
+			
+			LexerTestFailure lexerFailure = testLexer(testData, refData);
 			
 			if (lexerFailure != null) {
 				result.addFailure(lexerFailure);
@@ -89,15 +92,18 @@ public class Tester {
 
 			somethingTested = true;
 		} catch (RTTException e) {
-			DebugLog.printTrace(e);
+			Debug.printTrace(e);
 			result.addFailure(new TestExecutionFailure(e));
 			testSuccess = false;
 		}
 		
+		// test parser
 		try {
-			List<ParserTestFailure> parserFailure = testParser(
-					testManager.getParserOutput(versionData.getTest()),
-					refManager.getParserOutput(versionData.getReference()));
+			ParserOutput testData = testManager.getParserOutput(versionData.getTest());
+			ParserOutput refData = refManager.getParserOutput(versionData.getReference()); 
+			
+			List<ParserTestFailure> parserFailure = testParser(testData, refData);
+			
 			if (parserFailure != null && parserFailure.size() > 0) {
 				for (ParserTestFailure parserTestFailure : parserFailure) {
 					result.addFailure(parserTestFailure);
@@ -107,7 +113,7 @@ public class Tester {
 
 			somethingTested = true;
 		} catch (RTTException e) {
-			DebugLog.printTrace(e);
+			Debug.printTrace(e);
 			result.addFailure(new TestExecutionFailure(e));
 			testSuccess = false;
 		}
@@ -125,15 +131,17 @@ public class Tester {
 
 	private LexerTestFailure testLexer(LexerOutput testData, LexerOutput refData)
 			throws RTTException {
+		
 		checkData(testData, refData);
-		DebugLog.log(LogType.VERBOSE, "Testing Lexic Results");
+		Debug.log(LogType.VERBOSE, "Testing Lexic Results");
 		return LexerOutputCompare.compareLexerOutput(testData, refData, false);
 	}
 
 	private List<ParserTestFailure> testParser(ParserOutput testData,
 			ParserOutput refData) throws RTTException {
+		
 		checkData(testData, refData);
-		DebugLog.log(LogType.VERBOSE, "Testing Syntactic Results");
+		Debug.log(LogType.VERBOSE, "Testing Syntactic Results");
 		return ParserOutputCompare.compareParserOuput(testData, refData, false,
 				matching);
 	}
@@ -145,11 +153,11 @@ public class Tester {
 		}
 
 		if (refData == null) {
-			throw new RTTException(Type.TEST, "Reference data was null.");
+			throw new RTTException(Type.DATA_NOT_FOUND, "Reference data was null.");
 		}
 
 		if (testData == null) {
-			throw new RTTException(Type.TEST, "Test data was null.");
+			throw new RTTException(Type.DATA_NOT_FOUND, "Test data was null.");
 		}
 	}
 

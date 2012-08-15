@@ -10,7 +10,7 @@ import java.io.OutputStream;
 /**
  * This class loads and saves all data from a specified folder.
  * 
- * This class will be marked as deprecated, because the functionality of 
+ * This class is marked as deprecated, because the functionality of 
  * this class is not tested at the moment.
  * 
  * @author Christian Oelsner
@@ -24,7 +24,7 @@ public class DirectoryArchiveLoader extends ArchiveLoader {
 			base.mkdirs();
 		}
 		
-		setBaseFile(base);
+		setBasePath(base);
 	}
 
 	@Override

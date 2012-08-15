@@ -15,8 +15,8 @@ import javax.xml.transform.stream.StreamSource;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.loader.fetching.FileFetchingStrategy;
-import rtt.core.utils.DebugLog;
+import rtt.core.loader.fetching.IFileFetching;
+import rtt.core.utils.Debug;
 
 /**
  * This abstract data manager provides a basic set of operations for loading and
@@ -25,7 +25,7 @@ import rtt.core.utils.DebugLog;
  * @author Christian Oelsner <C.Oelsner@gmail.com>
  * 
  * @param <T>
- *            Type of data used within this data manager.
+ *            The main type of data used within this data manager.
  */
 public abstract class AbstractDataManager<T> {
 
@@ -40,9 +40,9 @@ public abstract class AbstractDataManager<T> {
 	protected ArchiveLoader loader;
 
 	/**
-	 * The current {@link FileFetchingStrategy} of the manager
+	 * The current {@link IFileFetching} of the manager
 	 */
-	protected FileFetchingStrategy strategy;
+	protected IFileFetching strategy;
 
 	/**
 	 * Creates a data manager with an archive loader and a strategy for loading
@@ -51,13 +51,13 @@ public abstract class AbstractDataManager<T> {
 	 * @param loader
 	 *            the {@link ArchiveLoader}
 	 * @param strategy
-	 *            the {@link FileFetchingStrategy}
+	 *            the {@link IFileFetching}
 	 * @see AbstractDataManager
 	 * @see ArchiveLoader
-	 * @see FileFetchingStrategy
+	 * @see IFileFetching
 	 */
 	public AbstractDataManager(ArchiveLoader loader,
-			FileFetchingStrategy strategy) {
+			IFileFetching strategy) {
 		this.loader = loader;
 		setFetchingStrategy(strategy);
 
@@ -65,15 +65,15 @@ public abstract class AbstractDataManager<T> {
 	}
 
 	/**
-	 * Creates a data manager without a {@link FileFetchingStrategy}. This
+	 * Creates a data manager without a {@link IFileFetching}. This
 	 * strategy must be set before using this manager.
 	 * 
 	 * @param loader
 	 *            the {@link ArchiveLoader}
 	 * @see AbstractDataManager
 	 * @see ArchiveLoader
-	 * @see FileFetchingStrategy
-	 * @see #setFetchingStrategy(FileFetchingStrategy)
+	 * @see IFileFetching
+	 * @see #setFetchingStrategy(IFileFetching)
 	 */
 	public AbstractDataManager(ArchiveLoader loader) {
 		this(loader, null);
@@ -84,47 +84,35 @@ public abstract class AbstractDataManager<T> {
 	 * manager.
 	 * 
 	 * @param strategy
-	 *            the {@link FileFetchingStrategy}
+	 *            the {@link IFileFetching}
 	 * @see AbstractDataManager
-	 * @see FileFetchingStrategy
+	 * @see IFileFetching
 	 */
-	protected void setFetchingStrategy(FileFetchingStrategy strategy) {
+	protected void setFetchingStrategy(IFileFetching strategy) {
 		this.strategy = strategy;
 	}
-
-	/**
-	 * Returns a input stream of the given file.
-	 * 
-	 * @param fileName
-	 *            name of the file
-	 * @param folderName
-	 *            name of the containing folder
-	 * @return a {@link InputStream}
-	 * @see AbstractDataManager
-	 * @see InputStream
-	 */
-	protected InputStream getInputStream(String fileName, String folderName) {
-		return loader.getInputStream(fileName, folderName);
+	
+	protected InputStream getInputStream() {
+		InputStream result = null;
+		if (strategy != null) {
+			result = loader.getInputStream(strategy.getFileName(), strategy.getFolders());
+		}
+		
+		return result;
 	}
-
-	/**
-	 * Returns a output stream of the given file.
-	 * 
-	 * @param fileName
-	 *            the name of the file
-	 * @param folderName
-	 *            the name of the containing folder
-	 * @return a {@link OutputStream}
-	 * @see AbstractDataManager
-	 * @see OutputStream
-	 */
-	protected OutputStream getOutputStream(String fileName, String folderName) {
-		return loader.getOutputStream(fileName, folderName);
+	
+	protected OutputStream getOutputStream() {
+		OutputStream result = null;
+		if (strategy != null) {
+			result = loader.getOutputStream(strategy.getFileName(), strategy.getFolders());
+		}
+		
+		return result;
 	}
 
 	/**
 	 * Returns the data of the file given by the current
-	 * {@link FileFetchingStrategy}. The conversion of the data will be made
+	 * {@link IFileFetching}. The conversion of the data will be made
 	 * through JAXB.
 	 * 
 	 * @param clazz
@@ -133,14 +121,13 @@ public abstract class AbstractDataManager<T> {
 	 * @throws Exception
 	 *             thrown, if any errors occur during loading
 	 * @see AbstractDataManager
-	 * @see FileFetchingStrategy
+	 * @see IFileFetching
 	 * @see #unmarshall(Class, InputStream)
 	 * @see Unmarshaller#unmarshal(Source, Class)
 	 */
 	@SuppressWarnings("unchecked")
 	protected T unmarshall(Class<T> clazz) throws Exception {
-		return (T) unmarshall(clazz,
-				getInputStream(strategy.getFileName(), strategy.getFolders()));
+		return (T) unmarshall(clazz, getInputStream());
 	}
 
 	/**
@@ -174,7 +161,7 @@ public abstract class AbstractDataManager<T> {
 
 	/**
 	 * Saves the given data to the file given by the current
-	 * {@link FileFetchingStrategy}. The conversion of the data will be made
+	 * {@link IFileFetching}. The conversion of the data will be made
 	 * through JAXB.
 	 * 
 	 * @param clazz
@@ -182,18 +169,16 @@ public abstract class AbstractDataManager<T> {
 	 * @param data
 	 *            the data, which should be saved
 	 * @see AbstractDataManager
-	 * @see FileFetchingStrategy
+	 * @see IFileFetching
 	 * @see #marshall(Class, Object, OutputStream)
 	 * @see Marshaller#marshal(Object, Result)
 	 */
 	protected void marshall(Class<T> clazz, T data) {
-		marshall(clazz, data,
-				getOutputStream(strategy.getFileName(), strategy.getFolders()));
+		marshall(clazz, data, getOutputStream());
 	}
 
 	/**
-	 * Saves the given data to the given {@link OutputStream}, without a path to
-	 * a XSLT-File.
+	 * Saves the given data to the given {@link OutputStream}.
 	 * 
 	 * @param clazz
 	 *            the class of the data
@@ -201,34 +186,12 @@ public abstract class AbstractDataManager<T> {
 	 *            the data, which should be saved
 	 * @param outputStream
 	 *            the {@link OutputStream}
-	 * @see AbstractDataManager
-	 * @see OutputStream
-	 * @see #marshall(Class, Object, OutputStream, String)
-	 * @see Marshaller#marshal(Object, Result)
-	 */
-	protected void marshall(Class<?> clazz, Object data,
-			OutputStream outputStream) {
-		marshall(clazz, data, outputStream, null);
-	}
-
-	/**
-	 * Saves the given data to the given {@link OutputStream}. The data will
-	 * contain the path to a given XSLT-File.
-	 * 
-	 * @param clazz
-	 *            the class of the data
-	 * @param data
-	 *            the data, which should be saved
-	 * @param outputStream
-	 *            the {@link OutputStream}
-	 * @param xsltPath
-	 *            the path to a XSLT-File
 	 * @see AbstractDataManager
 	 * @see OutputStream
 	 * @see Marshaller#marshal(Object, Result)
 	 */
 	protected void marshall(Class<?> clazz, Object data,
-			OutputStream outputStream, String xsltPath) {
+			OutputStream outputStream) {
 		if (outputStream != null) {
 			try {
 				// create new context and marshaller
@@ -236,17 +199,10 @@ public abstract class AbstractDataManager<T> {
 
 				Marshaller marshaller = jc.createMarshaller();
 				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-				// if xsltPath is given, write the path to file
-				if (xsltPath != null && !xsltPath.equals("")) {
-					marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-					outputStream
-							.write("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>"
-									.getBytes());
-					outputStream
-							.write(("<?xml-stylesheet type='text/xsl' href='"
-									+ xsltPath + "' ?>").getBytes());
-				}
+				
+				// TODO add CDATA support for values
+//				XMLOutputFactory xof = XMLOutputFactory.newInstance();
+//				XMLStreamWriter streamWriter = xof.createXMLStreamWriter(outputStream, "UTF-8");				
 
 				// create stream result and marshall data
 				Result result = new StreamResult(outputStream);
@@ -254,11 +210,11 @@ public abstract class AbstractDataManager<T> {
 
 				outputStream.close();
 			} catch (Exception e) {
-				DebugLog.printTrace(e);
+				Debug.printTrace(e);
 			}
 		}
 	}
-
+	
 	/**
 	 * Gets data from manager. This function will return empty data, but not
 	 * {@code null}, if called before {@link #load()}.
@@ -282,7 +238,7 @@ public abstract class AbstractDataManager<T> {
 		try {
 			data = doLoad();
 		} catch (Exception e) {
-			throw new RTTException(Type.ARCHIVE, "Could not load data for '"
+			throw new RTTException(Type.DATA_NOT_FOUND, "Could not load data for '"
 					+ this.getClass() + "'");
 		}
 	}
@@ -298,7 +254,7 @@ public abstract class AbstractDataManager<T> {
 		try {
 			doSave(data);
 		} catch (Exception e) {
-			throw new RTTException(Type.ARCHIVE, "Could not load data for '"
+			throw new RTTException(Type.DATA_NOT_FOUND, "Could not load data for '"
 					+ this.getClass() + "'");
 		}
 	}

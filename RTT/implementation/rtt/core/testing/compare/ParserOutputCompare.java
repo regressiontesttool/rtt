@@ -16,8 +16,8 @@ import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.output.Tree;
 import rtt.core.testing.compare.results.ParserTestFailure;
-import rtt.core.utils.DebugLog;
-import rtt.core.utils.DebugLog.LogType;
+import rtt.core.utils.Debug;
+import rtt.core.utils.Debug.LogType;
 
 
 
@@ -75,7 +75,7 @@ public class ParserOutputCompare {
 			result.add(new ParserTestFailure(expTrees.size() - wasTrees.size()
 					+ " more trees expected."));
 
-		DebugLog.log(LogType.ALL, "Searching for matches");
+		Debug.log(LogType.ALL, "Searching for matches");
 
 		while (wasTrees.size() > 0) {
 			Tree w = wasTrees.get(0);

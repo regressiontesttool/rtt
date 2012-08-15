@@ -13,7 +13,7 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.Manager.TestCaseMode;
 import rtt.core.manager.data.history.InputManager;
-import rtt.core.utils.DebugLog;
+import rtt.core.utils.Debug;
 
 public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 
@@ -41,14 +41,14 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		for (Testsuite testsuite : suiteList) {
 			if (testsuite.getName().equals(suiteName)) {
 				if (testsuite.isDeleted()) {
-					DebugLog.log("Testsuite '" + suiteName
+					Debug.log("Testsuite '" + suiteName
 							+ "' was tagged as deleted.");
 					testsuite.setDeleted(false);
 
 					return true;
 				}
 
-				DebugLog.log("Testsuite '" + suiteName
+				Debug.log("Testsuite '" + suiteName
 						+ "' is already existing.");
 				return false;
 			}
@@ -64,7 +64,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		Testsuite suite = getTestsuite(suiteName, false);
 
 		if (suite != null) {
-			DebugLog.log("Testsuite '" + suiteName
+			Debug.log("Testsuite '" + suiteName
 					+ "' will be tagged as deleted.");
 			suite.setDeleted(true);
 			return true;
@@ -96,6 +96,11 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		}
 		
 		return suites;
+	}
+	
+	public static String getCaseName(File testFile) {
+		return testFile.getName().substring(0,
+				testFile.getName().lastIndexOf('.'));
 	}
 
 	public TestcaseStatus addTestcase(String suiteName, File testFile,
@@ -143,7 +148,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 				resultStatus = TestcaseStatus.NEW;
 			} else if (mode == TestCaseMode.SKIP) {
 				// test case existed and wasn't deleted.
-				DebugLog.log("Testcase '" + caseName + "' in testsuite '"
+				Debug.log("Testcase '" + caseName + "' in testsuite '"
 						+ suiteName + "' already existed.");
 				return TestcaseStatus.NONE;
 			}		
@@ -154,7 +159,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		Input input = new Input();
 
 		input.setValue(InputManager.getContent(new FileInputStream(testFile)));
-		if (inputManager.setData(input, force) == true) {
+		if (inputManager.addInput(input, force) == true) {
 			inputManager.save();
 			testcase.setInput(nextInputVersion);
 		} else {
@@ -162,11 +167,6 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		}
 
 		return resultStatus;
-	}
-
-	public static String getCaseName(File testFile) {
-		return testFile.getName().substring(0,
-				testFile.getName().lastIndexOf('.'));
 	}
 
 	public boolean removeTestcase(String suiteName, String caseName) {
@@ -228,12 +228,12 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		List<Testsuite> suites = data.getTestsuite();
 
 		if (suites != null) {
-			DebugLog.log("Number of suites: " + suites.size());
+			Debug.log("Number of suites: " + suites.size());
 			for (Testsuite suite : suites) {
-				DebugLog.log("Test suite '" + suite.getName() + "':");
+				Debug.log("Test suite '" + suite.getName() + "':");
 
 				for (Testcase tcase : suite.getTestcase()) {
-					DebugLog.log("\tTest case '" + tcase.getName() + "'");
+					Debug.log("\tTest case '" + tcase.getName() + "'");
 				}
 			}
 		}
@@ -243,4 +243,5 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 	protected Testsuites getEmptyData() {
 		return new Testsuites();
 	}
+	
 }

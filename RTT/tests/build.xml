@@ -57,10 +57,9 @@
 	@author C. Bürger
 -->
 <project name="rtt" default="Tests">
-	<path id="_basedir">
-		<pathelement location="./.."/>
-	</path>
-	<property name="_basedir" refid="_basedir"/>
+	<dirname file="${ant.file.rtt}" property="tasks.base"/>
+	<property name="_basedir" location="${tasks.base}/.."/>
+
 	
 	<!-- Declare RTT's Ant tasks -->
 	<taskdef resource="rtt/ant/taskdef.properties">

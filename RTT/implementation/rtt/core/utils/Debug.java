@@ -2,7 +2,7 @@ package rtt.core.utils;
 
 import rtt.core.manager.Manager;
 
-public class DebugLog {
+public class Debug {
 	
 	public enum LogType {
 		VERBOSE,

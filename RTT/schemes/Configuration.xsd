@@ -18,26 +18,12 @@
 	
 	<xs:complexType name="configuration">
 		<xs:all>
-			<xs:element minOccurs="0" name="lexerClass" type="rtt:lexerClass"/>
-			<xs:element minOccurs="0" name="parserClass" type="rtt:parserClass"/>
+			<xs:element minOccurs="0" name="lexerClass" type="xs:string"/>
+			<xs:element minOccurs="0" name="parserClass" type="xs:string"/>
 			<xs:element minOccurs="0" name="classpath" type="rtt:classpath"/>
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="description" type="xs:string" use="optional"/>
-	</xs:complexType>
-	
-	<!-- Name of the lexer class -->
-	<xs:complexType name="lexerClass">
-		<xs:simpleContent>
-			<xs:extension base="xs:string"/>
-		</xs:simpleContent>
-	</xs:complexType>
-	
-	<!-- Name of the parser class -->
-	<xs:complexType name="parserClass">
-		<xs:simpleContent>
-			<xs:extension base="xs:string"/>
-		</xs:simpleContent>
 	</xs:complexType>
 	
 	<!-- List of classpath entries -->

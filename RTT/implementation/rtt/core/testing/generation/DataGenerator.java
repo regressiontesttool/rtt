@@ -3,24 +3,21 @@ package rtt.core.testing.generation;
 import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.configuration.LexerClass;
-import rtt.core.archive.configuration.ParserClass;
+import rtt.core.archive.input.Input;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.output.Token;
 import rtt.core.archive.output.Tree;
-import rtt.core.archive.input.Input;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
-import rtt.core.loader.ArchiveLoader;
-import rtt.core.utils.DebugLog;
-import rtt.core.utils.DebugLog.LogType;
+import rtt.core.utils.Debug;
+import rtt.core.utils.Debug.LogType;
 
 public class DataGenerator {
 
-	public static LexerOutput generateOutput(Input data, LexerExecuter lexer)
-			throws Exception {
+	public static LexerOutput generateOutput(Input data, LexerExecutor lexer)
+			throws Exception {	
 
 		LexerOutput lexOut = new LexerOutput();
 
@@ -40,7 +37,7 @@ public class DataGenerator {
 		return lexOut;
 	}
 
-	public static ParserOutput generateOutput(Input data, ParserExecuter parser)
+	public static ParserOutput generateOutput(Input data, ParserExecutor parser)
 			throws Exception {
 
 		ParserOutput parOut = new ParserOutput();
@@ -64,48 +61,47 @@ public class DataGenerator {
 		return parOut;
 	}
 
-	public static LexerExecuter getLexerExecuter(Configuration config, String baseDir)
-			throws RTTException {
+	public static LexerExecutor getLexerExecutor(Configuration config,
+			String baseDir) throws RTTException {
 
 		try {
 
-			LexerClass lexerClass = config.getLexerClass();
+			String lexerClass = config.getLexerClass();
 
-			if (lexerClass != null && lexerClass.getValue() != null && !lexerClass.getValue().equals("")) {
+			if (lexerClass != null && !lexerClass.equals("")) {
 
-				DebugLog.log(LogType.ALL, "Creating lexer class: "
-						+ config.getLexerClass().getValue());
+				Debug.log(LogType.ALL, "Creating lexer class: " + lexerClass);
 
-				return new LexerExecuter(lexerClass.getValue(),
-						config.getClasspath(), baseDir);
+				return new LexerExecutor(lexerClass, config.getClasspath(),
+						baseDir);
 			}
 
 		} catch (Exception e) {
-			throw new RTTException(Type.CONFIGURATION,
+			throw new RTTException(Type.OPERATION_FAILED,
 					"Could not generate lexer class.", e);
 		}
 
 		return null;
 	}
 
-	public static ParserExecuter getParserExecuter(Configuration config, String baseDir)
-			throws RTTException {
+	public static ParserExecutor getParserExecutor(Configuration config,
+			String baseDir) throws RTTException {
 
 		try {
 
-			ParserClass parserClass = config.getParserClass();
+			String parserClass = config.getParserClass();
 
-			if (parserClass != null && parserClass.getValue() != null && !parserClass.getValue().equals("")) {
+			if (parserClass != null && !parserClass.equals("")) {
 
-				DebugLog.log(LogType.ALL, "Creating parser class: "
-						+ config.getParserClass().getValue());
+				Debug.log(LogType.ALL, "Creating parser class: "
+						+ parserClass);
 
-				return new ParserExecuter(parserClass.getValue(),
-						config.getClasspath(), baseDir);
+				return new ParserExecutor(parserClass, config.getClasspath(),
+						baseDir);
 			}
 
 		} catch (Exception e) {
-			throw new RTTException(Type.CONFIGURATION,
+			throw new RTTException(Type.OPERATION_FAILED,
 					"Could not generate parser class.", e);
 		}
 

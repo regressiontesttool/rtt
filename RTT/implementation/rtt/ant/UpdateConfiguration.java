@@ -94,13 +94,13 @@ public class UpdateConfiguration extends Task {
 				for (ClassPathElement cpe : c.getClassPathElements())
 					cpEntries.add(cpe.getPath());
 				
-				m.createConfiguration(
+				m.setConfiguration(
+						c.getName(),
 						c.getLexer(),
 						c.getParser(),
-						c.getName(),
+						cpEntries,
 						false,
-						c.isOverwrite(),
-						cpEntries) ;
+						c.isOverwrite()) ;
 			}
 			
 			System.out.println("Save archive to: "+ archive);

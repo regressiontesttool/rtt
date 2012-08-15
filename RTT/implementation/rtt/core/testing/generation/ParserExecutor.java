@@ -19,41 +19,36 @@ import java.util.List;
 import rtt.annotations.AnnotationProcessor;
 import rtt.annotations.Parser;
 import rtt.core.archive.configuration.Classpath;
+import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.AttributeList;
 import rtt.core.archive.output.ChildrenList;
 import rtt.core.archive.output.Node;
-import rtt.core.archive.input.Input;
 
 /**
  * 
  * @author Peter Mucha
  * 
  */
-public class ParserExecuter extends Executer {
+public class ParserExecutor extends Executor {
 
-	AnnotationProcessor parserProc;
 	Object parser;
-	String parserClass;
 	Parser parserAnnotation;
 
-	public ParserExecuter(String parserClass, Classpath cp, String baseDir)
+	public ParserExecutor(String parserClass, Classpath cp, String baseDir)
 			throws Exception {
-
-		Class c = this.loadClass(parserClass, cp, baseDir);
-
-		this.parserClass = parserClass;
-		parserProc = new AnnotationProcessor(c);
-		parserAnnotation = parserProc.getAnnotation(Parser.class);
+		
+		super(parserClass, cp, baseDir);
+		parserAnnotation = annotationProcessor.getAnnotation(Parser.class);
 	}
 
 	public void loadInput(Input i) throws Exception {
-		parser = loadInputImpl(i, Parser.Initialize.class, parserProc);
+		parser = loadInputImpl(i, Parser.Initialize.class, annotationProcessor);
 	}
 
 	public List<Node> getAst() throws Exception {
 		List<Node> result = new LinkedList<Node>();
-		Method astMethod = getSingleMethod(Parser.AST.class, parserProc);
+		Method astMethod = getSingleMethod(Parser.AST.class, annotationProcessor);
 		Object o = astMethod.invoke(parser);
 		if (o == null)
 			return null;

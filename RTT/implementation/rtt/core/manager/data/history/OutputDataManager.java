@@ -1,6 +1,7 @@
 package rtt.core.manager.data.history;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
 import rtt.core.archive.configuration.Configuration;
@@ -9,15 +10,15 @@ import rtt.core.archive.history.Version;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
-import rtt.core.exceptions.RTTException;
-import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.generation.DataGenerator;
-import rtt.core.testing.generation.LexerExecuter;
-import rtt.core.testing.generation.ParserExecuter;
+import rtt.core.testing.generation.LexerExecutor;
+import rtt.core.testing.generation.ParserExecutor;
+import rtt.core.utils.Debug;
+import rtt.core.utils.GenerationInformation.GenerationResult;
 
 public class OutputDataManager extends AbstractDataManager<History> implements IHistoryManager {
 	
@@ -35,14 +36,6 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		public String getPath() {
 			return path;
 		}
-	}
-
-	public class GenerationInfo {
-		public boolean somethingDone = false;
-		public boolean lexerReplaced = false;
-		public boolean parserReplaced = false;
-		public boolean lexerVersioned = false;
-		public boolean parserVersioned = false;
 	}
 
 	protected LexerOutputManager lexManager;
@@ -74,7 +67,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		try {
 			this.load();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Debug.printTrace(e);
 		}
 	}
 	
@@ -141,50 +134,61 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return true;		
 	}
 
-	public GenerationInfo createData(LexerExecuter lexer, ParserExecuter parser, Integer inputVersion) throws Exception {
-		GenerationInfo info = new GenerationInfo();
+	public GenerationResult createData(LexerExecutor lexer, ParserExecutor parser, Integer inputVersion) {
+		GenerationResult result = new GenerationResult(suiteName, caseName);
 
 		LexerOutput newLexOut = null;
 		ParserOutput newParOut = null;
+		
 		try {
-			Input input = inputManager.loadData(inputVersion);
+			Input input = inputManager.getInput(inputVersion);
 			
 			newLexOut = DataGenerator.generateOutput(input, lexer);
 			newParOut = DataGenerator.generateOutput(input, parser);
-		} catch (Exception e) {
-			throw new RTTException(Type.GENERATION,
-					"Could not generate output data.", e);
+		} catch (Throwable t) {
+			Debug.printTrace(t);
+			if (t instanceof InvocationTargetException) {
+				t = t.getCause();
+			}			
+			result.exception = t;
+			
+			return result;
 		}
 
-		info.somethingDone = true;
+		result.noError = true;
 
 		boolean replace = false;
 		int lastVersion = 0;
 
 		if (data.getVersion() == null || data.getVersion().isEmpty()) {
-			// previous data are not available, write new one
+			// previous history data are not available, write new one
 			replace = true;
 		} else {
-			// previos data is available, check if data has changed
+			// previous data is available, load and check if data has changed
 			lastVersion = data.getVersion().size();
-
+			
 			LexerOutput oldLexOut = lexManager.getData(lastVersion);
 			ParserOutput oldParOut = parManager.getData(lastVersion);
-
-			if (LexerOutputManager.dataEqual(oldLexOut, newLexOut) == false
-					|| ParserOutputManager.dataEqual(oldParOut, newParOut) == false) {
-				info.lexerVersioned = true;
-				info.parserVersioned = true;
+			
+			
+			if (isOutDated(inputVersion)) {
+				// input is newer, than reference data -> replace reference
 				replace = true;
-			}
+			} else {
+				
+				boolean lexerChanged = !LexerOutputManager.dataEqual(oldLexOut, newLexOut);
+				boolean parserChanged = !ParserOutputManager.dataEqual(oldParOut, newParOut); 
+
+				if (lexerChanged || parserChanged) {				
+					// data has really changed -> replace
+					replace = true;
+				}
+			}			
 		}
 
 		if (replace) {
 			Version newVersion = new Version();
 			newVersion.setDate(Calendar.getInstance());
-
-			info.lexerReplaced = true;
-			info.parserReplaced = true;
 
 			lastVersion++;
 
@@ -195,9 +199,11 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 
 			lexManager.setData(newLexOut, lastVersion);
 			parManager.setData(newParOut, lastVersion);
+			
+			result.hasReplaced = true;
 		}
 
-		return info;
+		return result;
 	}
 	
 	@Override
@@ -222,4 +228,6 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		
 		return false;
 	}
+	
+	
 }

@@ -8,7 +8,9 @@ public class RTTException extends Exception {
 	private static final long serialVersionUID = -3828945031247021640L;
 
 	public enum Type {
-		ARCHIVE, CONFIGURATION, TESTCASE, TEST, TESTSUITE, GENERATION
+		DATA_NOT_FOUND,
+		OPERATION_FAILED,
+		NO_ARCHIVE
 	}
 
 	private Type type;
