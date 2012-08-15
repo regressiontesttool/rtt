@@ -1,4 +1,4 @@
-package rtt.ui.dialogs;
+package rtt.ui.dialogs.utils;
 
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;

@@ -45,9 +45,20 @@ public class ContentTypePropertyTester extends PropertyTester {
 			return hasType(receiver, args, expectedValue);
 		} else if (property.equals("hasParent")) {
 			return hasParent(receiver, args, expectedValue);
+		} else if (property.equals("hasChilds")) {
+			return hasChildren(receiver, args, expectedValue);
 		}
 		
 		return false;		
+	}
+
+	private boolean hasChildren(Object receiver, Object[] args, Object expectedValue) {
+		if (receiver instanceof IContent) {
+			IContent content = (IContent) receiver;
+			return content.hasChildren();
+		}
+		
+		return false;
 	}
 
 	private boolean hasParent(Object receiver, Object[] args,

@@ -1,4 +1,4 @@
-package rtt.ui.dialogs;
+package rtt.ui.dialogs.utils;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -13,6 +13,7 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Path;
 import rtt.ui.content.configuration.ClasspathContent;
+import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.model.RttProject;
 
 public class ResourceSelectionAdapter extends SelectionAdapter {

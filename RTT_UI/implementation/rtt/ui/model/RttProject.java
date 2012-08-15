@@ -14,14 +14,14 @@ import org.eclipse.jdt.core.JavaModelException;
 import rtt.core.archive.Archive;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.configuration.LexerClass;
-import rtt.core.archive.configuration.ParserClass;
 import rtt.core.archive.configuration.Path;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.Manager;
 import rtt.core.manager.Manager.TestCaseMode;
+import rtt.core.manager.data.ConfigurationManager;
+import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUtil;
 
@@ -78,22 +78,22 @@ public class RttProject {
 			String configName, boolean makeDefault, List<String> cp)
 			throws RTTException {
 
-		manager.createConfiguration(lexerClass, parserClass, configName,
-				makeDefault, true, cp);
+		manager.setConfiguration(configName, lexerClass, parserClass,
+				cp, makeDefault, true);
 	}
 
 	public boolean setActiveConfiguration(String configName) {
 		return manager.getArchive().setActiveConfiguration(configName);
 	}
 
-	public void addClassPathEntry(String configName, String entry)
+	public void addClassPathEntry(Configuration config, String entry)
 			throws RTTException {
-		manager.addClassPathEntry(configName, entry);
+		ConfigurationManager.addClasspathEntry(config, entry);
 	}
 
-	public void removeClasspathEntry(String configName, String entry)
+	public void removeClasspathEntry(Configuration config, String entry)
 			throws RTTException {
-		manager.removeClassPathEntry(configName, entry);
+		ConfigurationManager.addClasspathEntry(config, entry);
 	}
 
 	public boolean addTestsuite(String suiteName) throws RTTException {
@@ -113,7 +113,7 @@ public class RttProject {
 		manager.removeTest(suiteName, caseName);
 	}
 
-	public List<Throwable> generateTests(String suiteName) throws RTTException {
+	public GenerationInformation generateTests(String suiteName) throws RTTException {
 		return manager.generateTests(suiteName);
 	}
 
@@ -139,16 +139,9 @@ public class RttProject {
 	public Configuration createEmptyConfiguration() {
 		Configuration config = new Configuration();
 		config.setName("myConfig");
-		config.setClasspath(new Classpath());
-		
-		LexerClass lexer = new LexerClass();
-		lexer.setValue("");
-		config.setLexerClass(lexer);
-		
-		ParserClass parser = new ParserClass();
-		parser.setValue("");
-		config.setParserClass(parser);
-		
+		config.setLexerClass("");
+		config.setParserClass("");
+
 		Classpath classpath = new Classpath();
 		try {
 			IPath outputLocation = javaProject.getOutputLocation();

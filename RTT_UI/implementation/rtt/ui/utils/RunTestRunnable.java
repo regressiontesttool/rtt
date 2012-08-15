@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import rtt.core.exceptions.RTTException;
+import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
 import rtt.ui.content.main.ProjectContent;
 
@@ -37,5 +38,11 @@ public class RunTestRunnable extends AbstractTestRunnable implements IRunnableWi
 		projectContent.reload();
 
 		monitor.done();		
+	}
+	
+	@Override
+	public GenerationInformation getResults() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -30,11 +30,11 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 	private void loadContent() {
 		
 		if (config.getLexerClass() != null) {
-			addExecutor(ContentType.LEXERCLASS, config.getLexerClass().getValue());
+			addExecutor(ContentType.LEXERCLASS, config.getLexerClass());
 		}
 
 		if (config.getParserClass() != null) {
-			addExecutor(ContentType.PARSERCLASS, config.getParserClass().getValue());
+			addExecutor(ContentType.PARSERCLASS, config.getParserClass());
 		}
 
 		if (config.getClasspath() != null) {
@@ -96,7 +96,7 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	public void addClasspathEntry(String value) throws RTTException {
 		RttProject project = this.getProject();
-		project.addClassPathEntry(config.getName(), value);
+		project.addClassPathEntry(config, value);
 		project.save();
 		
 		reload();
@@ -104,7 +104,7 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 
 	public void removeClasspathEntry(String value) throws RTTException {
 		RttProject project = this.getProject();
-		project.removeClasspathEntry(config.getName(), value);
+		project.removeClasspathEntry(config, value);
 		project.save();
 		
 		reload();

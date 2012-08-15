@@ -12,6 +12,7 @@ import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
+import rtt.ui.dialogs.GenerationResultsDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
@@ -42,6 +43,9 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 		}
 		
 		RttPluginUI.refreshManager();
+		
+		GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, runnable.getResults());	
+		dialog.open();
 
 		return null;
 	}

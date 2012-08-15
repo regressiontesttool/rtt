@@ -81,8 +81,8 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 		typeLabel.setText("Filter:");
 
 		combo = new Combo(composite, SWT.READ_ONLY);
-		combo.setItems(new String[] { "Complete log ... ", "Information only",
-				"Generation only", "Testrun only" });
+		combo.setItems(new String[] { "Complete log ... ", "Archive only",
+				"Generation only", "Testrun only", "Information only" });
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		combo.select(0);
 		combo.addSelectionListener(new SelectionAdapter() {

@@ -112,7 +112,7 @@ public class InputEditorInput implements IStorageEditorInput {
 				}
 
 				InputStream bais = new ByteArrayInputStream(manager
-						.loadData(versionNr).getValue().getBytes());
+						.getInput(versionNr).getValue().getBytes());
 
 				return bais;
 			}

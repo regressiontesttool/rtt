@@ -13,7 +13,7 @@ public class ContentViewerFilter extends ViewerFilter {
 	
 	private enum FilterType {
 		NONE(null), INFO(EntryType.INFO), GENERATION(EntryType.GENERATION), TESTRUN(
-				EntryType.TESTRUN);
+				EntryType.TESTRUN), ARCHIVE(EntryType.ARCHIVE);
 
 		private EntryType type;
 
@@ -32,12 +32,14 @@ public class ContentViewerFilter extends ViewerFilter {
 		public static FilterType getType(int selectionIndex) {
 			switch (selectionIndex) {
 			case 1:
-				return INFO;
+				return ARCHIVE;
 			case 2:
 				return GENERATION;
 			case 3:
 				return TESTRUN;
-
+			case 4:
+				return INFO;
+				
 			default:
 				return NONE;
 			}

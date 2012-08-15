@@ -10,6 +10,7 @@ import rtt.core.archive.configuration.Path;
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
+import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
 import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ConfigurationContent;
@@ -130,12 +131,12 @@ public class ProjectContent extends AbstractContent {
 		suiteDirectory.reload();
 	}
 
-	public List<Throwable> generateTest(String suiteName) throws RTTException {
-		List<Throwable> exceptions = project.generateTests(suiteName);
+	public GenerationInformation generateTest(String suiteName) throws RTTException {
+		GenerationInformation results = project.generateTests(suiteName);
 		project.save();
 
 		suiteDirectory.reload();
-		return exceptions;
+		return results;
 	}
 
 	public void reload() {
@@ -148,8 +149,8 @@ public class ProjectContent extends AbstractContent {
 
 	public void addConfiguration(Configuration config, boolean makeDefault)
 			throws RTTException {
-		String lexerClass = config.getLexerClass().getValue();
-		String parserClass = config.getParserClass().getValue();
+		String lexerClass = config.getLexerClass();
+		String parserClass = config.getParserClass();
 		String configName = config.getName();
 
 		List<String> cp = new LinkedList<String>();
@@ -188,7 +189,7 @@ public class ProjectContent extends AbstractContent {
 			}
 			
 			String message = "Some files could not be added to the test suite. See Error Log for more information";			
-			throw new RTTException(Type.TESTCASE, message);
+			throw new RTTException(Type.OPERATION_FAILED, message);
 		}
 		
 		project.save();

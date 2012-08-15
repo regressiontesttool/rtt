@@ -345,9 +345,11 @@
                style="push">
             <visibleWhen
                   checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.testsuite">
-               </reference>
+               <and>
+                  <reference
+                        definitionId="rtt.ui.definitions.selection.testsuite">
+                  </reference>
+               </and>
             </visibleWhen>
          </command>
          <command
@@ -528,6 +530,22 @@
          </with>
       </definition>
       <definition
+            id="rtt.ui.definitions.selection.testresult">
+         <with
+               variable="activeMenuSelection">
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <instanceof
+                     value="rtt.ui.content.logging.TestResultContent">
+               </instanceof>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </with>
+      </definition>
+      <definition
             id="rtt.ui.definitions.classpathParent">
          <with
                variable="activeMenuSelection">
@@ -571,8 +589,7 @@
                   operator="and">
                <test
                      args="configuration_directory"
-                     property="rtt.ui.content.hasType"
-                     value="configuration_directoryctory">
+                     property="rtt.ui.content.hasType">
                </test>
             </iterate>
             <count
@@ -581,33 +598,17 @@
          </with>
       </definition>
       <definition
-            id="rtt.ui.definitions.type.testsuiteDir">
+            id="rtt.ui.definitions.hasChildren">
          <with
                variable="activeMenuSelection">
             <iterate
                   ifEmpty="false"
                   operator="and">
                <test
-                     args="testsuite_directory"
-                     property="rtt.ui.content.hasType"
-                     value="testsuite_directory">
+                     args="childs"
+                     property="rtt.ui.content.hasChilds"
+                     value="childs">
                </test>
-            </iterate>
-            <count
-                  value="1">
-            </count>
-         </with>
-      </definition>
-      <definition
-            id="rtt.ui.definitions.selection.testresult">
-         <with
-               variable="activeMenuSelection">
-            <iterate
-                  ifEmpty="false"
-                  operator="and">
-               <instanceof
-                     value="rtt.ui.content.logging.TestResultContent">
-               </instanceof>
             </iterate>
             <count
                   value="1">
@@ -631,7 +632,7 @@
             class="rtt.ui.propertyTester.ContentTypePropertyTester"
             id="rtt.ui.ContentPropertyTester"
             namespace="rtt.ui.content"
-            properties="hasType,hasParent"
+            properties="hasType,hasParent,hasChilds"
             type="rtt.ui.content.IContent">
       </propertyTester>
    </extension>

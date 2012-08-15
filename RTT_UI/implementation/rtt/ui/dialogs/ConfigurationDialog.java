@@ -32,7 +32,9 @@ import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ClasspathContent;
 import rtt.ui.content.main.EmptyContent;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.dialogs.ResourceSelectionAdapter.DialogType;
+import rtt.ui.dialogs.utils.ClassSelectionAdapter;
+import rtt.ui.dialogs.utils.ResourceSelectionAdapter;
+import rtt.ui.dialogs.utils.ResourceSelectionAdapter.DialogType;
 import rtt.ui.model.RttProject;
 import rtt.ui.viewer.BaseContentLabelProvider;
 import rtt.ui.viewer.BaseContentProvider;
@@ -63,9 +65,9 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	 */
 	public ConfigurationDialog(Shell parentShell, ProjectContent projectContent, Configuration config) {
 		super(parentShell);	
+		setHelpAvailable(false);
 		
 		setShellStyle(SWT.DIALOG_TRIM);
-		setHelpAvailable(false);
 		red = new Color(null, 255, 150, 150);
 		
 		this.project = projectContent.getProject();
@@ -173,7 +175,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		lexerLabel.setText("Lexer class:");
 		
 		lexerText = new Text(container, SWT.BORDER);
-		lexerText.setText(config.getLexerClass().getValue());
+		lexerText.setText(config.getLexerClass());
 		lexerText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lexerText.addModifyListener(getModifyListener());
 		
@@ -187,7 +189,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		parserLabel.setText("Parser class:");
 		
 		parserText = new Text(container, SWT.BORDER);
-		parserText.setText(config.getParserClass().getValue());		
+		parserText.setText(config.getParserClass());		
 		parserText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		parserText.addModifyListener(getModifyListener());
 		
@@ -200,7 +202,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		classpathLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		classpathLabel.setText("Classpath:");
 		
-		listViewer = new ListViewer(container, SWT.SINGLE);
+		listViewer = new ListViewer(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		listViewer.setContentProvider(new BaseContentProvider());
 		listViewer.setLabelProvider(new BaseContentLabelProvider());
@@ -280,8 +282,8 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		config.setName(nameText.getText().trim());
-		config.getLexerClass().setValue(lexerText.getText().trim());
-		config.getParserClass().setValue(parserText.getText().trim());
+		config.setLexerClass(lexerText.getText().trim());
+		config.setParserClass(parserText.getText().trim());
 		config.setClasspath(tempClasspath);
 		
 		isDefault = defaultButton.getSelection();
@@ -305,15 +307,15 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		return isDefault;
 	}
 
-	protected RttProject getProject() {
+	public RttProject getProject() {
 		return project;
 	}
 
-	protected Classpath getTempClasspath() {
+	public Classpath getTempClasspath() {
 		return tempClasspath;
 	}
 
-	protected ListViewer getViewer() {
+	public ListViewer getViewer() {
 		return listViewer;
 	}
 }

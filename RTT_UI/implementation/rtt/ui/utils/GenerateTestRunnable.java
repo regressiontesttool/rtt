@@ -7,10 +7,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import rtt.core.exceptions.RTTException;
+import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
 import rtt.ui.content.main.ProjectContent;
 
 public class GenerateTestRunnable extends AbstractTestRunnable implements IRunnableWithProgress {
+
+	private GenerationInformation results;
 
 	public GenerateTestRunnable(ProjectContent projectContent, String suiteName) {
 		this();
@@ -27,26 +30,20 @@ public class GenerateTestRunnable extends AbstractTestRunnable implements IRunna
 			InterruptedException {
 		monitor.beginTask("Generating reference data for test suite '" + suiteName + "' ...", IProgressMonitor.UNKNOWN);
 
-		boolean exceptionOccured = false;
 		try {
-			List<Throwable> exceptions = projectContent.generateTest(suiteName);
-			if (exceptions != null && !exceptions.isEmpty()) {
-				for (Throwable throwable : exceptions) {
-					RttLog.log(throwable);
-				}
-				exceptionOccured = true;				
-			}
+			results = projectContent.generateTest(suiteName);			
 		} catch (RTTException e) {
 			RttLog.log(e);
-			exceptionOccured = true;
-		}
-		
-		if (exceptionOccured) {
-			throw new InterruptedException("Errors occured during generation. Check Error Log for details.");
+			throw new InterruptedException("Generation exception: " + e.getMessage());
 		}
 		
 		projectContent.reload();
 		
 		monitor.done();
+	}
+	
+	@Override
+	public GenerationInformation getResults() {
+		return results;
 	}
 }

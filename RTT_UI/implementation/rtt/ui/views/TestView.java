@@ -86,11 +86,26 @@ public class TestView extends ViewPart implements ISelectionListener {
 		@Override
 		public void refresh() {
 			comboViewer.refresh(true);
+			
+			if (comboViewer.getSelection() != null) {
+				IStructuredSelection ssel = (IStructuredSelection) comboViewer.getSelection();
+				if (ssel != null && ssel.getFirstElement() != null) {
+					TestsuiteContent content = (TestsuiteContent) ssel.getFirstElement();
+					if (content != null) {
+						generateButton.setEnabled(content.hasChildren());
+						runButton.setEnabled(content.hasChildren());
+					}
+				}				
+			}			
 		}
 
 		@Override
 		public void update(TestsuiteContent content) {
 			if (content != null) {
+				
+				generateButton.setEnabled(content.hasChildren());
+				runButton.setEnabled(content.hasChildren());				
+				
 				comboViewer.setSelection(new StructuredSelection(content));
 				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
 						content.getText()) });
