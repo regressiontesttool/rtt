@@ -24,17 +24,23 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	
 	public enum OutputDataType {
 
-		REFERENCE("ref"),
-		TEST("test");
+		REFERENCE("ref","Reference"),
+		TEST("test", "Test");
 			
 		private String path;
+		private String text;
 			
-		private OutputDataType(String path) {
+		private OutputDataType(String path, String text) {
 			this.path = path;
+			this.text = text;
 		}
 			
 		public String getPath() {
 			return path;
+		}
+		
+		public String getText() {
+			return text;
 		}
 	}
 
@@ -46,6 +52,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	protected String caseName;
 	
 	private InputManager inputManager;
+	private OutputDataType type;
 
 	public OutputDataManager(ArchiveLoader loader, String suiteName,
 			String caseName, Configuration config, OutputDataType type) {
@@ -53,6 +60,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 
 		this.suiteName = suiteName;
 		this.caseName = caseName;
+		this.type = type;
 
 		path = LoaderUtils.getPath(suiteName, caseName, config.getName(), type.getPath());
 		setFetchingStrategy(new SimpleFileFetching("history.xml", path));
@@ -97,6 +105,10 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	public String getCaseName() {
 		return caseName;
 	}
+	
+	public OutputDataType getType() {
+		return type;
+	}
 
 	public LexerOutput getLexerOutput(Integer version) {
 		return lexManager.getData(version);
@@ -124,9 +136,9 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return new History();
 	}
 	
-	public boolean isOutDated(Integer inputVersion) {
+	public boolean isOutDated(Integer latestInputID) {
 		for (Version version : data.getVersion()) {
-			if (version.getReference() == inputVersion) {
+			if (version.getInputBase() == latestInputID) {
 				return false;
 			}
 		}
@@ -193,7 +205,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 			lastVersion++;
 
 			newVersion.setNr(lastVersion);
-			newVersion.setReference(inputVersion);
+			newVersion.setInputBase(inputVersion);
 
 			data.getVersion().add(newVersion);
 

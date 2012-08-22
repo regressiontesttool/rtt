@@ -55,7 +55,7 @@
 	<!-- ================================= 
           target: Create_GenSrc              
          ================================= -->
-	<target name="Create_GenSrc" description="Creates classes from schemes">
+	<target name="Create_GenSrc" unless="build.notRequired" description="Creates classes from schemes">
 		<antcall target="XJC ALL" />
 		<touch file="${build.complete}" />
 		<eclipse.refreshLocal resource="${project.name}" />
@@ -113,7 +113,7 @@
 	<!-- ================================= 
           target: Create_All              
          ================================= -->
-	<target name="Create_All" unless="build.notRequired" description="description">
+	<target name="Create_All" description="description">
 		<antcall target="Create_GenSrc" />
 		<antcall target="Create_AntLib" />
 		<antcall target="Create_InterfaceLib" />

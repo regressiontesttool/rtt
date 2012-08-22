@@ -135,7 +135,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		} else {
 			// test case already existed.
 			resultStatus = TestcaseStatus.UPDATE;
-			nextInputVersion = testcase.getInput() + 1;
+			nextInputVersion = testcase.getInputID() + 1;
 			
 			if (testcase.isDeleted()) {
 				testcase.setDeleted(false);
@@ -161,7 +161,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		input.setValue(InputManager.getContent(new FileInputStream(testFile)));
 		if (inputManager.addInput(input, force) == true) {
 			inputManager.save();
-			testcase.setInput(nextInputVersion);
+			testcase.setInputID(nextInputVersion);
 		} else {
 			resultStatus = TestcaseStatus.NONE;
 		}

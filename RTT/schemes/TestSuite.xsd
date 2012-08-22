@@ -28,13 +28,13 @@
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="deleted" type="xs:boolean" default="false" />
-		<xs:attribute name="input" type="xs:int" default="0" />
+		<xs:attribute name="inputID" type="xs:int" default="0" />
 	</xs:complexType>
 
 	<xs:complexType name="versionData">
 		<xs:attribute name="config" type="xs:string" use="required" />
-		<xs:attribute name="reference" type="xs:int" default="0" />
-		<xs:attribute name="test" type="xs:int" default="0" />
+		<xs:attribute name="referenceID" type="xs:int" default="0" />
+		<xs:attribute name="testID" type="xs:int" default="0" />
 	</xs:complexType>
 
 </xs:schema>

@@ -18,7 +18,7 @@
 	<xs:complexType name="version">
 		<xs:attribute name="nr" type="xs:int" use="required" />
 		<xs:attribute name="date" type="xs:string" use="required" />
-		<xs:attribute name="reference" type="xs:int" />
+		<xs:attribute name="inputBase" type="xs:int" />
 	</xs:complexType>
 
 </xs:schema>

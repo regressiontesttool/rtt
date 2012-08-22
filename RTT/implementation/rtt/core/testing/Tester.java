@@ -65,12 +65,12 @@ public class Tester {
 		}
 		
 		// if version data was found, set reference and test version to result
-		result.setRefVersion(versionData.getReference());
-		result.setTestVersion(versionData.getTest());
+		result.setRefVersion(versionData.getReferenceID());
+		result.setTestVersion(versionData.getTestID());
 		
 		// if the input version is newer than the last used version of the reference manager
 		// then return skipped.
-		if (refManager.isOutDated(tcase.getInput()) || testManager.isOutDated(tcase.getInput())) {
+		if (refManager.isOutDated(tcase.getInputID()) || testManager.isOutDated(tcase.getInputID())) {
 			return result;
 		}
 		
@@ -80,8 +80,8 @@ public class Tester {
 		// test lexer
 		try {
 			
-			LexerOutput testData = testManager.getLexerOutput(versionData.getTest()); 
-			LexerOutput refData = refManager.getLexerOutput(versionData.getReference()); 
+			LexerOutput testData = testManager.getLexerOutput(versionData.getTestID()); 
+			LexerOutput refData = refManager.getLexerOutput(versionData.getReferenceID()); 
 			
 			LexerTestFailure lexerFailure = testLexer(testData, refData);
 			
@@ -99,8 +99,8 @@ public class Tester {
 		
 		// test parser
 		try {
-			ParserOutput testData = testManager.getParserOutput(versionData.getTest());
-			ParserOutput refData = refManager.getParserOutput(versionData.getReference()); 
+			ParserOutput testData = testManager.getParserOutput(versionData.getTestID());
+			ParserOutput refData = refManager.getParserOutput(versionData.getReferenceID()); 
 			
 			List<ParserTestFailure> parserFailure = testParser(testData, refData);
 			

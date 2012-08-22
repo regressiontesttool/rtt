@@ -486,7 +486,7 @@ public class Manager {
 
 			// create new reference data
 			GenerationResult result = refManager.createData(lexer, parser,
-					tcase.getInput());
+					tcase.getInputID());
 
 			if (result.noError) {
 				// No error during the generation of the reference data
@@ -518,12 +518,9 @@ public class Manager {
 
 					// update the version data to current reference version &
 					// save
-					versionData.setReference(versionData.getReference() + 1);
+					versionData.setReferenceID(versionData.getReferenceID() + 1);
 					versionList.add(versionData);
 				}
-			} else {
-				currentLog.addEntry(EntryType.INFO, result.getMessage(),
-						result.suiteName + "/" + result.caseName);
 			}
 
 			genInfos.addGenerationResult(result);
@@ -596,14 +593,14 @@ public class Manager {
 						tcase.getName(), configuration, OutputDataType.TEST);
 				
 				// Create new test data ...
-				GenerationResult info = testManager.createData(lexer, parser, tcase.getInput());
-				if (info.noError) {
+				GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID());
+				if (genResult.noError) {
 					testManager.save();
 					
-					if (info.hasReplaced) {
+					if (genResult.hasReplaced) {
 						for (VersionData versionData : tcase.getVersionData()) {
 							if (versionData.getConfig().equals(configuration.getName())) {
-								versionData.setTest(versionData.getTest() + 1);
+								versionData.setTestID(versionData.getTestID() + 1);
 							}
 						}						
 					}					
