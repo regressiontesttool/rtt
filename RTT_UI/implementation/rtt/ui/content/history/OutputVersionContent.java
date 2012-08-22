@@ -14,23 +14,19 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.editors.ReferenceEditor;
-import rtt.ui.editors.input.ReferenceEditorInput;
+import rtt.ui.editors.input.OutputDataEditorInput;
 
-public class ReferenceVersionContent extends AbstractVersionContent<OutputDataManager> implements IClickableContent {
+public class OutputVersionContent extends AbstractVersionContent<OutputDataManager> implements IClickableContent {
 
-	public ReferenceVersionContent(IContent parent, Version version,
+	public OutputVersionContent(IContent parent, Version version,
 			IHistoryManager manager) {
 		super(parent, version, (OutputDataManager) manager);
-	}
-	@Override
-	public String getText() {
-		return "Reference";
 	}
 
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
 		try {
-			IEditorPart part = IDE.openEditor(currentPage, new ReferenceEditorInput(
+			IEditorPart part = IDE.openEditor(currentPage, new OutputDataEditorInput(
 					manager, version.getNr()), ReferenceEditor.ID, true);
 
 			if (part instanceof ReferenceEditor) {

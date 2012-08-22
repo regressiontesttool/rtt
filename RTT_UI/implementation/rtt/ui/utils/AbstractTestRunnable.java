@@ -6,15 +6,13 @@ import java.util.List;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import rtt.core.utils.GenerationInformation;
-import rtt.core.utils.GenerationInformation.GenerationResult;
-import rtt.ui.content.main.ProjectContent;
-import rtt.ui.content.testsuite.TestsuiteContent;
+import rtt.ui.model.RttProject;
 
 public abstract class AbstractTestRunnable implements IRunnableWithProgress {
 
 	protected List<Throwable> exceptions;
 	protected String suiteName;
-	protected ProjectContent projectContent;
+	protected RttProject project;
 	private String title;
 
 	public AbstractTestRunnable(String title) {
@@ -26,8 +24,8 @@ public abstract class AbstractTestRunnable implements IRunnableWithProgress {
 		this.suiteName = suiteName;
 	}
 
-	public void setProjectContent(ProjectContent projectContent) {
-		this.projectContent = projectContent;
+	public void setProject(RttProject project) {
+		this.project = project;
 	}
 	
 	public String getMessageTitle() {

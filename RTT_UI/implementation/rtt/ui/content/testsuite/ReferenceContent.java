@@ -7,13 +7,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
+import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.editors.ReferenceEditor;
-import rtt.ui.editors.input.ReferenceEditorInput;
+import rtt.ui.editors.input.OutputDataEditorInput;
 
 public class ReferenceContent extends AbstractContent implements
 		IClickableContent {
@@ -35,8 +36,8 @@ public class ReferenceContent extends AbstractContent implements
 
 		try {
 			IEditorPart part = IDE.openEditor(currentPage,
-					new ReferenceEditorInput(getProject(), suiteName, caseName,
-							version), ReferenceEditor.ID, true);
+					new OutputDataEditorInput(getProject(), suiteName, caseName,
+							version, OutputDataType.REFERENCE), ReferenceEditor.ID, true);
 			
 			if (part instanceof ReferenceEditor) {
 				((ReferenceEditor) part)

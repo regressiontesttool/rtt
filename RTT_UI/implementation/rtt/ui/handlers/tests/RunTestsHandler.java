@@ -9,6 +9,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
@@ -21,10 +23,10 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Shell parentShell = getParentShell(event);
 		ProjectContent projectContent = this.getProjectContent(event);
-		TestsuiteContent suite = getSelectedObject(
+		TestsuiteContent suiteContent = getSelectedObject(
 				TestsuiteContent.class, event);
 		
-		AbstractTestRunnable runnable = new RunTestRunnable(projectContent, suite.getText());
+		AbstractTestRunnable runnable = new RunTestRunnable(projectContent.getProject(), suiteContent.getText());
 		
 		ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(
 				parentShell);
@@ -38,8 +40,8 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 					.getMessage(), e));
 		}
 		
-		RttPluginUI.refreshManager();
-
+		projectContent.reload(new ReloadInfo(Content.TESTCASE));
+		
 		return null;
 	}
 }

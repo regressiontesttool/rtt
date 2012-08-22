@@ -4,40 +4,39 @@ import java.util.List;
 
 import rtt.core.archive.testsuite.Testsuite;
 import rtt.ui.content.IContent;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.testsuite.TestsuiteContent;
 
 public class TestsuiteDirectory extends AbstractContent {
 
 	public TestsuiteDirectory(ProjectContent content) {
-		super(content);
+		super(content);		
 		loadContents();
 	}
 
 	private void loadContents() {
-		List<Testsuite> suites = getProject().getArchive().getTestsuites(false);
+		List<Testsuite> suites = getProject().getArchive().getTestsuites();
 		
 		if (suites != null) {
-			for (Testsuite testsuite : suites) {
-				childs.add(new TestsuiteContent(this, testsuite));
+			for (Testsuite suite : suites) {
+				TestsuiteContent content = new TestsuiteContent(this, suite);
+				childs.add(content);
 			}
 		}
 	}
 	
 	@Override
-	public void reload() {
-		for (IContent content : childs) {
-			content.reload();
+	public void reload(ReloadInfo info) {
+		
+		if (info.contains(Content.TESTSUITE)) {
+			childs.clear();			
+			loadContents();
+		} else if (info.contains(Content.TESTCASE)) {
+			for (IContent content : childs) {
+				content.reload(info);
+			}			
 		}
-	}
-	
-	public void addTestsuite(Testsuite newSuite) {
-		if (newSuite != null) {
-			childs.add(new TestsuiteContent(this, newSuite));
-		}
-	}
-	
-	public void removeTestsuite(TestsuiteContent suite) {
-		childs.remove(suite);
 	}
 	
 	public boolean isEmpty() {

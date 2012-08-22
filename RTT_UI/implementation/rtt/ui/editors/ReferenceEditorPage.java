@@ -12,6 +12,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.RttPluginUtil;
 
 public class ReferenceEditorPage extends FormPage {
@@ -23,9 +24,9 @@ public class ReferenceEditorPage extends FormPage {
 	protected ResourceSet refResourceSet;
 	
 	
-	public ReferenceEditorPage(FormEditor editor, String id, String tabTitle) {
+	public ReferenceEditorPage(FormEditor editor, OutputDataType type, String id, String tabTitle) {
 		super(editor, id, tabTitle);
-		this.title = tabTitle;
+		this.title = type.getText() + " data of the " + tabTitle;
 		block = new ReferenceMasterDetailsBlock(this);
 	}
 	
@@ -36,7 +37,7 @@ public class ReferenceEditorPage extends FormPage {
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {		
 		final ScrolledForm form = managedForm.getForm();
-		form.setText("Reference data of the " + title);
+		form.setText(title);
 		block.createContent(managedForm);
 	}
 

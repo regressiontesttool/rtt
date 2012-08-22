@@ -1,5 +1,7 @@
 package rtt.ui.dialogs.utils;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
@@ -10,9 +12,6 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
-import rtt.core.archive.configuration.Classpath;
-import rtt.core.archive.configuration.Path;
-import rtt.ui.content.configuration.ClasspathContent;
 import rtt.ui.dialogs.ConfigurationDialog;
 import rtt.ui.model.RttProject;
 
@@ -23,14 +22,14 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 	}
 
 	private SelectionDialog dialog;
-	private Classpath classpath;
+	private List<String> cpEntries;
 	private ListViewer viewer;
 	private RttProject project;
 
-	public ResourceSelectionAdapter(RttProject project, Classpath classpath,
+	public ResourceSelectionAdapter(RttProject project, List<String> cpEntries,
 			ListViewer viewer) {
 		this.project = project;
-		this.classpath = classpath;
+		this.cpEntries = cpEntries;
 		this.viewer = viewer;
 	}
 
@@ -56,14 +55,12 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 
 				if (path != null && !path.isEmpty()) {
 					path = path.makeRelativeTo(project.getArchivePath(true));
-
-					Path newPath = new Path();
-					newPath.setValue(path.toPortableString());
-					classpath.getPath().add(newPath);
+					if (!path.isEmpty()) {
+						cpEntries.add(path.toPortableString());
+					}					
 				}
-
 			}
-			viewer.setInput(new ClasspathContent(null, classpath));
+			viewer.setInput(cpEntries);
 		}
 	}
 
@@ -72,7 +69,7 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 
 		RttProject project = configDialog.getProject();
 		ResourceSelectionAdapter adapter = new ResourceSelectionAdapter(
-				project, configDialog.getTempClasspath(),
+				project, configDialog.getClasspathEntries(),
 				configDialog.getViewer());
 
 		switch (type) {

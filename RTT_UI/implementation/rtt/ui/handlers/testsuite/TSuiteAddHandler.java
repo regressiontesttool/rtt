@@ -4,9 +4,11 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
 
-import rtt.ui.RttPluginUI;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
+import rtt.ui.model.RttProject;
 
 public class TSuiteAddHandler extends AbstractSelectionHandler {
 	
@@ -28,10 +30,17 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 		
 		if (inputDialog.open() == InputDialog.OK) {
 			String suiteName = inputDialog.getValue();
+			
+			// if a test suite name was given try to create a new test suite
 			if (suiteName != null && !suiteName.equals("")) {
 				try {
-					projectContent.addTestsuite(suiteName);
-					RttPluginUI.refreshManager();
+					RttProject project = projectContent.getProject();
+					
+					if (project.addTestsuite(suiteName) == true) {
+						project.save();						
+						projectContent.reload(new ReloadInfo(Content.TESTSUITE));
+					}
+					
 				} catch (Exception e) {
 					throw new ExecutionException("Could not add test suite", e);
 				}

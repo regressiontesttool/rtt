@@ -14,8 +14,8 @@ public class HistoryContent extends AbstractContent implements
 		IDecoratableContent {
 
 	public enum VersionType {
-		INPUT("Inputs", ContentIcon.INPUT_HISTORY), REFERENCE("References",
-				ContentIcon.REFERENCE_HISTORY), TEST("Tests",
+		INPUT("Input data", ContentIcon.INPUT_HISTORY), REFERENCE("Reference data",
+				ContentIcon.REFERENCE_HISTORY), TEST("Test data",
 				ContentIcon.TEST_HISTORY);
 
 		protected String baseText;
@@ -53,13 +53,13 @@ public class HistoryContent extends AbstractContent implements
 			return new InputVersionContent(this, version, manager);
 
 		case REFERENCE:
-			return new ReferenceVersionContent(this, version, manager);
+			return new OutputVersionContent(this, version, manager);
 
 		case TEST:
-			return new TestVersionContent(this, version, manager);
+			return new OutputVersionContent(this, version, manager);
 		}
 		
-		return new SimpleVersionContent(this, version, manager);
+		return null;
 	}
 
 	@Override

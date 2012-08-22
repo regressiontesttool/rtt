@@ -1,18 +1,12 @@
 package rtt.ui.content.testsuite;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.resources.IFile;
-
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
-import rtt.core.exceptions.RTTException;
 import rtt.ui.content.IContent;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
-import rtt.ui.content.main.ProjectContent;
 
 public class TestsuiteContent extends AbstractContent {
 	private Testsuite testsuite;
@@ -23,7 +17,7 @@ public class TestsuiteContent extends AbstractContent {
 		
 		loadContent();		
 	}
-	
+
 	private void loadContent() {
 		if (testsuite.getTestcase() != null) {
 			for (Testcase testcase : testsuite.getTestcase()) {
@@ -34,9 +28,12 @@ public class TestsuiteContent extends AbstractContent {
 		}
 	}
 	
-	public void reload() {
-		childs.clear();
-		loadContent();
+	@Override
+	public void reload(ReloadInfo info) {
+		if (info.contains(Content.TESTCASE)) {
+			childs.clear();
+			loadContent();
+		}		
 	}
 
 	@Override
@@ -48,31 +45,4 @@ public class TestsuiteContent extends AbstractContent {
 	protected ContentIcon getIcon() {
 		return ContentIcon.TESTSUITE;
 	}
-
-	public void addTestcase(Object[] objects) throws RTTException {
-		List<File> files = new ArrayList<File>();
-		
-		for (Object object : objects) {
-			if (object instanceof IFile) {
-				files.add(((IFile) object).getLocation().toFile());
-			}
-		}
-		
-		ProjectContent projectContent = getContent(ProjectContent.class);
-		if (projectContent != null) {
-			projectContent.addTestcases(testsuite.getName(), files);
-		}
-		
-		reload();
-	}
-	
-	public void removeTestcase(String caseName) throws RTTException {
-		ProjectContent projectContent = getContent(ProjectContent.class);
-		if (projectContent != null) {
-			projectContent.removeTestcase(testsuite.getName(), caseName);
-		}
-		
-		reload();
-	}
-
 }

@@ -4,12 +4,13 @@ import rtt.core.archive.logging.ArchiveLog;
 import rtt.core.archive.logging.Entry;
 import rtt.core.archive.logging.EntryType;
 import rtt.core.manager.data.LogManager;
+import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.logging.LogEntryContent;
 import rtt.ui.content.logging.TestrunContent;
 
 public class LogDirectory extends AbstractContent {	
 
-	private boolean isEmpty;
+	private boolean isEmpty = false;
 
 	public LogDirectory(ProjectContent parent) {
 		super(parent);
@@ -17,23 +18,22 @@ public class LogDirectory extends AbstractContent {
 	}
 	
 	private void loadContents() {
-		isEmpty = false;
+		LogManager logManager = getProject().getLogManager();
 		
-		LogManager logManager = getProject().getArchive().getLogManager();
 		if (logManager != null) {
 			ArchiveLog log = logManager.getData();
-			if (log == null || log.getEntry().isEmpty()) {
+			
+			if (log == null || log.getEntry().isEmpty()) {				
 				isEmpty = true;
 				childs.add(new EmptyContent("No log entries found."));
+				
 			} else {
 				for (Entry entry : log.getEntry()) {
-//					long start = System.currentTimeMillis();
 					if (entry.getType() == EntryType.TESTRUN) {
 						childs.add(new TestrunContent(this, entry));
 					} else {
 						childs.add(new LogEntryContent(this, entry));
 					}
-//					System.out.println(entry.getType().toString() + ": " + (System.currentTimeMillis() - start));
 				}
 			}
 		} else {
@@ -41,7 +41,8 @@ public class LogDirectory extends AbstractContent {
 		}
 	}
 	
-	public void reload() {
+	@Override
+	public void reload(ReloadInfo info) {
 		childs.clear();
 		loadContents();
 	}

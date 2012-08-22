@@ -30,10 +30,13 @@ import org.eclipse.ui.part.ViewPart;
 
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.logging.TestrunContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestsuiteContent;
+import rtt.ui.dialogs.GenerationResultsDialog;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
 import rtt.ui.utils.RunTestRunnable;
@@ -236,15 +239,24 @@ public class TestView extends ViewPart implements ISelectionListener {
 		String suiteName = comboViewer.getCombo().getText();
 
 		if (suiteName != null && !suiteName.equals("")) {
-			runnable.setProjectContent(RttPluginUI.getProjectManager()
-					.getCurrentContent());
+			// TODO
+			
+			ProjectContent projectContent = RttPluginUI.getProjectManager().getCurrentContent();
+			
+			runnable.setProject(projectContent.getProject());
 			runnable.setSuiteName(suiteName);
 			ProgressMonitorDialog dialog = new ProgressMonitorDialog(
 					parentShell);
 
 			try {
 				dialog.run(true, false, runnable);
+				projectContent.reload(new ReloadInfo(Content.TESTCASE));
 				RttPluginUI.refreshManager();
+				
+				if (runnable.getResults() != null) {
+					GenerationResultsDialog resultsDialog = new GenerationResultsDialog(parentShell, runnable.getResults());
+					resultsDialog.open();
+				}				
 			} catch (Exception e) {
 				MessageDialog.openError(parentShell,
 						runnable.getMessageTitle(), e.getMessage());

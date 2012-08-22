@@ -10,6 +10,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.dialogs.GenerationResultsDialog;
@@ -25,10 +27,10 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 		Shell parentShell = getParentShell(event);
 		
 		ProjectContent projectContent = this.getProjectContent(event);
-		TestsuiteContent suite = getSelectedObject(
+		TestsuiteContent suiteContent = getSelectedObject(
 				TestsuiteContent.class, event);
 		
-		AbstractTestRunnable runnable = new GenerateTestRunnable(projectContent, suite.getText());
+		AbstractTestRunnable runnable = new GenerateTestRunnable(projectContent.getProject(), suiteContent.getText());
 		
 		ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(
 				parentShell);
@@ -42,9 +44,9 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 					.getMessage(), e));
 		}
 		
-		RttPluginUI.refreshManager();
+		projectContent.reload(new ReloadInfo(Content.TESTCASE));
 		
-		GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, runnable.getResults());	
+		GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, runnable.getResults());
 		dialog.open();
 
 		return null;

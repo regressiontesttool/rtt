@@ -12,25 +12,29 @@ import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.model.RttProject;
 
-public class ReferenceEditorInput implements IEditorInput {
+public class OutputDataEditorInput implements IEditorInput {
 
-	private OutputDataManager refManager;
+	private OutputDataManager manager;
 	private int version;
 
-	public ReferenceEditorInput(RttProject project, String suiteName,
-			String caseName, int version) {
+	public OutputDataEditorInput(RttProject project, String suiteName,
+			String caseName, int version, OutputDataType type) {
 
 		ArchiveLoader loader = project.getLoader();
 		Configuration config = project.getActiveConfiguration();
 
 		this.version = version;
-		this.refManager = new OutputDataManager(loader, suiteName,
-				caseName, config, OutputDataType.REFERENCE);		
+		this.manager = new OutputDataManager(loader, suiteName,
+				caseName, config, type);		
 	}
 
-	public ReferenceEditorInput(OutputDataManager manager, int version) {
+	public OutputDataEditorInput(OutputDataManager manager, int version) {
 		this.version = version;
-		this.refManager = manager;		
+		this.manager = manager;		
+	}
+	
+	public OutputDataType getType() {
+		return manager.getType();
 	}
 
 	@Override
@@ -39,9 +43,14 @@ public class ReferenceEditorInput implements IEditorInput {
 			return false;
 		}
 
-		if (obj instanceof ReferenceEditorInput) {
-			ReferenceEditorInput input = (ReferenceEditorInput) obj;
-			if (refManager.equals(input.refManager) && input.version == this.version) {
+		if (obj instanceof OutputDataEditorInput) {
+			OutputDataEditorInput input = (OutputDataEditorInput) obj;
+			
+			if (!manager.getType().equals(input.manager.getType())) {
+				return false;
+			}			
+			
+			if (manager.equals(input.manager) && input.version == this.version) {
 				return true;
 			}
 		}
@@ -61,13 +70,12 @@ public class ReferenceEditorInput implements IEditorInput {
 
 	@Override
 	public String getName() {
-		return "Reference data [" + refManager.getSuiteName() + "/"
-				+ refManager.getCaseName() + "]";
+		return manager.getType().getText() + " data [" + manager.getSuiteName() + "/"
+				+ manager.getCaseName() + "] (Ver. " + version + ")";
 	}
 
 	@Override
 	public IPersistableElement getPersistable() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -77,11 +85,11 @@ public class ReferenceEditorInput implements IEditorInput {
 	}
 
 	public InputStream getLexerOutputStream() {
-		return refManager.getLexerOutputStream(version);
+		return manager.getLexerOutputStream(version);
 	}
 	
 	public InputStream getParserOutputStream() {
-		return refManager.getParserOutputStream(version);
+		return manager.getParserOutputStream(version);
 	}
 
 	@SuppressWarnings("rawtypes")

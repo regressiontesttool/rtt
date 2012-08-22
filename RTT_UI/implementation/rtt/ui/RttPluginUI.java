@@ -17,10 +17,10 @@ import org.osgi.framework.BundleContext;
 import regression.test.util.TestResourceFactoryImpl;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.ProjectDirectoryContent;
+import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.core.RttNature;
 import rtt.ui.model.RttProject;
-import rtt.ui.views.utils.ProjectListenerManager;
 import rtt.ui.views.utils.RttListenerManager;
 
 /**
@@ -35,7 +35,7 @@ public class RttPluginUI extends AbstractUIPlugin {
 	private static RttPluginUI plugin;
 	
 	private ProjectDirectoryContent projectDirectory;
-	private ProjectListenerManager projectManager;
+	private RttListenerManager<ProjectContent> projectManager;
 	private RttListenerManager<TestsuiteContent> suiteManager;
 	
 	/**
@@ -43,7 +43,18 @@ public class RttPluginUI extends AbstractUIPlugin {
 	 */
 	public RttPluginUI() {
 		suiteManager = new RttListenerManager<TestsuiteContent>();
-		projectManager = new ProjectListenerManager();
+		projectManager = new RttListenerManager<ProjectContent>() {
+			@Override
+			protected void additionalOperations(ProjectContent content) {
+				TestsuiteDirectory suiteDirectory = content.getTestsuiteDirectory();
+				if (suiteDirectory != null) {
+					TestsuiteContent suiteContent = suiteDirectory.getTestsuite(0);
+					if (suiteContent != null) {
+						suiteManager.setCurrentContent(suiteContent, true);
+					}
+				}
+			}
+		};
 	}
 	
 	public static void addProject(IProject project) {

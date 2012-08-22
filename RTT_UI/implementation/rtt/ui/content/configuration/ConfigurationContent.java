@@ -4,14 +4,12 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.exceptions.RTTException;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.content.main.SimpleTypedContent;
 import rtt.ui.content.main.SimpleTypedContent.ContentType;
-import rtt.ui.model.RttProject;
 
 public class ConfigurationContent extends AbstractContent implements IDecoratableContent {
 
@@ -20,7 +18,8 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 	private boolean isDefault;
 
 	public ConfigurationContent(IContent parent, Configuration config) {
-		super(parent);
+		super(parent);	
+		
 		this.config = config;
 		this.isActive = false;	
 		
@@ -40,7 +39,7 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 		if (config.getClasspath() != null) {
 			childs.add(new ClasspathContent(this, config.getClasspath()));
 		}
-	}
+	}	
 	
 	private void addExecutor(ContentType type, String text) {
 		if (text == null || text.equals("")) {
@@ -49,11 +48,6 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 		childs.add(new SimpleTypedContent(this, type, text));
 	}
 	
-	public void reload() {
-		childs.clear();
-		loadContent();
-	}
-
 	@Override
 	public String getText() {
 		return config.getName();
@@ -89,31 +83,12 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 	public void setDefault(boolean isDefault) {
 		this.isDefault = isDefault;
 	}
+	
+	public boolean isDefault() {
+		return isDefault;
+	}
 
 	public Configuration getConfiguration() {
 		return config;
-	}
-
-	public void addClasspathEntry(String value) throws RTTException {
-		RttProject project = this.getProject();
-		project.addClassPathEntry(config, value);
-		project.save();
-		
-		reload();
-	}
-
-	public void removeClasspathEntry(String value) throws RTTException {
-		RttProject project = this.getProject();
-		project.removeClasspathEntry(config, value);
-		project.save();
-		
-		reload();
-	}
-
-	public void changeActive() {
-		RttProject project = this.getProject();
-		this.setActive(project.setActiveConfiguration(config.getName()));
-		
-		reload();
 	}
 }

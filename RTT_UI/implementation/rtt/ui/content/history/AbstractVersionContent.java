@@ -26,6 +26,11 @@ public abstract class AbstractVersionContent<T extends IHistoryManager> extends
 		this.version = version;
 		this.calendar = version.getDate();
 	}
+	
+	@Override
+	public String getText() {
+		return "Version";
+	}
 
 	@Override
 	protected ContentIcon getIcon() {

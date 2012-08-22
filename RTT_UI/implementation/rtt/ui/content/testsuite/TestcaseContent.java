@@ -2,6 +2,7 @@ package rtt.ui.content.testsuite;
 
 import java.util.List;
 
+import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;
 import rtt.ui.content.IContent;
@@ -15,13 +16,15 @@ public class TestcaseContent extends AbstractContent {
 	public TestcaseContent(IContent parent, String suiteName, Testcase testcase) {
 		super(parent);
 		
+		Configuration activeConfig = getProject().getActiveConfiguration();
+		
 		this.testcase = testcase;
-		childs.add(new InputContent(this, suiteName, testcase.getName(), testcase.getInput()));
+		childs.add(new InputContent(this, suiteName, testcase.getName(), testcase.getInputID()));
 		
 		List<VersionData> versionList = testcase.getVersionData();
 		for (VersionData versionData : versionList) {
-			if (versionData.getConfig().equals(getProject().getActiveConfiguration().getName())) {
-				childs.add(new ReferenceContent(this, suiteName, testcase.getName(), versionData.getReference()));
+			if (versionData.getConfig().equals(activeConfig.getName())) {
+				childs.add(new ReferenceContent(this, suiteName, testcase.getName(), versionData.getReferenceID()));
 			}
 		}		
 	}

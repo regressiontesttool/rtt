@@ -7,6 +7,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.ui.content.IContent;
+import rtt.ui.content.ReloadInfo;
 import rtt.ui.model.RttProject;
 
 public abstract class AbstractContent implements IContent {
@@ -31,13 +32,10 @@ public abstract class AbstractContent implements IContent {
 	}
 	
 	@Override
-	public void reload() {
-		
-	}
+	public void reload(ReloadInfo info) {}
 	
-	public void notifyChanges() {
-		
-	}
+	@Override
+	public void notifyChanges() {}
 	
 	@Override
 	public IContent getParent() {

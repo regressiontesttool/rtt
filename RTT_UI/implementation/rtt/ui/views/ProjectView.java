@@ -64,8 +64,6 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 			if (selectedObject != null && (selectedObject instanceof IContent)) {
 				IContent content = (IContent) selectedObject;
 				
-				System.out.println("ProjectView $ Selection Changed");
-				
 				ProjectContent projectContent = content.getContent(ProjectContent.class);
 				if (projectContent != null) {
 					RttPluginUI.getProjectManager().setCurrentContent(projectContent);

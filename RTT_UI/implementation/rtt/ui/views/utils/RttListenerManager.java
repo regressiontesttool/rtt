@@ -14,11 +14,11 @@ public class RttListenerManager<T extends IContent> {
 		listeners = new ArrayList<IRttListener<T>>();
 	}
 	
-	public void addListener(IRttListener<T> listener) {
+	public final void addListener(IRttListener<T> listener) {
 		listeners.add(listener);
 	}
 	
-	public void removeListener(IRttListener<T> listener) {
+	public final void removeListener(IRttListener<T> listener) {
 		listeners.remove(listener);
 	}
 	
@@ -32,14 +32,14 @@ public class RttListenerManager<T extends IContent> {
 		return setCurrentContent(newContent, false);
 	}
 	
-	protected boolean setCurrentContent(T newContent, boolean force) {
+	public boolean setCurrentContent(T newContent, boolean force) {
 		if (force || currentContent != newContent) {
 			currentContent = newContent;
 			for (IRttListener<T> listener : listeners) {
-				System.out.println("***  Content changend: " + newContent + " - " + listener.getClass());
-				
 				listener.update(newContent);
 			}
+			
+			additionalOperations(currentContent);
 			
 			return true;
 		}
@@ -47,7 +47,8 @@ public class RttListenerManager<T extends IContent> {
 		return false;
 	}
 	
-	
+	protected void additionalOperations(T content) {}
+
 	public T getCurrentContent() {
 		return currentContent;
 	}

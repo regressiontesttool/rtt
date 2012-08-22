@@ -31,6 +31,7 @@ import regression.test.TestPackage;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.FailureType;
+import rtt.core.archive.logging.Result;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
@@ -102,12 +103,14 @@ public class FailureContent extends AbstractContent implements IClickableContent
 	public FailureContent(TestResultContent parent, Failure failure) {
 		super(parent);
 		
-		this.failure = failure;		
+		this.failure = failure;
 		
-		suiteName = parent.getSuiteName();
-		caseName = parent.getCaseName();
-		refVersion = parent.getRefVersion();
-		testVersion = parent.getTestVersion();
+		Result result = parent.getTestresult();
+		
+		suiteName = result.getTestsuite();
+		caseName = result.getTestcase();
+		refVersion = result.getRefVersion();
+		testVersion = result.getTestVersion();
 	}
 
 	@Override

@@ -224,7 +224,7 @@
             <visibleWhen
                   checkEnabled="false">
                <reference
-                     definitionId="rtt.ui.definitions.type.configDir">
+                     definitionId="rtt.ui.definitions.selection.directory.config">
                </reference>
             </visibleWhen>
          </command>
@@ -294,7 +294,7 @@
             <visibleWhen
                   checkEnabled="false">
                <reference
-                     definitionId="rtt.ui.definitions.selection.testsuite_directory">
+                     definitionId="rtt.ui.definitions.selection.directory.testsuite">
                </reference>
             </visibleWhen>
          </command>
@@ -450,7 +450,7 @@
    <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
-            id="rtt.ui.definitions.selection.testsuite_directory">
+            id="rtt.ui.definitions.selection.directory.testsuite">
          <with
                variable="activeMenuSelection">
             <iterate
@@ -458,6 +458,22 @@
                   operator="and">
                <instanceof
                      value="rtt.ui.content.main.TestsuiteDirectory">
+               </instanceof>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </with>
+      </definition>
+      <definition
+            id="rtt.ui.definitions.selection.directory.config">
+         <with
+               variable="activeMenuSelection">
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <instanceof
+                     value="rtt.ui.content.configuration.ConfigurationDirectory">
                </instanceof>
             </iterate>
             <count

@@ -1,12 +1,17 @@
 package rtt.ui.dialogs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -25,19 +30,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Path;
-import rtt.ui.content.IContent;
-import rtt.ui.content.configuration.ClasspathContent;
-import rtt.ui.content.main.EmptyContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.dialogs.utils.ClassSelectionAdapter;
 import rtt.ui.dialogs.utils.ResourceSelectionAdapter;
 import rtt.ui.dialogs.utils.ResourceSelectionAdapter.DialogType;
 import rtt.ui.model.RttProject;
-import rtt.ui.viewer.BaseContentLabelProvider;
-import rtt.ui.viewer.BaseContentProvider;
 
 public class ConfigurationDialog extends TitleAreaDialog {
 	
@@ -50,12 +49,19 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private ListViewer listViewer;
 	private Color red;
 	
-	private Configuration config;
-	private Classpath tempClasspath;
+//	private Configuration config;
+//	private Classpath tempClasspath;
 
 	private String title;
 	private String message;
-	private boolean isDefault;
+	
+	private String configName;
+	private String lexerName;
+	private String parserName;
+	private List<String> cpEntries;
+	
+	private boolean isDefault = false;
+	private boolean nameEditable = true;
 	
 	private RttProject project;	
 	
@@ -74,22 +80,33 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		scope = SearchEngine.createJavaSearchScope(
 				new IJavaElement[] { project.getJavaProject() }, true);
 		
-		this.config = config;		
-		initTempClasspath(config);
-	}
-	
-	private void initTempClasspath(Configuration config) {
-		tempClasspath = new Classpath();
+		this.configName = config.getName();
+		this.lexerName = config.getLexerClass();
+		this.parserName = config.getParserClass();
+		this.cpEntries = new ArrayList<String>();
+		
 		if (config.getClasspath() != null) {
 			for (Path path : config.getClasspath().getPath()) {
-				if (path.getValue() != null) {
-					Path newPath = new Path();
-					newPath.setValue(path.getValue());
-					tempClasspath.getPath().add(newPath);
-				}
+				if (path.getValue() != null && !path.getValue().equals("")) {
+					cpEntries.add(path.getValue());
+				}				
 			}
 		}
+		
 	}
+	
+//	private void initTempClasspath(Configuration config) {
+//		tempClasspath = new Classpath();
+//		if (config.getClasspath() != null) {
+//			for (Path path : config.getClasspath().getPath()) {
+//				if (path.getValue() != null) {
+//					Path newPath = new Path();
+//					newPath.setValue(path.getValue());
+//					tempClasspath.getPath().add(newPath);
+//				}
+//			}
+//		}
+//	}
 	
 	@Override
 	protected void finalize() throws Throwable {
@@ -162,8 +179,9 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		nameText = new Text(container, SWT.BORDER);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		nameText.setText(config.getName());
+		nameText.setText(configName);
 		nameText.addModifyListener(getModifyListener());
+		nameText.setEnabled(nameEditable);
 		
 		defaultButton = new Button(container, SWT.CHECK);
 		defaultButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
@@ -175,7 +193,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		lexerLabel.setText("Lexer class:");
 		
 		lexerText = new Text(container, SWT.BORDER);
-		lexerText.setText(config.getLexerClass());
+		lexerText.setText(lexerName);
 		lexerText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lexerText.addModifyListener(getModifyListener());
 		
@@ -189,7 +207,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		parserLabel.setText("Parser class:");
 		
 		parserText = new Text(container, SWT.BORDER);
-		parserText.setText(config.getParserClass());		
+		parserText.setText(parserName);		
 		parserText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		parserText.addModifyListener(getModifyListener());
 		
@@ -204,10 +222,10 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		listViewer = new ListViewer(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		listViewer.setContentProvider(new BaseContentProvider());
-		listViewer.setLabelProvider(new BaseContentLabelProvider());
+		listViewer.setContentProvider(new ArrayContentProvider());
+		listViewer.setLabelProvider(new LabelProvider());
 		
-		listViewer.setInput(new ClasspathContent(null, tempClasspath));		
+		listViewer.setInput(cpEntries);		
 		
 		Composite classpathComposite = new Composite(container, SWT.NONE);
 		classpathComposite.setLayout(new GridLayout(1, true));
@@ -241,21 +259,10 @@ public class ConfigurationDialog extends TitleAreaDialog {
 				IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
 				if (!selection.isEmpty()) {
 					Object object = selection.getFirstElement();
-					if (object instanceof IContent) {
-						IContent content = (IContent) object;
-						Path foundPath = null;
-						for (Path path : tempClasspath.getPath()) {
-							if (path.getValue().equals(content.getText())) {
-								foundPath = path;
-							}
-						}
-						
-						if (foundPath != null) {						
-							tempClasspath.getPath().remove(foundPath);
-							listViewer.setInput(new ClasspathContent(null, tempClasspath));
-						}
+					if (object instanceof String) {
+						cpEntries.remove(object);
+						listViewer.setInput(cpEntries);
 					}
-					
 				}
 				btnRemove.setEnabled(false);
 			}
@@ -266,25 +273,27 @@ public class ConfigurationDialog extends TitleAreaDialog {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				if (selection.isEmpty() || (selection.getFirstElement() instanceof EmptyContent)) {
-					btnRemove.setEnabled(false);
-				} else {
-					btnRemove.setEnabled(true);					
+				
+				boolean enable = false;
+				if (!selection.isEmpty() && selection.getFirstElement() instanceof String) {
+					String selectionText = (String) selection.getFirstElement();
+					if (!selectionText.equals("")) {
+						enable = true;
+					}
 				}
+				
+				btnRemove.setEnabled(enable);
 			}
-		});
-		
+		});		
 
 		return area;
 	}	
 	
-	
 	@Override
 	protected void okPressed() {
-		config.setName(nameText.getText().trim());
-		config.setLexerClass(lexerText.getText().trim());
-		config.setParserClass(parserText.getText().trim());
-		config.setClasspath(tempClasspath);
+		configName = nameText.getText().trim();
+		lexerName = lexerText.getText().trim();
+		parserName = parserText.getText().trim();
 		
 		isDefault = defaultButton.getSelection();
 		
@@ -299,8 +308,24 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		return new Point(500, 450);
 	}
 
-	public Configuration getConfiguration() {
-		return config;
+//	public Configuration getConfiguration() {
+//		return config;
+//	}
+	
+	public String getConfigName() {
+		return configName;
+	}
+	
+	public String getLexerName() {
+		return lexerName;
+	}
+	
+	public String getParserName() {
+		return parserName;
+	}
+	
+	public List<String> getClasspathEntries() {
+		return cpEntries;
 	}
 	
 	public boolean isDefault() {
@@ -311,11 +336,15 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		return project;
 	}
 
-	public Classpath getTempClasspath() {
-		return tempClasspath;
-	}
+//	public Classpath getTempClasspath() {
+//		return tempClasspath;
+//	}
 
 	public ListViewer getViewer() {
 		return listViewer;
+	}
+
+	public void setNameEditable(boolean editable) {
+		this.nameEditable = editable;
 	}
 }

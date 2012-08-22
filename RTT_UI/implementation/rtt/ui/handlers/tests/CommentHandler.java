@@ -5,28 +5,50 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.InputDialog;
 
-import rtt.ui.RttPluginUI;
+import rtt.core.archive.logging.Comment;
+import rtt.core.archive.logging.Result;
+import rtt.core.exceptions.RTTException;
+import rtt.ui.RttLog;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.logging.TestResultContent;
+import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
+import rtt.ui.model.RttProject;
 
 public class CommentHandler extends AbstractSelectionHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		TestResultContent content = getSelectedObject(TestResultContent.class, event);
+		TestResultContent testresultContent = getSelectedObject(TestResultContent.class, event);
+		ProjectContent projectContent = getProjectContent(event);
+		RttProject project = projectContent.getProject();
 		
 		InputDialog inputDialog = new InputDialog(
 				getParentShell(event), 
 				"Comment", "Enter a comment for the selected test result ...", 
-				content.getComment(), 
+				testresultContent.getComment(), 
 				null);
 		
 		inputDialog.setBlockOnOpen(true);
 		
 		if (inputDialog.open() == InputDialog.OK) {
-			String comment = inputDialog.getValue();
-			content.setComment(comment);
-			RttPluginUI.refreshManager();
+			
+			try {
+				Result result = testresultContent.getTestresult();
+				
+				Comment comment = result.getComment();
+				if (comment != null) {
+					comment = new Comment();
+				}
+				comment.setValue(inputDialog.getValue());			
+				
+				project.save();
+				
+				projectContent.reload(new ReloadInfo(Content.LOG));
+			} catch (RTTException e) {
+				RttLog.log(e);
+			}
 		}
 			
 		

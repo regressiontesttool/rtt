@@ -21,6 +21,7 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.Manager;
 import rtt.core.manager.Manager.TestCaseMode;
 import rtt.core.manager.data.ConfigurationManager;
+import rtt.core.manager.data.LogManager;
 import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUtil;
@@ -74,10 +75,9 @@ public class RttProject {
 		manager.saveArchive(archiveFile.getLocation().toFile());
 	}
 
-	public void addConfiguration(String lexerClass, String parserClass,
-			String configName, boolean makeDefault, List<String> cp)
+	public void setConfiguration(String configName, String lexerClass, String parserClass, List<String> cp, boolean makeDefault)
 			throws RTTException {
-
+		
 		manager.setConfiguration(configName, lexerClass, parserClass,
 				cp, makeDefault, true);
 	}
@@ -93,7 +93,7 @@ public class RttProject {
 
 	public void removeClasspathEntry(Configuration config, String entry)
 			throws RTTException {
-		ConfigurationManager.addClasspathEntry(config, entry);
+		ConfigurationManager.removeClasspathEntry(config, entry);
 	}
 
 	public boolean addTestsuite(String suiteName) throws RTTException {
@@ -157,5 +157,17 @@ public class RttProject {
 		config.setClasspath(classpath);
 		
 		return config;
+	}
+
+	public List<Configuration> getConfigurations() {
+		return getArchive().getConfigurations();
+	}
+
+	public Configuration getDefaultConfiguration() {
+		return getArchive().getDefaultConfiguration();
+	}
+
+	public LogManager getLogManager() {
+		return getArchive().getLogManager();
 	}
 }

@@ -99,6 +99,8 @@ public class VersionView extends ViewPart implements ISelectionListener {
 			
 			caseComboViewer.getControl().setEnabled(hasCases);
 			historyLoadButton.setEnabled(hasCases);
+			treeViewer.setInput(EMPTY_ARRAY);
+			treeViewer.getControl().setEnabled(false);
 		}
 		
 		@Override
@@ -222,9 +224,6 @@ public class VersionView extends ViewPart implements ISelectionListener {
 			Archive archive = currentProject.getProject().getArchive();
 			final Configuration activeConfig = currentProject.getProject().getActiveConfiguration();
 			final List<IContent> childs = new ArrayList<IContent>();
-			
-			System.out.println("Archive: " + archive);
-			System.out.println("Config:"  +  activeConfig);
 			
 			if (archive != null) {
 				

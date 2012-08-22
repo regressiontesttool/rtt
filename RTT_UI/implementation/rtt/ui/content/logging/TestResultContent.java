@@ -26,22 +26,6 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 		}
 	}
 	
-	protected String getSuiteName() {
-		return result.getTestsuite();
-	}
-	
-	protected String getCaseName() {
-		return result.getTestcase();
-	}
-	
-	protected Integer getRefVersion() {
-		return result.getRefVersion();
-	}
-	
-	protected Integer getTestVersion() {
-		return result.getTestVersion();
-	}
-	
 	public String getComment() {
 		String commentText = "";
 		
@@ -108,11 +92,7 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 		return null;
 	}
 
-	public void setComment(String commentText) {
-		Comment comment = new Comment();
-		comment.setValue(commentText);
-		result.setComment(comment);
+	public Result getTestresult() {
+		return result;
 	}
-
-	
 }

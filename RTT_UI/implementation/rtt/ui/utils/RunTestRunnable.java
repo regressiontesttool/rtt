@@ -8,13 +8,13 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import rtt.core.exceptions.RTTException;
 import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
-import rtt.ui.content.main.ProjectContent;
+import rtt.ui.model.RttProject;
 
 public class RunTestRunnable extends AbstractTestRunnable implements IRunnableWithProgress {
 
-	public RunTestRunnable(ProjectContent projectContent, String suiteName) {
+	public RunTestRunnable(RttProject project, String suiteName) {
 		this();
-		setProjectContent(projectContent);
+		setProject(project);
 		setSuiteName(suiteName);
 	}
 
@@ -29,13 +29,12 @@ public class RunTestRunnable extends AbstractTestRunnable implements IRunnableWi
 		monitor.beginTask("Running tests for test suite '" + suiteName + "' ...", IProgressMonitor.UNKNOWN);
 
 		try {
-			projectContent.runTest(suiteName);			
+			project.runTests(suiteName, true);
+			project.save();
 		} catch (RTTException exception) {
 			RttLog.log(exception);
 			throw new InterruptedException("Errors occured during test execution. Check Error Log for details.");
 		}
-		
-		projectContent.reload();
 
 		monitor.done();		
 	}
