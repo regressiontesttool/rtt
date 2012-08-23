@@ -180,8 +180,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 			lastVersion = data.getVersion().size();
 			
 			LexerOutput oldLexOut = lexManager.getData(lastVersion);
-			ParserOutput oldParOut = parManager.getData(lastVersion);
-			
+			ParserOutput oldParOut = parManager.getData(lastVersion);			
 			
 			if (isOutDated(inputVersion)) {
 				// input is newer, than reference data -> replace reference

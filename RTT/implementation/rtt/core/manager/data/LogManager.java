@@ -153,11 +153,11 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 		tr.setConfiguration(configName);
 		tr.setType(EntryType.TESTRUN);
 		
-		String message = "Testrun started for test suite [" + suiteName + "] ";  
+		String message = "Test run for test suite [" + suiteName + "] ";  
 		if (testResults.isEmpty()) {
-			message += " was empty. Configuration used: ";
+			message += "was empty. Configuration used: ";
 		} else {
-			message += "with configuration: ";
+			message += "executed with configuration: ";
 		}		
 		tr.setMsg(message);
 		

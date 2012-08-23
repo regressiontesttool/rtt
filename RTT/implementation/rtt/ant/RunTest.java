@@ -14,6 +14,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
+import rtt.core.utils.GenerationInformation;
 
 /**
  * 
@@ -65,8 +66,9 @@ public class RunTest extends Task {
 				m.loadArchive(config);
 			else
 				m.loadArchive();
-			log("Archive loaded");
-			noErrors = m.runTests(getTestSuite(), matching);
+			log("Archive loaded");			
+			GenerationInformation info = m.runTests(getTestSuite(), matching);			
+			noErrors = !info.hasErrors();
 			m.saveArchive(archivePath);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -474,4 +474,12 @@ public class Archive {
 		suiteManager.print();
 	}
 
+	public void close() {
+		configManager = null;
+		suiteManager = null;
+		logManager = null;
+
+		loader.close();
+	}
+
 }

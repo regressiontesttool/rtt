@@ -55,12 +55,12 @@ public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
 	}
 
 	public static boolean dataEqual(ParserOutput oldData, ParserOutput newData) {
-		if (oldData == null || oldData.getTree().isEmpty()) {
-			return false;
+		if (oldData == newData) {
+			return true;
 		}
-
-		if (newData == null || newData.getTree().isEmpty()) {
-			return false;
+		
+		if (oldData.getTree() == newData.getTree()) {
+			return true;
 		}
 
 		// CHRISTIAN todo

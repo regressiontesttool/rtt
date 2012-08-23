@@ -77,46 +77,50 @@ public class Tester {
 		boolean testSuccess = true;
 		boolean somethingTested = false;
 		
-		// test lexer
-		try {
-			
-			LexerOutput testData = testManager.getLexerOutput(versionData.getTestID()); 
-			LexerOutput refData = refManager.getLexerOutput(versionData.getReferenceID()); 
-			
-			LexerTestFailure lexerFailure = testLexer(testData, refData);
-			
-			if (lexerFailure != null) {
-				result.addFailure(lexerFailure);
+		if (!config.getLexerClass().equals("")) {
+			// test lexer
+			try {
+				
+				LexerOutput testData = testManager.getLexerOutput(versionData.getTestID()); 
+				LexerOutput refData = refManager.getLexerOutput(versionData.getReferenceID()); 
+				
+				LexerTestFailure lexerFailure = testLexer(testData, refData);
+				
+				if (lexerFailure != null) {
+					result.addFailure(lexerFailure);
+					testSuccess = false;
+				}
+
+				somethingTested = true;
+			} catch (RTTException e) {
+				Debug.printTrace(e);
+				result.addFailure(new TestExecutionFailure(e));
 				testSuccess = false;
 			}
-
-			somethingTested = true;
-		} catch (RTTException e) {
-			Debug.printTrace(e);
-			result.addFailure(new TestExecutionFailure(e));
-			testSuccess = false;
 		}
 		
-		// test parser
-		try {
-			ParserOutput testData = testManager.getParserOutput(versionData.getTestID());
-			ParserOutput refData = refManager.getParserOutput(versionData.getReferenceID()); 
-			
-			List<ParserTestFailure> parserFailure = testParser(testData, refData);
-			
-			if (parserFailure != null && parserFailure.size() > 0) {
-				for (ParserTestFailure parserTestFailure : parserFailure) {
-					result.addFailure(parserTestFailure);
+		if (!config.getParserClass().equals("")) {
+			// test parser
+			try {
+				ParserOutput testData = testManager.getParserOutput(versionData.getTestID());
+				ParserOutput refData = refManager.getParserOutput(versionData.getReferenceID()); 
+				
+				List<ParserTestFailure> parserFailure = testParser(testData, refData);
+				
+				if (parserFailure != null && parserFailure.size() > 0) {
+					for (ParserTestFailure parserTestFailure : parserFailure) {
+						result.addFailure(parserTestFailure);
+					}
+					testSuccess = false;
 				}
+
+				somethingTested = true;
+			} catch (RTTException e) {
+				Debug.printTrace(e);
+				result.addFailure(new TestExecutionFailure(e));
 				testSuccess = false;
 			}
-
-			somethingTested = true;
-		} catch (RTTException e) {
-			Debug.printTrace(e);
-			result.addFailure(new TestExecutionFailure(e));
-			testSuccess = false;
-		}
+		}		
 		
 		if (somethingTested) {
 			if (testSuccess) {

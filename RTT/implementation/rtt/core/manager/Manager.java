@@ -42,6 +42,7 @@ import rtt.core.testing.generation.ParserExecutor;
 import rtt.core.utils.Debug;
 import rtt.core.utils.GenerationInformation;
 import rtt.core.utils.GenerationInformation.GenerationResult;
+import rtt.core.utils.GenerationInformation.GenerationType;
 
 /**
  * 
@@ -245,8 +246,12 @@ public class Manager {
 		
 		if (state.lexerSet) {
 			Detail detail = new Detail();
-			detail.setMsg("Lexer class: ");
-			detail.setSuffix(lexerName);
+			detail.setMsg("Lexer class set to ");
+			if (lexerName.equals("")) {
+				detail.setSuffix("<None>");
+			} else {
+				detail.setSuffix(lexerName);
+			}			
 			detail.setPriority(0);
 			
 			infos.add(detail);
@@ -254,8 +259,12 @@ public class Manager {
 		
 		if (state.parserSet) {
 			Detail detail = new Detail();
-			detail.setMsg("Parser class: ");
-			detail.setSuffix(parserName);
+			detail.setMsg("Parser class set to");
+			if (parserName.equals("")) {
+				detail.setSuffix("<None>");
+			} else {
+				detail.setSuffix(parserName);
+			}			
 			detail.setPriority(0);
 			
 			infos.add(detail);
@@ -442,14 +451,14 @@ public class Manager {
 	
 	public GenerationInformation generateTests(String suiteName)
 			throws RTTException {
-		GenerationInformation results = new GenerationInformation();
+		GenerationInformation results = new GenerationInformation(GenerationType.REFERENCE_DATA);
 
 		if (suiteName == null) {
 			for (Testsuite suite : currentArchive.getTestsuites(false)) {
-				results.addResults(generateTests(suite.getName()));
+				results.concat(generateTests(suite.getName()));
 			}
 		} else {
-			results.addResults(generateTests(suiteName,
+			results.concat(generateTests(suiteName,
 					currentArchive.getActiveConfiguration()));
 		}
 
@@ -467,7 +476,7 @@ public class Manager {
 					+ "' does not exist.");
 		}
 
-		GenerationInformation genInfos = new GenerationInformation();
+		GenerationInformation genInfos = new GenerationInformation(GenerationType.REFERENCE_DATA);
 
 		// create executors
 		LexerExecutor lexer = DataGenerator.getLexerExecutor(config, baseDir);
@@ -475,14 +484,15 @@ public class Manager {
 				.getParserExecutor(config, baseDir);
 
 		for (Testcase tcase : currentArchive.getTestcases(suiteName)) {
+			
+			Debug.log("Generate tests for [" + suiteName + "/"
+					+ tcase.getName() + "]");
+
 
 			// load reference data for the test case
 			OutputDataManager refManager = new OutputDataManager(
 					currentArchive.getLoader(), suiteName, tcase.getName(),
 					config, OutputDataType.REFERENCE);
-
-			Debug.log("Generate tests for [" + suiteName + "/"
-					+ tcase.getName() + "]");
 
 			// create new reference data
 			GenerationResult result = refManager.createData(lexer, parser,
@@ -523,10 +533,10 @@ public class Manager {
 				}
 			}
 
-			genInfos.addGenerationResult(result);
+			genInfos.addResult(result);
 		}
 
-		List<Detail> details = genInfos.makeDetails();
+		List<Detail> details = genInfos.makeDetails(true);
 		
 		String message = "Reference data for test suite [" + suiteName + "]";
 		if (!details.isEmpty()) {
@@ -540,25 +550,24 @@ public class Manager {
 		return genInfos;
 	}
 
-	public boolean runTests(String suiteName, boolean matching)
+	public GenerationInformation runTests(String suiteName, boolean matching)
 			throws RTTException {
-		boolean result = true;
 
+		GenerationInformation results = new GenerationInformation(GenerationType.TEST_DATA);
+		
 		if (suiteName == null) {
 			List<Testsuite> suites = currentArchive.getTestsuites(false);
 			for (Testsuite suite : suites) {
-				if (runTestsInternal(suite.getName(), matching) == false) {
-					result = false;
-				}
+				results.concat(runTestsInternal(suite.getName(), matching));
 			}
 		} else {
-			result = runTestsInternal(suiteName, matching);
+			results.concat(runTestsInternal(suiteName, matching));
 		}
 
-		return result;
+		return results;
 	}
 
-	private boolean runTestsInternal(String suiteName, boolean matching)
+	private GenerationInformation runTestsInternal(String suiteName, boolean matching)
 			throws RTTException {
 
 		if (Manager.verbose)
@@ -572,8 +581,7 @@ public class Manager {
 					+ suiteName + "' does not exist or was removed from archive.");
 		}
 		
-		boolean result = true;
-		
+		GenerationInformation genInfos = new GenerationInformation(GenerationType.TEST_DATA);
 		
 		Configuration configuration = currentArchive.getActiveConfiguration();
 		LexerExecutor lexer = DataGenerator.getLexerExecutor(configuration,
@@ -582,67 +590,76 @@ public class Manager {
 				baseDir);
 		
 		Tester tester = new Tester(currentArchive.getLoader(), matching);
-		List<TestResult> results = new ArrayList<TestResult>();
+		List<TestResult> testResults = new ArrayList<TestResult>();
 
 		for (Testcase tcase : currentArchive.getTestcases(suiteName)) {
-			try {
 				
-				// Create new test data manager 
-				OutputDataManager testManager = new OutputDataManager(
-						currentArchive.getLoader(), suiteName,
-						tcase.getName(), configuration, OutputDataType.TEST);
+			Debug.log("Running tests for [" + suiteName + "/" + tcase.getName() + "]");
+			
+			// Create new test data manager 
+			OutputDataManager testManager = new OutputDataManager(
+					currentArchive.getLoader(), suiteName,
+					tcase.getName(), configuration, OutputDataType.TEST);
+			
+			// Create new test data ...
+			GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID());
+			genInfos.addResult(genResult);
+			
+			// if test data could not have been generated, show skip
+			TestResult caseResults = new TestResult(ResultType.SKIPPED, suiteName, tcase.getName());
+			if (genResult.noError) {
+				testManager.save();
 				
-				// Create new test data ...
-				GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID());
-				if (genResult.noError) {
-					testManager.save();
-					
-					if (genResult.hasReplaced) {
-						for (VersionData versionData : tcase.getVersionData()) {
-							if (versionData.getConfig().equals(configuration.getName())) {
-								versionData.setTestID(versionData.getTestID() + 1);
-							}
-						}						
-					}					
-				}				
-
-				Debug.log("Running tests for [" + suiteName + "/" + tcase.getName() + "]");
-
+				if (genResult.hasReplaced) {
+					for (VersionData versionData : tcase.getVersionData()) {
+						if (versionData.getConfig().equals(configuration.getName())) {
+							versionData.setTestID(versionData.getTestID() + 1);
+						}
+					}						
+				}
+				
 				// do testing
-				TestResult caseResults = tester.test(suiteName, tcase, configuration);
-
+				caseResults = tester.test(suiteName, tcase, configuration);
+				
 				if (caseResults != null) {
-					// System.err.println("Errors occured ("+results.size()+")");
-
 					if (caseResults.getType() == ResultType.FAILURE) {
 						List<ITestFailure> failures = caseResults.getFailures();
 						for (ITestFailure failure : failures) {
-							System.err.println("\n[Error](in Testcase '"
+							System.err.println("\n[Failure] in Testcase '"
 									+ tcase.getName() + "', Testsuite '"
-									+ suiteName + "')");
+									+ suiteName + "'");
 							System.err.println(failure.getMessage());
-
-							result = false;
 						}
+					} else {
+						if (Manager.verbose)
+							System.out.println("No errors occured");
 					}
 
-					results.add(caseResults);
+					testResults.add(caseResults);
 				}
-
-				if (result == true) {
-					if (Manager.verbose)
-						System.out.println("No errors occured");
-				}
-			} catch (Exception e) {
-				// currentLog.addInformational(
-				// "Error during testing: " + e,
-				// suite.getName() + "/" + tcase.getName());
+			} else {
+				System.err.println("\n[Exception] in Testcase '"
+						+ tcase.getName() + "', Testsuite '"
+						+ suiteName + "'");
+				System.err.println(genResult.exception.getMessage());
 			}
 		}
+		
+		List<Detail> details = genInfos.makeDetails(false);
+		if (genInfos.hasErrors() && !details.isEmpty()) {
+			String message = "Test data for test suite [" + suiteName + "] generated errors with configuration: ";
+			currentLog.addEntry(EntryType.INFO, message, configuration.getName(), details);
+		}
+		
+		currentLog.addTestrunResult(testResults, configuration.getName(), suiteName);
 
-		currentLog
-				.addTestrunResult(results, configuration.getName(), suiteName);
+		return genInfos;
+	}
 
-		return result;
+	public void close() {
+		archivePath = null;
+		currentLog = null;
+		currentArchive.close();
+		currentArchive = null;
 	}
 }

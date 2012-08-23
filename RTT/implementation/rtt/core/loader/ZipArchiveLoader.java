@@ -3,6 +3,7 @@ package rtt.core.loader;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import de.schlichtherle.io.ArchiveException;
 import de.schlichtherle.io.DefaultArchiveDetector;
 import de.schlichtherle.io.File;
 import de.schlichtherle.io.FileInputStream;
@@ -61,6 +62,15 @@ public class ZipArchiveLoader extends ArchiveLoader {
 		File.umount(archiveFile, true, false, true, false);
 
 		return new FileOutputStream(entryFile);
+	}
+	
+	@Override
+	public void close() {
+		try {
+			File.umount(true, true, true, true);
+		} catch (ArchiveException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

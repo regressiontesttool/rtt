@@ -6,6 +6,16 @@ import java.util.List;
 import rtt.core.archive.logging.Detail;
 
 public class GenerationInformation {
+	
+	public enum GenerationType {
+		TEST_DATA("Test data"), REFERENCE_DATA("Reference data");
+		
+		public String text;
+		
+		private GenerationType(String text) {
+			this.text = text;
+		}
+	}
 
 	public static class GenerationResult {
 		public boolean noError = false;
@@ -14,6 +24,7 @@ public class GenerationInformation {
 
 		public String suiteName;
 		public String caseName;
+		public GenerationType type;
 
 		public GenerationResult(String suiteName, String caseName) {
 			this.suiteName = suiteName;
@@ -21,19 +32,18 @@ public class GenerationInformation {
 		}
 
 		public String getMessage() {
-
-			String message = "Reference data for test [" + suiteName + "/"
-					+ caseName + "] were ";
+			String message = type.text + " for test [" + suiteName + "/"
+					+ caseName + "]";
 
 			if (noError) {
 				if (hasReplaced) {
-					message += "generated.";
+					message += " have been generated.";
 				} else {
-					message += "not changed.";
+					message += " have not changed.";
 				}
 				
 			} else {
-				message = "Error during generation of reference data";
+				message = "Error during generation of " + type.text;
 				if (exception != null) {
 					message += ": " + exception;
 				}
@@ -57,47 +67,65 @@ public class GenerationInformation {
 		}
 	}
 
+	private GenerationType type;
 	private boolean hasError = false;
-	private List<GenerationResult> infoList;
+	private List<GenerationResult> resultList;
 
-	public GenerationInformation() {
-		infoList = new ArrayList<GenerationInformation.GenerationResult>();
+	public GenerationInformation(GenerationType type) {
+		this.type = type;
+		resultList = new ArrayList<GenerationInformation.GenerationResult>();
 	}
 
 	public boolean hasErrors() {
 		return hasError;
 	}
 
-	public void addGenerationResult(GenerationResult info) {
+	public void addResult(GenerationResult info) {
+		info.type = this.type;
 		if (info.exception != null) {
 			hasError = true;
 		}
 
-		infoList.add(info);
+		resultList.add(info);
 	}
 
-	public void addResults(GenerationInformation results) {
-		infoList.addAll(results.getInformations());
-		if (results.hasError) {
+	public void concat(GenerationInformation genInfo) {
+		resultList.addAll(genInfo.getResults(true));
+		if (genInfo.hasError) {
 			hasError = true;
 		}
 	}
 
-	public List<GenerationResult> getInformations() {
-		return infoList;
+	public List<GenerationResult> getResults(boolean returnAll) {
+		List<GenerationResult> returnList = new ArrayList<GenerationInformation.GenerationResult>();
+		if (returnAll) {
+			returnList.addAll(resultList);
+		} else {
+			for (GenerationResult result : resultList) {
+				if (result.exception != null) {
+					returnList.add(result);
+				}
+			}
+		}
+		
+		return returnList;
+	}
+	
+	public GenerationType getType() {
+		return type;
 	}
 
-	public List<Detail> makeDetails() {
+	public List<Detail> makeDetails(boolean returnAll) {
 		
 		List<Detail> details = new ArrayList<Detail>();
 		
-		for (GenerationResult info : infoList) {
+		for (GenerationResult info : getResults(returnAll)) {
 			Detail detail = new Detail();
 			detail.setSuffix(info.suiteName + "/" + info.caseName);			
 			detail.setPriority(info.getPriority());
 			detail.setMsg(info.getMessage());
 
-			details.add(detail);
+			details.add(detail);		
 		}
 		
 		return details;

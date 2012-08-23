@@ -92,4 +92,6 @@ public abstract class ArchiveLoader {
 	protected abstract OutputStream doGetOutput(File file) throws Exception;
 
 	protected abstract InputStream doGetInput(File file) throws Exception;
+
+	public void close() {}
 }

@@ -54,14 +54,14 @@ public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
 	}
 
 	public static boolean dataEqual(LexerOutput oldData, LexerOutput newData) {
-		if (oldData == null || oldData.getToken().isEmpty()) {
-			return false;
+		if (oldData == newData) {
+			return true;
 		}
-
-		if (newData == null || newData.getToken().isEmpty()) {
-			return false;
+		
+		if (oldData.getToken() == newData.getToken()) {
+			return true;
 		}
-
+		
 		// CHRISTIAN todo
 		LexerTestFailure failure = LexerOutputCompare.compareLexerOutput(
 				newData, oldData, false);
