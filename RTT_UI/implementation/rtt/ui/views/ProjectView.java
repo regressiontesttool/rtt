@@ -13,7 +13,7 @@ import org.eclipse.ui.part.ViewPart;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.content.main.ProjectDirectoryContent;
+import rtt.ui.content.main.ProjectContentDirectory;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.viewer.ContentTreeViewer;
 import rtt.ui.views.utils.IRttListener;
@@ -52,6 +52,10 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 	
 	@Override
 	public void setFocus() {
+		if (RttPluginUI.getProjectDirectory().hasChanged()) {
+			RttPluginUI.refreshManager();
+		}
+		
 		projectViewer.getControl().setFocus();
 	}
 
@@ -77,7 +81,7 @@ public class ProjectView extends ViewPart implements ISelectionListener, IRttLis
 		}
 	}
 
-	private void setViewerData(ProjectDirectoryContent content) {		
+	private void setViewerData(ProjectContentDirectory content) {		
 		projectViewer.setInput(content);		
 		projectViewer.expandToLevel(3);
 	}

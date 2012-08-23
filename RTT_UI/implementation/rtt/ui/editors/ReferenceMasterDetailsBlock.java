@@ -13,7 +13,6 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -73,7 +72,7 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(sPart, event.getSelection());
 			}
-		});			
+		});		
 	}
 
 	@Override
@@ -88,7 +87,7 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		
 	}
 	
-	private void prepareViewer(StructuredViewer viewer) {
+	private void prepareViewer(TreeViewer viewer) {
 		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
 
 		adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory());
@@ -103,6 +102,7 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		ResourceSet resourceSet = editingDomain.getResourceSet();
 		Resource documentRoot = resourceSet.getResources().get(0);
 		
-		viewer.setInput(documentRoot.getContents().get(0));			
+		viewer.setInput(documentRoot.getContents().get(0));
+		viewer.expandToLevel(4);
 	}	
 }

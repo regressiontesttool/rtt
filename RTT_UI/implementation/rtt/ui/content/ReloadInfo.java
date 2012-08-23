@@ -3,7 +3,7 @@ package rtt.ui.content;
 public class ReloadInfo {
 
 	public enum Content {
-		TESTSUITE, CONFIGURATION, TESTCASE, LOG
+		TESTSUITE, CONFIGURATION, TESTCASE, LOG, TESTRUN, DETAIL, PROJECT
 	}
 	
 	private Content[] contents;

@@ -117,9 +117,9 @@ public class RttProject {
 		return manager.generateTests(suiteName);
 	}
 
-	public void runTests(String suiteName, boolean matching)
+	public GenerationInformation runTests(String suiteName, boolean matching)
 			throws RTTException {
-		manager.runTests(suiteName, matching);
+		return manager.runTests(suiteName, matching);
 	}
 
 	public IJavaProject getJavaProject() {
@@ -170,4 +170,39 @@ public class RttProject {
 	public LogManager getLogManager() {
 		return getArchive().getLogManager();
 	}
+
+	public void close() {
+		manager.close();
+		manager = null;
+		archiveFile = null;
+		javaProject = null;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((javaProject == null) ? 0 : javaProject.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RttProject other = (RttProject) obj;
+		if (javaProject == null) {
+			if (other.javaProject != null)
+				return false;
+		} else if (!javaProject.equals(other.javaProject))
+			return false;
+		return true;
+	}
+	
+	
 }

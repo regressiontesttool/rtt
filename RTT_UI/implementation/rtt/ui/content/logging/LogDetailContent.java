@@ -29,7 +29,7 @@ public class LogDetailContent extends AbstractContent implements IColumnableCont
 			return "DETAIL";
 
 		case 1:
-			return detail.getMsg() + detail.getSuffix();
+			return detail.getMsg() + " " + detail.getSuffix();
 
 		default:
 			return "";

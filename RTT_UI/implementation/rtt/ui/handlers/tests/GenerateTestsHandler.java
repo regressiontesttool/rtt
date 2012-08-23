@@ -46,7 +46,7 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 		
 		projectContent.reload(new ReloadInfo(Content.TESTCASE));
 		
-		GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, runnable.getResults());
+		GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, runnable.getInformation());
 		dialog.open();
 
 		return null;

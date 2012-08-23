@@ -22,10 +22,11 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import rtt.core.utils.GenerationInformation;
 import rtt.core.utils.GenerationInformation.GenerationResult;
+import rtt.core.utils.GenerationInformation.GenerationType;
 
 public class GenerationResultsDialog extends TitleAreaDialog {
 
-	static class ResultsColumnLabelProvider extends ColumnLabelProvider {
+	class ResultsColumnLabelProvider extends ColumnLabelProvider {
 
 		final static int SUITE_COLUMN = 0;
 		final static int CASE_COLUMN = 1;
@@ -41,21 +42,16 @@ public class GenerationResultsDialog extends TitleAreaDialog {
 		public String getText(Object element) {
 
 			if (element instanceof GenerationResult) {
-				GenerationResult info = (GenerationResult) element;
+				GenerationResult genResult = (GenerationResult) element;
 				switch (column) {
 				case SUITE_COLUMN:
-					return info.suiteName;
+					return genResult.suiteName;
 
 				case CASE_COLUMN:
-					return info.caseName;
+					return genResult.caseName;
 
 				case COMMENT_COLUMN:
-					String message = info.getMessage();
-					if (info.exception != null) {
-						message += " " + info.exception.getMessage();
-					}
-
-					return message;
+					return genResult.getMessage();
 				}
 			}
 
@@ -79,7 +75,7 @@ public class GenerationResultsDialog extends TitleAreaDialog {
 
 		this.results = results;
 		if (results.hasErrors()) {
-			message = "Some reference data could not be generated. Check archive log for further description.";
+			message = "Some " + results.getType().text + " could not be generated. Check archive log for further description.";
 		} else {
 			message = "These are the results of the generation process.";
 		}
@@ -144,7 +140,8 @@ public class GenerationResultsDialog extends TitleAreaDialog {
 		commentViewerColumn.setLabelProvider(new ResultsColumnLabelProvider(
 				ResultsColumnLabelProvider.COMMENT_COLUMN));
 
-		tableViewer.setInput(results.getInformations());
+		boolean showAll = (results.getType() == GenerationType.REFERENCE_DATA);
+		tableViewer.setInput(results.getResults(showAll));
 
 		return container;
 	}

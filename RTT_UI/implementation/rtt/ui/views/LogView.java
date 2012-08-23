@@ -127,6 +127,9 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 
 	@Override
 	public void setFocus() {
+		if (RttPluginUI.getProjectDirectory().hasChanged()) {
+			RttPluginUI.refreshManager();
+		}
 		contentViewer.getControl().setFocus();
 	}
 
@@ -189,7 +192,11 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 			
 			combo.setEnabled(!logDirectory.isEmpty());			
 			contentViewer.setInput(logDirectory);
-		}		
+		} else {
+			combo.setEnabled(false);
+			contentViewer.getControl().setEnabled(false);
+			contentViewer.setInput(null);
+		}
 	}
 
 }

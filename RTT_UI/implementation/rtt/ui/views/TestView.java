@@ -75,6 +75,9 @@ public class TestView extends ViewPart implements ISelectionListener {
 					comboViewer.setInput(emptyArray);
 					contentViewer.setInput(emptyArray);
 				}				
+			} else {
+				comboViewer.setInput(null);
+				contentViewer.setInput(null);
 			}
 			
 			comboViewer.getControl().setEnabled(hasContent);
@@ -112,6 +115,9 @@ public class TestView extends ViewPart implements ISelectionListener {
 				comboViewer.setSelection(new StructuredSelection(content));
 				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
 						content.getText()) });
+			} else {
+				generateButton.setEnabled(false);
+				runButton.setEnabled(false);
 			}
 		}
 	}
@@ -253,8 +259,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 				projectContent.reload(new ReloadInfo(Content.TESTCASE));
 				RttPluginUI.refreshManager();
 				
-				if (runnable.getResults() != null) {
-					GenerationResultsDialog resultsDialog = new GenerationResultsDialog(parentShell, runnable.getResults());
+				if (runnable.getInformation() != null && !runnable.getInformation().getResults(false).isEmpty()) {
+					GenerationResultsDialog resultsDialog = new GenerationResultsDialog(parentShell, runnable.getInformation());
 					resultsDialog.open();
 				}				
 			} catch (Exception e) {
@@ -271,6 +277,10 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void setFocus() {
+		if (RttPluginUI.getProjectDirectory().hasChanged()) {
+			RttPluginUI.refreshManager();
+		}
+		
 		contentViewer.getControl().setFocus();
 	}
 

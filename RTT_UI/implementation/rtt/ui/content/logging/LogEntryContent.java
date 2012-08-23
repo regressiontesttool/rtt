@@ -77,7 +77,7 @@ public class LogEntryContent extends AbstractContent implements
 			return entry.getType().toString();
 
 		case 1:
-			return entry.getMsg() + entry.getSuffix();
+			return entry.getMsg() + " " + entry.getSuffix();
 
 		case 2:
 			return getFormatedDate();

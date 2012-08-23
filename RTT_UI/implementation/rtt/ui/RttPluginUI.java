@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -15,8 +18,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import regression.test.util.TestResourceFactoryImpl;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.content.main.ProjectDirectoryContent;
+import rtt.ui.content.main.ProjectContentDirectory;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.core.RttNature;
@@ -26,7 +31,7 @@ import rtt.ui.views.utils.RttListenerManager;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class RttPluginUI extends AbstractUIPlugin {
+public class RttPluginUI extends AbstractUIPlugin implements IResourceChangeListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "rtt.ui"; //$NON-NLS-1$
@@ -34,7 +39,7 @@ public class RttPluginUI extends AbstractUIPlugin {
 	// The shared instance
 	private static RttPluginUI plugin;
 	
-	private ProjectDirectoryContent projectDirectory;
+	private ProjectContentDirectory projectContentDirectory;
 	private RttListenerManager<ProjectContent> projectManager;
 	private RttListenerManager<TestsuiteContent> suiteManager;
 	
@@ -46,13 +51,15 @@ public class RttPluginUI extends AbstractUIPlugin {
 		projectManager = new RttListenerManager<ProjectContent>() {
 			@Override
 			protected void additionalOperations(ProjectContent content) {
-				TestsuiteDirectory suiteDirectory = content.getTestsuiteDirectory();
-				if (suiteDirectory != null) {
-					TestsuiteContent suiteContent = suiteDirectory.getTestsuite(0);
-					if (suiteContent != null) {
-						suiteManager.setCurrentContent(suiteContent, true);
+				if (content != null) {
+					TestsuiteDirectory suiteDirectory = content.getTestsuiteDirectory();
+					if (suiteDirectory != null) {
+						TestsuiteContent suiteContent = suiteDirectory.getTestsuite(0);
+						if (suiteContent != null) {
+							suiteManager.setCurrentContent(suiteContent, true);
+						}
 					}
-				}
+				}				
 			}
 		};
 	}
@@ -66,8 +73,7 @@ public class RttPluginUI extends AbstractUIPlugin {
 			if (project.hasNature(JavaCore.NATURE_ID)) {
 				IJavaProject javaProject = JavaCore.create(project);
 				RttProject newProject = new RttProject(javaProject);
-				projectDirectory.addProject(new ProjectContent(newProject));
-				refreshManager();
+				projectContentDirectory.addProject(new ProjectContent(newProject));
 			}			
 		} catch (Exception exception) {
 			RttLog.log(exception);
@@ -79,8 +85,8 @@ public class RttPluginUI extends AbstractUIPlugin {
 		getSuiteManager().refreshListener();
 	}
 	
-	public static ProjectDirectoryContent getProjectDirectory() {
-		return getDefault().projectDirectory;
+	public static ProjectContentDirectory getProjectDirectory() {
+		return getDefault().projectContentDirectory;
 	}
 	
 	public static RttListenerManager<ProjectContent> getProjectManager() {
@@ -99,7 +105,8 @@ public class RttPluginUI extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		
-		initProjects();
+		initProjects();			
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.PRE_CLOSE);
 		
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("rtt", new TestResourceFactoryImpl());
 	}
@@ -126,7 +133,7 @@ public class RttPluginUI extends AbstractUIPlugin {
 			}
 		}
 		
-		projectDirectory = new ProjectDirectoryContent(projects);
+		projectContentDirectory = new ProjectContentDirectory(projects);
 	}
 
 	/*
@@ -134,7 +141,8 @@ public class RttPluginUI extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);		
+		plugin = null;		
 		super.stop(context);
 	}
 
@@ -156,5 +164,16 @@ public class RttPluginUI extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		IResource resource = event.getResource();
+		if (resource instanceof IProject) {
+			IProject project = (IProject) resource;
+			projectContentDirectory.removeProject(project);
+			
+			projectContentDirectory.reload(new ReloadInfo(Content.PROJECT));
+		}
 	}
 }

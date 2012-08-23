@@ -75,6 +75,9 @@ public class VersionView extends ViewPart implements ISelectionListener {
 					suiteComboViewer.setInput(EMPTY_ARRAY);
 					caseComboViewer.setInput(EMPTY_ARRAY);
 				}			
+			} else {
+				suiteComboViewer.setInput(null);
+				caseComboViewer.setInput(null);
 			}
 			
 			suiteComboViewer.getControl().setEnabled(hasContent);
@@ -267,6 +270,10 @@ public class VersionView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void setFocus() {
+		if (RttPluginUI.getProjectDirectory().hasChanged()) {
+			RttPluginUI.refreshManager();
+		}
+		
 		treeViewer.getControl().setFocus();
 	}
 

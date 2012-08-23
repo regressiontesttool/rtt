@@ -38,19 +38,19 @@ public class CommentHandler extends AbstractSelectionHandler implements IHandler
 				Result result = testresultContent.getTestresult();
 				
 				Comment comment = result.getComment();
-				if (comment != null) {
+				if (comment == null) {
 					comment = new Comment();
 				}
-				comment.setValue(inputDialog.getValue());			
+				comment.setValue(inputDialog.getValue());
+				result.setComment(comment);
 				
 				project.save();
 				
-				projectContent.reload(new ReloadInfo(Content.LOG));
+				projectContent.reload(new ReloadInfo(Content.TESTRUN));
 			} catch (RTTException e) {
 				RttLog.log(e);
 			}
-		}
-			
+		}			
 		
 		return null;
 	}

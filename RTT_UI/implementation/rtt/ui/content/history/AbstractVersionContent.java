@@ -47,7 +47,7 @@ public abstract class AbstractVersionContent<T extends IHistoryManager> extends
 	@Override
 	public String decorateText(String text, IContent content) {
 		return text + " " + version.getNr() + " ("
-				+ String.format("%1$te.%1$tm.%1$tY - %1$tH:%1$tM", calendar)
+				+ String.format("%1$te.%1$tm.%1$tY - %1$tH:%1$tM:%1$tS", calendar)
 				+ ")";
 	}
 

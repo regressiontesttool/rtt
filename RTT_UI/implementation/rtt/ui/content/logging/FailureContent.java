@@ -130,6 +130,18 @@ public class FailureContent extends AbstractContent implements IClickableContent
 	protected ContentIcon getIcon() {
 		return ContentIcon.FAILED;
 	}
+	
+	private InputStream getInputStream(OutputDataManager manager, Integer version) {
+		switch (failure.getType()) {
+		case LEXER:
+			return manager.getLexerOutputStream(version);
+			
+		case PARSER:
+			return manager.getParserOutputStream(version);
+		}
+
+		throw new RuntimeException("Failure type of test run unknown: " + failure.getType().toString());
+	}
 
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
@@ -150,11 +162,11 @@ public class FailureContent extends AbstractContent implements IClickableContent
 		resourceSet2.getPackageRegistry().put(TestPackage.eNS_URI, TestPackage.eINSTANCE);
 		
 		try {
-			InputStream refInput = refManager.getParserOutputStream(refVersion);
-			EObject referenceModel = ModelUtils.load(refInput, "reference.rtt", resourceSet1);
+			InputStream refInput = getInputStream(refManager, refVersion);
+			EObject referenceModel = ModelUtils.load(refInput, "reference_data.rtt", resourceSet1);
 			
-			InputStream testInput = testManager.getParserOutputStream(testVersion);
-			EObject resultModel = ModelUtils.load(testInput, "result.rtt", resourceSet2);
+			InputStream testInput = getInputStream(testManager, testVersion);
+			EObject resultModel = ModelUtils.load(testInput, "test_data.rtt", resourceSet2);
 			
 			Map<String, Object> options = new HashMap<String, Object>();
 			options.put(MatchOptions.OPTION_MATCH_SCOPE_PROVIDER, new MyScopeProvider());

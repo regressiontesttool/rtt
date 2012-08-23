@@ -56,7 +56,7 @@ public class InputEditorInput implements IStorageEditorInput {
 	public String getName() {
 		if (manager != null) {
 			return "Input [" + manager.getSuiteName() + "/"
-					+ manager.getCaseName() + "] (" + versionNr + ")";
+					+ manager.getCaseName() + "] (Ver. " + versionNr + ")";
 		}
 
 		return "Input [" + suiteName + "/" + caseName + "]";

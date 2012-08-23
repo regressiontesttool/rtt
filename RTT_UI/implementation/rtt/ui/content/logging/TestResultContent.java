@@ -39,7 +39,17 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 
 	@Override
 	public String getText() {
-		return "[" + result.getTestsuite() + "/" + result.getTestcase() + "] "; // + result.getType().toString() + " (Ver.=" + result.getDataVersion()+")";
+		String text = "[" + result.getTestsuite() + "/" + result.getTestcase() + "]";
+		if (result.getComment() != null && !result.getComment().getValue().equals("")) {
+			String comment = result.getComment().getValue();
+			if (comment.length() > 15) {
+				comment = comment.substring(0, 14) + "...";
+			}
+			
+			text += " - " + comment;
+		}
+		
+		return text;
 	}
 
 	@Override
