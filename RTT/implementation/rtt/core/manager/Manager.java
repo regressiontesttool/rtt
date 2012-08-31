@@ -246,7 +246,7 @@ public class Manager {
 		
 		if (state.lexerSet) {
 			Detail detail = new Detail();
-			detail.setMsg("Lexer class set to ");
+			detail.setMsg("Lexer class:");
 			if (lexerName.equals("")) {
 				detail.setSuffix("<None>");
 			} else {
@@ -259,7 +259,7 @@ public class Manager {
 		
 		if (state.parserSet) {
 			Detail detail = new Detail();
-			detail.setMsg("Parser class set to");
+			detail.setMsg("Parser class:");
 			if (parserName.equals("")) {
 				detail.setSuffix("<None>");
 			} else {
@@ -274,6 +274,15 @@ public class Manager {
 			Detail pathInfo = new Detail();
 			pathInfo.setPriority(1);
 			pathInfo.setMsg("Added classpath entry: ");
+			pathInfo.setSuffix(entry);
+			
+			infos.add(pathInfo);
+		}
+		
+		for (String entry : state.deletedEntries) {
+			Detail pathInfo = new Detail();
+			pathInfo.setPriority(1);
+			pathInfo.setMsg("Removed classpath entry: ");
 			pathInfo.setSuffix(entry);
 			
 			infos.add(pathInfo);
@@ -578,7 +587,7 @@ public class Manager {
 		
 		if (currentArchive.hasTestsuite(suiteName) == false) {
 			throw new RTTException(Type.DATA_NOT_FOUND, "Test suite '"
-					+ suiteName + "' does not exist or was removed from archive.");
+					+ suiteName + "' does not exists or has been removed from archive.");
 		}
 		
 		GenerationInformation genInfos = new GenerationInformation(GenerationType.TEST_DATA);

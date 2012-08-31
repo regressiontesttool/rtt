@@ -56,6 +56,11 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		 * A list containing all new entries to the class path
 		 */
 		public Set<String> newEntries = new TreeSet<String>();
+
+		/**
+		 * A list containig all deleted entries of a class path
+		 */
+		public Set<String> deletedEntries = new TreeSet<String>();
 	}
 
 	public ConfigurationManager(ArchiveLoader loader) {
@@ -123,11 +128,13 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 			state = ConfigStatus.UPDATED;
 			
 			state.lexerSet = setLexerName(oldConfig, newConfig.getLexerClass());
-			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());
-			state.newEntries = setClasspath(oldConfig, newConfig.getClasspath());
+			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());			
+			
+			state.newEntries = addClasspathEntries(oldConfig, newConfig);
+			state.deletedEntries = removeClasspathEntries(oldConfig, newConfig);
 			
 			// if nothing done, return skipped 
-			if (!state.lexerSet && !state.parserSet && state.newEntries.isEmpty()) {
+			if (!state.lexerSet && !state.parserSet && state.newEntries.isEmpty() && state.deletedEntries.isEmpty()) {
 				state = ConfigStatus.SKIPPED;
 			}
 		}
@@ -163,20 +170,26 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		return false;
 	}
 	
-	private Set<String> setClasspath(Configuration config,
-			Classpath cPath) {
-		
+	private Set<String> addClasspathEntries(Configuration oldConfig, Configuration newConfig) {
 		Set<String> newPathEntries = new TreeSet<String>();
-		for (Path entry : cPath.getPath()) {
-			if (addClasspathEntry(config, entry.getValue())) {
-				newPathEntries.add(entry.getValue());
+		
+		if (oldConfig != null && newConfig != null) {
+			Classpath newClasspath = newConfig.getClasspath();
+			if (newClasspath != null) {
+				for (Path entry : newClasspath.getPath()) {
+					if (addClasspathEntry(oldConfig, entry.getValue())) {
+						newPathEntries.add(entry.getValue());
+					}
+				}
 			}
 		}
+		
+		
 		
 		return newPathEntries;
 	}
 	
-	public static boolean addClasspathEntry(Configuration config, String entry) {
+	protected boolean addClasspathEntry(Configuration config, String entry) {
 		if (config != null) {
 			Classpath classpath = config.getClasspath();
 
@@ -199,7 +212,41 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		return false;
 	}
 	
-	public static boolean removeClasspathEntry(Configuration config, String entry) {
+	private Set<String> removeClasspathEntries(Configuration oldConfig, Configuration newConfig) {
+		Set<String> removedEntries = new TreeSet<String>();
+		
+		if (oldConfig != null && newConfig != null) {
+			Classpath oldClasspath = oldConfig.getClasspath();
+			if (oldClasspath != null) {
+				for (Path entry : oldClasspath.getPath()) {
+					if (!hasClasspathEntry(newConfig, entry.getValue())) {
+						removedEntries.add(entry.getValue());			
+					}
+				}
+			}
+		}
+		
+		oldConfig.setClasspath(newConfig.getClasspath());
+		
+		return removedEntries;
+	}
+	
+	private boolean hasClasspathEntry(Configuration config, String value) {
+		if (config != null && config.getClasspath() != null) {
+			Classpath cPath = config.getClasspath();
+			if (cPath.getPath() != null) {
+				for (Path path : cPath.getPath()) {
+					if (path.getValue() != null && path.getValue().equals(value)) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	protected boolean removeClasspathEntry(Configuration config, String entry) {
 		if (config != null) {
 			int index = -1;
 			Classpath classpath = config.getClasspath();

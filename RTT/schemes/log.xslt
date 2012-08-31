@@ -190,13 +190,8 @@
 	</xsl:template>
 	
 	<xsl:template name="testrunTemplate">
-		<td>The test case [<xsl:value-of select="@testsuite" />/<xsl:value-of select="@testcase" />] has
-			<xsl:choose>
-				<xsl:when test="@type='PASSED'">passed.</xsl:when>
-				<xsl:when test="@type='SKIPPED'">been skipped.</xsl:when>
-				<xsl:when test="@type='FAILED'">failed.</xsl:when>
-			</xsl:choose>
-		</td>
+		<td>[<xsl:value-of select="@testsuite" />/<xsl:value-of select="@testcase" />]</td>
+		<td><xsl:value-of select="@type"/></td>
 	</xsl:template>
 	
 	<!-- Template for passed results. -->

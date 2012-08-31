@@ -58,7 +58,7 @@
 	<xs:complexType name="result">
 		<xs:sequence>
 			<xs:element name="comment" type="rtt:comment" minOccurs="0"
-				maxOccurs="1" />
+				maxOccurs="unbounded" />
 			<xs:element name="failure" type="rtt:failure" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
@@ -73,7 +73,7 @@
 
 	<xs:complexType name="comment">
 		<xs:simpleContent>
-			<xs:extension base="xs:string"></xs:extension>
+			<xs:extension base="xs:string" />
 		</xs:simpleContent>
 	</xs:complexType>
 
