@@ -1,15 +1,10 @@
 package rtt.ui.content.logging;
 
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.swt.graphics.Image;
-
 import rtt.core.archive.logging.Detail;
-import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
-public class LogDetailContent extends AbstractContent implements IColumnableContent {
+public class LogDetailContent extends AbstractLogContent {
 	
 	private Detail detail;
 
@@ -21,38 +16,30 @@ public class LogDetailContent extends AbstractContent implements IColumnableCont
 	public Integer getPriority() {
 		return detail.getPriority();
 	}
-
+	
 	@Override
-	public String getText(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return "DETAIL";
-
-		case 1:
-			return detail.getMsg() + " " + detail.getSuffix();
-
-		default:
-			return "";
-		}	
+	public String getMessage() {
+		return detail.getMsg() + " " + detail.getSuffix();
+	}
+	
+	@Override
+	public String getTitle() {
+		return "DETAIL";
 	}
 
 	@Override
-	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
-		if (columnIndex == 0) {
-			return getImage(resourceManager);
+	public ContentIcon getIcon() {
+		return ContentIcon.DETAIL;
+	}
+
+	@Override
+	public int compareTo(AbstractLogContent o) {
+		if (o instanceof LogDetailContent) {
+			LogDetailContent detail = (LogDetailContent) o;
+			return this.getPriority().compareTo(detail.getPriority());
 		}
 		
-		return null;
-	}
-
-	@Override
-	public String getText() {
-		return "DetailEntry";
-	}
-
-	@Override
-	protected ContentIcon getIcon() {
-		return ContentIcon.DETAIL;
+		return 0;
 	}
 
 }

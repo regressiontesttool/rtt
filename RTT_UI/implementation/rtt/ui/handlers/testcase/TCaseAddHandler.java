@@ -37,7 +37,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 
 		ResourceSelectionDialog resDialog = new ResourceSelectionDialog(
 				getParentShell(event), project.getJavaProject().getProject(),
-				"Select File...");
+				"Select files for new test cases.");
 
 		resDialog.setBlockOnOpen(true);
 		
@@ -64,7 +64,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 					throw new RTTException(Type.OPERATION_FAILED, "Could not add test cases. See Error Log for details ...");
 				}				
 			} catch (RTTException e) {				
-				throw new ExecutionException("Some files could not be added to the test suite. See Error Log for more information");				
+				throw new ExecutionException("Some files could not be added to the test suite. See Error Log for details ...");				
 			}
 		}
 		

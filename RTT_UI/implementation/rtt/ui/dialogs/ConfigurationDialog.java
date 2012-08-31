@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -48,9 +49,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private Button defaultButton;
 	private ListViewer listViewer;
 	private Color red;
-	
-//	private Configuration config;
-//	private Classpath tempClasspath;
 
 	private String title;
 	private String message;
@@ -70,7 +68,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	 * @param parentShell
 	 */
 	public ConfigurationDialog(Shell parentShell, ProjectContent projectContent, Configuration config) {
-		super(parentShell);	
+		super(parentShell);
 		setHelpAvailable(false);
 		
 		setShellStyle(SWT.DIALOG_TRIM);
@@ -95,19 +93,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 	}
 	
-//	private void initTempClasspath(Configuration config) {
-//		tempClasspath = new Classpath();
-//		if (config.getClasspath() != null) {
-//			for (Path path : config.getClasspath().getPath()) {
-//				if (path.getValue() != null) {
-//					Path newPath = new Path();
-//					newPath.setValue(path.getValue());
-//					tempClasspath.getPath().add(newPath);
-//				}
-//			}
-//		}
-//	}
-	
 	@Override
 	protected void finalize() throws Throwable {
 		red.dispose();
@@ -116,35 +101,10 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	
 	private ModifyListener getModifyListener() {
 		return new ModifyListener() {
-			
-			private boolean hasContent(Text text) {
-				String content = text.getText().trim();
-				boolean hasContent = !content.equals("");
-				
-				if (hasContent) {
-					text.setBackground(null);
-				} else {
-					text.setBackground(red);
-				}
-				
-				return hasContent;
-			}
 
 			@Override
-			public void modifyText(ModifyEvent e) {
-				
-				boolean nameHasContent = hasContent(nameText);
-				boolean lexerHasContent = hasContent(lexerText);
-				boolean parserHasContent = hasContent(parserText);
-				
-				// if name is empty disable ok button, else disable only if lexer AND parser is empty
-				getButton(OK).setEnabled(nameHasContent && (lexerHasContent || parserHasContent));
-				
-				if (nameHasContent && lexerHasContent && parserHasContent) {
-					setErrorMessage(null);
-				} else {
-					setErrorMessage("Please check marked text box(es)");
-				}
+			public void modifyText(ModifyEvent e) {				
+				setOkButtonEnabled(true);
 			}
 		};
 	}
@@ -187,6 +147,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		defaultButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		defaultButton.setAlignment(SWT.CENTER);
 		defaultButton.setText("Default");
+		defaultButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setOkButtonEnabled(true);
+			}
+		});
 		
 		Label lexerLabel = new Label(container, SWT.NONE);
 		lexerLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -232,12 +198,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		Button btnAddFile = new Button(classpathComposite, SWT.NONE);
 		btnAddFile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnAddFile.setText("Add file ...");
+		btnAddFile.setText("Add files ...");
 		btnAddFile.addSelectionListener(ResourceSelectionAdapter.createAdapter(DialogType.RESOURCE, this));
 		
 		Button btnAddFolder = new Button(classpathComposite, SWT.NONE);
 		btnAddFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnAddFolder.setText("Add folder ...");
+		btnAddFolder.setText("Add binary folder ...");
 		btnAddFolder.addSelectionListener(ResourceSelectionAdapter.createAdapter(DialogType.CONTAINER, this));
 		
 		Composite composite = new Composite(classpathComposite, SWT.NONE);
@@ -248,11 +214,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		btnRemove.setText("Remove");
 		btnRemove.setEnabled(false);
 		
-		Composite spacer = new Composite(container, SWT.NONE);
-		GridData gd_spacer = new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1);
-		gd_spacer.heightHint = 30;
-		spacer.setLayoutData(gd_spacer);
-		
 		btnRemove.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -262,14 +223,27 @@ public class ConfigurationDialog extends TitleAreaDialog {
 					if (object instanceof String) {
 						cpEntries.remove(object);
 						listViewer.setInput(cpEntries);
+						
+						setOkButtonEnabled(true);
 					}
 				}
 				btnRemove.setEnabled(false);
 			}
 		});
 		
-        listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+		new Label(container, SWT.NONE);
+		
+		Label lblNoteToAdd = new Label(container, SWT.NONE);
+		lblNoteToAdd.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		lblNoteToAdd.setText("Note: To add java archives (*.jar) use 'Add files ...' ");
+		new Label(container, SWT.NONE);
+		
+		Composite spacer = new Composite(container, SWT.NONE);
+		GridData gd_spacer = new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1);
+		gd_spacer.heightHint = 30;
+		spacer.setLayoutData(gd_spacer);	
+		
+        listViewer.addSelectionChangedListener(new ISelectionChangedListener() {			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -284,10 +258,54 @@ public class ConfigurationDialog extends TitleAreaDialog {
 				
 				btnRemove.setEnabled(enable);
 			}
-		});		
+		});
 
 		return area;
-	}	
+	}
+	
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		Button okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+				true);
+		okButton.setEnabled(false);
+		createButton(parent, IDialogConstants.CANCEL_ID,
+				IDialogConstants.CANCEL_LABEL, false);
+	}
+
+	public void setOkButtonEnabled(boolean enable) {
+		Button okButton = this.getButton(OK);
+		if (okButton != null) {
+			// if name is empty, disable ok button. When not empty, disable only if lexer AND parser is empty
+			getButton(OK).setEnabled(enable && this.hasContent());
+		}		
+	}
+	
+	private boolean hasContent() {
+		boolean nameHasContent = hasContent(nameText);
+		boolean lexerHasContent = hasContent(lexerText);
+		boolean parserHasContent = hasContent(parserText);
+		
+		if (nameHasContent && lexerHasContent && parserHasContent) {
+			setErrorMessage(null);
+		} else {
+			setErrorMessage("Please check marked text box(es)");
+		}
+		
+		return nameHasContent && (lexerHasContent || parserHasContent);			
+	}
+	
+	private boolean hasContent(Text text) {
+		String content = text.getText().trim();
+		boolean hasContent = !content.equals("");
+		
+		if (hasContent) {
+			text.setBackground(null);
+		} else {
+			text.setBackground(red);
+		}
+		
+		return hasContent;
+	}
 	
 	@Override
 	protected void okPressed() {
@@ -307,10 +325,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	protected Point getInitialSize() {
 		return new Point(500, 450);
 	}
-
-//	public Configuration getConfiguration() {
-//		return config;
-//	}
 	
 	public String getConfigName() {
 		return configName;
@@ -335,10 +349,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	public RttProject getProject() {
 		return project;
 	}
-
-//	public Classpath getTempClasspath() {
-//		return tempClasspath;
-//	}
 
 	public ListViewer getViewer() {
 		return listViewer;

@@ -28,8 +28,7 @@ import org.eclipse.ui.part.ViewPart;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.logging.LogDetailContent;
-import rtt.ui.content.logging.LogEntryContent;
+import rtt.ui.content.logging.AbstractLogContent;
 import rtt.ui.content.main.LogDirectory;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.ContentDoubleClickListener;
@@ -42,18 +41,11 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 	private static class ContentViewerComperator extends ViewerComparator {
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
-			if (e1 instanceof LogEntryContent && e2 instanceof LogEntryContent) {
-				LogEntryContent entry1 = (LogEntryContent) e1;
-				LogEntryContent entry2 = (LogEntryContent) e2;
+			if (e1 instanceof AbstractLogContent && e2 instanceof AbstractLogContent) {
+				AbstractLogContent entry1 = (AbstractLogContent) e1;
+				AbstractLogContent entry2 = (AbstractLogContent) e2;
 				
-				return -(entry1.getCalendar().compareTo(entry2.getCalendar()));					
-			}
-			
-			if (e1 instanceof LogDetailContent && e2 instanceof LogDetailContent) {
-				LogDetailContent detail1 = (LogDetailContent) e1;
-				LogDetailContent detail2 = (LogDetailContent) e2;
-				
-				return detail1.getPriority().compareTo(detail2.getPriority());
+				return entry1.compareTo(entry2);
 			}
 			
 			return super.compare(viewer, e1, e2);
@@ -187,16 +179,20 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 
 	@Override
 	public void update(ProjectContent projectContent) {
+		boolean hasContent = false;
+		LogDirectory logDirectory = null;
+		
 		if (projectContent != null) {
-			LogDirectory logDirectory = projectContent.getLogDirectory();
-			
-			combo.setEnabled(!logDirectory.isEmpty());			
-			contentViewer.setInput(logDirectory);
-		} else {
-			combo.setEnabled(false);
-			contentViewer.getControl().setEnabled(false);
-			contentViewer.setInput(null);
-		}
+			logDirectory = projectContent.getLogDirectory();
+			if (logDirectory != null) {
+				hasContent = !logDirectory.isEmpty();
+			}
+		}		
+		
+		contentViewer.setInput(logDirectory);		
+		combo.setEnabled(hasContent);
+		contentViewer.getControl().setEnabled(hasContent);
+		
 	}
 
 }

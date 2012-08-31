@@ -1,60 +1,40 @@
 package rtt.ui.content.logging;
 
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.swt.graphics.Image;
-
 import rtt.core.archive.logging.Comment;
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.Result;
-import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
-public class TestResultContent extends AbstractContent implements IColumnableContent {
+public class TestResultContent extends AbstractLogContent {
 
 	private Result result;
-	private ContentIcon icon;
+	private String suiteName;
+	private String caseName;
 	
 	public TestResultContent(IContent parent, Result result) {
 		super(parent);
 		this.result = result;
-		icon = getContentIcon(result);
+		this.suiteName = result.getTestsuite();
+		this.caseName = result.getTestcase();
 		
 		for (Failure failure : result.getFailure()) {
 			childs.add(new FailureContent(this, failure));
 		}
-	}
-	
-	public String getComment() {
-		String commentText = "";
 		
-		Comment comment = result.getComment();
-		if (comment != null && comment.getValue() != null) {
-			 commentText = comment.getValue();
+		for (Comment comment : result.getComment()) {
+			childs.add(new CommentContent(this, comment));
 		}
-		
-		return commentText;
 	}
 
 	@Override
 	public String getText() {
-		String text = "[" + result.getTestsuite() + "/" + result.getTestcase() + "]";
-		if (result.getComment() != null && !result.getComment().getValue().equals("")) {
-			String comment = result.getComment().getValue();
-			if (comment.length() > 15) {
-				comment = comment.substring(0, 14) + "...";
-			}
-			
-			text += " - " + comment;
-		}
-		
-		return text;
+		return "[" + suiteName + "/" + caseName + "]";
 	}
 
 	@Override
-	protected ContentIcon getIcon() {
-		return icon;
+	public ContentIcon getIcon() {
+		return getContentIcon(result);
 	}
 	
 	private ContentIcon getContentIcon(Result result) {
@@ -73,36 +53,26 @@ public class TestResultContent extends AbstractContent implements IColumnableCon
 		}
 	}
 
-	@Override
-	public String getText(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return result.getType().toString();
-
-		case 1:
-			String message = "Testcase: " + result.getTestcase() + " - Testsuite: " + result.getTestsuite();
-			
-			if (!getComment().equals("")) {
-				message += " (" + getComment() + ")";
-			}
-			
-			return message;
-			
-		default:
-			return "";
-		}
-	}
-
-	@Override
-	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
-		if (columnIndex == 0) {
-			return getImage(resourceManager);
-		}
-		
-		return null;
-	}
-
 	public Result getTestresult() {
 		return result;
+	}
+
+	@Override
+	public int compareTo(AbstractLogContent o) {
+		if (o instanceof TestResultContent) {
+			TestResultContent result = (TestResultContent) o;					
+			return caseName.compareToIgnoreCase(result.caseName);
+		}
+		return 0;
+	}
+
+	@Override
+	public String getMessage() {
+		return "Testcase: " + caseName + " - Testsuite: " + suiteName;
+	}
+
+	@Override
+	public String getTitle() {
+		return result.getType().toString();
 	}
 }

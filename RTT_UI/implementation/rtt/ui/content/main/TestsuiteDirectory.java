@@ -45,7 +45,7 @@ public class TestsuiteDirectory extends AbstractContent {
 
 	@Override
 	public String getText() {
-		return "Testsuites";
+		return "Suites";
 	}
 
 	@Override

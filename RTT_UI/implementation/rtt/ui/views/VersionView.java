@@ -62,22 +62,20 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		@Override
 		public void update(ProjectContent content) {
 			boolean hasContent = false;
+			TestsuiteDirectory suiteDirectory = null;
 			
-			if (content != null && content.getTestsuiteDirectory() != null) {
-				TestsuiteDirectory suiteDirectory = content
-						.getTestsuiteDirectory();
-				
-				hasContent = !suiteDirectory.isEmpty();
-				
-				if (hasContent) {
-					suiteComboViewer.setInput(suiteDirectory);
-				} else {
-					suiteComboViewer.setInput(EMPTY_ARRAY);
-					caseComboViewer.setInput(EMPTY_ARRAY);
-				}			
+			if (content != null) {
+				suiteDirectory = content.getTestsuiteDirectory();
+				if (suiteDirectory != null) {
+					hasContent = !suiteDirectory.isEmpty();
+				}
+			}
+			
+			if (hasContent) {
+				suiteComboViewer.setInput(suiteDirectory);
 			} else {
-				suiteComboViewer.setInput(null);
-				caseComboViewer.setInput(null);
+				suiteComboViewer.setInput(EMPTY_ARRAY);
+				caseComboViewer.setInput(EMPTY_ARRAY);
 			}
 			
 			suiteComboViewer.getControl().setEnabled(hasContent);
@@ -153,7 +151,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		Label suiteLabel = new Label(composite, SWT.NONE);
 		suiteLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 				false, 1, 1));
-		suiteLabel.setText("Testsuite:");
+		suiteLabel.setText("Test suite:");
 
 		suiteComboViewer = new ComboViewer(composite, SWT.READ_ONLY);
 		Combo combo = suiteComboViewer.getCombo();
@@ -163,7 +161,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		suiteComboViewer.setContentProvider(new BaseContentProvider());
 		
 		historyLoadButton = new Button(composite, SWT.PUSH);
-		historyLoadButton.setText("Load history ...");
+		historyLoadButton.setText("Load History ...");
 		GridData gd_historyLoadButton = new GridData(SWT.RIGHT, SWT.FILL, false, false, 1, 2);
 		gd_historyLoadButton.widthHint = 200;
 		gd_historyLoadButton.minimumWidth = 200;
@@ -184,7 +182,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		Label caseLabel = new Label(composite, SWT.NONE);
 		caseLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 				false, 1, 1));
-		caseLabel.setText("Testcase:");
+		caseLabel.setText("Test case:");
 		
 		caseComboViewer = new ComboViewer(composite, SWT.READ_ONLY);
 		combo = caseComboViewer.getCombo();

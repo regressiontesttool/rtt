@@ -134,7 +134,7 @@ public class PropertySourceDetailsPage implements IDetailsPage {
 		section.setClient(composite);
 		composite.setLayout(new GridLayout(1, false));
 		
-		Label explainLabel = toolkit.createLabel(composite, "This table shows some details of the current selected element in the tree.", SWT.WRAP);
+		Label explainLabel = toolkit.createLabel(composite, "This table contains additional details of the selected element.", SWT.WRAP);
 		explainLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Composite composite_1 = new Composite(composite, SWT.NONE);
@@ -152,9 +152,9 @@ public class PropertySourceDetailsPage implements IDetailsPage {
 		toolkit.paintBordersFor(table);
 		
 		TableViewerColumn idViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		TableColumn tblclmnId = idViewerColumn.getColumn();
-		tclLayout.setColumnData(tblclmnId, new ColumnPixelData(100, true, true));
-		tblclmnId.setText("Id");
+		TableColumn keyColumn = idViewerColumn.getColumn();
+		tclLayout.setColumnData(keyColumn, new ColumnPixelData(100, true, true));
+		keyColumn.setText("Key");
 		idViewerColumn.setLabelProvider(new PropertyColumnLabelProvider() {
 			
 			@Override
@@ -164,27 +164,15 @@ public class PropertySourceDetailsPage implements IDetailsPage {
 		});
 		
 		TableViewerColumn valueViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		TableColumn tblclmnValue = valueViewerColumn.getColumn();
-		tclLayout.setColumnData(tblclmnValue, new ColumnWeightData(1, 150, true));
-		tblclmnValue.setText("Value");
+		TableColumn valueColumn = valueViewerColumn.getColumn();
+		tclLayout.setColumnData(valueColumn, new ColumnWeightData(1, 150, true));
+		valueColumn.setText("Value");
 		valueViewerColumn.setLabelProvider(new PropertyColumnLabelProvider() {
 			
 			@Override
 			public String getPropertyText(IItemPropertyDescriptor element, Object object) {
 				IItemPropertySource source = (IItemPropertySource) element.getPropertyValue(object);
 				return source.getEditableValue(null).toString();				
-			}
-		});
-		
-		TableViewerColumn descriptionViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		TableColumn tblclmnDescription = descriptionViewerColumn.getColumn();
-		tclLayout.setColumnData(tblclmnDescription, new ColumnWeightData(1, 150, true));
-		tblclmnDescription.setText("Description");
-		descriptionViewerColumn.setLabelProvider(new PropertyColumnLabelProvider() {
-			
-			@Override
-			public String getPropertyText(IItemPropertyDescriptor element, Object object) {
-				return element.getDescription(object);
 			}
 		});
 

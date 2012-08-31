@@ -88,12 +88,16 @@
             name="%commands.testcase.remove.name">
       </command>
       <command
-            id="rtt.ui.commands.classpath.remove"
-            name="%commands.classpath.remove.name">
+            id="rtt.ui.commands.comment.add"
+            name="%commands.comment.add.name">
       </command>
       <command
-            id="rtt.ui.commands.comment"
-            name="%commands.comment.name">
+            id="rtt.ui.commands.comment.edit"
+            name="%commands.comment.edit.name">
+      </command>
+      <command
+            id="rtt.ui.commands.comment.remove"
+            name="%commands.comment.remove.name">
       </command>
    </extension>
    <extension
@@ -132,85 +136,37 @@
          </menu>
       </menuContribution>
       <menuContribution
-            locationURI="popup:rtt.ui.views.TestsuiteView">
-         <command
-               commandId="rtt.ui.commands.testsuite.add"
-               id="testsuite.add"
-               style="push">
-         </command>
-         <command
-               commandId="rtt.ui.commands.testsuite.remove"
-               id="testsuite.remove"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.testsuite">
-               </reference>
-            </visibleWhen>
-         </command>
-         <separator
-               name="rtt.ui.testsuiteview.seperator1"
-               visible="true">
-         </separator>
-         <command
-               commandId="rtt.ui.commands.testcase.add"
-               id="testcase.add"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.testsuite">
-               </reference>
-            </visibleWhen>
-         </command>
-         <command
-               commandId="rtt.ui.commands.testcase.remove"
-               id="testcase.remove"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.testcase">
-               </reference>
-            </visibleWhen>
-         </command>
-         <separator
-               name="rtt.ui.testsuiteview.seperator2"
-               visible="true">
-         </separator>
-         <command
-               commandId="rtt.ui.commands.tests.generate"
-               id="tests.generate"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.testsuite">
-               </reference>
-            </visibleWhen>
-         </command>
-         <command
-               commandId="rtt.ui.commands.tests.run"
-               id="tests.run"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <reference
-                     definitionId="rtt.ui.definitions.selection.testsuite">
-               </reference>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
             locationURI="popup:rtt.ui.views.LogView">
          <command
-               commandId="rtt.ui.commands.comment"
+               commandId="rtt.ui.commands.comment.add"
+               id="comment.add"
                style="push">
             <visibleWhen
                   checkEnabled="false">
                <reference
                      definitionId="rtt.ui.definitions.selection.testresult">
+               </reference>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="rtt.ui.commands.comment.edit"
+               id="comment.edit"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="rtt.ui.definitions.selection.comment">
+               </reference>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="rtt.ui.commands.comment.remove"
+               id="comment.remove"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="rtt.ui.definitions.selection.comment">
                </reference>
             </visibleWhen>
          </command>
@@ -258,29 +214,6 @@
                         definitionId="rtt.ui.definitions.configParent">
                   </reference>
                </or>
-            </visibleWhen>
-         </command>
-         <command
-               commandId="rtt.ui.commands.classpath.remove"
-               id="classpath.remove"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeMenuSelection">
-                  <iterate
-                        ifEmpty="false"
-                        operator="and">
-                     <test
-                           args="classpathentry"
-                           forcePluginActivation="true"
-                           property="rtt.ui.content.hasType"
-                           value="classpathentry">
-                     </test></iterate>
-                  <count
-                        value="1">
-                  </count>
-               </with>
             </visibleWhen>
          </command>
          <separator
@@ -426,15 +359,21 @@
          </class>
       </handler>
       <handler
-            commandId="rtt.ui.commands.classpath.remove">
+            commandId="rtt.ui.commands.comment.add">
          <class
-               class="rtt.ui.handlers.classpath.ClasspathEntryRemoveHandler">
+               class="rtt.ui.handlers.comment.CommentAddHandler">
          </class>
       </handler>
       <handler
-            commandId="rtt.ui.commands.comment">
+            commandId="rtt.ui.commands.comment.edit">
          <class
-               class="rtt.ui.handlers.tests.CommentHandler">
+               class="rtt.ui.handlers.comment.CommentEditHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="rtt.ui.commands.comment.remove">
+         <class
+               class="rtt.ui.handlers.comment.CommentRemoveHandler">
          </class>
       </handler>
    </extension>
@@ -530,22 +469,6 @@
          </with>
       </definition>
       <definition
-            id="rtt.ui.definitions.selection.classpath">
-         <with
-               variable="activeMenuSelection">
-            <iterate
-                  ifEmpty="false"
-                  operator="and">
-               <instanceof
-                     value="rtt.ui.content.configuration.ClasspathContent">
-               </instanceof>
-            </iterate>
-            <count
-                  value="1">
-            </count>
-         </with>
-      </definition>
-      <definition
             id="rtt.ui.definitions.selection.testresult">
          <with
                variable="activeMenuSelection">
@@ -562,17 +485,16 @@
          </with>
       </definition>
       <definition
-            id="rtt.ui.definitions.classpathParent">
+            id="rtt.ui.definitions.selection.comment">
          <with
                variable="activeMenuSelection">
             <iterate
                   ifEmpty="false"
                   operator="and">
-               <test
-                     args="classpath"
-                     property="rtt.ui.content.hasParent"
-                     value="classpath">
-               </test></iterate>
+               <instanceof
+                     value="rtt.ui.content.logging.CommentContent">
+               </instanceof>
+            </iterate>
             <count
                   value="1">
             </count>
@@ -589,23 +511,6 @@
                      args="configuration"
                      property="rtt.ui.content.hasParent"
                      value="configuration">
-               </test>
-            </iterate>
-            <count
-                  value="1">
-            </count>
-         </with>
-      </definition>
-      <definition
-            id="rtt.ui.definitions.type.configDir">
-         <with
-               variable="activeMenuSelection">
-            <iterate
-                  ifEmpty="false"
-                  operator="and">
-               <test
-                     args="configuration_directory"
-                     property="rtt.ui.content.hasType">
                </test>
             </iterate>
             <count

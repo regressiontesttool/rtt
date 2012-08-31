@@ -8,6 +8,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
@@ -37,17 +38,21 @@ public class GenerateTestsHandler extends AbstractSelectionHandler implements
 		
 		try {
 			progressDialog.run(true, false, runnable);
+			
+			GenerationInformation info = runnable.getInformation();
+			if (info != null) {
+				GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, info);
+				dialog.open();
+			}
+			
 		} catch (Exception e) {
 			MessageDialog.openError(parentShell,
 					runnable.getMessageTitle(), e.getMessage());
 			RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
 					.getMessage(), e));
-		}
-		
-		projectContent.reload(new ReloadInfo(Content.TESTCASE));
-		
-		GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, runnable.getInformation());
-		dialog.open();
+		} finally {
+			projectContent.reload(new ReloadInfo(Content.TESTCASE));
+		}		
 
 		return null;
 	}

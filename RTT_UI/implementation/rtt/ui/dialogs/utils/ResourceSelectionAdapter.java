@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
@@ -23,14 +22,13 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 
 	private SelectionDialog dialog;
 	private List<String> cpEntries;
-	private ListViewer viewer;
 	private RttProject project;
+	private ConfigurationDialog configDialog;
 
-	public ResourceSelectionAdapter(RttProject project, List<String> cpEntries,
-			ListViewer viewer) {
-		this.project = project;
-		this.cpEntries = cpEntries;
-		this.viewer = viewer;
+	public ResourceSelectionAdapter(ConfigurationDialog configDialog) {
+		this.project = configDialog.getProject();
+		this.cpEntries = configDialog.getClasspathEntries();
+		this.configDialog = configDialog;
 	}
 
 	public void setDialog(SelectionDialog dialog) {
@@ -60,7 +58,8 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 					}					
 				}
 			}
-			viewer.setInput(cpEntries);
+			configDialog.getViewer().setInput(cpEntries);
+			configDialog.setOkButtonEnabled(true);
 		}
 	}
 
@@ -68,9 +67,7 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 			ConfigurationDialog configDialog) {
 
 		RttProject project = configDialog.getProject();
-		ResourceSelectionAdapter adapter = new ResourceSelectionAdapter(
-				project, configDialog.getClasspathEntries(),
-				configDialog.getViewer());
+		ResourceSelectionAdapter adapter = new ResourceSelectionAdapter(configDialog);
 
 		switch (type) {
 		case RESOURCE:
@@ -81,7 +78,7 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 		case CONTAINER:
 			adapter.setDialog(new ContainerSelectionDialog(configDialog
 					.getShell(), project.getJavaProject().getProject(), false,
-					"Select a folder ..."));
+					"Select a binary folder ..."));
 			break;
 		}
 

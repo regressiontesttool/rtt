@@ -28,6 +28,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import rtt.core.utils.GenerationInformation;
+import rtt.core.utils.GenerationInformation.GenerationType;
 import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
@@ -139,11 +141,6 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 	public static final String ID = "rtt.ui.views.TestView";
 
-	private static final String descrText = "Select a test suite "
-			+ "from the current project. Click \"Generate tests\" "
-			+ "to generate new reference data or click \"Run tests\" "
-			+ "to start a new test run.";
-
 	private ContentTreeViewer contentViewer;
 	private ComboViewer comboViewer;
 	private Button generateButton;
@@ -165,13 +162,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 		runGroup.setText("Testing");
 		runGroup.setLayout(new GridLayout(2, false));
 
-		Label descrLabel = new Label(runGroup, SWT.WRAP);
-		descrLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-				false, 2, 1));
-		descrLabel.setText(descrText);
-
 		Label suiteLabel = new Label(runGroup, SWT.NONE);
-		suiteLabel.setText("Testsuite:");
+		suiteLabel.setText("Test suite:");
 
 		comboViewer = new ComboViewer(runGroup, SWT.READ_ONLY);
 		Combo combo = comboViewer.getCombo();
@@ -183,7 +175,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 		generateButton = new Button(runGroup, SWT.NONE);
 		generateButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 2, 1));
-		generateButton.setText("Generate tests ...");
+		generateButton.setText("Generate Reference Results ...");
 		generateButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
@@ -194,7 +186,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 		runButton = new Button(runGroup, SWT.NONE);
 		runButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
 				1));
-		runButton.setText("Run tests ...");
+		runButton.setText("Run Tests ...");
 		runButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
@@ -206,7 +198,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 		historyGroup.setLayout(new GridLayout(1, false));
 		historyGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
-		historyGroup.setText("History");
+		historyGroup.setText(" History");
 
 		contentViewer = new ContentTreeViewer(historyGroup, SWT.BORDER,
 				getSite().getPage());
@@ -240,39 +232,45 @@ public class TestView extends ViewPart implements ISelectionListener {
 		super.dispose();
 	}
 
-	protected void doButtonClick(AbstractTestRunnable runnable) {
+	protected boolean doButtonClick(AbstractTestRunnable runnable) {
 		Shell parentShell = getSite().getShell();
 		String suiteName = comboViewer.getCombo().getText();
 
-		if (suiteName != null && !suiteName.equals("")) {
-			// TODO
-			
-			ProjectContent projectContent = RttPluginUI.getProjectManager().getCurrentContent();
-			
-			runnable.setProject(projectContent.getProject());
-			runnable.setSuiteName(suiteName);
-			ProgressMonitorDialog dialog = new ProgressMonitorDialog(
-					parentShell);
-
-			try {
-				dialog.run(true, false, runnable);
-				projectContent.reload(new ReloadInfo(Content.TESTCASE));
-				RttPluginUI.refreshManager();
-				
-				if (runnable.getInformation() != null && !runnable.getInformation().getResults(false).isEmpty()) {
-					GenerationResultsDialog resultsDialog = new GenerationResultsDialog(parentShell, runnable.getInformation());
-					resultsDialog.open();
-				}				
-			} catch (Exception e) {
-				MessageDialog.openError(parentShell,
-						runnable.getMessageTitle(), e.getMessage());
-				RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
-						.getMessage(), e));
-			}
-		} else {
+		if (suiteName == null || suiteName.equals("")) {
 			MessageDialog.openInformation(parentShell,
 					runnable.getMessageTitle(), "No test suite selected.");
+			return false;
 		}
+		
+		ProjectContent projectContent = RttPluginUI.getProjectManager().getCurrentContent();
+		
+		runnable.setProject(projectContent.getProject());
+		runnable.setSuiteName(suiteName);
+		ProgressMonitorDialog dialog = new ProgressMonitorDialog(parentShell);
+		
+		try {
+			dialog.run(true, false, runnable);
+			projectContent.reload(new ReloadInfo(Content.TESTCASE));
+			RttPluginUI.refreshManager();
+				
+			GenerationInformation genInfo = runnable.getInformation();
+			if (genInfo != null) {
+				GenerationResultsDialog resultsDialog = new GenerationResultsDialog(parentShell, genInfo);
+				
+				if (genInfo.hasErrors() || genInfo.getType() == GenerationType.REFERENCE_DATA) {
+					resultsDialog.open();
+				}
+			}
+			
+		} catch (Exception e) {
+			MessageDialog.openError(parentShell,
+					runnable.getMessageTitle(), e.getMessage());
+			RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
+					.getMessage(), e));
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override

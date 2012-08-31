@@ -35,20 +35,20 @@ public class RunTestsHandler extends AbstractSelectionHandler {
 		
 		try {
 			progressDialog.run(true, false, runnable);
+			
+			GenerationInformation info = runnable.getInformation();
+			if (info != null && info.hasErrors()) {
+				GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, info);
+				dialog.open();
+			}
 		} catch (Exception e) {
 			MessageDialog.openError(parentShell,
 					runnable.getMessageTitle(), e.getMessage());
 			RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
 					.getMessage(), e));
-		}
-		
-		projectContent.reload(new ReloadInfo(Content.TESTCASE));
-		
-		GenerationInformation info = runnable.getInformation();
-		if (info.hasErrors()) {
-			GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, info);
-			dialog.open();
-		}		
+		} finally {
+			projectContent.reload(new ReloadInfo(Content.TESTCASE));
+		}				
 		
 		return null;
 	}

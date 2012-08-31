@@ -22,8 +22,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbenchPage;
 
 import regression.test.Attribute;
@@ -35,13 +33,10 @@ import rtt.core.archive.logging.Result;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
-import rtt.ui.content.IClickableContent;
-import rtt.ui.content.IColumnableContent;
-import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.model.RttProject;
 
-public class FailureContent extends AbstractContent implements IClickableContent, IColumnableContent {
+public class FailureContent extends AbstractLogContent {
 	
 	private static class MyMatchScope implements IMatchScope {
 
@@ -99,11 +94,13 @@ public class FailureContent extends AbstractContent implements IClickableContent
 	private Integer refVersion;
 	
 	private Failure failure;
+	private FailureType type;
 	
 	public FailureContent(TestResultContent parent, Failure failure) {
 		super(parent);
 		
 		this.failure = failure;
+		this.type = failure.getType();
 		
 		Result result = parent.getTestresult();
 		
@@ -115,11 +112,11 @@ public class FailureContent extends AbstractContent implements IClickableContent
 
 	@Override
 	public String getText() {
-		if (failure.getType() == FailureType.LEXER) {
+		if (type == FailureType.LEXER) {
 			return "Lexer results";
 		}
 		
-		if (failure.getType() == FailureType.PARSER) {
+		if (type == FailureType.PARSER) {
 			return "Parser results";
 		}
 		
@@ -127,12 +124,12 @@ public class FailureContent extends AbstractContent implements IClickableContent
 	}
 
 	@Override
-	protected ContentIcon getIcon() {
+	public ContentIcon getIcon() {
 		return ContentIcon.FAILED;
 	}
 	
 	private InputStream getInputStream(OutputDataManager manager, Integer version) {
-		switch (failure.getType()) {
+		switch (type) {
 		case LEXER:
 			return manager.getLexerOutputStream(version);
 			
@@ -185,28 +182,29 @@ public class FailureContent extends AbstractContent implements IClickableContent
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public String getText(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return failure.getType().toString();
-
-		case 1:
-			return failure.getMsg() + " - " + failure.getPath();
-
-		default:
-			return "";
+	public int compareTo(AbstractLogContent o) {
+		if (o instanceof CommentContent) {
+			return -1;
 		}
+		
+		if (o instanceof FailureContent) {
+			FailureContent failure = (FailureContent) o;
+			return type.compareTo(failure.type);
+		}
+		
+		return 0;
 	}
 
 	@Override
-	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
-		if (columnIndex == 0) {
-			return getImage(resourceManager);
-		}
-		
-		return null;
+	public String getMessage() {
+		return failure.getMsg() + " - " + failure.getPath();
+	}
+
+	@Override
+	public String getTitle() {
+		return failure.getType().toString();
 	}
 
 }

@@ -4,22 +4,13 @@ import java.util.Calendar;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IWorkbenchPage;
-
 import rtt.core.archive.logging.Detail;
 import rtt.core.archive.logging.Entry;
 import rtt.core.archive.logging.EntryType;
-import rtt.ui.content.IClickableContent;
-import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
-import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
-public class LogEntryContent extends AbstractContent implements
-		IColumnableContent, IClickableContent {
+public class LogEntryContent extends AbstractLogContent {
 
 	private Entry entry;
 	protected Calendar calendar;
@@ -61,30 +52,17 @@ public class LogEntryContent extends AbstractContent implements
 	}
 
 	@Override
-	public String getText() {
-		return "LogEntry";
-	}
-
-	@Override
-	protected ContentIcon getIcon() {
+	public ContentIcon getIcon() {
 		return getContentIcon(entry);
 	}
 
 	@Override
 	public String getText(int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return entry.getType().toString();
-
-		case 1:
-			return entry.getMsg() + " " + entry.getSuffix();
-
-		case 2:
+		if (columnIndex == 2) {
 			return getFormatedDate();
-
-		default:
-			return "";
 		}
+		
+		return super.getText(columnIndex);
 	}
 	
 	public Calendar getCalendar() {
@@ -94,20 +72,24 @@ public class LogEntryContent extends AbstractContent implements
 	public String getFormatedDate() {
 		return String.format("%1$te.%1$tm.%1$tY %1$tH:%1$tM:%1$tS", calendar);
 	}
-
+	
 	@Override
-	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
-		if (columnIndex == 0) {
-			return getImage(resourceManager);
-		}
-		
-		return null;
+	public String getTitle() {
+		return entry.getType().toString();
+	}
+	
+	@Override
+	public String getMessage() {
+		return entry.getMsg() + " " + entry.getSuffix();
 	}
 
 	@Override
-	public void doDoubleClick(IWorkbenchPage currentPage) {
-		MessageDialog.openInformation(currentPage.getWorkbenchWindow()
-				.getShell(), entry.getType().toString(),
-				entry.getMsg() + entry.getSuffix());
+	public int compareTo(AbstractLogContent o) {
+		if (o instanceof LogEntryContent) {
+			LogEntryContent entry = (LogEntryContent) o;
+			return -(this.getCalendar().compareTo(entry.getCalendar()));	
+		}
+		
+		return 0;				
 	}
 }

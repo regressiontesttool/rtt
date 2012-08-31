@@ -12,9 +12,6 @@ import rtt.ui.model.RttProject;
 
 public class TSuiteAddHandler extends AbstractSelectionHandler {
 	
-	//FIXME delete before shipping
-	private final String initialValue = "testSuite";
-
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
@@ -22,15 +19,15 @@ public class TSuiteAddHandler extends AbstractSelectionHandler {
 		
 		InputDialog inputDialog = new InputDialog(
 				getParentShell(event), 
-				"Add test suite", "Please enter a name for the new test suite", 
-				initialValue, 
+				"New Test Suite ...", "Enter a name for the new test suite.", 
+				"", 
 				null);
 		
 		inputDialog.setBlockOnOpen(true);
 		
 		if (inputDialog.open() == InputDialog.OK) {
 			String suiteName = inputDialog.getValue();
-			
+						
 			// if a test suite name was given try to create a new test suite
 			if (suiteName != null && !suiteName.equals("")) {
 				try {

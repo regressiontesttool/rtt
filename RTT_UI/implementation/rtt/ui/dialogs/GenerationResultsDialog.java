@@ -71,13 +71,15 @@ public class GenerationResultsDialog extends TitleAreaDialog {
 	 */
 	public GenerationResultsDialog(Shell parentShell, GenerationInformation results) {
 		super(parentShell);
+		setShellStyle(SWT.CLOSE | SWT.RESIZE | SWT.TITLE);
+		setHelpAvailable(false);
 		setBlockOnOpen(false);
 
 		this.results = results;
 		if (results.hasErrors()) {
-			message = "Some " + results.getType().text + " could not be generated. Check archive log for further description.";
+			message = "Some of the " + results.getType().text + " could not be generated.";
 		} else {
-			message = "These are the results of the generation process.";
+			message = "The generation process has been completed.";
 		}
 	}
 
@@ -133,10 +135,10 @@ public class GenerationResultsDialog extends TitleAreaDialog {
 
 		TableViewerColumn commentViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
-		TableColumn commentColumn = commentViewerColumn.getColumn();
-		tcl_composite.setColumnData(commentColumn, new ColumnWeightData(1, 300,
+		TableColumn descriptionColumn = commentViewerColumn.getColumn();
+		tcl_composite.setColumnData(descriptionColumn, new ColumnWeightData(1, 300,
 				true));
-		commentColumn.setText("Comment");
+		descriptionColumn.setText("Description");
 		commentViewerColumn.setLabelProvider(new ResultsColumnLabelProvider(
 				ResultsColumnLabelProvider.COMMENT_COLUMN));
 
@@ -153,7 +155,7 @@ public class GenerationResultsDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+		createButton(parent, IDialogConstants.OK_ID, "Close",
 				true);
 	}
 

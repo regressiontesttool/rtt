@@ -20,7 +20,6 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.Manager;
 import rtt.core.manager.Manager.TestCaseMode;
-import rtt.core.manager.data.ConfigurationManager;
 import rtt.core.manager.data.LogManager;
 import rtt.core.utils.GenerationInformation;
 import rtt.ui.RttLog;
@@ -86,16 +85,6 @@ public class RttProject {
 		return manager.getArchive().setActiveConfiguration(configName);
 	}
 
-	public void addClassPathEntry(Configuration config, String entry)
-			throws RTTException {
-		ConfigurationManager.addClasspathEntry(config, entry);
-	}
-
-	public void removeClasspathEntry(Configuration config, String entry)
-			throws RTTException {
-		ConfigurationManager.removeClasspathEntry(config, entry);
-	}
-
 	public boolean addTestsuite(String suiteName) throws RTTException {
 		return manager.createTestSuite(suiteName);
 	}
@@ -138,7 +127,7 @@ public class RttProject {
 
 	public Configuration createEmptyConfiguration() {
 		Configuration config = new Configuration();
-		config.setName("myConfig");
+		config.setName("");
 		config.setLexerClass("");
 		config.setParserClass("");
 

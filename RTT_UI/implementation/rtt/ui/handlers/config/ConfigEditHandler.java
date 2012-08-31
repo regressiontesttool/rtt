@@ -30,8 +30,8 @@ public class ConfigEditHandler extends AbstractSelectionHandler implements
 				getParentShell(event), projectContent,
 				configContent.getConfiguration());
 		
-		configDialog.setTitle("Edit configuration");
-		configDialog.setMessage("Modify an existing configuration ...");
+		configDialog.setTitle("Modify Configuration ...");
+		configDialog.setMessage("Modify an existing configuration.");
 		configDialog.setNameEditable(false);
 		
 		RttProject project = projectContent.getProject();

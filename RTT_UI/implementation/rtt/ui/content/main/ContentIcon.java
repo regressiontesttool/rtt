@@ -33,18 +33,13 @@ public enum ContentIcon {
 	TESTRUN("icons/testrun.gif"), 
 	ARCHIVE("icons/archive.gif"),
 	
+	DETAIL("icons/detail.gif"),
+	COMMENT("icons/comment.gif"),
+	
 	VERSION("icons/version.gif"),
 	INPUT_HISTORY("icons/input_version.gif"),
 	REFERENCE_HISTORY("icons/reference_version.gif"),
-	TEST_HISTORY("icons/test_version.gif"),
-	
-	DETAIL("icons/detail.gif"), 
-	AST_TREE("icons/full/obj16/LexerOutputType.gif"), 
-	ATTRIBUTE("icons/full/obj16/Attribute.gif"),
-	ATTRIBUTE_LIST("icons/full/obj16/AttributeList.gif"),
-	CHILDREN_LIST("icons/full/obj16/ChildrenList.gif"),
-	NODE("icons/full/obj16/Node.gif"), 
-	TOKEN("icons/full/obj16/Token.gif");
+	TEST_HISTORY("icons/test_version.gif");
 	
 	private String emptyIconPath;
 	private String fullIconPath;
