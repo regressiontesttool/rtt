@@ -147,6 +147,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		defaultButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		defaultButton.setAlignment(SWT.CENTER);
 		defaultButton.setText("Default");
+		defaultButton.setSelection(isDefault);
 		defaultButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -356,5 +357,9 @@ public class ConfigurationDialog extends TitleAreaDialog {
 
 	public void setNameEditable(boolean editable) {
 		this.nameEditable = editable;
+	}
+	
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
 	}
 }

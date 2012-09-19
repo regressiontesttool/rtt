@@ -29,7 +29,7 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.logging.AbstractLogContent;
-import rtt.ui.content.main.LogDirectory;
+import rtt.ui.content.logging.LogDirectory;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.ContentDoubleClickListener;
 import rtt.ui.viewer.ContentTreeViewer;

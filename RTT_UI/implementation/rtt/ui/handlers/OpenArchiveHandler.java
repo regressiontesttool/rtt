@@ -25,34 +25,33 @@ import org.eclipse.ui.dialogs.ContainerGenerator;
 
 import rtt.core.classpath.RTTClasspathContainer;
 import rtt.core.manager.Manager;
-import rtt.ui.RttLog;
 import rtt.ui.RttPluginUI;
 import rtt.ui.RttPreferenceStore;
+import rtt.ui.content.ReloadInfo;
+import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.core.RttNature;
 import rtt.ui.perspectives.ProjectPerspectiveFactory;
 
-public class InitArchiveHandler extends AbstractSelectionHandler {
+public class OpenArchiveHandler extends AbstractSelectionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		IJavaProject jProject = getSelectedObject(IJavaProject.class, event);
-		if (jProject != null) {
-			try {
-				generateArchive(jProject.getProject());
-			} catch (CoreException e) {
-				throw new ExecutionException("Could not generate archive.", e);
-			}			
-			setRttNature(jProject.getProject());
+		IJavaProject javaProject = getSelectedObject(IJavaProject.class, event);
+		if (javaProject != null) {
 			
-			setClasspath(jProject);			
-		} else {
-			System.out.println("Could not find Project.");
-			return null;
+			try {
+				setArchive(javaProject.getProject());
+				setNature(javaProject.getProject());
+				setClasspath(javaProject);
+			} catch (Exception e) {
+				throw new ExecutionException("Could not start testing.", e);
+			}
+			
+			RttPluginUI.getProjectDirectory().addProject(javaProject);
+			RttPluginUI.getProjectDirectory().reload(new ReloadInfo(Content.PROJECT));			
 		}
-
-		RttPluginUI.addProject(jProject.getProject());
-
+		
 		try {
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			workbench.showPerspective(ProjectPerspectiveFactory.ID,
@@ -64,7 +63,47 @@ public class InitArchiveHandler extends AbstractSelectionHandler {
 		return null;
 	}
 	
-	private void generateArchive(IProject project) throws CoreException {
+	private boolean setNature(IProject project) throws CoreException {
+		IProjectDescription description = project.getDescription();
+		String[] natures = description.getNatureIds();
+
+		for (int i = 0; i < natures.length; ++i) {
+			if (RttNature.NATURE_ID.equals(natures[i])) {
+				return false;
+			}
+		}
+
+		// Add the nature
+		String[] newNatures = new String[natures.length + 1];
+		System.arraycopy(natures, 0, newNatures, 0, natures.length);
+		newNatures[natures.length] = RttNature.NATURE_ID;
+		description.setNatureIds(newNatures);
+		project.setDescription(description, null);
+
+		return true;
+	}
+
+	private boolean setClasspath(IJavaProject jProject)
+			throws JavaModelException {
+		// Set classpath for RTT runtime engine
+		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+		for (IClasspathEntry entry : jProject.getRawClasspath()) {
+			if (entry.getPath().equals(RTTClasspathContainer.ID)) {
+				return false;
+			}
+
+			entries.add(entry);
+		}
+
+		entries.add(JavaCore.newContainerEntry(RTTClasspathContainer.ID));
+
+		jProject.setRawClasspath(
+				entries.toArray(new IClasspathEntry[entries.size()]),
+				new NullProgressMonitor());
+		return true;
+	}
+
+	private void setArchive(IProject project) throws CoreException {
 		IFolder folder = project.getFolder("./rtt/");
 
 		if (!folder.exists()) {
@@ -86,68 +125,9 @@ public class InitArchiveHandler extends AbstractSelectionHandler {
 			}
 		}
 		folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-		
+
 		RttPreferenceStore.put(project, RttPreferenceStore.PREF_ARCHIVE_PATH,
 				archive.getProjectRelativePath().toPortableString());
 
 	}
-
-	private boolean setClasspath(IJavaProject jProject) {
-		try {
-			// Set classpath for RTT runtime engine
-			List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
-			for (IClasspathEntry entry : jProject.getRawClasspath()) {
-				if (entry.getPath().equals(RTTClasspathContainer.ID)) {
-					return false;
-				}
-				
-				entries.add(entry);
-			}
-			
-			entries.add(JavaCore.newContainerEntry(RTTClasspathContainer.ID));
-
-			jProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
-			return true;
-			
-		} catch (JavaModelException exception) {
-			RttLog.log(exception);
-		}
-		
-		return false;
-	}
-
-	private boolean setRttNature(IProject project) {
-		try {
-			IProjectDescription description = project.getDescription();
-			String[] natures = description.getNatureIds();
-
-			for (int i = 0; i < natures.length; ++i) {
-				if (RttNature.NATURE_ID.equals(natures[i])) {
-					// Remove the nature
-//					String[] newNatures = new String[natures.length - 1];
-//					System.arraycopy(natures, 0, newNatures, 0, i);
-//					System.arraycopy(natures, i + 1, newNatures, i,
-//							natures.length - i - 1);
-//					description.setNatureIds(newNatures);
-//					project.setDescription(description, null);
-					
-					return false;
-				}
-			}
-
-			// Add the nature
-			String[] newNatures = new String[natures.length + 1];
-			System.arraycopy(natures, 0, newNatures, 0, natures.length);
-			newNatures[natures.length] = RttNature.NATURE_ID;
-			description.setNatureIds(newNatures);
-			project.setDescription(description, null);
-			
-			return true;
-		} catch (CoreException exception) {
-			RttLog.log(exception);
-		}
-		
-		return false;
-	}
-
 }

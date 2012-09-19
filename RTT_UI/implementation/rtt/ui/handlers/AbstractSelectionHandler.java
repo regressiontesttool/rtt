@@ -3,6 +3,7 @@ package rtt.ui.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -25,6 +26,10 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
 			
 			if (sObject instanceof IContent) {
 				return ((IContent) sObject).getContent(clazz);
+			}			
+			
+			if (sObject instanceof IAdaptable) {
+				return (T) ((IAdaptable) sObject).getAdapter(clazz);
 			}
 		}
 		

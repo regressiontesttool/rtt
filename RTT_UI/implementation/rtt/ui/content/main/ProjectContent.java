@@ -4,6 +4,7 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.configuration.ConfigurationDirectory;
+import rtt.ui.content.logging.LogDirectory;
 import rtt.ui.model.RttProject;
 
 public class ProjectContent extends AbstractContent {

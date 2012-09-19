@@ -48,8 +48,12 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="rtt.ui.commands.initArchive"
-            name="%commands.initArchive.name">
+            id="rtt.ui.commands.archive.start"
+            name="%commands.archive.start.name">
+      </command>
+      <command
+            id="rtt.ui.commands.archive.end"
+            name="%commands.archive.end.name">
       </command>
       <command
             id="rtt.ui.commands.config.add"
@@ -129,9 +133,48 @@
                </with>
             </visibleWhen>
             <command
-                  commandId="rtt.ui.commands.initArchive"
-                  id="rtt.init"
+                  commandId="rtt.ui.commands.archive.start"
                   style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeMenuSelection">
+                     <iterate
+                           ifEmpty="false"
+                           operator="or">
+                        <adapt
+                              type="org.eclipse.core.resources.IProject">
+                           <not>
+                              <test
+                                    property="org.eclipse.core.resources.projectNature"
+                                    value="rtt.ui.projectnature">
+                              </test>
+                           </not>
+                        </adapt>
+                     </iterate>
+                  </with>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="rtt.ui.commands.archive.end"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeMenuSelection">
+                     <iterate
+                           ifEmpty="false"
+                           operator="or">
+                        <adapt
+                              type="org.eclipse.core.resources.IProject">
+                           <test
+                                 property="org.eclipse.core.resources.projectNature"
+                                 value="rtt.ui.projectnature">
+                           </test>
+                        </adapt>
+                     </iterate>
+                  </with>
+               </visibleWhen>
             </command>
          </menu>
       </menuContribution>
@@ -301,12 +344,6 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            commandId="rtt.ui.commands.initArchive">
-         <class
-               class="rtt.ui.handlers.InitArchiveHandler">
-         </class>
-      </handler>
-      <handler
             commandId="rtt.ui.commands.config.add">
          <class
                class="rtt.ui.handlers.config.ConfigAddHandler"></class>
@@ -374,6 +411,18 @@
             commandId="rtt.ui.commands.comment.remove">
          <class
                class="rtt.ui.handlers.comment.CommentRemoveHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="rtt.ui.commands.archive.start">
+         <class
+               class="rtt.ui.handlers.OpenArchiveHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="rtt.ui.commands.archive.end">
+         <class
+               class="rtt.ui.handlers.CloseArchiveHandler">
          </class>
       </handler>
    </extension>

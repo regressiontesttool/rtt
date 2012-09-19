@@ -31,18 +31,19 @@ import rtt.ui.views.utils.RttListenerManager;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class RttPluginUI extends AbstractUIPlugin implements IResourceChangeListener {
+public class RttPluginUI extends AbstractUIPlugin implements
+		IResourceChangeListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "rtt.ui"; //$NON-NLS-1$
 
 	// The shared instance
 	private static RttPluginUI plugin;
-	
-	private ProjectContentDirectory projectContentDirectory;
+
+	private ProjectContentDirectory projectDirectory;
 	private RttListenerManager<ProjectContent> projectManager;
 	private RttListenerManager<TestsuiteContent> suiteManager;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -52,103 +53,101 @@ public class RttPluginUI extends AbstractUIPlugin implements IResourceChangeList
 			@Override
 			protected void additionalOperations(ProjectContent content) {
 				if (content != null) {
-					TestsuiteDirectory suiteDirectory = content.getTestsuiteDirectory();
+					TestsuiteDirectory suiteDirectory = content
+							.getTestsuiteDirectory();
 					if (suiteDirectory != null) {
-						TestsuiteContent suiteContent = suiteDirectory.getTestsuite(0);
+						TestsuiteContent suiteContent = suiteDirectory
+								.getTestsuite(0);
 						if (suiteContent != null) {
 							suiteManager.setCurrentContent(suiteContent, true);
 						}
 					}
-				}				
+				}
 			}
 		};
 	}
-	
-	public static void addProject(IProject project) {
-		getDefault().addProjectInternal(project);
-	}
-	
-	private void addProjectInternal(IProject project) {
-		try {
-			if (project.hasNature(JavaCore.NATURE_ID)) {
-				IJavaProject javaProject = JavaCore.create(project);
-				RttProject newProject = new RttProject(javaProject);
-				projectContentDirectory.addProject(new ProjectContent(newProject));
-			}			
-		} catch (Exception exception) {
-			RttLog.log(exception);
-		}
-	}
-	
+
 	public static void refreshManager() {
 		getProjectManager().refreshListener();
 		getSuiteManager().refreshListener();
 	}
-	
+
 	public static ProjectContentDirectory getProjectDirectory() {
-		return getDefault().projectContentDirectory;
+		return getDefault().projectDirectory;
 	}
-	
+
 	public static RttListenerManager<ProjectContent> getProjectManager() {
 		return getDefault().projectManager;
 	}
-	
+
 	public static RttListenerManager<TestsuiteContent> getSuiteManager() {
 		return getDefault().suiteManager;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		
-		initProjects();			
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.PRE_CLOSE);
-		
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("rtt", new TestResourceFactoryImpl());
+
+		initProjects();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+				this,
+				IResourceChangeEvent.PRE_DELETE
+						| IResourceChangeEvent.PRE_CLOSE);
+
+		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
+				"rtt", new TestResourceFactoryImpl());
 	}
-	
+
 	private synchronized void initProjects() {
 		List<ProjectContent> projects = new ArrayList<ProjectContent>();
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+
 		for (IProject project : root.getProjects()) {
 			try {
 				IProjectDescription description = project.getDescription();
-				if (description.hasNature(RttNature.NATURE_ID) && description.hasNature(JavaCore.NATURE_ID)) {
+				if (description.hasNature(RttNature.NATURE_ID)
+						&& description.hasNature(JavaCore.NATURE_ID)) {
 					IJavaProject javaProject = JavaCore.create(project);
 					RttProject newProject = new RttProject(javaProject);
 					ProjectContent content = new ProjectContent(newProject);
 					projects.add(content);
-					
+
 					if (projectManager.getCurrentContent() == null) {
 						projectManager.setCurrentContent(content);
 					}
-				}				
+				}
 
 			} catch (Exception exception) {
 				RttLog.log(exception);
 			}
 		}
-		
-		projectContentDirectory = new ProjectContentDirectory(projects);
+
+		projectDirectory = new ProjectContentDirectory(projects);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void stop(BundleContext context) throws Exception {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);		
-		plugin = null;		
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		plugin = null;
 		super.stop(context);
 	}
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static RttPluginUI getDefault() {
@@ -156,10 +155,11 @@ public class RttPluginUI extends AbstractUIPlugin implements IResourceChangeList
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
+	 * @param path
+	 *            the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
@@ -168,12 +168,13 @@ public class RttPluginUI extends AbstractUIPlugin implements IResourceChangeList
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
+
 		IResource resource = event.getResource();
 		if (resource instanceof IProject) {
 			IProject project = (IProject) resource;
-			projectContentDirectory.removeProject(project);
-			
-			projectContentDirectory.reload(new ReloadInfo(Content.PROJECT));
+
+			projectDirectory.removeProject(project);
+			projectDirectory.reload(new ReloadInfo(Content.PROJECT));
 		}
 	}
 }

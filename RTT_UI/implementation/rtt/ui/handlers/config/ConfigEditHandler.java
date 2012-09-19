@@ -33,6 +33,7 @@ public class ConfigEditHandler extends AbstractSelectionHandler implements
 		configDialog.setTitle("Modify Configuration ...");
 		configDialog.setMessage("Modify an existing configuration.");
 		configDialog.setNameEditable(false);
+		configDialog.setDefault(configContent.isDefault());
 		
 		RttProject project = projectContent.getProject();
 

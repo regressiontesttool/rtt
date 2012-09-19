@@ -1,4 +1,4 @@
-package rtt.ui.content.main;
+package rtt.ui.content.logging;
 
 import rtt.core.archive.logging.ArchiveLog;
 import rtt.core.archive.logging.Entry;
@@ -7,8 +7,10 @@ import rtt.core.manager.data.LogManager;
 import rtt.ui.content.IContent;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
-import rtt.ui.content.logging.LogEntryContent;
-import rtt.ui.content.logging.TestrunContent;
+import rtt.ui.content.main.AbstractContent;
+import rtt.ui.content.main.ContentIcon;
+import rtt.ui.content.main.EmptyContent;
+import rtt.ui.content.main.ProjectContent;
 
 public class LogDirectory extends AbstractContent {	
 
