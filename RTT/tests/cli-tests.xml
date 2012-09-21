@@ -1,0 +1,848 @@
+<!--
+	This program and the accompanying materials are made available under the
+	terms of the MIT license (X11 license) which accompanies this distribution.
+-->
+
+<!--
+	@author C. Bürger
+-->
+<project name="rtt" default="Tests">
+	<dirname file="${ant.file.rtt}" property="tasks.base"/>
+	<property name="_basedir" location="${tasks.base}/.."/>
+	
+	<!-- Declare RTT's Ant tasks -->
+	<taskdef resource="rtt/ant/taskdef.properties">
+		<classpath path="${_basedir}/distribution/rtt.jar"/>
+	</taskdef>
+	
+	<!-- Delete all generated testsuites and their logs -->
+	<target name="Clean">
+		<delete includeemptydirs="false">
+			<fileset dir="${_basedir}/tests/testresults">
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<!-- Execute all test Scenarios -->
+	<target name="Tests" depends="Clean">
+		<antcall target="ConfigurationUpdateTestScenarios"/>
+		<antcall target="ArchiveUpdateTestScenarios"/>
+		<antcall target="RunTestsTestScenarios"/>
+	</target>
+	
+	<!--
+	===========================================================================
+	                        Run Tests Test Scenarios
+	===========================================================================
+	-->
+	
+	<target name="RunTestsTestScenarios">
+		<antcall target="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c"/>
+		<antcall target="ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3"/>
+		<!-- For the following test consult test case description below! -->
+		<antcall target="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c"/>
+	</target>
+	
+	<!-- Testing a correct tool -->
+	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+			<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c"/>
+		</java>
+	</target>
+
+	<!--
+		Testing a tool that produces wrong data
+		
+		IMPORTANT: To validate correct behaviour of RTT, check that indeed test
+			case 3 failed.
+	-->
+	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c"/>
+		</java>
+	</target>
+	
+	<!-- Testing an erroneous tool implementation -->
+	<target name="ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cec/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cec/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cec/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3"/>
+		</java>
+	</target>
+	
+	<!--
+	===========================================================================
+					  Configuration Update Test Scenarios
+	===========================================================================
+	-->
+	
+	<target name="ConfigurationUpdateTestScenarios">
+		<antcall target="ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2"/>
+		<antcall target="ga_1-ua_ccc_s1_123-ga_2"/>
+	</target>
+	
+	<!-- Replacing configurations --> <!-- TODO: Test fails - ERROR (compare with correct Ant UI test) -->
+	<target name="ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c1
+				--lexer RepositoryGenerator
+				--parser RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c1
+				--lexer RepositoryGenerator
+				--parser RepositoryGenerator
+				--classpath ."/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c1
+				--lexer RepositoryGenerator
+				--parser RepositoryGenerator
+				--classpath ."/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c2
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c2
+				--lexer lexer
+				--parser parser
+				--classpath ."/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--newConfiguration c2
+				--lexer lexer
+				--parser parser
+				--classpath ."/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2"/>
+		</java>
+	</target>
+	
+	<!-- Changing the default configuration --> <!-- TODO: Test fails - ERROR (option to set default configuration is missing; compare with correct Ant UI test) -->
+	<target name="ga_1-ua_ccc_s1_123-ga_2">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--defaultConfiguration c1"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--defaultConfiguration c2"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2"/>
+		</java>
+	</target>
+	
+	<!--
+	===========================================================================
+		                   Archive Update Test Scenarios
+	===========================================================================
+	-->
+	
+	<target name="ArchiveUpdateTestScenarios">
+		<antcall target="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"/>
+		<antcall target="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1"/>
+		<antcall target="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c"/>
+		<antcall target="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"/>
+	</target>
+	
+	<!-- Replacing a testcase with a new version -->
+	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--regenerate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"/>
+		</java>
+	</target>
+	
+	<!-- Temporary removing a testcase and adding it later again -->
+	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--removeTest 1"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c"/>
+		</java>
+	</target>
+	
+	<!-- Testing empty test suites -->
+	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--testsuite s1
+				--removeTest 1"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--testsuite s1
+				--removeTest 2"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--testsuite s1
+				--removeTest 3"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1"/>
+		</java>
+	</target>
+	
+	<!-- Removing and later replacing a testcase with a new version -->
+	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--newConfiguration c1
+				--lexer rtt.tests.RepositoryGenerator
+				--parser rtt.tests.RepositoryGenerator
+				--classpath ./../../../binary"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/cfc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--removeTest 2"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/1.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/2.testcase"/>
+		</java>
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--testsuite s1
+				--addFile ${_basedir}/tests/testsets/ccc/3.testcase"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--generate"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--test"/>
+		</java>
+		
+		<java
+			jar="${_basedir}/distribution/rtt.jar"
+			fork="true">
+			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
+				--export ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"/>
+		</java>
+	</target>
+</project>
