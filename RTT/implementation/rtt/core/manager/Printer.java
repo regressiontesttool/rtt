@@ -26,7 +26,7 @@ public class Printer {
 
 		String result = "Token: [";
 		boolean first = true;
-		for (Attribute ta : t.getAttributes().getAttribute()) {
+		for (Attribute ta : t.getAttributes()) {
 			if (ta.isInformational() == true)
 				continue;
 
@@ -40,7 +40,7 @@ public class Printer {
 
 		result += "(";
 		first = true;
-		for (Attribute ta : t.getAttributes().getAttribute()) {
+		for (Attribute ta : t.getAttributes()) {
 			if (ta.isInformational() == false)
 				continue;
 
@@ -63,7 +63,7 @@ public class Printer {
 
 		String result = "Node: [";
 		boolean first = true;
-		for (Attribute na : n.getAttributes().getAttribute()) {
+		for (Attribute na : n.getAttributes()) {
 			if (na.isInformational() == true)
 				continue;
 
@@ -76,7 +76,7 @@ public class Printer {
 		}
 		result += "(";
 		first = true;
-		for (Attribute na : n.getAttributes().getAttribute()) {
+		for (Attribute na : n.getAttributes()) {
 			if (na.isInformational() != true)
 				continue;
 
@@ -88,8 +88,7 @@ public class Printer {
 			result += na.getName() + ":" + na.getValue();
 		}
 
-		int childCount = (n.getChildren() != null) ? n.getChildren().getNode()
-				.size() : 0;
+		int childCount = (n.getChildNodes() != null) ? n.getChildNodes().size() : 0;
 
 		result += ")](Children:" + childCount + ")";
 

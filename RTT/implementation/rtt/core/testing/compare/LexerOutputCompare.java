@@ -41,8 +41,8 @@ public class LexerOutputCompare {
 		if (was.isIsEof() != expected.isIsEof())
 			return new LexerTestFailure(was, expected);
 		
-		List<Attribute> wasAttributes = was.getAttributes().getAttribute();
-		List<Attribute> expectedAttributes = expected.getAttributes().getAttribute();		
+		List<Attribute> wasAttributes = was.getAttributes();
+		List<Attribute> expectedAttributes = expected.getAttributes();		
 		
 		if (wasAttributes.size() != expectedAttributes.size())
 			return new LexerTestFailure(was, expected); 

@@ -10,7 +10,8 @@ public class RTTException extends Exception {
 	public enum Type {
 		DATA_NOT_FOUND,
 		OPERATION_FAILED,
-		NO_ARCHIVE
+		NO_ARCHIVE, 
+		EXECUTOR
 	}
 
 	private Type type;

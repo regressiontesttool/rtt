@@ -156,8 +156,8 @@ public class ParserOutputCompare {
 			return null;
 		}
 		
-		List<Attribute> expectedAttributes = expected.getAttributes().getAttribute();
-		List<Attribute> wasAttributes = was.getAttributes().getAttribute();
+		List<Attribute> expectedAttributes = expected.getAttributes();
+		List<Attribute> wasAttributes = was.getAttributes();
 		
 		if (wasAttributes.size() != expectedAttributes.size())
 			return new ParserTestFailure(was, expected, curPath, null);
@@ -177,23 +177,22 @@ public class ParserOutputCompare {
 						i);
 
 		}
-		if ((was.getChildren() == null) != (expected.getChildren() == null))
+		if ((was.getChildNodes() == null) != (expected.getChildNodes() == null))
 			return new ParserTestFailure(was, expected, curPath, null);
 
-		int maxChildren = (was.getChildren() == null) ? 0 : Math.max(was
-				.getChildren().getNode().size(), expected.getChildren()
-				.getNode().size());
+		int maxChildren = (was.getChildNodes() == null) ? 0 : Math.max(was
+				.getChildNodes().size(), expected.getChildNodes().size());
 
 		for (int i = 0; i < maxChildren; ++i) {
 			Node wasChild = null;
 			Node expChild = null;
 			try {
-				wasChild = was.getChildren().getNode().get(i);
+				wasChild = was.getChildNodes().get(i);
 			} catch (IndexOutOfBoundsException e) {
 			}
 
 			try {
-				expChild = expected.getChildren().getNode().get(i);
+				expChild = expected.getChildNodes().get(i);
 			} catch (IndexOutOfBoundsException e) {
 			}
 

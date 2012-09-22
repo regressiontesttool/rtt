@@ -34,15 +34,15 @@ public class NodePath {
 			curPos = null;
 
 			if (i < path.size() - 1
-					&& curNode.getChildren().getNode().size() > 1)
-				curPos = curNode.getChildren().getNode().indexOf(
+					&& curNode.getChildNodes().size() > 1)
+				curPos = curNode.getChildNodes().indexOf(
 						path.get(i + 1));
 
 		}
 
 		if (attributePos != null) {
 			xp += "/nodeAttribute";
-			if (curNode.getAttributes().getAttribute().size() > 1)
+			if (curNode.getAttributes().size() > 1)
 				xp += "[" + (attributePos + 1) + "]";
 		}
 

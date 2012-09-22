@@ -11,12 +11,6 @@
 		<xs:attribute name="fullName" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="attributeList">
-		<xs:sequence maxOccurs="unbounded" minOccurs="0">
-			<xs:element name="attribute" type="rtt:attribute" />
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="attribute">
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="value" type="xs:string" />
@@ -39,7 +33,7 @@
 		<xs:complexContent>
 			<xs:extension base="rtt:classable">
 				<xs:sequence>
-					<xs:element name="attributes" type="rtt:attributeList" />
+					<xs:element name="attributes" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute default="false" name="isEof" type="xs:boolean"
 					use="optional" />
@@ -73,19 +67,13 @@
 		<xs:complexContent>
 			<xs:extension base="rtt:classable">
 				<xs:sequence>
-					<xs:element name="attributes" type="rtt:attributeList" />
-					<xs:element name="children" type="rtt:childrenList" />
+					<xs:element name="attributes" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="childNodes" type="rtt:node" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute default="false" name="isNull" type="xs:boolean"
 					use="optional" />
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>
-
-	<xs:complexType name="childrenList">
-		<xs:sequence maxOccurs="unbounded" minOccurs="0">
-			<xs:element name="node" type="rtt:node" />
-		</xs:sequence>
 	</xs:complexType>
 
 </xs:schema>

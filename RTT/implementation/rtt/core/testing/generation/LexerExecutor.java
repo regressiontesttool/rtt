@@ -18,10 +18,11 @@ import java.util.List;
 import rtt.annotations.AnnotationProcessor;
 import rtt.annotations.Lexer;
 import rtt.core.archive.configuration.Classpath;
-import rtt.core.archive.output.Attribute;
-import rtt.core.archive.output.AttributeList;
-import rtt.core.archive.output.Token;
 import rtt.core.archive.input.Input;
+import rtt.core.archive.output.Attribute;
+import rtt.core.archive.output.Token;
+import rtt.core.exceptions.RTTException.Type;
+import rtt.core.exceptions.RTTException;
 
 /**
  * 
@@ -45,6 +46,11 @@ public class LexerExecutor extends Executor {
 	@Override
 	public void loadInput(Input i) throws Exception {
 		lexer = loadInputImpl(i, Lexer.Initialize.class, annotationProcessor);
+		
+		if (lexer == null) {
+			throw new RTTException(Type.EXECUTOR, "Could not initialize lexer class.");
+		}
+		
 		nextTokenMethod = null;
 	}
 
@@ -64,7 +70,6 @@ public class LexerExecutor extends Executor {
 		
 		result.setSimpleName(tokenObj.getClass().getSimpleName());
 		result.setFullName(tokenObj.getClass().getName());
-		result.setAttributes(new AttributeList());		
 		
 		AnnotationProcessor tokenProc = new AnnotationProcessor(tokenObj
 				.getClass());
@@ -99,7 +104,7 @@ public class LexerExecutor extends Executor {
 			result.setIsEof((Boolean) fields.get(0).get(tokenObj));
 		}
 
-		List<Attribute> l = result.getAttributes().getAttribute();
+		List<Attribute> l = result.getAttributes();
 		// TODO: liste der strings abfragen
 
 		// compare methods

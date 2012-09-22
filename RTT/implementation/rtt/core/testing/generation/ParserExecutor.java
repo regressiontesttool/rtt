@@ -21,9 +21,9 @@ import rtt.annotations.Parser;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Attribute;
-import rtt.core.archive.output.AttributeList;
-import rtt.core.archive.output.ChildrenList;
 import rtt.core.archive.output.Node;
+import rtt.core.exceptions.RTTException;
+import rtt.core.exceptions.RTTException.Type;
 
 /**
  * 
@@ -44,6 +44,10 @@ public class ParserExecutor extends Executor {
 
 	public void loadInput(Input i) throws Exception {
 		parser = loadInputImpl(i, Parser.Initialize.class, annotationProcessor);
+		
+		if (parser == null) {
+			throw new RTTException(Type.EXECUTOR, "Could not initialize parser class.");
+		}
 	}
 
 	public List<Node> getAst() throws Exception {
@@ -81,10 +85,10 @@ public class ParserExecutor extends Executor {
 
 	private Node createNode(Object curObj) throws Exception {
 
-		Node n = new Node();
+		Node node = new Node();
 		if (curObj == null) {
-			n.setIsNull(true);
-			return n;
+			node.setIsNull(true);
+			return node;
 		}
 		
 		AnnotationProcessor nodeProc = new AnnotationProcessor(curObj
@@ -98,11 +102,10 @@ public class ParserExecutor extends Executor {
 			return null;
 		}
 		
-		n.setSimpleName(curObj.getClass().getSimpleName());
-		n.setFullName(curObj.getClass().getName());
-		n.setAttributes(new AttributeList());
+		node.setSimpleName(curObj.getClass().getSimpleName());
+		node.setFullName(curObj.getClass().getName());
 		
-		List<Attribute> l = n.getAttributes().getAttribute();
+		List<Attribute> l = node.getAttributes();
 
 		addMethods(curObj, nodeProc, l, Parser.Node.Compare.class, false);
 		addMethods(curObj, nodeProc, l, Parser.Node.Informational.class, true);
@@ -110,40 +113,43 @@ public class ParserExecutor extends Executor {
 		addFields(curObj, nodeProc, l, Parser.Node.Informational.class, true);
 		sortNodeAttribs(l);
 
-		ChildrenList children = new ChildrenList();
-
-		List<Method> ms = nodeProc
-				.getMethodsWithAnnotation(Parser.Node.Child.class);
-		for (Method m : ms) {
-			Object c = m.invoke(curObj);
-			if (c instanceof Iterable) {
-
-				Iterable tmp = (Iterable) c;
-				for (Object o : tmp)
-					children.getNode().add(createNode(o));
-			} else
-				children.getNode().add(createNode(c));
-		}
-
-		List<Field> fs = nodeProc
-				.getFieldsWithAnnotation(Parser.Node.Child.class);
-		for (Field f : fs) {
-			Object c = f.get(curObj);
-			if (c instanceof Iterable) {
-				Iterable tmp = (Iterable) c;
-				for (Object o : tmp)
-					children.getNode().add(createNode(o));
-			} else
-				children.getNode().add(createNode(c));
-		}
-		if (children.getNode().size() > 0)
-			n.setChildren(children);
+		List<Method> methodList = nodeProc.getMethodsWithAnnotation(Parser.Node.Child.class);
 		
-//		 CHRISTIAN
-//		Publisher.publish(n);
+		for (Method method : methodList) {
+			Object value = method.invoke(curObj);
+			addNode(node, value);				
+		}
 
-		return n;
+		List<Field> fieldList = nodeProc
+				.getFieldsWithAnnotation(Parser.Node.Child.class);
+		
+		for (Field field : fieldList) {
+			Object value = field.get(curObj);
+			addNode(node, value);
+		}
 
+		return node;
+
+	}
+
+	private void addNode(Node parentNode, Node childNode) {
+		if (parentNode.getChildNodes() != null) {
+			parentNode.getChildNodes().add(childNode);
+		}
+	}
+	
+	private void addNode(Node parentNode, Object object) throws Exception {
+		
+		if (object instanceof Iterable) {
+			Iterable<?> tmp = (Iterable<?>) object;
+			
+			for (Object o : tmp) {
+				addNode(parentNode, createNode(o));
+			}
+				
+		} else {
+			addNode(parentNode, createNode(object));
+		}
 	}
 
 	private void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
