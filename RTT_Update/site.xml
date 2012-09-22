@@ -18,5 +18,8 @@
    <feature url="features/rtt.feature_1.1.2.201209191248.jar" id="rtt.feature" version="1.1.2.201209191248">
       <category name="rtt.category"/>
    </feature>
+   <feature url="features/rtt.feature_1.1.3.201209221646.jar" id="rtt.feature" version="1.1.3.201209221646">
+      <category name="rtt.category"/>
+   </feature>
    <category-def name="rtt.category" label="Regression Test Tool"/>
 </site>
