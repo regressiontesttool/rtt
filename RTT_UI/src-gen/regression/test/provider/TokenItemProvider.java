@@ -178,7 +178,7 @@ public class TokenItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(TestPackage.Literals.TOKEN__ATTRIBUTES,
-				 TestFactory.eINSTANCE.createAttributeList()));
+				 TestFactory.eINSTANCE.createAttribute()));
 	}
 
 }

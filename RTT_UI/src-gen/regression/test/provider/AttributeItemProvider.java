@@ -200,7 +200,7 @@ public class AttributeItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return Rtt_OutputEditPlugin.INSTANCE;
+		return RttoutputEditPlugin.INSTANCE;
 	}
 
 }

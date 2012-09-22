@@ -1,6 +1,5 @@
 package rtt.ui.content;
 
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 import rtt.ui.model.RttProject;
@@ -14,11 +13,16 @@ public interface IContent {
 	String getText();
 	
 	/**
+	 * Returns a tool tip text.
+	 * @return a tool tip
+	 */
+	String getToolTip();
+	
+	/**
 	 * Returns a image for the content.
-	 * @param manager a resource manager for image loading
 	 * @return content image
 	 */
-	Image getImage(ResourceManager manager);
+	Image getImage();
 	
 	/**
 	 * Returns a parent content if existing, otherwise null.
@@ -58,4 +62,6 @@ public interface IContent {
 	void reload(ReloadInfo info);	
 	
 	void notifyChanges();
+
+	
 }

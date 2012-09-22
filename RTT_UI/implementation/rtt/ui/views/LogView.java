@@ -2,9 +2,6 @@ package rtt.ui.views;
 
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -14,7 +11,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -26,14 +22,13 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 
 import rtt.ui.RttPluginUI;
-import rtt.ui.content.IColumnableContent;
-import rtt.ui.content.IContent;
 import rtt.ui.content.logging.AbstractLogContent;
 import rtt.ui.content.logging.LogDirectory;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.viewer.ContentDoubleClickListener;
-import rtt.ui.viewer.ContentTreeViewer;
-import rtt.ui.viewer.ContentViewerFilter;
+import rtt.ui.viewer.RttColumnLabelProvider;
+import rtt.ui.viewer.RttTreeContentProvider;
+import rtt.ui.viewer.RttViewerFilter;
 import rtt.ui.views.utils.IRttListener;
 
 public class LogView extends ViewPart implements IRttListener<ProjectContent> {
@@ -55,8 +50,6 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 	public static final String ID = "rtt.ui.views.LogView";
 	private TreeViewer contentViewer;
 	private Combo combo;
-	private int columnCount = 0;
-	private LocalResourceManager resourceManager;
 
 	public LogView() {}
 
@@ -79,7 +72,7 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 		combo.select(0);
 		combo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				contentViewer.setFilters(new ViewerFilter[] { new ContentViewerFilter(combo.getSelectionIndex()) });
+				contentViewer.setFilters(new ViewerFilter[] { new RttViewerFilter(combo.getSelectionIndex()) });
 				setFocus();
 			}
 		});
@@ -91,19 +84,17 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 		TreeColumnLayout treeColumnLayout = new TreeColumnLayout();
 		treeComposite.setLayout(treeColumnLayout);
 
-		contentViewer = new TreeViewer(treeComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		contentViewer = new TreeViewer(treeComposite, SWT.BORDER);
 		Tree tree = contentViewer.getTree();
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
-
-		resourceManager = new LocalResourceManager(JFaceResources.getResources(), contentViewer.getControl());
 
 		addColumn("Type", 20, 100, treeColumnLayout);
 		addColumn("Message", 60, 100, treeColumnLayout);
 		addColumn("Date", 20, 100, treeColumnLayout);
 		
 		contentViewer.setComparator(new ContentViewerComperator());
-		contentViewer.setContentProvider(new ContentTreeViewer.TreeContentProvider());
+		contentViewer.setContentProvider(new RttTreeContentProvider());
 		contentViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
 		
 		// register context menu for comments
@@ -127,43 +118,15 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 
 	private void addColumn(String columnName, int weight, int minimumWidth,
 			TreeColumnLayout treeColumnLayout) {
+		
 		TreeViewerColumn typeColumn = new TreeViewerColumn(contentViewer, SWT.NONE);
-		typeColumn.setLabelProvider(new ColumnLabelProvider() {
-			private final int column = columnCount;
-
-			public Image getImage(Object element) {
-				if (element instanceof IColumnableContent) {
-					return ((IColumnableContent) element).getImage(column,
-							resourceManager);
-				}
-
-				if (element instanceof IContent) {
-					return ((IContent) element).getImage(resourceManager);
-				}
-
-				return null;
-			}
-
-			public String getText(Object element) {
-				if (element instanceof IColumnableContent) {
-					return ((IColumnableContent) element).getText(column);
-				}
-
-				if (element instanceof IContent) {
-					return ((IContent) element).getText();
-				}
-
-				return element == null ? "" : element.toString();
-			}
-		});
+		typeColumn.setLabelProvider(new RttColumnLabelProvider());
 
 		TreeColumn trclmnType = typeColumn.getColumn();
 		trclmnType.setText(columnName);
 
 		treeColumnLayout.setColumnData(typeColumn.getColumn(),
 				new ColumnWeightData(weight, minimumWidth, true));
-
-		columnCount++;
 	}
 
 	@Override

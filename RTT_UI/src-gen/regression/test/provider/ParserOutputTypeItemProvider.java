@@ -169,7 +169,7 @@ public class ParserOutputTypeItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return Rtt_OutputEditPlugin.INSTANCE;
+		return RttoutputEditPlugin.INSTANCE;
 	}
 
 }

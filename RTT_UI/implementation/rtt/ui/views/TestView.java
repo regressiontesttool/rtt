@@ -4,13 +4,16 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -42,9 +45,12 @@ import rtt.ui.dialogs.GenerationResultsDialog;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
 import rtt.ui.utils.RunTestRunnable;
-import rtt.ui.viewer.BaseContentLabelProvider;
-import rtt.ui.viewer.BaseContentProvider;
-import rtt.ui.viewer.ContentTreeViewer;
+import rtt.ui.viewer.RttColumnLabelProvider;
+import rtt.ui.viewer.RttColumnLabelProvider;
+import rtt.ui.viewer.RttLabelProvider;
+import rtt.ui.viewer.RttSimpleLabelProvider;
+import rtt.ui.viewer.RttStructuredContentProvider;
+import rtt.ui.viewer.RttTreeContentProvider;
 import rtt.ui.views.utils.AbstractProjectListener;
 import rtt.ui.views.utils.AbstractTestsuiteListener;
 import rtt.ui.views.utils.SuiteFilter;
@@ -141,7 +147,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 	public static final String ID = "rtt.ui.views.TestView";
 
-	private ContentTreeViewer contentViewer;
+	private TreeViewer contentViewer;
 	private ComboViewer comboViewer;
 	private Button generateButton;
 	private Button runButton;
@@ -169,8 +175,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 		Combo combo = comboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
-		comboViewer.setLabelProvider(new BaseContentLabelProvider());
-		comboViewer.setContentProvider(new BaseContentProvider());
+		comboViewer.setLabelProvider(new RttSimpleLabelProvider());
+		comboViewer.setContentProvider(new RttStructuredContentProvider());
 		
 		generateButton = new Button(runGroup, SWT.NONE);
 		generateButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -198,10 +204,16 @@ public class TestView extends ViewPart implements ISelectionListener {
 		historyGroup.setLayout(new GridLayout(1, false));
 		historyGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
-		historyGroup.setText(" History");
+		historyGroup.setText("History");		
 
-		contentViewer = new ContentTreeViewer(historyGroup, SWT.BORDER,
-				getSite().getPage());
+		contentViewer = new TreeViewer(historyGroup, 
+				SWT.SINGLE | SWT.H_SCROLL | 
+				SWT.V_SCROLL | SWT.FULL_SELECTION);
+		
+		contentViewer.setContentProvider(new RttTreeContentProvider());
+		contentViewer.setLabelProvider(new RttLabelProvider());
+		ColumnViewerToolTipSupport.enableFor(contentViewer, ToolTip.NO_RECREATE);
+		
 		Tree tree = contentViewer.getTree();
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		contentViewer.setComparator(new TestrunComparator());

@@ -61,8 +61,6 @@ public class TestFactoryImpl extends EFactoryImpl implements TestFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case TestPackage.ATTRIBUTE: return createAttribute();
-			case TestPackage.ATTRIBUTE_LIST: return createAttributeList();
-			case TestPackage.CHILDREN_LIST: return createChildrenList();
 			case TestPackage.CLASSABLE: return createClassable();
 			case TestPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case TestPackage.LEXER_OUTPUT_TYPE: return createLexerOutputType();
@@ -83,26 +81,6 @@ public class TestFactoryImpl extends EFactoryImpl implements TestFactory {
 	public Attribute createAttribute() {
 		AttributeImpl attribute = new AttributeImpl();
 		return attribute;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public AttributeList createAttributeList() {
-		AttributeListImpl attributeList = new AttributeListImpl();
-		return attributeList;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ChildrenList createChildrenList() {
-		ChildrenListImpl childrenList = new ChildrenListImpl();
-		return childrenList;
 	}
 
 	/**

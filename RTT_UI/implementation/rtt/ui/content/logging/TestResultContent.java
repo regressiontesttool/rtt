@@ -31,6 +31,13 @@ public class TestResultContent extends AbstractLogContent {
 	public String getText() {
 		return "[" + suiteName + "/" + caseName + "]";
 	}
+	
+	@Override
+	public String getToolTip() {
+		return "Data used for testing: \n"
+				+ "- Reference Data: Version " + result.getRefVersion() + "\n"
+				+ "- Test Data: Version "+ result.getTestVersion();
+	}
 
 	@Override
 	public ContentIcon getIcon() {
@@ -68,7 +75,7 @@ public class TestResultContent extends AbstractLogContent {
 
 	@Override
 	public String getMessage() {
-		return "Testcase: " + caseName + " - Testsuite: " + suiteName;
+		return "Testcase: " + caseName + ", Testsuite: " + suiteName;
 	}
 
 	@Override

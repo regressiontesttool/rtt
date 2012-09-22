@@ -1,6 +1,9 @@
 package rtt.ui.content.main;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.swt.graphics.Image;
 
 import rtt.ui.RttPluginUI;
 
@@ -16,9 +19,7 @@ public enum ContentIcon {
 	
 	INPUT("icons/input.gif"),
 	LEXER("icons/lexer.gif"),
-	LEXER_OUTPUT("icons/lexeroutput.gif"),
 	PARSER("icons/parser.gif"),
-	PARSER_OUTPUT("icons/parseroutput.gif"),
 	PROJECT("icons/project.gif"),
 	TESTSUITE("icons/suites_full.gif", "icons/suites_empty.gif"),
 	
@@ -44,30 +45,32 @@ public enum ContentIcon {
 	private String emptyIconPath;
 	private String fullIconPath;
 	
+	private static final LocalResourceManager manager = new LocalResourceManager(JFaceResources.getResources());
+	
 	private ContentIcon(String fullIconPath, String emptyIconPath) {
 		this.fullIconPath = fullIconPath;
 		this.emptyIconPath = emptyIconPath;
 	}
-	
+
 	private ContentIcon(String iconPath) {
 		this.fullIconPath = iconPath;
 		this.emptyIconPath = iconPath;
 	}
 	
-	public ImageDescriptor getDescriptor(boolean emptyImage) {
+	public Image getImage(boolean emptyImage) {
 		String iconPath = "";
 		
 		if (emptyImage) {
 			iconPath = emptyIconPath;
 		} else {
 			iconPath = fullIconPath;
-		}		
-		
-		if (iconPath != null && !iconPath.equals("")) {
-			return RttPluginUI.imageDescriptorFromPlugin(RttPluginUI.PLUGIN_ID, iconPath);
 		}
 		
-		return ImageDescriptor.getMissingImageDescriptor();
+		if (iconPath != null && !iconPath.equals("")) {
+			ImageDescriptor imageDescriptor = RttPluginUI.getImageDescriptor(iconPath);
+			return manager.createImage(imageDescriptor); 
+		}
+		
+		return manager.createImage(ImageDescriptor.getMissingImageDescriptor());
 	}
-	
 }

@@ -6,11 +6,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,7 +26,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
@@ -39,9 +44,11 @@ import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestcaseContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
-import rtt.ui.viewer.BaseContentLabelProvider;
-import rtt.ui.viewer.BaseContentProvider;
-import rtt.ui.viewer.ContentTreeViewer;
+import rtt.ui.viewer.ContentDoubleClickListener;
+import rtt.ui.viewer.RttColumnLabelProvider;
+import rtt.ui.viewer.RttSimpleLabelProvider;
+import rtt.ui.viewer.RttStructuredContentProvider;
+import rtt.ui.viewer.RttTreeContentProvider;
 import rtt.ui.views.utils.AbstractProjectListener;
 import rtt.ui.views.utils.AbstractTestsuiteListener;
 
@@ -134,7 +141,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 	private ProjectListener projectListener;
 	private TestsuiteListener suiteListener;
 
-	private ContentTreeViewer treeViewer;
+	private TreeViewer treeViewer;
 	private ComboViewer suiteComboViewer;
 	private ComboViewer caseComboViewer;
 	private Button historyLoadButton;
@@ -157,8 +164,8 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		Combo combo = suiteComboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
-		suiteComboViewer.setLabelProvider(new BaseContentLabelProvider());
-		suiteComboViewer.setContentProvider(new BaseContentProvider());
+		suiteComboViewer.setLabelProvider(new RttSimpleLabelProvider());
+		suiteComboViewer.setContentProvider(new RttStructuredContentProvider());
 		
 		historyLoadButton = new Button(composite, SWT.PUSH);
 		historyLoadButton.setText("Load History ...");
@@ -187,13 +194,43 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		caseComboViewer = new ComboViewer(composite, SWT.READ_ONLY);
 		combo = caseComboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		caseComboViewer.setLabelProvider(new BaseContentLabelProvider());
-		caseComboViewer.setContentProvider(new BaseContentProvider());		
-
-		treeViewer = new ContentTreeViewer(parent, SWT.BORDER, getSite().getPage());
-		Tree tree = treeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		tree.setEnabled(false);
+		caseComboViewer.setLabelProvider(new RttSimpleLabelProvider());
+		caseComboViewer.setContentProvider(new RttStructuredContentProvider());
+		
+		Composite treeComposite = new Composite(parent, SWT.NONE);
+		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		TreeColumnLayout treeLayout = new TreeColumnLayout();
+		treeComposite.setLayout(treeLayout);
+		
+		treeViewer = new TreeViewer(treeComposite, 
+				SWT.BORDER | SWT.H_SCROLL | 
+				SWT.V_SCROLL | SWT.SINGLE |
+				SWT.FULL_SELECTION);
+		treeViewer.setContentProvider(new RttTreeContentProvider());
+		treeViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
+		treeViewer.getTree().setHeaderVisible(true);
+		treeViewer.getTree().setLinesVisible(true);
+		treeViewer.getTree().setEnabled(false);
+		
+		TreeViewerColumn nameViewerColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
+		nameViewerColumn.getColumn().setText("History");
+		nameViewerColumn.setLabelProvider(new RttColumnLabelProvider());
+		treeLayout.setColumnData(nameViewerColumn.getColumn(), new ColumnWeightData(30, 250, true));
+		
+		TreeViewerColumn inputBaseViewerColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
+		inputBaseViewerColumn.getColumn().setText("Input Data Base");
+		inputBaseViewerColumn.setLabelProvider(new RttColumnLabelProvider());
+		treeLayout.setColumnData(inputBaseViewerColumn.getColumn(), new ColumnWeightData(30, 250, true));
+		
+		TreeViewerColumn dateViewerColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
+		dateViewerColumn.getColumn().setText("Creation Date");
+		dateViewerColumn.setLabelProvider(new RttColumnLabelProvider());
+		treeLayout.setColumnData(dateViewerColumn.getColumn(), new ColumnWeightData(30, 250, true));
+		
+		ColumnViewerToolTipSupport.enableFor(treeViewer, ToolTip.NO_RECREATE);
+		
+//		Tree tree = treeViewer.getTree();
+//		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		getSite().setSelectionProvider(suiteComboViewer);
 		getSite().getPage().addSelectionListener(ID, this);

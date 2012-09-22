@@ -6,15 +6,18 @@
  */
 package regression.test.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
-import regression.test.AttributeList;
+import regression.test.Attribute;
 import regression.test.TestPackage;
 import regression.test.Token;
 
@@ -34,14 +37,14 @@ import regression.test.Token;
  */
 public class TokenImpl extends ClassableImpl implements Token {
 	/**
-	 * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference.
+	 * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getAttributes()
 	 * @generated
 	 * @ordered
 	 */
-	protected AttributeList attributes;
+	protected EList<Attribute> attributes;
 
 	/**
 	 * The default value of the '{@link #isIsEof() <em>Is Eof</em>}' attribute.
@@ -96,42 +99,11 @@ public class TokenImpl extends ClassableImpl implements Token {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public AttributeList getAttributes() {
+	public EList<Attribute> getAttributes() {
+		if (attributes == null) {
+			attributes = new EObjectContainmentEList<Attribute>(Attribute.class, this, TestPackage.TOKEN__ATTRIBUTES);
+		}
 		return attributes;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetAttributes(AttributeList newAttributes, NotificationChain msgs) {
-		AttributeList oldAttributes = attributes;
-		attributes = newAttributes;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, TestPackage.TOKEN__ATTRIBUTES, oldAttributes, newAttributes);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAttributes(AttributeList newAttributes) {
-		if (newAttributes != attributes) {
-			NotificationChain msgs = null;
-			if (attributes != null)
-				msgs = ((InternalEObject)attributes).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TestPackage.TOKEN__ATTRIBUTES, null, msgs);
-			if (newAttributes != null)
-				msgs = ((InternalEObject)newAttributes).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - TestPackage.TOKEN__ATTRIBUTES, null, msgs);
-			msgs = basicSetAttributes(newAttributes, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.TOKEN__ATTRIBUTES, newAttributes, newAttributes));
 	}
 
 	/**
@@ -189,7 +161,7 @@ public class TokenImpl extends ClassableImpl implements Token {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case TestPackage.TOKEN__ATTRIBUTES:
-				return basicSetAttributes(null, msgs);
+				return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -215,11 +187,13 @@ public class TokenImpl extends ClassableImpl implements Token {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case TestPackage.TOKEN__ATTRIBUTES:
-				setAttributes((AttributeList)newValue);
+				getAttributes().clear();
+				getAttributes().addAll((Collection<? extends Attribute>)newValue);
 				return;
 			case TestPackage.TOKEN__IS_EOF:
 				setIsEof((Boolean)newValue);
@@ -237,7 +211,7 @@ public class TokenImpl extends ClassableImpl implements Token {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case TestPackage.TOKEN__ATTRIBUTES:
-				setAttributes((AttributeList)null);
+				getAttributes().clear();
 				return;
 			case TestPackage.TOKEN__IS_EOF:
 				unsetIsEof();
@@ -255,7 +229,7 @@ public class TokenImpl extends ClassableImpl implements Token {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case TestPackage.TOKEN__ATTRIBUTES:
-				return attributes != null;
+				return attributes != null && !attributes.isEmpty();
 			case TestPackage.TOKEN__IS_EOF:
 				return isSetIsEof();
 		}

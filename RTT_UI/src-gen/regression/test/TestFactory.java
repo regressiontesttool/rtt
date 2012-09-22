@@ -35,24 +35,6 @@ public interface TestFactory extends EFactory {
 	Attribute createAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Attribute List</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Attribute List</em>'.
-	 * @generated
-	 */
-	AttributeList createAttributeList();
-
-	/**
-	 * Returns a new object of class '<em>Children List</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Children List</em>'.
-	 * @generated
-	 */
-	ChildrenList createChildrenList();
-
-	/**
 	 * Returns a new object of class '<em>Classable</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

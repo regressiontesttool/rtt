@@ -3,13 +3,14 @@ package rtt.ui.viewer;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.BaseLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -17,49 +18,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPage;
 
 import rtt.ui.content.IClickableContent;
-import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
 
 public class ContentTreeViewer extends TreeViewer {
-
-	public static class TreeContentProvider extends BaseContentProvider
-			implements ITreeContentProvider {
-
-		@Override
-		public Object[] getChildren(Object parentElement) {
-			return getElements(parentElement);
-		}
-
-		@Override
-		public Object getParent(Object element) {
-			if (element instanceof IContent) {
-				return ((IContent) element).getParent();
-			}
-
-			return null;
-		}
-
-		@Override
-		public boolean hasChildren(Object element) {
-			if (element instanceof IContent) {
-				return ((IContent) element).hasChildren();
-			}
-
-			return false;
-		}
-	}
-
-	public class ContentLabelProviderWithImage extends BaseContentLabelProvider {
-
-		@Override
-		public Image getImage(Object element) {
-			if (element instanceof IContent) {
-				return ((IContent) element).getImage(resourceManager);
-			}
-
-			return super.getImage(element);
-		}
-	}
 
 	private class ContentLabelDecorator extends BaseLabelProvider implements
 			ILabelDecorator {
@@ -84,22 +45,23 @@ public class ContentTreeViewer extends TreeViewer {
 		}
 	}
 
-	private LocalResourceManager resourceManager;
+	LocalResourceManager resourceManager;
 
 	public ContentTreeViewer(Composite parent, int style,
 			final IWorkbenchPage currentPage) {
 		super(parent, style | SWT.VIRTUAL);
 
 		initViewer(currentPage);
+		ColumnViewerToolTipSupport.enableFor(this, ToolTip.NO_RECREATE);
 	}
 
 	private void initViewer(final IWorkbenchPage currentPage) {
 		resourceManager = new LocalResourceManager(
 				JFaceResources.getResources(), this.getControl());
 
-		setContentProvider(new TreeContentProvider());
+		setContentProvider(new RttTreeContentProvider());
 		setLabelProvider(new DecoratingLabelProvider(
-				new ContentLabelProviderWithImage(),
+				new RttLabelProvider(),
 				new ContentLabelDecorator()));
 
 		addDoubleClickListener(new IDoubleClickListener() {

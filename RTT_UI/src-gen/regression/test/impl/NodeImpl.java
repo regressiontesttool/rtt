@@ -6,16 +6,18 @@
  */
 package regression.test.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
-import regression.test.AttributeList;
-import regression.test.ChildrenList;
+import regression.test.Attribute;
 import regression.test.Node;
 import regression.test.TestPackage;
 
@@ -27,7 +29,7 @@ import regression.test.TestPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link regression.test.impl.NodeImpl#getAttributes <em>Attributes</em>}</li>
- *   <li>{@link regression.test.impl.NodeImpl#getChildren <em>Children</em>}</li>
+ *   <li>{@link regression.test.impl.NodeImpl#getChildNodes <em>Child Nodes</em>}</li>
  *   <li>{@link regression.test.impl.NodeImpl#isIsNull <em>Is Null</em>}</li>
  * </ul>
  * </p>
@@ -36,24 +38,24 @@ import regression.test.TestPackage;
  */
 public class NodeImpl extends ClassableImpl implements Node {
 	/**
-	 * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference.
+	 * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getAttributes()
 	 * @generated
 	 * @ordered
 	 */
-	protected AttributeList attributes;
+	protected EList<Attribute> attributes;
 
 	/**
-	 * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference.
+	 * The cached value of the '{@link #getChildNodes() <em>Child Nodes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getChildren()
+	 * @see #getChildNodes()
 	 * @generated
 	 * @ordered
 	 */
-	protected ChildrenList children;
+	protected EList<Node> childNodes;
 
 	/**
 	 * The default value of the '{@link #isIsNull() <em>Is Null</em>}' attribute.
@@ -108,7 +110,10 @@ public class NodeImpl extends ClassableImpl implements Node {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public AttributeList getAttributes() {
+	public EList<Attribute> getAttributes() {
+		if (attributes == null) {
+			attributes = new EObjectContainmentEList<Attribute>(Attribute.class, this, TestPackage.NODE__ATTRIBUTES);
+		}
 		return attributes;
 	}
 
@@ -117,76 +122,11 @@ public class NodeImpl extends ClassableImpl implements Node {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetAttributes(AttributeList newAttributes, NotificationChain msgs) {
-		AttributeList oldAttributes = attributes;
-		attributes = newAttributes;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, TestPackage.NODE__ATTRIBUTES, oldAttributes, newAttributes);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
+	public EList<Node> getChildNodes() {
+		if (childNodes == null) {
+			childNodes = new EObjectContainmentEList<Node>(Node.class, this, TestPackage.NODE__CHILD_NODES);
 		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAttributes(AttributeList newAttributes) {
-		if (newAttributes != attributes) {
-			NotificationChain msgs = null;
-			if (attributes != null)
-				msgs = ((InternalEObject)attributes).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TestPackage.NODE__ATTRIBUTES, null, msgs);
-			if (newAttributes != null)
-				msgs = ((InternalEObject)newAttributes).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - TestPackage.NODE__ATTRIBUTES, null, msgs);
-			msgs = basicSetAttributes(newAttributes, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__ATTRIBUTES, newAttributes, newAttributes));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ChildrenList getChildren() {
-		return children;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetChildren(ChildrenList newChildren, NotificationChain msgs) {
-		ChildrenList oldChildren = children;
-		children = newChildren;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, TestPackage.NODE__CHILDREN, oldChildren, newChildren);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setChildren(ChildrenList newChildren) {
-		if (newChildren != children) {
-			NotificationChain msgs = null;
-			if (children != null)
-				msgs = ((InternalEObject)children).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - TestPackage.NODE__CHILDREN, null, msgs);
-			if (newChildren != null)
-				msgs = ((InternalEObject)newChildren).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - TestPackage.NODE__CHILDREN, null, msgs);
-			msgs = basicSetChildren(newChildren, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__CHILDREN, newChildren, newChildren));
+		return childNodes;
 	}
 
 	/**
@@ -244,9 +184,9 @@ public class NodeImpl extends ClassableImpl implements Node {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case TestPackage.NODE__ATTRIBUTES:
-				return basicSetAttributes(null, msgs);
-			case TestPackage.NODE__CHILDREN:
-				return basicSetChildren(null, msgs);
+				return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
+			case TestPackage.NODE__CHILD_NODES:
+				return ((InternalEList<?>)getChildNodes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -261,8 +201,8 @@ public class NodeImpl extends ClassableImpl implements Node {
 		switch (featureID) {
 			case TestPackage.NODE__ATTRIBUTES:
 				return getAttributes();
-			case TestPackage.NODE__CHILDREN:
-				return getChildren();
+			case TestPackage.NODE__CHILD_NODES:
+				return getChildNodes();
 			case TestPackage.NODE__IS_NULL:
 				return isIsNull();
 		}
@@ -274,14 +214,17 @@ public class NodeImpl extends ClassableImpl implements Node {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case TestPackage.NODE__ATTRIBUTES:
-				setAttributes((AttributeList)newValue);
+				getAttributes().clear();
+				getAttributes().addAll((Collection<? extends Attribute>)newValue);
 				return;
-			case TestPackage.NODE__CHILDREN:
-				setChildren((ChildrenList)newValue);
+			case TestPackage.NODE__CHILD_NODES:
+				getChildNodes().clear();
+				getChildNodes().addAll((Collection<? extends Node>)newValue);
 				return;
 			case TestPackage.NODE__IS_NULL:
 				setIsNull((Boolean)newValue);
@@ -299,10 +242,10 @@ public class NodeImpl extends ClassableImpl implements Node {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case TestPackage.NODE__ATTRIBUTES:
-				setAttributes((AttributeList)null);
+				getAttributes().clear();
 				return;
-			case TestPackage.NODE__CHILDREN:
-				setChildren((ChildrenList)null);
+			case TestPackage.NODE__CHILD_NODES:
+				getChildNodes().clear();
 				return;
 			case TestPackage.NODE__IS_NULL:
 				unsetIsNull();
@@ -320,9 +263,9 @@ public class NodeImpl extends ClassableImpl implements Node {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case TestPackage.NODE__ATTRIBUTES:
-				return attributes != null;
-			case TestPackage.NODE__CHILDREN:
-				return children != null;
+				return attributes != null && !attributes.isEmpty();
+			case TestPackage.NODE__CHILD_NODES:
+				return childNodes != null && !childNodes.isEmpty();
 			case TestPackage.NODE__IS_NULL:
 				return isSetIsNull();
 		}

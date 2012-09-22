@@ -59,14 +59,9 @@ public abstract class AbstractContent implements IContent {
 		
 		return childs.toArray(new IContent[childs.size()]);
 	}
-
-	@Override
-	public Image getImage(ResourceManager manager) {
-		if (getIcon() == null) {
-			return manager.createImage(ContentIcon.PLACEHOLDER.getDescriptor(!hasChildren()));
-		}
-		
-		return manager.createImage(getIcon().getDescriptor(!hasChildren()));
+	
+	public Image getImage() {
+		return getIcon().getImage(!hasChildren());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -81,6 +76,11 @@ public abstract class AbstractContent implements IContent {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public String getToolTip() {
+		return "";
 	}
 	
 	protected abstract ContentIcon getIcon();

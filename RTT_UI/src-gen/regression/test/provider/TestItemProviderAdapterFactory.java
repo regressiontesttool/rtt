@@ -99,52 +99,6 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.AttributeList} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected AttributeListItemProvider attributeListItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.AttributeList}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createAttributeListAdapter() {
-		if (attributeListItemProvider == null) {
-			attributeListItemProvider = new AttributeListItemProvider(this);
-		}
-
-		return attributeListItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.ChildrenList} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ChildrenListItemProvider childrenListItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.ChildrenList}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createChildrenListAdapter() {
-		if (childrenListItemProvider == null) {
-			childrenListItemProvider = new ChildrenListItemProvider(this);
-		}
-
-		return childrenListItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link regression.test.Classable} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -405,8 +359,6 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	 */
 	public void dispose() {
 		if (attributeItemProvider != null) attributeItemProvider.dispose();
-		if (attributeListItemProvider != null) attributeListItemProvider.dispose();
-		if (childrenListItemProvider != null) childrenListItemProvider.dispose();
 		if (classableItemProvider != null) classableItemProvider.dispose();
 		if (documentRootItemProvider != null) documentRootItemProvider.dispose();
 		if (lexerOutputTypeItemProvider != null) lexerOutputTypeItemProvider.dispose();

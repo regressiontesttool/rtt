@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import rtt.ui.content.IContent;
 
-public class BaseContentProvider implements IStructuredContentProvider {
+public class RttStructuredContentProvider implements IStructuredContentProvider {
 
 	public static final Object[] EMPTY_ARRAY = new Object[0];
 

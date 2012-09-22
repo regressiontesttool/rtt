@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 
 import rtt.ui.content.IContent;
 
-public class BaseContentLabelProvider extends LabelProvider {
+public class RttSimpleLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {

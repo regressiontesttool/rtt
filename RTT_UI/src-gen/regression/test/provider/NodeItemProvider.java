@@ -104,7 +104,7 @@ public class NodeItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(TestPackage.Literals.NODE__ATTRIBUTES);
-			childrenFeatures.add(TestPackage.Literals.NODE__CHILDREN);
+			childrenFeatures.add(TestPackage.Literals.NODE__CHILD_NODES);
 		}
 		return childrenFeatures;
 	}
@@ -159,7 +159,7 @@ public class NodeItemProvider
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case TestPackage.NODE__ATTRIBUTES:
-			case TestPackage.NODE__CHILDREN:
+			case TestPackage.NODE__CHILD_NODES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -180,12 +180,12 @@ public class NodeItemProvider
 		newChildDescriptors.add
 			(createChildParameter
 				(TestPackage.Literals.NODE__ATTRIBUTES,
-				 TestFactory.eINSTANCE.createAttributeList()));
+				 TestFactory.eINSTANCE.createAttribute()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.NODE__CHILDREN,
-				 TestFactory.eINSTANCE.createChildrenList()));
+				(TestPackage.Literals.NODE__CHILD_NODES,
+				 TestFactory.eINSTANCE.createNode()));
 	}
 
 }

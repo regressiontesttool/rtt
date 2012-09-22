@@ -43,9 +43,9 @@ public abstract class AbstractLogContent extends AbstractContent implements
 	}
 
 	@Override
-	public Image getImage(int columnIndex, LocalResourceManager resourceManager) {
+	public Image getImage(int columnIndex) {
 		if (columnIndex == 0) {
-			return getImage(resourceManager);
+			return getImage();
 		}
 		
 		return null;

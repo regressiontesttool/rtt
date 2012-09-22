@@ -6,6 +6,8 @@
  */
 package regression.test;
 
+import org.eclipse.emf.common.util.EList;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -16,7 +18,7 @@ package regression.test;
  * The following features are supported:
  * <ul>
  *   <li>{@link regression.test.Node#getAttributes <em>Attributes</em>}</li>
- *   <li>{@link regression.test.Node#getChildren <em>Children</em>}</li>
+ *   <li>{@link regression.test.Node#getChildNodes <em>Child Nodes</em>}</li>
  *   <li>{@link regression.test.Node#isIsNull <em>Is Null</em>}</li>
  * </ul>
  * </p>
@@ -27,58 +29,38 @@ package regression.test;
  */
 public interface Node extends Classable {
 	/**
-	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
+	 * The list contents are of type {@link regression.test.Attribute}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Attributes</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Attributes</em>' containment reference.
-	 * @see #setAttributes(AttributeList)
+	 * @return the value of the '<em>Attributes</em>' containment reference list.
 	 * @see regression.test.TestPackage#getNode_Attributes()
-	 * @model containment="true" required="true"
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='attributes' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	AttributeList getAttributes();
+	EList<Attribute> getAttributes();
 
 	/**
-	 * Sets the value of the '{@link regression.test.Node#getAttributes <em>Attributes</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Attributes</em>' containment reference.
-	 * @see #getAttributes()
-	 * @generated
-	 */
-	void setAttributes(AttributeList value);
-
-	/**
-	 * Returns the value of the '<em><b>Children</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Child Nodes</b></em>' containment reference list.
+	 * The list contents are of type {@link regression.test.Node}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Children</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Child Nodes</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Children</em>' containment reference.
-	 * @see #setChildren(ChildrenList)
-	 * @see regression.test.TestPackage#getNode_Children()
-	 * @model containment="true" required="true"
-	 *        extendedMetaData="kind='element' name='children' namespace='##targetNamespace'"
+	 * @return the value of the '<em>Child Nodes</em>' containment reference list.
+	 * @see regression.test.TestPackage#getNode_ChildNodes()
+	 * @model containment="true"
+	 *        extendedMetaData="kind='element' name='childNodes' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	ChildrenList getChildren();
-
-	/**
-	 * Sets the value of the '{@link regression.test.Node#getChildren <em>Children</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Children</em>' containment reference.
-	 * @see #getChildren()
-	 * @generated
-	 */
-	void setChildren(ChildrenList value);
+	EList<Node> getChildNodes();
 
 	/**
 	 * Returns the value of the '<em><b>Is Null</b></em>' attribute.

@@ -10,14 +10,10 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 import regression.test.Attribute;
-import regression.test.AttributeList;
-import regression.test.ChildrenList;
 import regression.test.Classable;
 import regression.test.DocumentRoot;
 import regression.test.LexerOutputType;
@@ -41,20 +37,6 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * @generated
 	 */
 	private EClass attributeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass attributeListEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass childrenListEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -210,60 +192,6 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getAttributeList() {
-		return attributeListEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getAttributeList_Group() {
-		return (EAttribute)attributeListEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getAttributeList_Attribute() {
-		return (EReference)attributeListEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getChildrenList() {
-		return childrenListEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getChildrenList_Group() {
-		return (EAttribute)childrenListEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getChildrenList_Node() {
-		return (EReference)childrenListEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getClassable() {
 		return classableEClass;
 	}
@@ -390,7 +318,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getNode_Children() {
+	public EReference getNode_ChildNodes() {
 		return (EReference)nodeEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -517,14 +445,6 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		createEAttribute(attributeEClass, ATTRIBUTE__NAME);
 		createEAttribute(attributeEClass, ATTRIBUTE__VALUE);
 
-		attributeListEClass = createEClass(ATTRIBUTE_LIST);
-		createEAttribute(attributeListEClass, ATTRIBUTE_LIST__GROUP);
-		createEReference(attributeListEClass, ATTRIBUTE_LIST__ATTRIBUTE);
-
-		childrenListEClass = createEClass(CHILDREN_LIST);
-		createEAttribute(childrenListEClass, CHILDREN_LIST__GROUP);
-		createEReference(childrenListEClass, CHILDREN_LIST__NODE);
-
 		classableEClass = createEClass(CLASSABLE);
 		createEAttribute(classableEClass, CLASSABLE__FULL_NAME);
 		createEAttribute(classableEClass, CLASSABLE__SIMPLE_NAME);
@@ -542,7 +462,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 
 		nodeEClass = createEClass(NODE);
 		createEReference(nodeEClass, NODE__ATTRIBUTES);
-		createEReference(nodeEClass, NODE__CHILDREN);
+		createEReference(nodeEClass, NODE__CHILD_NODES);
 		createEAttribute(nodeEClass, NODE__IS_NULL);
 
 		parserOutputTypeEClass = createEClass(PARSER_OUTPUT_TYPE);
@@ -599,14 +519,6 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		initEAttribute(getAttribute_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getAttribute_Value(), theXMLTypePackage.getString(), "value", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(attributeListEClass, AttributeList.class, "AttributeList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getAttributeList_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, AttributeList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAttributeList_Attribute(), this.getAttribute(), null, "attribute", null, 0, -1, AttributeList.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-
-		initEClass(childrenListEClass, ChildrenList.class, "ChildrenList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getChildrenList_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, ChildrenList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getChildrenList_Node(), this.getNode(), null, "node", null, 0, -1, ChildrenList.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-
 		initEClass(classableEClass, Classable.class, "Classable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getClassable_FullName(), theXMLTypePackage.getString(), "fullName", null, 0, 1, Classable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getClassable_SimpleName(), theXMLTypePackage.getString(), "simpleName", null, 0, 1, Classable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -623,8 +535,8 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		initEReference(getLexerOutputType_Token(), this.getToken(), null, "token", null, 0, -1, LexerOutputType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(nodeEClass, Node.class, "Node", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getNode_Attributes(), this.getAttributeList(), null, "attributes", null, 1, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getNode_Children(), this.getChildrenList(), null, "children", null, 1, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getNode_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getNode_ChildNodes(), this.getNode(), null, "childNodes", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getNode_IsNull(), theXMLTypePackage.getBoolean(), "isNull", "false", 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(parserOutputTypeEClass, ParserOutputType.class, "ParserOutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -632,7 +544,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		initEReference(getParserOutputType_Tree(), this.getTree(), null, "tree", null, 0, -1, ParserOutputType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(tokenEClass, Token.class, "Token", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getToken_Attributes(), this.getAttributeList(), null, "attributes", null, 1, 1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getToken_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getToken_IsEof(), theXMLTypePackage.getBoolean(), "isEof", "false", 0, 1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(treeEClass, Tree.class, "Tree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -682,52 +594,6 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "value"
-		   });		
-		addAnnotation
-		  (attributeListEClass, 
-		   source, 
-		   new String[] {
-			 "name", "attributeList",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getAttributeList_Group(), 
-		   source, 
-		   new String[] {
-			 "kind", "group",
-			 "name", "group:0"
-		   });		
-		addAnnotation
-		  (getAttributeList_Attribute(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "attribute",
-			 "namespace", "##targetNamespace",
-			 "group", "#group:0"
-		   });		
-		addAnnotation
-		  (childrenListEClass, 
-		   source, 
-		   new String[] {
-			 "name", "childrenList",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getChildrenList_Group(), 
-		   source, 
-		   new String[] {
-			 "kind", "group",
-			 "name", "group:0"
-		   });		
-		addAnnotation
-		  (getChildrenList_Node(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "node",
-			 "namespace", "##targetNamespace",
-			 "group", "#group:0"
 		   });		
 		addAnnotation
 		  (classableEClass, 
@@ -833,11 +699,11 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getNode_Children(), 
+		  (getNode_ChildNodes(), 
 		   source, 
 		   new String[] {
 			 "kind", "element",
-			 "name", "children",
+			 "name", "childNodes",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation

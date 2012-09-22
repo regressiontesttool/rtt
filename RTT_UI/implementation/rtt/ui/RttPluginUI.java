@@ -1,5 +1,6 @@
 package rtt.ui;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +11,17 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import regression.test.util.TestResourceFactoryImpl;
@@ -103,7 +110,7 @@ public class RttPluginUI extends AbstractUIPlugin implements
 
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
 				"rtt", new TestResourceFactoryImpl());
-	}
+	}	
 
 	private synchronized void initProjects() {
 		List<ProjectContent> projects = new ArrayList<ProjectContent>();

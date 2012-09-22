@@ -169,7 +169,7 @@ public class LexerOutputTypeItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return Rtt_OutputEditPlugin.INSTANCE;
+		return RttoutputEditPlugin.INSTANCE;
 	}
 
 }

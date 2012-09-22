@@ -76,14 +76,6 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 				return createAttributeAdapter();
 			}
 			@Override
-			public Adapter caseAttributeList(AttributeList object) {
-				return createAttributeListAdapter();
-			}
-			@Override
-			public Adapter caseChildrenList(ChildrenList object) {
-				return createChildrenListAdapter();
-			}
-			@Override
 			public Adapter caseClassable(Classable object) {
 				return createClassableAdapter();
 			}
@@ -142,34 +134,6 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.AttributeList <em>Attribute List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see regression.test.AttributeList
-	 * @generated
-	 */
-	public Adapter createAttributeListAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.ChildrenList <em>Children List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see regression.test.ChildrenList
-	 * @generated
-	 */
-	public Adapter createChildrenListAdapter() {
 		return null;
 	}
 

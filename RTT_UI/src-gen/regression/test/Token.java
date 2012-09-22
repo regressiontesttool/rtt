@@ -6,6 +6,8 @@
  */
 package regression.test;
 
+import org.eclipse.emf.common.util.EList;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -26,31 +28,21 @@ package regression.test;
  */
 public interface Token extends Classable {
 	/**
-	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
+	 * The list contents are of type {@link regression.test.Attribute}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Attributes</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Attributes</em>' containment reference.
-	 * @see #setAttributes(AttributeList)
+	 * @return the value of the '<em>Attributes</em>' containment reference list.
 	 * @see regression.test.TestPackage#getToken_Attributes()
-	 * @model containment="true" required="true"
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='attributes' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	AttributeList getAttributes();
-
-	/**
-	 * Sets the value of the '{@link regression.test.Token#getAttributes <em>Attributes</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Attributes</em>' containment reference.
-	 * @see #getAttributes()
-	 * @generated
-	 */
-	void setAttributes(AttributeList value);
+	EList<Attribute> getAttributes();
 
 	/**
 	 * Returns the value of the '<em><b>Is Eof</b></em>' attribute.

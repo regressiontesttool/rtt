@@ -5,13 +5,13 @@ import org.eclipse.swt.graphics.Image;
 
 import rtt.core.archive.history.Version;
 import rtt.core.manager.data.history.IHistoryManager;
+import rtt.ui.content.IColumnableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.IDecoratableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
-public class HistoryContent extends AbstractContent implements
-		IDecoratableContent {
+public class HistoryContent extends AbstractContent {
 
 	public enum VersionType {
 		INPUT("Input data", ContentIcon.INPUT_HISTORY), REFERENCE("Reference data",
@@ -64,23 +64,12 @@ public class HistoryContent extends AbstractContent implements
 
 	@Override
 	public String getText() {
-		return type.baseText;
+		return type.baseText + " (" + childCount + ")";
 	}
 
 	@Override
 	protected ContentIcon getIcon() {
 		return type.icon;
-	}
-
-	@Override
-	public Image decorateImage(ResourceManager manager, Image image,
-			IContent content) {
-		return image;
-	}
-
-	@Override
-	public String decorateText(String text, IContent content) {
-		return text + " (" + childCount + ")";
 	}
 
 }

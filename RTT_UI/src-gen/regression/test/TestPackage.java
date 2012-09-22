@@ -106,80 +106,6 @@ public interface TestPackage extends EPackage {
 	int ATTRIBUTE_FEATURE_COUNT = 3;
 
 	/**
-	 * The meta object id for the '{@link regression.test.impl.AttributeListImpl <em>Attribute List</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see regression.test.impl.AttributeListImpl
-	 * @see regression.test.impl.TestPackageImpl#getAttributeList()
-	 * @generated
-	 */
-	int ATTRIBUTE_LIST = 1;
-
-	/**
-	 * The feature id for the '<em><b>Group</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ATTRIBUTE_LIST__GROUP = 0;
-
-	/**
-	 * The feature id for the '<em><b>Attribute</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ATTRIBUTE_LIST__ATTRIBUTE = 1;
-
-	/**
-	 * The number of structural features of the '<em>Attribute List</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ATTRIBUTE_LIST_FEATURE_COUNT = 2;
-
-	/**
-	 * The meta object id for the '{@link regression.test.impl.ChildrenListImpl <em>Children List</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see regression.test.impl.ChildrenListImpl
-	 * @see regression.test.impl.TestPackageImpl#getChildrenList()
-	 * @generated
-	 */
-	int CHILDREN_LIST = 2;
-
-	/**
-	 * The feature id for the '<em><b>Group</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CHILDREN_LIST__GROUP = 0;
-
-	/**
-	 * The feature id for the '<em><b>Node</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CHILDREN_LIST__NODE = 1;
-
-	/**
-	 * The number of structural features of the '<em>Children List</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CHILDREN_LIST_FEATURE_COUNT = 2;
-
-	/**
 	 * The meta object id for the '{@link regression.test.impl.ClassableImpl <em>Classable</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -187,7 +113,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getClassable()
 	 * @generated
 	 */
-	int CLASSABLE = 3;
+	int CLASSABLE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
@@ -224,7 +150,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getDocumentRoot()
 	 * @generated
 	 */
-	int DOCUMENT_ROOT = 4;
+	int DOCUMENT_ROOT = 2;
 
 	/**
 	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
@@ -288,7 +214,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getLexerOutputType()
 	 * @generated
 	 */
-	int LEXER_OUTPUT_TYPE = 5;
+	int LEXER_OUTPUT_TYPE = 3;
 
 	/**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -325,7 +251,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getNode()
 	 * @generated
 	 */
-	int NODE = 6;
+	int NODE = 4;
 
 	/**
 	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
@@ -346,7 +272,7 @@ public interface TestPackage extends EPackage {
 	int NODE__SIMPLE_NAME = CLASSABLE__SIMPLE_NAME;
 
 	/**
-	 * The feature id for the '<em><b>Attributes</b></em>' containment reference.
+	 * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -355,13 +281,13 @@ public interface TestPackage extends EPackage {
 	int NODE__ATTRIBUTES = CLASSABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Children</b></em>' containment reference.
+	 * The feature id for the '<em><b>Child Nodes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int NODE__CHILDREN = CLASSABLE_FEATURE_COUNT + 1;
+	int NODE__CHILD_NODES = CLASSABLE_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Is Null</b></em>' attribute.
@@ -389,7 +315,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getParserOutputType()
 	 * @generated
 	 */
-	int PARSER_OUTPUT_TYPE = 7;
+	int PARSER_OUTPUT_TYPE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -426,7 +352,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getToken()
 	 * @generated
 	 */
-	int TOKEN = 8;
+	int TOKEN = 6;
 
 	/**
 	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
@@ -447,7 +373,7 @@ public interface TestPackage extends EPackage {
 	int TOKEN__SIMPLE_NAME = CLASSABLE__SIMPLE_NAME;
 
 	/**
-	 * The feature id for the '<em><b>Attributes</b></em>' containment reference.
+	 * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -481,7 +407,7 @@ public interface TestPackage extends EPackage {
 	 * @see regression.test.impl.TestPackageImpl#getTree()
 	 * @generated
 	 */
-	int TREE = 9;
+	int TREE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
@@ -571,70 +497,6 @@ public interface TestPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getAttribute_Value();
-
-	/**
-	 * Returns the meta object for class '{@link regression.test.AttributeList <em>Attribute List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Attribute List</em>'.
-	 * @see regression.test.AttributeList
-	 * @generated
-	 */
-	EClass getAttributeList();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link regression.test.AttributeList#getGroup <em>Group</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Group</em>'.
-	 * @see regression.test.AttributeList#getGroup()
-	 * @see #getAttributeList()
-	 * @generated
-	 */
-	EAttribute getAttributeList_Group();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.AttributeList#getAttribute <em>Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Attribute</em>'.
-	 * @see regression.test.AttributeList#getAttribute()
-	 * @see #getAttributeList()
-	 * @generated
-	 */
-	EReference getAttributeList_Attribute();
-
-	/**
-	 * Returns the meta object for class '{@link regression.test.ChildrenList <em>Children List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Children List</em>'.
-	 * @see regression.test.ChildrenList
-	 * @generated
-	 */
-	EClass getChildrenList();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link regression.test.ChildrenList#getGroup <em>Group</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Group</em>'.
-	 * @see regression.test.ChildrenList#getGroup()
-	 * @see #getChildrenList()
-	 * @generated
-	 */
-	EAttribute getChildrenList_Group();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.ChildrenList#getNode <em>Node</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Node</em>'.
-	 * @see regression.test.ChildrenList#getNode()
-	 * @see #getChildrenList()
-	 * @generated
-	 */
-	EReference getChildrenList_Node();
 
 	/**
 	 * Returns the meta object for class '{@link regression.test.Classable <em>Classable</em>}'.
@@ -776,10 +638,10 @@ public interface TestPackage extends EPackage {
 	EClass getNode();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link regression.test.Node#getAttributes <em>Attributes</em>}'.
+	 * Returns the meta object for the containment reference list '{@link regression.test.Node#getAttributes <em>Attributes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Attributes</em>'.
+	 * @return the meta object for the containment reference list '<em>Attributes</em>'.
 	 * @see regression.test.Node#getAttributes()
 	 * @see #getNode()
 	 * @generated
@@ -787,15 +649,15 @@ public interface TestPackage extends EPackage {
 	EReference getNode_Attributes();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link regression.test.Node#getChildren <em>Children</em>}'.
+	 * Returns the meta object for the containment reference list '{@link regression.test.Node#getChildNodes <em>Child Nodes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Children</em>'.
-	 * @see regression.test.Node#getChildren()
+	 * @return the meta object for the containment reference list '<em>Child Nodes</em>'.
+	 * @see regression.test.Node#getChildNodes()
 	 * @see #getNode()
 	 * @generated
 	 */
-	EReference getNode_Children();
+	EReference getNode_ChildNodes();
 
 	/**
 	 * Returns the meta object for the attribute '{@link regression.test.Node#isIsNull <em>Is Null</em>}'.
@@ -851,10 +713,10 @@ public interface TestPackage extends EPackage {
 	EClass getToken();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link regression.test.Token#getAttributes <em>Attributes</em>}'.
+	 * Returns the meta object for the containment reference list '{@link regression.test.Token#getAttributes <em>Attributes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Attributes</em>'.
+	 * @return the meta object for the containment reference list '<em>Attributes</em>'.
 	 * @see regression.test.Token#getAttributes()
 	 * @see #getToken()
 	 * @generated
@@ -959,58 +821,6 @@ public interface TestPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ATTRIBUTE__VALUE = eINSTANCE.getAttribute_Value();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.impl.AttributeListImpl <em>Attribute List</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.impl.AttributeListImpl
-		 * @see regression.test.impl.TestPackageImpl#getAttributeList()
-		 * @generated
-		 */
-		EClass ATTRIBUTE_LIST = eINSTANCE.getAttributeList();
-
-		/**
-		 * The meta object literal for the '<em><b>Group</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ATTRIBUTE_LIST__GROUP = eINSTANCE.getAttributeList_Group();
-
-		/**
-		 * The meta object literal for the '<em><b>Attribute</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ATTRIBUTE_LIST__ATTRIBUTE = eINSTANCE.getAttributeList_Attribute();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.impl.ChildrenListImpl <em>Children List</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.impl.ChildrenListImpl
-		 * @see regression.test.impl.TestPackageImpl#getChildrenList()
-		 * @generated
-		 */
-		EClass CHILDREN_LIST = eINSTANCE.getChildrenList();
-
-		/**
-		 * The meta object literal for the '<em><b>Group</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CHILDREN_LIST__GROUP = eINSTANCE.getChildrenList_Group();
-
-		/**
-		 * The meta object literal for the '<em><b>Node</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CHILDREN_LIST__NODE = eINSTANCE.getChildrenList_Node();
 
 		/**
 		 * The meta object literal for the '{@link regression.test.impl.ClassableImpl <em>Classable</em>}' class.
@@ -1125,7 +935,7 @@ public interface TestPackage extends EPackage {
 		EClass NODE = eINSTANCE.getNode();
 
 		/**
-		 * The meta object literal for the '<em><b>Attributes</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1133,12 +943,12 @@ public interface TestPackage extends EPackage {
 		EReference NODE__ATTRIBUTES = eINSTANCE.getNode_Attributes();
 
 		/**
-		 * The meta object literal for the '<em><b>Children</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Child Nodes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference NODE__CHILDREN = eINSTANCE.getNode_Children();
+		EReference NODE__CHILD_NODES = eINSTANCE.getNode_ChildNodes();
 
 		/**
 		 * The meta object literal for the '<em><b>Is Null</b></em>' attribute feature.
@@ -1185,7 +995,7 @@ public interface TestPackage extends EPackage {
 		EClass TOKEN = eINSTANCE.getToken();
 
 		/**
-		 * The meta object literal for the '<em><b>Attributes</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

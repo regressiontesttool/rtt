@@ -9,7 +9,7 @@ import rtt.ui.content.logging.LogDetailContent;
 import rtt.ui.content.logging.LogEntryContent;
 import rtt.ui.content.logging.TestResultContent;
 
-public class ContentViewerFilter extends ViewerFilter {
+public class RttViewerFilter extends ViewerFilter {
 	
 	private enum FilterType {
 		NONE(null), INFO(EntryType.INFO), GENERATION(EntryType.GENERATION), TESTRUN(
@@ -48,7 +48,7 @@ public class ContentViewerFilter extends ViewerFilter {
 
 	private int selectionIndex;
 
-	public ContentViewerFilter(int selectionIndex) {
+	public RttViewerFilter(int selectionIndex) {
 		this.selectionIndex = selectionIndex;
 	}
 
