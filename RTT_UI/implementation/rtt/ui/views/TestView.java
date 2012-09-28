@@ -45,8 +45,7 @@ import rtt.ui.dialogs.GenerationResultsDialog;
 import rtt.ui.utils.AbstractTestRunnable;
 import rtt.ui.utils.GenerateTestRunnable;
 import rtt.ui.utils.RunTestRunnable;
-import rtt.ui.viewer.RttColumnLabelProvider;
-import rtt.ui.viewer.RttColumnLabelProvider;
+import rtt.ui.viewer.RttDoubleClickListener;
 import rtt.ui.viewer.RttLabelProvider;
 import rtt.ui.viewer.RttSimpleLabelProvider;
 import rtt.ui.viewer.RttStructuredContentProvider;
@@ -206,13 +205,15 @@ public class TestView extends ViewPart implements ISelectionListener {
 				1, 1));
 		historyGroup.setText("History");		
 
-		contentViewer = new TreeViewer(historyGroup, 
+		contentViewer = new TreeViewer(historyGroup, SWT.BORDER |
 				SWT.SINGLE | SWT.H_SCROLL | 
 				SWT.V_SCROLL | SWT.FULL_SELECTION);
 		
 		contentViewer.setContentProvider(new RttTreeContentProvider());
 		contentViewer.setLabelProvider(new RttLabelProvider());
 		ColumnViewerToolTipSupport.enableFor(contentViewer, ToolTip.NO_RECREATE);
+		
+		contentViewer.addDoubleClickListener(new RttDoubleClickListener(getSite().getPage()));
 		
 		Tree tree = contentViewer.getTree();
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));

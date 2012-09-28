@@ -7,11 +7,11 @@ import org.eclipse.ui.IWorkbenchPage;
 
 import rtt.ui.content.IClickableContent;
 
-public class ContentDoubleClickListener implements IDoubleClickListener {
+public class RttDoubleClickListener implements IDoubleClickListener {
 	
 	private IWorkbenchPage page;
 
-	public ContentDoubleClickListener(IWorkbenchPage page) {
+	public RttDoubleClickListener(IWorkbenchPage page) {
 		this.page = page;
 	}
 

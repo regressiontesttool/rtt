@@ -25,7 +25,7 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.logging.AbstractLogContent;
 import rtt.ui.content.logging.LogDirectory;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.viewer.ContentDoubleClickListener;
+import rtt.ui.viewer.RttDoubleClickListener;
 import rtt.ui.viewer.RttColumnLabelProvider;
 import rtt.ui.viewer.RttTreeContentProvider;
 import rtt.ui.viewer.RttViewerFilter;
@@ -84,7 +84,9 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 		TreeColumnLayout treeColumnLayout = new TreeColumnLayout();
 		treeComposite.setLayout(treeColumnLayout);
 
-		contentViewer = new TreeViewer(treeComposite, SWT.BORDER);
+		contentViewer = new TreeViewer(treeComposite, SWT.BORDER |
+				SWT.SINGLE | SWT.H_SCROLL | 
+				SWT.V_SCROLL | SWT.FULL_SELECTION);
 		Tree tree = contentViewer.getTree();
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
@@ -95,7 +97,7 @@ public class LogView extends ViewPart implements IRttListener<ProjectContent> {
 		
 		contentViewer.setComparator(new ContentViewerComperator());
 		contentViewer.setContentProvider(new RttTreeContentProvider());
-		contentViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
+		contentViewer.addDoubleClickListener(new RttDoubleClickListener(getSite().getPage()));
 		
 		// register context menu for comments
 		MenuManager menuManager = new MenuManager();

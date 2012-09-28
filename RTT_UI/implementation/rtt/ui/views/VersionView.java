@@ -44,7 +44,7 @@ import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestcaseContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
-import rtt.ui.viewer.ContentDoubleClickListener;
+import rtt.ui.viewer.RttDoubleClickListener;
 import rtt.ui.viewer.RttColumnLabelProvider;
 import rtt.ui.viewer.RttSimpleLabelProvider;
 import rtt.ui.viewer.RttStructuredContentProvider;
@@ -207,7 +207,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 				SWT.V_SCROLL | SWT.SINGLE |
 				SWT.FULL_SELECTION);
 		treeViewer.setContentProvider(new RttTreeContentProvider());
-		treeViewer.addDoubleClickListener(new ContentDoubleClickListener(getSite().getPage()));
+		treeViewer.addDoubleClickListener(new RttDoubleClickListener(getSite().getPage()));
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
 		treeViewer.getTree().setEnabled(false);
