@@ -513,32 +513,9 @@ public class Manager {
 
 				// if reference data has replaced, update version data
 				if (result.hasReplaced) {
-
 					String configName = config.getName();
-
-					// find version data for current config in test case data
-					List<VersionData> versionList = tcase.getVersionData();
-					VersionData versionData = null;
-					for (VersionData tempData : versionList) {
-						if (tempData.getConfig().equals(configName)) {
-							versionData = tempData;
-							break;
-						}
-					}
-
-					// if no version data was found, then create, otherwise
-					// remove
-					if (versionData == null) {
-						versionData = new VersionData();
-						versionData.setConfig(configName);
-					} else {
-						versionList.remove(versionData);
-					}
-
-					// update the version data to current reference version &
-					// save
+					VersionData versionData = currentArchive.getVersionData(tcase, configName, true);
 					versionData.setReferenceID(versionData.getReferenceID() + 1);
-					versionList.add(versionData);
 				}
 			}
 
@@ -620,11 +597,8 @@ public class Manager {
 				testManager.save();
 				
 				if (genResult.hasReplaced) {
-					for (VersionData versionData : tcase.getVersionData()) {
-						if (versionData.getConfig().equals(configuration.getName())) {
-							versionData.setTestID(versionData.getTestID() + 1);
-						}
-					}						
+					VersionData versionData = currentArchive.getVersionData(tcase, configuration.getName(), true);
+					versionData.setTestID(versionData.getTestID() + 1);						
 				}
 				
 				// do testing

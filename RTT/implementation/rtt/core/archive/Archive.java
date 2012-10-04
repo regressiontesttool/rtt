@@ -6,6 +6,7 @@ import java.util.List;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
+import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
@@ -480,6 +481,30 @@ public class Archive {
 		logManager = null;
 
 		loader.close();
+	}
+
+	public VersionData getVersionData(Testcase tcase, String configName, boolean create) {
+		if (tcase == null || configName == null || configName.isEmpty()) {
+			throw new IllegalArgumentException("The given test case was null or the config name was null or empty");
+		}
+		
+		List<VersionData> versionList = tcase.getVersionData();
+		
+		for (VersionData versionData : versionList) {
+			if (versionData.getConfig().equals(configName)) {
+				return versionData;
+			}
+		}
+		
+		if (create) {
+			VersionData versionData = new VersionData();
+			versionData.setConfig(configName);
+			
+			versionList.add(versionData);
+			return versionData;
+		}		
+		
+		return null;
 	}
 
 }
