@@ -84,6 +84,10 @@
             name="%commands.testsuite.remove.name">
       </command>
       <command
+            id="rtt.ui.commands.tests.junitexport"
+            name="%commands.tests.junitexport.name">
+      </command>
+      <command
             id="rtt.ui.commands.testcase.add"
             name="%commands.testcase.add.name">
       </command>
@@ -339,6 +343,17 @@
                </reference>
             </visibleWhen>
          </command>
+         <command
+               commandId="rtt.ui.commands.tests.junitexport"
+               id="tests.junitexport"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="rtt.ui.definitions.selection.testsuite">
+               </reference>
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -370,6 +385,12 @@
             commandId="rtt.ui.commands.tests.run">
          <class
                class="rtt.ui.handlers.tests.RunTestsHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="rtt.ui.commands.tests.junitexport">
+         <class
+               class="rtt.ui.handlers.tests.JUnitExportHandler">
          </class>
       </handler>
       <handler
