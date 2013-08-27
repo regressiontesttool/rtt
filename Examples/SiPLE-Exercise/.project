@@ -13,6 +13,5 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>rtt.ui.projectnature</nature>
 	</natures>
 </projectDescription>
