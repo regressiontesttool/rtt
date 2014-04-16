@@ -3,28 +3,7 @@
    <description name="Regression Test Tool" url="http://rtt.googlecode.com/svn/trunk/RTT_Update">
       Regression Test Tool (RTT) Eclipse Plugin. RTT is a regression test tool for tree-structured repositories. It provides a set of Java annotations used to specify the repository components to test and a test infrastructure for creating, updating and performing tests.
    </description>
-   <feature url="features/rtt.feature_1.0.0.201207011903.jar" id="rtt.feature" version="1.0.0.201207011903">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.0.1.201208160111.jar" id="rtt.feature" version="1.0.1.201208160111">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.1.0.201208232005.jar" id="rtt.feature" version="1.1.0.201208232005">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.1.1.201208312100.jar" id="rtt.feature" version="1.1.1.201208312100">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.1.2.201209191248.jar" id="rtt.feature" version="1.1.2.201209191248">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.1.3.201209221646.jar" id="rtt.feature" version="1.1.3.201209221646">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.1.4.201209281850.jar" id="rtt.feature" version="1.1.4.201209281850">
-      <category name="rtt.category"/>
-   </feature>
-   <feature url="features/rtt.feature_1.1.5.201210042230.jar" id="rtt.feature" version="1.1.5.201210042230">
+   <feature url="features/rtt.feature_1.5.0.201404161150.jar" id="rtt.feature" version="1.5.0.201404161150">
       <category name="rtt.category"/>
    </feature>
    <category-def name="rtt.category" label="Regression Test Tool"/>
