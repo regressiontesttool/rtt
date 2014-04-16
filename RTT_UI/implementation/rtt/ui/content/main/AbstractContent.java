@@ -3,9 +3,9 @@ package rtt.ui.content.main;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 
+import rtt.core.manager.Manager;
 import rtt.ui.content.IContent;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.model.RttProject;
@@ -32,7 +32,7 @@ public abstract class AbstractContent implements IContent {
 	}
 	
 	@Override
-	public void reload(ReloadInfo info) {}
+	public void reload(ReloadInfo info, Manager manager) {}
 	
 	@Override
 	public void notifyChanges() {}
@@ -71,7 +71,7 @@ public abstract class AbstractContent implements IContent {
 			return (T) this;
 		}
 		
-		if (parent != null && parent instanceof IContent) {
+		if (parent instanceof IContent) {
 			return ((IContent) parent).getContent(clazz);
 		}
 		

@@ -1,20 +1,18 @@
 package rtt.ui.propertyTester;
 
-import java.util.Arrays;
-
 import org.eclipse.core.expressions.PropertyTester;
 
 import rtt.ui.content.IContent;
 import rtt.ui.content.configuration.ClasspathContent;
 import rtt.ui.content.configuration.ConfigurationContent;
-import rtt.ui.content.main.SimpleTypedContent;
-import rtt.ui.content.main.SimpleTypedContent.ContentType;
+import rtt.ui.content.testsuite.TestcaseContent;
 
 public class ContentTypePropertyTester extends PropertyTester {
 	
 	protected enum ParentProperty {
-		CONFIGURATION(ConfigurationContent.class), CLASSPATH(
-				ClasspathContent.class);
+		CONFIGURATION(ConfigurationContent.class), 
+		CLASSPATH(ClasspathContent.class),
+		TESTCASE(TestcaseContent.class);
 
 		private Class<? extends IContent> contentClass;
 
@@ -27,35 +25,20 @@ public class ContentTypePropertyTester extends PropertyTester {
 		}
 	}
 
-	public ContentTypePropertyTester() {
-		// TODO Auto-generated constructor stub
-	}
+	public ContentTypePropertyTester() { }
 
 	@Override
 	public boolean test(Object receiver, String property, Object[] args,
 			Object expectedValue) {
 		
-		System.out.println("Receiver: "  + receiver);
-		System.out.println("Property: " + property);
-		System.out.println("Args: " + Arrays.toString(args));
-		System.out.println("ExpectedValue: " + expectedValue);
-		System.out.println("-------------------------------");
+//		System.out.println("Receiver: "  + receiver);
+//		System.out.println("Property: " + property);
+//		System.out.println("Args: " + Arrays.toString(args));
+//		System.out.println("ExpectedValue: " + expectedValue);
+//		System.out.println("-------------------------------");
 		
-		if (property.equals("hasType")) {
-			return hasType(receiver, args, expectedValue);
-		} else if (property.equals("hasParent")) {
+		if (property.equals("hasParent")) {
 			return hasParent(receiver, args, expectedValue);
-		} else if (property.equals("hasChilds")) {
-			return hasChildren(receiver, args, expectedValue);
-		}
-		
-		return false;		
-	}
-
-	private boolean hasChildren(Object receiver, Object[] args, Object expectedValue) {
-		if (receiver instanceof IContent) {
-			IContent content = (IContent) receiver;
-			return content.hasChildren();
 		}
 		
 		return false;
@@ -77,20 +60,7 @@ public class ContentTypePropertyTester extends PropertyTester {
 		return false;
 	}
 
-	private boolean hasType(Object receiver, Object[] args, Object expectedValue) {
-		if (receiver instanceof SimpleTypedContent) {
-			SimpleTypedContent content = (SimpleTypedContent) receiver;
-
-			ContentType type = findContentType(args);
-			if (type != null) {
-				return content.getType() == type;
-			}
-		}
-
-		return false;
-	}
-
-	public ParentProperty findParentProperty(Object[] args) {
+	private ParentProperty findParentProperty(Object[] args) {
 		for (Object object : args) {
 			if (object instanceof String) {
 				String argument = (String) object;
@@ -106,22 +76,4 @@ public class ContentTypePropertyTester extends PropertyTester {
 
 		return null;
 	}
-
-	public ContentType findContentType(Object[] args) {
-		for (Object object : args) {
-			if (object instanceof String) {
-				String argument = (String) object;
-				try {
-					ContentType type = ContentType.valueOf(argument
-							.toUpperCase());
-					return type;
-				} catch (Exception e) {
-					// e.printStackTrace();
-				}
-			}
-		}
-
-		return null;
-	}
-
 }

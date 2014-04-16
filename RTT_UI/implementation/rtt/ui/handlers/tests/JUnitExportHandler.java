@@ -16,13 +16,13 @@ import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.dialogs.JUnitExportDialog;
 
 /**
- * @author C. BŸrger
+ * @author C. Bï¿½rger
  */
 public class JUnitExportHandler extends AbstractSelectionHandler implements IHandler {
 	public static final String ID = "rtt.ui.commands.tests.junitexport";
 	
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object doExecute(ExecutionEvent event) throws ExecutionException {
 		ProjectContent projectContent = getProjectContent(event);
 		TestsuiteContent suiteContent = getSelectedObject(TestsuiteContent.class, event);
 		

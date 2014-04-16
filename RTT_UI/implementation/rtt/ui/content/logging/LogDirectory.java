@@ -1,12 +1,13 @@
 package rtt.ui.content.logging;
 
-import rtt.core.archive.logging.ArchiveLog;
+import java.util.List;
+
+import rtt.core.archive.Archive;
 import rtt.core.archive.logging.Entry;
 import rtt.core.archive.logging.EntryType;
+import rtt.core.manager.Manager;
 import rtt.core.manager.data.LogManager;
-import rtt.ui.content.IContent;
 import rtt.ui.content.ReloadInfo;
-import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.content.main.EmptyContent;
@@ -17,44 +18,40 @@ public class LogDirectory extends AbstractContent {
 	private boolean isEmpty = false;
 
 	public LogDirectory(ProjectContent parent) {
-		super(parent);
-		loadContents();		
+		super(parent);		
 	}
 	
-	private void loadContents() {
-		LogManager logManager = getProject().getLogManager();
+	private void loadContents(Archive archive) {
+		LogManager logManager = archive.getLogManager();
+		List<Entry> entries = logManager.getLogEntries();
 		
-		if (logManager != null) {
-			ArchiveLog log = logManager.getData();
-			
-			if (log == null || log.getEntry().isEmpty()) {				
-				isEmpty = true;
-				childs.add(new EmptyContent("No log entries found."));
-				
-			} else {
-				for (Entry entry : log.getEntry()) {
-					if (entry.getType() == EntryType.TESTRUN) {
-						childs.add(new TestrunContent(this, entry));
-					} else {
-						childs.add(new LogEntryContent(this, entry));
-					}
+		if (entries == null || entries.isEmpty()) {
+			isEmpty = true;
+			childs.add(new EmptyContent("No log entries found."));
+		} else {
+			for (Entry entry : entries) {
+				if (entry.getType() == EntryType.TESTRUN) {
+					childs.add(new TestrunContent(this, entry));
+				} else {
+					childs.add(new LogEntryContent(this, entry));
 				}
 			}
-		} else {
-			childs.add(new EmptyContent("No archive log found."));
 		}
 	}
 	
-	@Override
-	public void reload(ReloadInfo info) {
-		if (info.contains(Content.TESTRUN) || info.contains(Content.DETAIL)) {
-			for (IContent content : childs) {
-				content.reload(info);
-			}
-		} else {
-			childs.clear();
-			loadContents();
-		}
+	public void reload(ReloadInfo info, Manager manager) {
+		childs.clear();
+		loadContents(manager.getArchive());
+		
+//		TODO nur entsprechende Elemente updaten, statt alles
+//		if (info.contains(Content.TESTRUN) || info.contains(Content.DETAIL)) {
+//			for (IContent content : childs) {
+//				content.reload(info);
+//			}
+//		} else {
+//			childs.clear();
+//			loadContents();
+//		}
 	}
 	
 	public boolean isEmpty() {

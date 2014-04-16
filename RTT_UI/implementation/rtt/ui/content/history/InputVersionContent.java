@@ -6,7 +6,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 import rtt.core.archive.history.Version;
-import rtt.core.manager.data.history.IHistoryManager;
 import rtt.core.manager.data.history.InputManager;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.IClickableContent;
@@ -16,16 +15,15 @@ import rtt.ui.editors.input.InputEditorInput;
 public class InputVersionContent extends AbstractVersionContent<InputManager>
 		implements IClickableContent {
 
-	public InputVersionContent(IContent parent, Version version,
-			IHistoryManager manager) {
-		super(parent, version, (InputManager) manager);
+	public InputVersionContent(IContent parent, Version version, String suiteName, String caseName){
+		super(parent, version, suiteName, caseName);
 	}
 
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
 		try {
 			currentPage.openEditor(
-					new InputEditorInput(manager, version.getNr()),
+					new InputEditorInput(this, suiteName, caseName, version.getNr()),
 					"org.eclipse.ui.DefaultTextEditor", true);
 		} catch (PartInitException e) {
 			ErrorDialog.openError(currentPage.getActivePart().getSite()

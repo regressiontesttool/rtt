@@ -1,16 +1,9 @@
 package rtt.ui.editors;
 
-import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
-import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
-import org.eclipse.emf.edit.provider.DelegatingWrapperItemProvider;
-import org.eclipse.emf.edit.provider.FeatureMapEntryWrapperItemProvider;
-import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
-import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.emf.edit.provider.IItemPropertySource;
+import org.eclipse.emf.edit.ui.provider.PropertySource;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -20,12 +13,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.DetailsPart;
+import org.eclipse.ui.forms.IDetailsPage;
+import org.eclipse.ui.forms.IDetailsPageProvider;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import regression.test.Attribute;
+import regression.test.DocumentRoot;
+import regression.test.Node;
+import regression.test.ParserOutputType;
 import regression.test.provider.TestItemProviderAdapterFactory;
 
 class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
@@ -65,20 +64,49 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		managedForm.addPart(sPart);
 		
 		TreeViewer viewer = new TreeViewer(tree);
-		prepareViewer(viewer);
+		viewer.setContentProvider(page.getContentProvider());
+		viewer.setLabelProvider(page.getLabelProvider());
+		
+		// set viewer input 
+		Resource resource = page.getResource();
+		if (resource.getContents().get(0) instanceof DocumentRoot) {
+			DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
+			viewer.setInput(root);			
+		} else {
+			viewer.setInput(resource);
+		}	
+		
+		viewer.expandToLevel(4);
+
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(sPart, event.getSelection());
 			}
-		});		
+		});
+		
+		page.getSite().setSelectionProvider(viewer);
 	}
 
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
-		detailsPart.registerPage(DelegatingWrapperItemProvider.class, new PropertySourceDetailsPage());
-		detailsPart.registerPage(FeatureMapEntryWrapperItemProvider.class, new PropertySourceDetailsPage());
+		detailsPart.setPageProvider(new IDetailsPageProvider() {
+			
+			@Override
+			public Object getPageKey(Object object) {
+				return object;
+			}
+			
+			@Override
+			public IDetailsPage getPage(Object key) {
+				if (key instanceof EObject) {
+					return new PropertyDescriptorDetailsPage();
+				}
+				
+				return null;
+			}
+		});
 	}
 
 	@Override
@@ -86,23 +114,4 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	private void prepareViewer(TreeViewer viewer) {
-		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
-
-		adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory());
-		adapterFactory.addAdapterFactory(new TestItemProviderAdapterFactory());
-		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
-		
-		viewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-		viewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-		
-		AdapterFactoryEditingDomain editingDomain = new AdapterFactoryEditingDomain(adapterFactory, new BasicCommandStack(), page.getResourceSet());
-		page.getSite().setSelectionProvider(viewer);
-		ResourceSet resourceSet = editingDomain.getResourceSet();
-		Resource documentRoot = resourceSet.getResources().get(0);
-		
-		viewer.setInput(documentRoot.getContents().get(0));
-		viewer.expandToLevel(4);
-	}	
 }

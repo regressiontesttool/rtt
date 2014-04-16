@@ -2,6 +2,7 @@ package rtt.ui.content.testsuite;
 
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.Testsuite;
+import rtt.core.manager.Manager;
 import rtt.ui.content.IContent;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
@@ -29,7 +30,7 @@ public class TestsuiteContent extends AbstractContent {
 	}
 	
 	@Override
-	public void reload(ReloadInfo info) {
+	public void reload(ReloadInfo info, Manager manager) {
 		if (info.contains(Content.TESTCASE)) {
 			childs.clear();
 			loadContent();

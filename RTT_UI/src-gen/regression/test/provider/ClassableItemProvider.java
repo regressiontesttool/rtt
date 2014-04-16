@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -129,10 +125,15 @@ public class ClassableItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
-		return ((Classable)object).getSimpleName();
+		Classable classable = (Classable) object;		
+		String label = classable.getSimpleName();
+		
+		return label == null || label.length() == 0 ?
+			getString("_UI_Classable_type") : label;
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class ClassableItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return RttoutputEditPlugin.INSTANCE;
+		return RTTOutputDataEditPlugin.INSTANCE;
 	}
 
 }

@@ -14,16 +14,19 @@ import rtt.ui.content.main.ContentIcon;
 public abstract class AbstractVersionContent<T extends IHistoryManager> extends
 		AbstractContent implements IColumnableContent {
 
-	protected T manager;
 	protected Version version;
 	protected Calendar calendar;
+	protected String suiteName;
+	protected String caseName;
 
-	public AbstractVersionContent(IContent parent, Version version, T manager) {
+	public AbstractVersionContent(IContent parent, Version version, String suiteName, String caseName) {
 		super(parent);
 
-		this.manager = manager;
 		this.version = version;
 		this.calendar = version.getDate();
+		
+		this.suiteName = suiteName;
+		this.caseName = caseName;
 	}
 	
 	@Override

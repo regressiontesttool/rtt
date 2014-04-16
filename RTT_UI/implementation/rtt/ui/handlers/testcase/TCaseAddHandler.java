@@ -9,16 +9,22 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
+import rtt.core.archive.testsuite.Testcase;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
-import rtt.ui.RttLog;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
+import rtt.ui.utils.RttLog;
 
+/**
+ * This handler is used to create a new {@link Testcase}.
+ * @author Christian Oelsner <C.Oelsner@gmail.com>
+ *
+ */
 public class TCaseAddHandler extends AbstractSelectionHandler {
 
 	List<Exception> exceptions;
@@ -28,7 +34,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 	}
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object doExecute(ExecutionEvent event) throws ExecutionException {
 		TestsuiteContent suiteContent = getSelectedObject(TestsuiteContent.class,
 				event);
 		
@@ -36,7 +42,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 		RttProject project = projectContent.getProject();		
 
 		ResourceSelectionDialog resDialog = new ResourceSelectionDialog(
-				getParentShell(event), project.getJavaProject().getProject(),
+				getParentShell(event), project.getIProject(),
 				"Select files for new test cases.");
 
 		resDialog.setBlockOnOpen(true);
@@ -52,7 +58,6 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 				}
 				
 				List<RTTException> exceptions = project.addTestcase(suiteContent.getText(), files);
-				project.save();
 				
 				projectContent.reload(new ReloadInfo(Content.TESTCASE));
 				
@@ -63,7 +68,7 @@ public class TCaseAddHandler extends AbstractSelectionHandler {
 					
 					throw new RTTException(Type.OPERATION_FAILED, "Could not add test cases. See Error Log for details ...");
 				}				
-			} catch (RTTException e) {				
+			} catch (Exception e) {				
 				throw new ExecutionException("Some files could not be added to the test suite. See Error Log for details ...");				
 			}
 		}

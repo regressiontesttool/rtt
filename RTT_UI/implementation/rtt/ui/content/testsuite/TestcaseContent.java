@@ -23,9 +23,13 @@ public class TestcaseContent extends AbstractContent {
 		
 		List<VersionData> versionList = testcase.getVersionData();
 		for (VersionData versionData : versionList) {
-			if (versionData.getConfig().equals(activeConfig.getName())) {
-				childs.add(new ReferenceContent(this, suiteName, testcase.getName(), versionData.getReferenceID()));
+			if (versionData.getConfig().equals(activeConfig.getName()) && versionData.getReferenceID() > 0) {
+				childs.add(new ReferenceContent(this, suiteName, testcase.getName(), versionData.getReferenceID()));				
 			}
+		}
+		
+		if (testcase.getParameter() != null && testcase.getParameter().size() > 0) {
+			childs.add(new ParameterContent(this, testcase.getParameter()));
 		}		
 	}
 

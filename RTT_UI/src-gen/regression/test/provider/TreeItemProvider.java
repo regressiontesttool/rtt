@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -14,8 +10,6 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
-
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -80,7 +74,7 @@ public class TreeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.TREE__GROUP);
+			childrenFeatures.add(TestPackage.Literals.TREE__NODE);
 		}
 		return childrenFeatures;
 	}
@@ -113,10 +107,15 @@ public class TreeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
-		return super.getText(object);
+		String label = "<" + getString("_UI_Tree_type") 
+				+ "> " + super.getText(object);
+		
+		return label == null || label.length() == 0 ?
+			getString("_UI_Tree_type") : label;
 	}
 
 	/**
@@ -131,7 +130,7 @@ public class TreeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Tree.class)) {
-			case TestPackage.TREE__GROUP:
+			case TestPackage.TREE__NODE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -151,10 +150,8 @@ public class TreeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.TREE__GROUP,
-				 FeatureMapUtil.createEntry
-					(TestPackage.Literals.TREE__NODE,
-					 TestFactory.eINSTANCE.createNode())));
+				(TestPackage.Literals.TREE__NODE,
+				 TestFactory.eINSTANCE.createNode()));
 	}
 
 }

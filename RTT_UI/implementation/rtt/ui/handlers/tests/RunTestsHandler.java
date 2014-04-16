@@ -1,54 +1,75 @@
 package rtt.ui.handlers.tests;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 
-import rtt.core.utils.GenerationInformation;
-import rtt.ui.RttLog;
+import rtt.core.RTTApplication;
+import rtt.core.archive.testsuite.Testsuite;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
-import rtt.ui.dialogs.GenerationResultsDialog;
 import rtt.ui.handlers.AbstractSelectionHandler;
-import rtt.ui.utils.AbstractTestRunnable;
-import rtt.ui.utils.RunTestRunnable;
+import rtt.ui.launching.ApplicationRunnable;
 
+/**
+ * This handler is used to run tests on the selected {@link Testsuite}
+ * @author Christian Oelsner <C.Oelsner@gmail.com>
+ *
+ */
 public class RunTestsHandler extends AbstractSelectionHandler {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object doExecute(ExecutionEvent event) throws ExecutionException {
 		Shell parentShell = getParentShell(event);
+		
 		ProjectContent projectContent = this.getProjectContent(event);
 		TestsuiteContent suiteContent = getSelectedObject(
 				TestsuiteContent.class, event);
 		
-		AbstractTestRunnable runnable = new RunTestRunnable(projectContent.getProject(), suiteContent.getText());
+		IRunnableWithProgress runnable = new ApplicationRunnable(projectContent.getProject(),
+				suiteContent.getText(), RTTApplication.RUN);
 		
 		ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(
 				parentShell);
 		
 		try {
-			progressDialog.run(true, false, runnable);
+			progressDialog.run(true, true, runnable);
 			
-			GenerationInformation info = runnable.getInformation();
-			if (info != null && info.hasErrors()) {
-				GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, info);
-				dialog.open();
-			}
-		} catch (Exception e) {
-			MessageDialog.openError(parentShell,
-					runnable.getMessageTitle(), e.getMessage());
-			RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
-					.getMessage(), e));
+		} catch (Throwable e) {
+			if (e instanceof InvocationTargetException) {
+				InvocationTargetException inno = (InvocationTargetException) e;
+				e = inno.getCause();
+			}			
+			
+			throw new ExecutionException(e.getMessage(), e);
 		} finally {
-			projectContent.reload(new ReloadInfo(Content.TESTCASE));
-		}				
+			RttPluginUI.getProjectDirectory().reload(new ReloadInfo(Content.PROJECT));
+		}
+		
+				
+//		try {
+//			progressDialog.run(true, false, runnable);
+//			
+//			GenerationInformation info = runnable.getInformation();
+//			if (info != null && info.hasErrors()) {
+//				GenerationResultsDialog dialog = new GenerationResultsDialog(parentShell, info);
+//				dialog.open();
+//			}
+//		} catch (Exception e) {
+//			MessageDialog.openError(parentShell,
+//					runnable.getMessageTitle(), e.getMessage());
+//			RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
+//					.getMessage(), e));
+//		} finally {
+//			projectContent.reload(new ReloadInfo(Content.TESTCASE));
+//		}				
 		
 		return null;
 	}

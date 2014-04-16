@@ -6,8 +6,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 
 import rtt.core.archive.logging.Comment;
 import rtt.core.archive.logging.Result;
-import rtt.core.exceptions.RTTException;
-import rtt.ui.RttLog;
+import rtt.core.archive.logging.Testrun;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.logging.TestResultContent;
@@ -15,10 +14,15 @@ import rtt.ui.content.main.ProjectContent;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
 
+/**
+ * This handler is used to create a new {@link Comment}.
+ * @author Christian Oelsner <C.Oelsner@gmail.com>
+ *
+ */
 public class CommentAddHandler extends AbstractSelectionHandler {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object doExecute(ExecutionEvent event) throws ExecutionException {
 
 		ProjectContent projectContent = getProjectContent(event);
 		RttProject project = projectContent.getProject();
@@ -43,18 +47,15 @@ public class CommentAddHandler extends AbstractSelectionHandler {
 				return null;
 			}
 			
+			Testrun testrun = testresultContent.getTestrun();
 			Result result = testresultContent.getTestresult();
-			Comment comment = new Comment();
-			comment.setValue(commentText);
-
-			result.getComment().add(comment);
 
 			try {
-				project.save();
-
+				project.addComment(commentText, testrun, result);
+			} catch (Exception e) {
+				throw new ExecutionException("Could not save comment changes.", e);
+			} finally {
 				projectContent.reload(new ReloadInfo(Content.TESTRUN));
-			} catch (RTTException e) {
-				RttLog.log(e);
 			}
 		}
 

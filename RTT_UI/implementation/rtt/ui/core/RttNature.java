@@ -11,7 +11,7 @@ public class RttNature implements IProjectNature {
 
 	@Override
 	public void configure() throws CoreException {
-		
+		System.out.println("Configure Project: " + project);
 	}	
 
 	@Override

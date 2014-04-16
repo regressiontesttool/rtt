@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -152,11 +148,30 @@ public class AttributeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
 		Attribute attribute = (Attribute) object;
-		return attribute.getName() + " = " + attribute.getValue();
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(attribute.getName());
+		buffer.append(" = ");
+		
+		String value = attribute.getValue();
+		if (value != null && value.length() > 0) {
+			if (value.length() > 10) {
+				buffer.append(value.substring(0, 10));
+				buffer.append("...");
+			} else {
+				buffer.append(value);
+			}
+		} else {
+			buffer.append("<null>");
+		}
+		
+		return buffer.length() > 0 ? buffer.toString() :
+			getString("_UI_Attribute_type");
 	}
 
 	/**
@@ -200,7 +215,7 @@ public class AttributeItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return RttoutputEditPlugin.INSTANCE;
+		return RTTOutputDataEditPlugin.INSTANCE;
 	}
 
 }

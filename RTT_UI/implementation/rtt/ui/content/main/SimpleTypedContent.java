@@ -9,13 +9,14 @@ import rtt.ui.content.IContent;
 public class SimpleTypedContent extends AbstractContent {
 
 	public enum ContentType {
-		CONFIGURATION_DIRECTORY("Configurations", ContentIcon.CONFIG), 
-		TESTSUITE_DIRECTORY("Testsuites", ContentIcon.TESTSUITE), 
-		LOG_DIRECTORY("Log", ContentIcon.PLACEHOLDER),
+		
+		NO_ARCHIVE("No Archive found.", ContentIcon.ARCHIVE),
 		
 		LEXERCLASS("Lexer: ", ContentIcon.LEXER), 
 		PARSERCLASS("Parser: ", ContentIcon.PARSER), 
-		CLASSPATHENTRY("", ContentIcon.CLASSPATH);
+		CLASSPATHENTRY("", ContentIcon.CLASSPATH),
+		
+		PARAMETER("", ContentIcon.PARAMETER);
 		
 		protected String text;
 		protected ContentIcon icon;

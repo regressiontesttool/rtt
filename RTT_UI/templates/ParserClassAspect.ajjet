@@ -1,0 +1,42 @@
+<%@ jet package="rtt.ui.ecore.templates" class="ParserClassAspect" 
+		imports="java.util.* org.eclipse.emf.codegen.ecore.genmodel.* rtt.ui.ecore.util.GeneratorUtil rtt.ui.ecore.EcoreAnnotation org.eclipse.emf.codegen.util.ImportManager"%><%
+	
+	Object[] args = (Object[]) argument;
+	
+	GenModel genModel = (GenModel) args[0];
+	List<GenClass> parserClasses = GeneratorUtil.getAnnotatedClasses(genModel, EcoreAnnotation.PARSER);
+	
+	String packageName = (String) args[1];
+	genModel.setImportManager(new ImportManager(packageName));
+	
+	if (packageName != null && !packageName.isEmpty()) {%>
+package <%=packageName %>;
+<%	}
+	
+	genModel.markImportLocation(stringBuffer);
+	genModel.addImport("rtt.annotations.Parser"); 
+%>
+
+/**
+ * This aspect was created by the Regression Test Tool (RTT).
+ * Any changes will be erased if regenerated.
+ **/
+public aspect ParserAspect {
+<%	for (GenClass parserClass : parserClasses) { 
+	String className = parserClass.getName(); %>
+	// ----- parser annotations: <%=className %> ----------
+	declare @type: <%=className%> : @Parser;
+	
+<%  GenOperation initOperation = GeneratorUtil.getInitOperation(parserClass);
+    if (initOperation != null) {%>
+	declare @method: * <%=className%>.<%=initOperation.getName()%>(<%=initOperation.getParameterTypes(",")%>) : @Parser.Initialize;
+<% } %>
+
+<% GenFeature astFeature = GeneratorUtil.getAstFeature(parserClass);
+   if (astFeature != null) {%>
+	declare @method: * <%=className%>.<%=astFeature.getGetAccessor()%>(): @Parser.AST;
+<% } %>
+	
+<%}%>
+}
+<%genModel.emitSortedImports(); %>

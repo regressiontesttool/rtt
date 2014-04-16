@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -172,7 +168,7 @@ public class DocumentRootItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return RttoutputEditPlugin.INSTANCE;
+		return RTTOutputDataEditPlugin.INSTANCE;
 	}
 
 }

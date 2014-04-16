@@ -3,12 +3,12 @@ package rtt.ui.content.testsuite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
-import rtt.ui.RttLog;
 import rtt.ui.content.IClickableContent;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 import rtt.ui.editors.input.InputEditorInput;
+import rtt.ui.utils.RttLog;
 
 public class InputContent extends AbstractContent implements IClickableContent {
 
@@ -26,7 +26,7 @@ public class InputContent extends AbstractContent implements IClickableContent {
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
 		try {
-			currentPage.openEditor(new InputEditorInput(suiteName, caseName, version),
+			currentPage.openEditor(new InputEditorInput(this, suiteName, caseName, version),
 					"org.eclipse.ui.DefaultTextEditor", true);
 		} catch (PartInitException e) {
 			RttLog.log(e);

@@ -1,5 +1,7 @@
 package rtt.ui.views;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -31,9 +33,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
-import rtt.core.utils.GenerationInformation;
-import rtt.core.utils.GenerationInformation.GenerationType;
-import rtt.ui.RttLog;
+import rtt.core.RTTApplication;
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
@@ -41,10 +41,8 @@ import rtt.ui.content.logging.TestrunContent;
 import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestsuiteContent;
-import rtt.ui.dialogs.GenerationResultsDialog;
-import rtt.ui.utils.AbstractTestRunnable;
-import rtt.ui.utils.GenerateTestRunnable;
-import rtt.ui.utils.RunTestRunnable;
+import rtt.ui.launching.ApplicationRunnable;
+import rtt.ui.utils.RttLog;
 import rtt.ui.viewer.RttDoubleClickListener;
 import rtt.ui.viewer.RttLabelProvider;
 import rtt.ui.viewer.RttSimpleLabelProvider;
@@ -121,7 +119,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 				
 				comboViewer.setSelection(new StructuredSelection(content));
 				contentViewer.setFilters(new ViewerFilter[] { new SuiteFilter(
-						content.getText()) });
+						content.getText(), content.getProject().getActiveConfiguration()) });
 			} else {
 				generateButton.setEnabled(false);
 				runButton.setEnabled(false);
@@ -184,7 +182,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 		generateButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
-				doButtonClick(new GenerateTestRunnable());
+				doButtonClick(new ApplicationRunnable(RTTApplication.GENERATE));
 			}
 		});
 
@@ -195,7 +193,7 @@ public class TestView extends ViewPart implements ISelectionListener {
 		runButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
-				doButtonClick(new RunTestRunnable());
+				doButtonClick(new ApplicationRunnable(RTTApplication.RUN));
 			}
 		});
 
@@ -245,13 +243,13 @@ public class TestView extends ViewPart implements ISelectionListener {
 		super.dispose();
 	}
 
-	protected boolean doButtonClick(AbstractTestRunnable runnable) {
+	protected boolean doButtonClick(ApplicationRunnable runnable) {
 		Shell parentShell = getSite().getShell();
 		String suiteName = comboViewer.getCombo().getText();
 
 		if (suiteName == null || suiteName.equals("")) {
 			MessageDialog.openInformation(parentShell,
-					runnable.getMessageTitle(), "No test suite selected.");
+					runnable.getTaskText(), "No test suite selected.");
 			return false;
 		}
 		
@@ -262,25 +260,21 @@ public class TestView extends ViewPart implements ISelectionListener {
 		ProgressMonitorDialog dialog = new ProgressMonitorDialog(parentShell);
 		
 		try {
-			dialog.run(true, false, runnable);
-			projectContent.reload(new ReloadInfo(Content.TESTCASE));
-			RttPluginUI.refreshManager();
-				
-			GenerationInformation genInfo = runnable.getInformation();
-			if (genInfo != null) {
-				GenerationResultsDialog resultsDialog = new GenerationResultsDialog(parentShell, genInfo);
-				
-				if (genInfo.hasErrors() || genInfo.getType() == GenerationType.REFERENCE_DATA) {
-					resultsDialog.open();
-				}
-			}
+			dialog.run(true, true, runnable);
 			
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			if (e instanceof InvocationTargetException) {
+				InvocationTargetException inno = (InvocationTargetException) e;
+				e = inno.getCause();
+			}			
+			
 			MessageDialog.openError(parentShell,
-					runnable.getMessageTitle(), e.getMessage());
+					runnable.getTaskText(), e.getMessage());
 			RttLog.log(new Status(Status.ERROR, RttPluginUI.PLUGIN_ID, e
 					.getMessage(), e));
 			return false;
+		} finally {
+			RttPluginUI.getProjectDirectory().reload(new ReloadInfo(Content.PROJECT));
 		}
 		
 		return true;

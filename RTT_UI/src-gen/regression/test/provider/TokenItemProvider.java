@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -103,7 +99,7 @@ public class TokenItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.TOKEN__ATTRIBUTES);
+			childrenFeatures.add(TestPackage.Literals.TOKEN__ATTRIBUTE);
 		}
 		return childrenFeatures;
 	}
@@ -136,10 +132,13 @@ public class TokenItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
-		return super.getText(object);
+		String label = super.getText(object);
+		return label == null || label.length() == 0 ?
+			getString("_UI_Token_type") : label;
 	}
 
 	/**
@@ -157,7 +156,7 @@ public class TokenItemProvider
 			case TestPackage.TOKEN__IS_EOF:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case TestPackage.TOKEN__ATTRIBUTES:
+			case TestPackage.TOKEN__ATTRIBUTE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -177,7 +176,7 @@ public class TokenItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.TOKEN__ATTRIBUTES,
+				(TestPackage.Literals.TOKEN__ATTRIBUTE,
 				 TestFactory.eINSTANCE.createAttribute()));
 	}
 

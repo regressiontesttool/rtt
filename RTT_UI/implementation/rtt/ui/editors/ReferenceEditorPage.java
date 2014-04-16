@@ -1,10 +1,9 @@
 package rtt.ui.editors;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -13,7 +12,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
-import rtt.ui.RttPluginUtil;
 
 public class ReferenceEditorPage extends FormPage {
 	
@@ -21,17 +19,24 @@ public class ReferenceEditorPage extends FormPage {
 	protected MasterDetailsBlock block;
 	
 	protected String title;
-	protected ResourceSet refResourceSet;
+	protected Resource resource;
+	
+	private IContentProvider contentProvider;
+	private ILabelProvider labelProvider;
 	
 	
 	public ReferenceEditorPage(FormEditor editor, OutputDataType type, String id, String tabTitle) {
 		super(editor, id, tabTitle);
-		this.title = type.getText() + " data of the " + tabTitle;
+		this.title = type.getText() + " Data of the " + tabTitle;
 		block = new ReferenceMasterDetailsBlock(this);
 	}
 	
-	public void preparePageInput(InputStream pageInput) throws IOException {
-		refResourceSet = RttPluginUtil.createResourceSet(pageInput, "reference.rtt");
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
+	
+	public Resource getResource() {
+		return resource;
 	}
 	
 	@Override
@@ -45,7 +50,19 @@ public class ReferenceEditorPage extends FormPage {
 		return title;
 	}
 
-	public ResourceSet getResourceSet() {
-		return refResourceSet;
+	public IContentProvider getContentProvider() {
+		return contentProvider;
+	}
+	
+	public void setContentProvider(IContentProvider contentProvider) {
+		this.contentProvider = contentProvider;
+	}
+
+	public ILabelProvider getLabelProvider() {
+		return labelProvider;
+	}
+	
+	public void setLabelProvider(ILabelProvider labelProvider) {
+		this.labelProvider = labelProvider;
 	}
 }

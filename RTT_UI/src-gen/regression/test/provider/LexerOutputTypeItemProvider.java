@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -16,8 +12,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
-
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -83,7 +77,7 @@ public class LexerOutputTypeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.LEXER_OUTPUT_TYPE__GROUP);
+			childrenFeatures.add(TestPackage.Literals.LEXER_OUTPUT_TYPE__TOKEN);
 		}
 		return childrenFeatures;
 	}
@@ -135,7 +129,7 @@ public class LexerOutputTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(LexerOutputType.class)) {
-			case TestPackage.LEXER_OUTPUT_TYPE__GROUP:
+			case TestPackage.LEXER_OUTPUT_TYPE__TOKEN:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -155,10 +149,8 @@ public class LexerOutputTypeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.LEXER_OUTPUT_TYPE__GROUP,
-				 FeatureMapUtil.createEntry
-					(TestPackage.Literals.LEXER_OUTPUT_TYPE__TOKEN,
-					 TestFactory.eINSTANCE.createToken())));
+				(TestPackage.Literals.LEXER_OUTPUT_TYPE__TOKEN,
+				 TestFactory.eINSTANCE.createToken()));
 	}
 
 	/**
@@ -169,7 +161,7 @@ public class LexerOutputTypeItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return RttoutputEditPlugin.INSTANCE;
+		return RTTOutputDataEditPlugin.INSTANCE;
 	}
 
 }

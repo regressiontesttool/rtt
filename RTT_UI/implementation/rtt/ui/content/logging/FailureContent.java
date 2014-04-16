@@ -1,95 +1,44 @@
 package rtt.ui.content.logging;
 
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
-import org.eclipse.emf.compare.diff.metamodel.ComparisonResourceSnapshot;
-import org.eclipse.emf.compare.diff.metamodel.DiffFactory;
-import org.eclipse.emf.compare.diff.metamodel.DiffModel;
-import org.eclipse.emf.compare.diff.service.DiffService;
-import org.eclipse.emf.compare.match.MatchOptions;
-import org.eclipse.emf.compare.match.engine.IMatchScope;
-import org.eclipse.emf.compare.match.engine.IMatchScopeProvider;
-import org.eclipse.emf.compare.match.filter.IResourceFilter;
-import org.eclipse.emf.compare.match.metamodel.MatchModel;
-import org.eclipse.emf.compare.match.service.MatchService;
-import org.eclipse.emf.compare.ui.editor.ModelCompareEditorInput;
-import org.eclipse.emf.compare.util.ModelUtils;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.compare.EMFCompare;
+import org.eclipse.emf.compare.domain.ICompareEditingDomain;
+import org.eclipse.emf.compare.domain.impl.EMFCompareEditingDomain;
+import org.eclipse.emf.compare.ide.ui.internal.editor.ComparisonScopeEditorInput;
+import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.ui.IWorkbenchPage;
 
-import regression.test.Attribute;
-import regression.test.TestPackage;
+import rtt.core.archive.Archive;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.logging.Failure;
 import rtt.core.archive.logging.FailureType;
 import rtt.core.archive.logging.Result;
-import rtt.core.loader.ArchiveLoader;
+import rtt.core.exceptions.RTTException;
+import rtt.core.manager.Manager;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.content.main.ContentIcon;
+import rtt.ui.ecore.util.Messages;
 import rtt.ui.model.RttProject;
+import rtt.ui.utils.RttLog;
+import rtt.ui.utils.RttPluginUtil;
 
 public class FailureContent extends AbstractLogContent {
 	
-	private static class MyMatchScope implements IMatchScope {
-
-		@Override
-		public boolean isInScope(EObject eObject) {
-			if (eObject instanceof Attribute) {
-				Attribute attribute = (Attribute) eObject;
-				if (attribute.isInformational()) {
-
-//					System.out.println("isInScope:" + eObject);
-					return false;
-				}
-			}
-			return true;
-		}
-
-		@Override
-		public boolean isInScope(Resource resource) {
-			return true;
-		}
-		
-	}
-	
-	private static class MyScopeProvider implements IMatchScopeProvider {
-
-		@Override
-		public IMatchScope getLeftScope() {
-			return new MyMatchScope();
-		}
-
-		@Override
-		public IMatchScope getRightScope() {
-			return new MyMatchScope();
-		}
-
-		@Override
-		public IMatchScope getAncestorScope() {
-			return new MyMatchScope();
-		}
-
-		@Override
-		public void applyResourceFilter(IResourceFilter filter) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
+	private static final String ERROR_MESSAGE = 
+			"content.failure.error.message";
 	
 	private String suiteName;
 	private String caseName;
 	
-	private OutputDataManager refManager;
-	private OutputDataManager testManager;
 	private Integer testVersion;
 	private Integer refVersion;
 	
@@ -131,10 +80,10 @@ public class FailureContent extends AbstractLogContent {
 	private InputStream getInputStream(OutputDataManager manager, Integer version) {
 		switch (type) {
 		case LEXER:
-			return manager.getLexerOutputStream(version);
+			return manager.getLexerInputStream(version);
 			
 		case PARSER:
-			return manager.getParserOutputStream(version);
+			return manager.getParserInputStream(version);
 		}
 
 		throw new RuntimeException("Failure type of test run unknown: " + failure.getType().toString());
@@ -143,43 +92,40 @@ public class FailureContent extends AbstractLogContent {
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
 		RttProject project = this.getProject();
-		
-		if (refManager == null || testManager == null) {
-			ArchiveLoader loader = project.getLoader();
-			Configuration activeConfig = project.getActiveConfiguration();
-			
-			refManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.REFERENCE);
-			testManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.TEST);
-		}				
-		
-		final ResourceSet resourceSet1 = new ResourceSetImpl();
-		final ResourceSet resourceSet2 = new ResourceSetImpl();
-		
-		resourceSet1.getPackageRegistry().put(TestPackage.eNS_URI, TestPackage.eINSTANCE);
-		resourceSet2.getPackageRegistry().put(TestPackage.eNS_URI, TestPackage.eINSTANCE);
+		Configuration activeConfig = project.getActiveConfiguration();
 		
 		try {
-			InputStream refInput = getInputStream(refManager, refVersion);
-			EObject referenceModel = ModelUtils.load(refInput, "reference_data.rtt", resourceSet1);
+			Manager manager = project.getManager();
+			if (manager != null) {
+				Archive archive = manager.getArchive();
+				
+				final ResourceSet left = new ResourceSetImpl();
+				final ResourceSet right = new ResourceSetImpl();
+				
+				OutputDataManager refManager = new OutputDataManager(archive.getLoader(), suiteName, caseName, activeConfig, OutputDataType.REFERENCE);
+				OutputDataManager testManager = new OutputDataManager(archive.getLoader(), suiteName, caseName, activeConfig, OutputDataType.TEST);		
+				
+				RttPluginUtil.loadResource(right, URI.createURI("reference_data.rtt"), getInputStream(refManager, refVersion));				
+				RttPluginUtil.loadResource(left, URI.createURI("test_data.rtt"), getInputStream(testManager, testVersion));
+				
+				EMFCompare comparator = EMFCompare.builder().build();
+				IComparisonScope scope = EMFCompare.createDefaultScope(left, right);
+				
+				ICompareEditingDomain domain = EMFCompareEditingDomain.create(left, right, null);
+				AdapterFactory adapterFactory = RttPluginUtil.createFactory();
+				
+				@SuppressWarnings("restriction")
+				CompareEditorInput input = new ComparisonScopeEditorInput(
+						new CompareConfiguration(), domain, adapterFactory, comparator, scope);
+				
+				manager.close();
+				
+				CompareUI.openCompareEditorOnPage(input, currentPage);
+			}
 			
-			InputStream testInput = getInputStream(testManager, testVersion);
-			EObject resultModel = ModelUtils.load(testInput, "test_data.rtt", resourceSet2);
-			
-			Map<String, Object> options = new HashMap<String, Object>();
-			options.put(MatchOptions.OPTION_MATCH_SCOPE_PROVIDER, new MyScopeProvider());
-			
-			final MatchModel match = MatchService.doMatch(resultModel, referenceModel, options);
-			final DiffModel diff = DiffService.doDiff(match, false);
-			
-			final ComparisonResourceSnapshot snapshot = DiffFactory.eINSTANCE.createComparisonResourceSnapshot();
-			snapshot.setDate(Calendar.getInstance().getTime());
-			snapshot.setMatch(match);
-			snapshot.setDiff(diff);
-			
-			ModelCompareEditorInput input = new ModelCompareEditorInput(snapshot);
-			CompareUI.openCompareEditorOnPage(input, currentPage);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (RTTException e) {
+			Messages.openError(currentPage.getActivePart().getSite().getShell(), ERROR_MESSAGE);
+			RttLog.log(e);
 		}
 	}
 

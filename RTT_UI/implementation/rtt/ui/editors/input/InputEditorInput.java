@@ -10,29 +10,26 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 
+import rtt.core.exceptions.RTTException;
+import rtt.core.manager.Manager;
 import rtt.core.manager.data.history.InputManager;
-import rtt.ui.RttPluginUI;
-import rtt.ui.content.main.ProjectContent;
+import rtt.ui.content.IContent;
+import rtt.ui.content.main.ContentIcon;
 import rtt.ui.model.RttProject;
 
 @SuppressWarnings("rawtypes")
 public class InputEditorInput implements IStorageEditorInput {
 
+	RttProject project;
 	String suiteName;
 	String caseName;
 	Integer versionNr;
-	InputManager manager;
 
-	public InputEditorInput(String suiteName, String caseName, Integer versionNr) {
+	public InputEditorInput(IContent content, String suiteName, String caseName, Integer versionNr) {
 		super();
+		this.project = content.getProject();
 		this.suiteName = suiteName;
 		this.caseName = caseName;
-		this.versionNr = versionNr;
-	}
-
-	public InputEditorInput(InputManager manager, Integer versionNr) {
-		super();
-		this.manager = manager;
 		this.versionNr = versionNr;
 	}
 
@@ -48,19 +45,21 @@ public class InputEditorInput implements IStorageEditorInput {
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		// TODO Auto-generated method stub
-		return null;
+		return ContentIcon.INPUT.getImageDescriptor(false);
 	}
 
 	@Override
 	public String getName() {
-		if (manager != null) {
-			return "Input [" + manager.getSuiteName() + "/"
-					+ manager.getCaseName() + "] (Ver. " + versionNr + ")";
-		}
-
-		return "Input [" + suiteName + "/" + caseName + "]";
-
+		StringBuilder builder = new StringBuilder();
+		builder.append("Input (");
+		builder.append(versionNr);
+		builder.append(") [");
+		builder.append(suiteName);
+		builder.append("/");
+		builder.append(caseName);
+		builder.append("]");
+		
+		return builder.toString();
 	}
 
 	@Override
@@ -78,8 +77,7 @@ public class InputEditorInput implements IStorageEditorInput {
 		return new IStorage() {
 
 			@Override
-			public Object getAdapter(Class adapter) {
-				// TODO Auto-generated method stub
+			public Object getAdapter(Class adapter) { 
 				return null;
 			}
 
@@ -94,27 +92,27 @@ public class InputEditorInput implements IStorageEditorInput {
 			}
 
 			@Override
-			public IPath getFullPath() {
-				// TODO Auto-generated method stub
+			public IPath getFullPath() { 
 				return null;
 			}
 
 			@Override
 			public InputStream getContents() throws CoreException {
-				if (manager == null) {
-					ProjectContent projectContent = RttPluginUI
-							.getProjectManager().getCurrentContent();
+				try {
+					Manager manager = project.getManager();
+					if (manager == null) {
+						throw new RuntimeException("Could not open manager.");
+					}
 					
-					RttProject project = projectContent.getProject();
+					InputManager inputManager = new InputManager(manager.getArchive().getLoader(), suiteName, caseName);
+					InputStream bais = new ByteArrayInputStream(inputManager.getInput(versionNr).getValue().getBytes());
 
-					manager = new InputManager(project.getLoader(), suiteName,
-							caseName);
+					manager.close();
+					
+					return bais;
+				} catch (RTTException e) {
+					throw new RuntimeException("Could not get input content.", e);
 				}
-
-				InputStream bais = new ByteArrayInputStream(manager
-						.getInput(versionNr).getValue().getBytes());
-
-				return bais;
 			}
 		};
 	}

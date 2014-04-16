@@ -1,7 +1,6 @@
 package rtt.ui.content.logging;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbenchPage;
 

@@ -30,9 +30,9 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
-import rtt.core.archive.Archive;
-import rtt.core.archive.configuration.Configuration;
+import rtt.core.exceptions.RTTException;
 import rtt.core.loader.ArchiveLoader;
+import rtt.core.manager.Manager;
 import rtt.core.manager.data.history.InputManager;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
@@ -44,8 +44,10 @@ import rtt.ui.content.main.ProjectContent;
 import rtt.ui.content.main.TestsuiteDirectory;
 import rtt.ui.content.testsuite.TestcaseContent;
 import rtt.ui.content.testsuite.TestsuiteContent;
-import rtt.ui.viewer.RttDoubleClickListener;
+import rtt.ui.model.RttProject;
+import rtt.ui.utils.RttLog;
 import rtt.ui.viewer.RttColumnLabelProvider;
+import rtt.ui.viewer.RttDoubleClickListener;
 import rtt.ui.viewer.RttSimpleLabelProvider;
 import rtt.ui.viewer.RttStructuredContentProvider;
 import rtt.ui.viewer.RttTreeContentProvider;
@@ -117,7 +119,7 @@ public class VersionView extends ViewPart implements ISelectionListener {
 			caseComboViewer.refresh(true);
 			
 			Object input = caseComboViewer.getInput();
-			if (input != null && input instanceof TestsuiteContent) {
+			if (input instanceof TestsuiteContent) {
 				TestsuiteContent content = (TestsuiteContent) input;
 				setFirstTestcase(content);
 			}
@@ -252,48 +254,52 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		super.dispose();
 	}
 	
-	protected void loadTestcase(TestcaseContent item) {
+	protected void loadTestcase(final TestcaseContent item) {
 		if (item != null) {
 			final String caseName = item.getCaseName();
 			final String suiteName = item.getSuiteName();
 			
-			final ProjectContent currentProject = RttPluginUI.getProjectManager().getCurrentContent();
+			final RttProject project = item.getProject();
 			
-			Archive archive = currentProject.getProject().getArchive();
-			final Configuration activeConfig = currentProject.getProject().getActiveConfiguration();
 			final List<IContent> childs = new ArrayList<IContent>();
-			
-			if (archive != null) {
 				
-				final ArchiveLoader loader = archive.getLoader();				
-				
-				ProgressMonitorDialog dialog = new ProgressMonitorDialog(getSite().getShell());
-				try {
-					dialog.run(true, false, new IRunnableWithProgress() {
-						
-						@Override
-						public void run(IProgressMonitor monitor) throws InvocationTargetException,
-								InterruptedException {
-							monitor.beginTask("Loading history ...", IProgressMonitor.UNKNOWN);
-							
-							InputManager inputManager = new InputManager(loader, suiteName, caseName);
-							childs.add(new HistoryContent(currentProject, inputManager, VersionType.INPUT));
-							
-							OutputDataManager refManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.REFERENCE);
-							childs.add(new HistoryContent(currentProject, refManager, VersionType.REFERENCE));
-							
-							OutputDataManager testManager = new OutputDataManager(loader, suiteName, caseName, activeConfig, OutputDataType.TEST);
-							childs.add(new HistoryContent(currentProject, testManager, VersionType.TEST));
-							
-							monitor.done();
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(getSite().getShell());
+			try {
+				dialog.run(true, false, new IRunnableWithProgress() {
+					
+					@Override
+					public void run(IProgressMonitor monitor) throws InvocationTargetException,
+							InterruptedException {
+						monitor.beginTask("Loading history ...", IProgressMonitor.UNKNOWN);
+						try {
+							Manager manager = project.getManager();
+							if (manager != null) {
+								ArchiveLoader loader = manager.getArchive().getLoader();
+								ProjectContent currentProject = item.getContent(ProjectContent.class);
+								
+								InputManager inputManager = new InputManager(loader, suiteName, caseName);
+								childs.add(new HistoryContent(currentProject, inputManager, VersionType.INPUT));
+
+								OutputDataManager refManager = new OutputDataManager(loader, suiteName, caseName, project.getActiveConfiguration(), OutputDataType.REFERENCE);
+								childs.add(new HistoryContent(currentProject, refManager, VersionType.REFERENCE));
+
+								OutputDataManager testManager = new OutputDataManager(loader, suiteName, caseName, project.getActiveConfiguration(), OutputDataType.TEST);
+								childs.add(new HistoryContent(currentProject, testManager, VersionType.TEST));
+								
+								manager.close();
+							}
+						} catch (RTTException e) {
+							new InvocationTargetException(e);
 						}
-					});
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}				
-			}		
+						
+						monitor.done();
+					}
+				});
+			} catch (InterruptedException e) {
+				RttLog.log(e);
+			} catch (InvocationTargetException e) {
+				RttLog.log(e);
+			}
 			
 			treeViewer.setInput(childs.toArray());
 			treeViewer.getTree().setEnabled(true);

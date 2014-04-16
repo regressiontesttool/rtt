@@ -2,6 +2,7 @@ package rtt.ui.content;
 
 import org.eclipse.swt.graphics.Image;
 
+import rtt.core.manager.Manager;
 import rtt.ui.model.RttProject;
 
 public interface IContent {
@@ -58,8 +59,8 @@ public interface IContent {
 	 * @return a rtt project
 	 */
 	RttProject getProject();
-
-	void reload(ReloadInfo info);	
+	
+	void reload(ReloadInfo info, Manager manager);
 	
 	void notifyChanges();
 

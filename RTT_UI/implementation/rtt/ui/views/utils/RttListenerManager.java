@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.ui.content.IContent;
+import rtt.ui.content.ReloadInfo.Content;
 
 public class RttListenerManager<T extends IContent> {
 	
@@ -32,6 +33,16 @@ public class RttListenerManager<T extends IContent> {
 		return setCurrentContent(newContent, false);
 	}
 	
+	/**
+	 * Updates all listeners to handle the (new) current content.
+	 * This method is for example used to update all views. Without
+	 * the {@code force} parameter listeners will only be updated 
+	 * if the *new* current content doesn't equal the *old* current content.
+	 * 
+	 * @param newContent the *new* current {@link Content}
+	 * @param force force an update
+	 * @return {@code true}, if update has occurred.
+	 */
 	public boolean setCurrentContent(T newContent, boolean force) {
 		if (force || currentContent != newContent) {
 			currentContent = newContent;

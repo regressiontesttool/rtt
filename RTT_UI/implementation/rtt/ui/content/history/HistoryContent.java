@@ -1,13 +1,9 @@
 package rtt.ui.content.history;
 
-import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.swt.graphics.Image;
-
 import rtt.core.archive.history.Version;
 import rtt.core.manager.data.history.IHistoryManager;
-import rtt.ui.content.IColumnableContent;
+import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.content.IContent;
-import rtt.ui.content.IDecoratableContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
 
@@ -37,26 +33,24 @@ public class HistoryContent extends AbstractContent {
 		this.type = type;
 		this.childCount = 0;
 
-		if (manager.getHistory() != null) {
-			for (Version version : manager.getHistory().getVersion()) {
-				childs.add(getChild(version, type, manager));
-				childCount++;
-			}
+		for (Version version : manager.getHistory().getVersion()) {
+			childs.add(getChild(version, type, manager.getSuiteName(), manager.getCaseName()));
+			childCount++;
 		}
+		
 	}
 
-	private IContent getChild(Version version, VersionType type,
-			IHistoryManager manager) {
+	private IContent getChild(Version version, VersionType type, String suiteName, String caseName) {
 
 		switch (type) {
 		case INPUT:
-			return new InputVersionContent(this, version, manager);
+			return new InputVersionContent(this, version, suiteName, caseName);
 
 		case REFERENCE:
-			return new OutputVersionContent(this, version, manager);
+			return new OutputVersionContent(this, version, suiteName, caseName, OutputDataType.REFERENCE);
 
 		case TEST:
-			return new OutputVersionContent(this, version, manager);
+			return new OutputVersionContent(this, version, suiteName, caseName, OutputDataType.TEST);
 		}
 		
 		return null;

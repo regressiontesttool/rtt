@@ -20,23 +20,36 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 		RESOURCE, CONTAINER
 	}
 
-	private SelectionDialog dialog;
 	private List<String> cpEntries;
 	private RttProject project;
+	
 	private ConfigurationDialog configDialog;
+	private DialogType type;
 
-	public ResourceSelectionAdapter(ConfigurationDialog configDialog) {
-		this.project = configDialog.getProject();
-		this.cpEntries = configDialog.getClasspathEntries();
+	public ResourceSelectionAdapter(DialogType type, ConfigurationDialog configDialog) {
 		this.configDialog = configDialog;
-	}
-
-	public void setDialog(SelectionDialog dialog) {
-		this.dialog = dialog;
+		this.type = type;
+		
+		this.project = configDialog.getProject();
+		this.cpEntries = configDialog.getClasspathEntries();		
 	}
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
+		SelectionDialog dialog = null;
+		switch (type) {
+		case CONTAINER:
+			dialog = new ContainerSelectionDialog(configDialog
+					.getShell(), project.getIProject(), false,
+					"Select a binary folder ...");
+			break;
+			
+		case RESOURCE:
+			dialog = new ResourceSelectionDialog(configDialog
+					.getShell(), project.getIProject(), "Select a file ...");
+			break;
+		}		
+		
 		if (dialog != null && dialog.open() == Dialog.OK) {
 			for (Object o : dialog.getResult()) {
 				IPath path = null;
@@ -55,34 +68,11 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 					path = path.makeRelativeTo(project.getArchivePath(true));
 					if (!path.isEmpty()) {
 						cpEntries.add(path.toPortableString());
+						configDialog.setOkButtonEnabled(true);
 					}					
 				}
 			}
-			configDialog.getViewer().setInput(cpEntries);
-			configDialog.setOkButtonEnabled(true);
+			configDialog.getViewer().refresh();
 		}
-	}
-
-	public static ResourceSelectionAdapter createAdapter(DialogType type,
-			ConfigurationDialog configDialog) {
-
-		RttProject project = configDialog.getProject();
-		ResourceSelectionAdapter adapter = new ResourceSelectionAdapter(configDialog);
-
-		switch (type) {
-		case RESOURCE:
-			adapter.setDialog(new ResourceSelectionDialog(configDialog
-					.getShell(), project.getJavaProject().getProject(), "Select a file ..."));
-			break;
-
-		case CONTAINER:
-			adapter.setDialog(new ContainerSelectionDialog(configDialog
-					.getShell(), project.getJavaProject().getProject(), false,
-					"Select a binary folder ..."));
-			break;
-		}
-
-		return adapter;
-
 	}
 }

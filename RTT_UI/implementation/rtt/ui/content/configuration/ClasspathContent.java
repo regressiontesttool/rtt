@@ -1,7 +1,6 @@
 package rtt.ui.content.configuration;
 
 import rtt.core.archive.configuration.Classpath;
-import rtt.core.archive.configuration.Path;
 import rtt.ui.content.IContent;
 import rtt.ui.content.main.AbstractContent;
 import rtt.ui.content.main.ContentIcon;
@@ -14,10 +13,10 @@ public class ClasspathContent extends AbstractContent {
 
 		super(parent);
 
-		for (Path path : classpath.getPath()) {
-			if (path.getValue() != null) {
+		for (String path : classpath.getPath()) {
+			if (path != null && !path.equals("")) {
 				childs.add(new SimpleTypedContent(this,
-						ContentType.CLASSPATHENTRY, path.getValue()));
+						ContentType.CLASSPATHENTRY, path));
 			}
 		}
 	}

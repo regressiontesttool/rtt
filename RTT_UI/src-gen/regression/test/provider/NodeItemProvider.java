@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test.provider;
 
@@ -12,9 +8,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -65,6 +59,7 @@ public class NodeItemProvider
 			super.getPropertyDescriptors(object);
 
 			addIsNullPropertyDescriptor(object);
+			addMethodPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -92,6 +87,28 @@ public class NodeItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Method feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addMethodPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Node_method_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Node_method_feature", "_UI_Node_type"),
+				 TestPackage.Literals.NODE__METHOD,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -103,8 +120,8 @@ public class NodeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.NODE__ATTRIBUTES);
-			childrenFeatures.add(TestPackage.Literals.NODE__CHILD_NODES);
+			childrenFeatures.add(TestPackage.Literals.NODE__ATTRIBUTE);
+			childrenFeatures.add(TestPackage.Literals.NODE__NODE);
 		}
 		return childrenFeatures;
 	}
@@ -137,10 +154,24 @@ public class NodeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
-		return super.getText(object);
+		Node node = (Node) object;
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(node.getMethod());
+		buffer.append(" = ");
+		
+		if (node.isIsNull()) {
+			buffer.append("<null>");
+		} else {
+			buffer.append(super.getText(object));	
+		}
+		
+		return buffer.length() > 0 ? buffer.toString() :
+				getString("_UI_Node_type");
 	}
 
 	/**
@@ -156,10 +187,11 @@ public class NodeItemProvider
 
 		switch (notification.getFeatureID(Node.class)) {
 			case TestPackage.NODE__IS_NULL:
+			case TestPackage.NODE__METHOD:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case TestPackage.NODE__ATTRIBUTES:
-			case TestPackage.NODE__CHILD_NODES:
+			case TestPackage.NODE__ATTRIBUTE:
+			case TestPackage.NODE__NODE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -179,12 +211,12 @@ public class NodeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.NODE__ATTRIBUTES,
+				(TestPackage.Literals.NODE__ATTRIBUTE,
 				 TestFactory.eINSTANCE.createAttribute()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.NODE__CHILD_NODES,
+				(TestPackage.Literals.NODE__NODE,
 				 TestFactory.eINSTANCE.createNode()));
 	}
 

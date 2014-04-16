@@ -1,12 +1,14 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test;
 
+import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,10 +25,99 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see regression.test.TestPackage#getAttribute()
- * @model extendedMetaData="name='attribute' kind='empty'"
+ * @model kind="class"
+ *        extendedMetaData="name='attribute' kind='empty'"
  * @generated
  */
-public interface Attribute extends EObject {
+public class Attribute extends EObjectImpl implements EObject {
+	/**
+	 * The default value of the '{@link #isInformational() <em>Informational</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isInformational()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean INFORMATIONAL_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isInformational() <em>Informational</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isInformational()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean informational = INFORMATIONAL_EDEFAULT;
+
+	/**
+	 * This is true if the Informational attribute has been set.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean informationalESet;
+
+	/**
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String name = NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getValue()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String VALUE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getValue()
+	 * @generated
+	 * @ordered
+	 */
+	protected String value = VALUE_EDEFAULT;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Attribute() {
+		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	protected EClass eStaticClass() {
+		return TestPackage.Literals.ATTRIBUTE;
+	}
+
 	/**
 	 * Returns the value of the '<em><b>Informational</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -44,7 +135,9 @@ public interface Attribute extends EObject {
 	 *        extendedMetaData="kind='attribute' name='informational'"
 	 * @generated
 	 */
-	boolean isInformational();
+	public boolean isInformational() {
+		return informational;
+	}
 
 	/**
 	 * Sets the value of the '{@link regression.test.Attribute#isInformational <em>Informational</em>}' attribute.
@@ -56,7 +149,14 @@ public interface Attribute extends EObject {
 	 * @see #isInformational()
 	 * @generated
 	 */
-	void setInformational(boolean value);
+	public void setInformational(boolean newInformational) {
+		boolean oldInformational = informational;
+		informational = newInformational;
+		boolean oldInformationalESet = informationalESet;
+		informationalESet = true;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ATTRIBUTE__INFORMATIONAL, oldInformational, informational, !oldInformationalESet));
+	}
 
 	/**
 	 * Unsets the value of the '{@link regression.test.Attribute#isInformational <em>Informational</em>}' attribute.
@@ -67,7 +167,14 @@ public interface Attribute extends EObject {
 	 * @see #setInformational(boolean)
 	 * @generated
 	 */
-	void unsetInformational();
+	public void unsetInformational() {
+		boolean oldInformational = informational;
+		boolean oldInformationalESet = informationalESet;
+		informational = INFORMATIONAL_EDEFAULT;
+		informationalESet = false;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, TestPackage.ATTRIBUTE__INFORMATIONAL, oldInformational, INFORMATIONAL_EDEFAULT, oldInformationalESet));
+	}
 
 	/**
 	 * Returns whether the value of the '{@link regression.test.Attribute#isInformational <em>Informational</em>}' attribute is set.
@@ -79,7 +186,9 @@ public interface Attribute extends EObject {
 	 * @see #setInformational(boolean)
 	 * @generated
 	 */
-	boolean isSetInformational();
+	public boolean isSetInformational() {
+		return informationalESet;
+	}
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -96,7 +205,9 @@ public interface Attribute extends EObject {
 	 *        extendedMetaData="kind='attribute' name='name'"
 	 * @generated
 	 */
-	String getName();
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * Sets the value of the '{@link regression.test.Attribute#getName <em>Name</em>}' attribute.
@@ -106,7 +217,12 @@ public interface Attribute extends EObject {
 	 * @see #getName()
 	 * @generated
 	 */
-	void setName(String value);
+	public void setName(String newName) {
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ATTRIBUTE__NAME, oldName, name));
+	}
 
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
@@ -123,7 +239,9 @@ public interface Attribute extends EObject {
 	 *        extendedMetaData="kind='attribute' name='value'"
 	 * @generated
 	 */
-	String getValue();
+	public String getValue() {
+		return value;
+	}
 
 	/**
 	 * Sets the value of the '{@link regression.test.Attribute#getValue <em>Value</em>}' attribute.
@@ -133,6 +251,109 @@ public interface Attribute extends EObject {
 	 * @see #getValue()
 	 * @generated
 	 */
-	void setValue(String value);
+	public void setValue(String newValue) {
+		String oldValue = value;
+		value = newValue;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ATTRIBUTE__VALUE, oldValue, value));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case TestPackage.ATTRIBUTE__INFORMATIONAL:
+				return isInformational();
+			case TestPackage.ATTRIBUTE__NAME:
+				return getName();
+			case TestPackage.ATTRIBUTE__VALUE:
+				return getValue();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case TestPackage.ATTRIBUTE__INFORMATIONAL:
+				setInformational((Boolean)newValue);
+				return;
+			case TestPackage.ATTRIBUTE__NAME:
+				setName((String)newValue);
+				return;
+			case TestPackage.ATTRIBUTE__VALUE:
+				setValue((String)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case TestPackage.ATTRIBUTE__INFORMATIONAL:
+				unsetInformational();
+				return;
+			case TestPackage.ATTRIBUTE__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case TestPackage.ATTRIBUTE__VALUE:
+				setValue(VALUE_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case TestPackage.ATTRIBUTE__INFORMATIONAL:
+				return isSetInformational();
+			case TestPackage.ATTRIBUTE__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case TestPackage.ATTRIBUTE__VALUE:
+				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+		}
+		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (informational: ");
+		if (informationalESet) result.append(informational); else result.append("<unset>");
+		result.append(", name: ");
+		result.append(name);
+		result.append(", value: ");
+		result.append(value);
+		result.append(')');
+		return result.toString();
+	}
 
 } // Attribute

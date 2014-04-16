@@ -99,21 +99,12 @@
       <details key="name" value="lexerOutput_._type"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="group" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="group"/>
-        <details key="name" value="group:0"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="token" upperBound="-1"
-        eType="#//Token" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
+        eType="#//Token" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="token"/>
         <details key="namespace" value="##targetNamespace"/>
-        <details key="group" value="#group:0"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -122,19 +113,19 @@
       <details key="name" value="node"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" upperBound="-1"
         eType="#//Attribute" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
-        <details key="name" value="attributes"/>
+        <details key="name" value="attribute"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="childNodes" upperBound="-1"
-        eType="#//Node" containment="true" resolveProxies="false">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="node" upperBound="-1" eType="#//Node"
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
-        <details key="name" value="childNodes"/>
+        <details key="name" value="node"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -143,6 +134,12 @@
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="isNull"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="method" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="method"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -154,20 +151,12 @@
       <details key="name" value="parserOutput_._type"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="group" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="group"/>
-        <details key="name" value="group:0"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="tree" upperBound="-1" eType="#//Tree"
-        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="tree"/>
         <details key="namespace" value="##targetNamespace"/>
-        <details key="group" value="#group:0"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -176,11 +165,11 @@
       <details key="name" value="token"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" upperBound="-1"
         eType="#//Attribute" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
-        <details key="name" value="attributes"/>
+        <details key="name" value="attribute"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -197,20 +186,12 @@
       <details key="name" value="tree"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="group" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="group"/>
-        <details key="name" value="group:2"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="node" upperBound="-1" eType="#//Node"
-        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
+        containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="node"/>
         <details key="namespace" value="##targetNamespace"/>
-        <details key="group" value="#group:2"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

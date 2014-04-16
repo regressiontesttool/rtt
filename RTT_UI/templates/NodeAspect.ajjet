@@ -1,0 +1,56 @@
+<%@ jet package="rtt.ui.ecore.templates" class="NodeAspect" 
+		imports="org.eclipse.emf.codegen.ecore.genmodel.* java.util.* rtt.ui.ecore.util.GeneratorUtil rtt.ui.ecore.EcoreAnnotation org.eclipse.emf.codegen.util.ImportManager"%><%
+	
+	Object[] args = (Object[]) argument;
+	
+	GenModel genModel = (GenModel) args[0];
+	List<GenClass> nodeClasses = GeneratorUtil.getAnnotatedClasses(genModel, EcoreAnnotation.NODE);
+	
+	String packageName = (String) args[1];
+	
+	ImportManager manager = new ImportManager(packageName);
+	genModel.setImportManager(manager);
+	
+	if (packageName != null && !packageName.isEmpty()) {%>
+package <%=packageName %>;
+<%	}
+	genModel.markImportLocation(stringBuffer);
+	genModel.addImport("rtt.annotations.Parser.Node"); 
+%>
+
+/**
+ * This aspect was created by the Regression Test Tool (RTT).
+ * Any changes will be erased if regenerated.
+ **/
+public aspect NodeAspect {
+<%	for (GenClass nodeClass : nodeClasses) {
+	manager.addImport(nodeClass.getQualifiedInterfaceName());
+	
+	String className = nodeClass.getName(); %>
+	// ----- node annotations: <%=className %> ----------
+	declare @type: <%=className %> : @Node; <%	
+	
+	for (GenFeature genFeature : GeneratorUtil.getNodeFeatures(nodeClass, EcoreAnnotation.NODE_INFORMATIONAL)) { %>
+	declare @method: * <%=className %>.<%=genFeature.getGetAccessor() %>() : @Node.Informational;<%
+	}	
+	for (GenOperation genOperation : GeneratorUtil.getOperations(nodeClass, EcoreAnnotation.NODE_INFORMATIONAL)) { %>
+	declare @method: * <%=className %>.<%=genOperation.getFormattedName()%> : @Node.Informational;<%	
+	}	
+	for (GenFeature genFeature : GeneratorUtil.getNodeFeatures(nodeClass, EcoreAnnotation.NODE_COMPARE)) { %>
+	declare @method: * <%=className %>.<%=genFeature.getGetAccessor() %>() : @Node.Compare;<%
+	}	
+	for (GenOperation genOperation : GeneratorUtil.getOperations(nodeClass, EcoreAnnotation.NODE_COMPARE)) { %>
+	declare @method: * <%=className %>.<%=genOperation.getFormattedName()%> : @Node.Compare;<%	
+	}	
+	for (GenFeature genFeature : GeneratorUtil.getNodeFeatures(nodeClass, EcoreAnnotation.NODE_CHILDREN)) { %>
+	declare @method: * <%=className %>.<%=genFeature.getGetAccessor() %>() : @Node.Child;<%
+	}	
+	for (GenOperation genOperation : GeneratorUtil.getOperations(nodeClass, EcoreAnnotation.NODE_CHILDREN)) { %>
+	declare @method: * <%=className %>.<%=genOperation.getFormattedName()%> : @Node.Child;<%	
+	} %>
+	
+<% } %>
+}
+<%
+genModel.emitSortedImports();
+%>

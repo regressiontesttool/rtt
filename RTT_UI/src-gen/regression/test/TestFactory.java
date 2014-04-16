@@ -1,12 +1,14 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package regression.test;
 
-import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
  * <!-- begin-user-doc -->
@@ -16,94 +18,163 @@ import org.eclipse.emf.ecore.EFactory;
  * @see regression.test.TestPackage
  * @generated
  */
-public interface TestFactory extends EFactory {
+public class TestFactory extends EFactoryImpl {
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	TestFactory eINSTANCE = regression.test.impl.TestFactoryImpl.init();
+	public static final TestFactory eINSTANCE = init();
 
 	/**
-	 * Returns a new object of class '<em>Attribute</em>'.
+	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Attribute</em>'.
 	 * @generated
 	 */
-	Attribute createAttribute();
+	public static TestFactory init() {
+		try {
+			TestFactory theTestFactory = (TestFactory)EPackage.Registry.INSTANCE.getEFactory("regression.test.tool"); 
+			if (theTestFactory != null) {
+				return theTestFactory;
+			}
+		}
+		catch (Exception exception) {
+			EcorePlugin.INSTANCE.log(exception);
+		}
+		return new TestFactory();
+	}
 
 	/**
-	 * Returns a new object of class '<em>Classable</em>'.
+	 * Creates an instance of the factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Classable</em>'.
 	 * @generated
 	 */
-	Classable createClassable();
+	public TestFactory() {
+		super();
+	}
 
 	/**
-	 * Returns a new object of class '<em>Document Root</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Document Root</em>'.
 	 * @generated
 	 */
-	DocumentRoot createDocumentRoot();
+	@Override
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case TestPackage.ATTRIBUTE: return createAttribute();
+			case TestPackage.CLASSABLE: return createClassable();
+			case TestPackage.DOCUMENT_ROOT: return createDocumentRoot();
+			case TestPackage.LEXER_OUTPUT_TYPE: return createLexerOutputType();
+			case TestPackage.NODE: return createNode();
+			case TestPackage.PARSER_OUTPUT_TYPE: return createParserOutputType();
+			case TestPackage.TOKEN: return createToken();
+			case TestPackage.TREE: return createTree();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+		}
+	}
 
 	/**
-	 * Returns a new object of class '<em>Lexer Output Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Lexer Output Type</em>'.
 	 * @generated
 	 */
-	LexerOutputType createLexerOutputType();
+	public Attribute createAttribute() {
+		Attribute attribute = new Attribute();
+		return attribute;
+	}
 
 	/**
-	 * Returns a new object of class '<em>Node</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Node</em>'.
 	 * @generated
 	 */
-	Node createNode();
+	public Classable createClassable() {
+		Classable classable = new Classable();
+		return classable;
+	}
 
 	/**
-	 * Returns a new object of class '<em>Parser Output Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Parser Output Type</em>'.
 	 * @generated
 	 */
-	ParserOutputType createParserOutputType();
+	public DocumentRoot createDocumentRoot() {
+		DocumentRoot documentRoot = new DocumentRoot();
+		return documentRoot;
+	}
 
 	/**
-	 * Returns a new object of class '<em>Token</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Token</em>'.
 	 * @generated
 	 */
-	Token createToken();
+	public LexerOutputType createLexerOutputType() {
+		LexerOutputType lexerOutputType = new LexerOutputType();
+		return lexerOutputType;
+	}
 
 	/**
-	 * Returns a new object of class '<em>Tree</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Tree</em>'.
 	 * @generated
 	 */
-	Tree createTree();
+	public Node createNode() {
+		Node node = new Node();
+		return node;
+	}
 
 	/**
-	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the package supported by this factory.
 	 * @generated
 	 */
-	TestPackage getTestPackage();
+	public ParserOutputType createParserOutputType() {
+		ParserOutputType parserOutputType = new ParserOutputType();
+		return parserOutputType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Token createToken() {
+		Token token = new Token();
+		return token;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Tree createTree() {
+		Tree tree = new Tree();
+		return tree;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TestPackage getTestPackage() {
+		return (TestPackage)getEPackage();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @deprecated
+	 * @generated
+	 */
+	@Deprecated
+	public static TestPackage getPackage() {
+		return TestPackage.eINSTANCE;
+	}
 
 } //TestFactory

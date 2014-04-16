@@ -2,7 +2,7 @@ package rtt.ui.content.testsuite;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -33,16 +33,12 @@ public class ReferenceContent extends AbstractContent implements
 
 	@Override
 	public void doDoubleClick(IWorkbenchPage currentPage) {
+		
+		IEditorInput input = new OutputDataEditorInput(getProject(), suiteName, 
+				caseName, version, OutputDataType.REFERENCE);
 
 		try {
-			IEditorPart part = IDE.openEditor(currentPage,
-					new OutputDataEditorInput(getProject(), suiteName, caseName,
-							version, OutputDataType.REFERENCE), ReferenceEditor.ID, true);
-			
-			if (part instanceof ReferenceEditor) {
-				((ReferenceEditor) part)
-						.setActivePage(ReferenceEditor.PARSER_PAGE_ID);
-			}
+			IDE.openEditor(currentPage, input, ReferenceEditor.ID, true);			
 		} catch (PartInitException e) {
 			ErrorDialog.openError(currentPage.getActivePart().getSite()
 					.getShell(), "Error", "Could not open editor", new Status(

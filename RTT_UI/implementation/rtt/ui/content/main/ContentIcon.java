@@ -13,6 +13,7 @@ public enum ContentIcon {
 	PLACEHOLDER("icons/place_full.gif","icons/place_empty.gif"),
 	
 	TESTCASE("icons/testcase.gif"),
+	PARAMETER("icons/parser.gif"),
 	
 	CLASSPATH("icons/classpath.gif"),
 	CONFIG("icons/config_full.gif", "icons/config_empty.gif"),
@@ -57,7 +58,7 @@ public enum ContentIcon {
 		this.emptyIconPath = iconPath;
 	}
 	
-	public Image getImage(boolean emptyImage) {
+	public ImageDescriptor getImageDescriptor(boolean emptyImage) {
 		String iconPath = "";
 		
 		if (emptyImage) {
@@ -67,8 +68,16 @@ public enum ContentIcon {
 		}
 		
 		if (iconPath != null && !iconPath.equals("")) {
-			ImageDescriptor imageDescriptor = RttPluginUI.getImageDescriptor(iconPath);
-			return manager.createImage(imageDescriptor); 
+			return RttPluginUI.getImageDescriptor(iconPath); 
+		}
+		
+		return null;
+	}
+	
+	public Image getImage(boolean emptyImage) {
+		ImageDescriptor descriptor = getImageDescriptor(emptyImage);
+		if (descriptor != null) {
+			return manager.createImage(descriptor);			 
 		}
 		
 		return manager.createImage(ImageDescriptor.getMissingImageDescriptor());
