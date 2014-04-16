@@ -2,7 +2,7 @@
 <feature
       id="rtt.feature"
       label="Regression Test Tool"
-      version="1.1.5.qualifier"
+      version="1.5.0.qualifier"
       provider-name="Software Technology Group - Technische Universität Dresden - Germany">
 
    <description url="http://rtt.googlecode.com/svn/trunk/RTT_Update">
@@ -14,7 +14,8 @@ performing tests.
    </description>
 
    <copyright url="http://www.opensource.org/licenses/mit-license.php">
-      Copyright (c) 2010 - 2012 Christoff Bürger, Peter Mucha, Christian Oelsner
+      Copyright (c) 2010 - 2014 Christoff Bürger, Peter Mucha, Christian
+Oelsner
    </copyright>
 
    <license url="http://www.opensource.org/licenses/mit-license.php">
@@ -37,33 +38,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
    </license>
 
+   <url>
+      <discovery label="EMF Compare Update Site" url="http://download.eclipse.org/modeling/emf/compare/updates/releases"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.ant.core" version="3.2.201" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.6.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="rtt.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.forms" version="3.5.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.6.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.ui" version="3.6.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.ecore" version="2.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.ecore.xmi" version="2.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.edit" version="2.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.edit.ui" version="2.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.diff" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.match" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.ui" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.compare" version="3.5.101" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.databinding"/>
-      <import plugin="org.eclipse.core.databinding.beans"/>
-      <import plugin="org.eclipse.core.databinding.observable"/>
-      <import plugin="org.eclipse.core.databinding.property"/>
-      <import plugin="org.eclipse.jface.databinding"/>
-      <import plugin="com.ibm.icu"/>
       <import plugin="org.eclipse.emf.databinding"/>
+      <import plugin="org.eclipse.compare" version="3.5.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug.ui" version="3.6.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.core" version="3.8.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.ui" version="3.7.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.codegen.ecore" version="2.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore.edit" version="2.8.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.compare" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.compare.edit" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.compare.ide.ui" version="2.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -79,4 +84,5 @@ THE SOFTWARE.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 </feature>
