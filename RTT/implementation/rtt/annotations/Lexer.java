@@ -49,12 +49,18 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Lexer {
+	
+	boolean withParams() default false;
+	Class<? extends Throwable>[] acceptedExceptions() default {};
+	
 	/**
 	 * returns one token per call the returned token has to be annotated with
 	 * {@link Lexer.Token}
 	 * 
 	 */
 	String tokenMethod() default "";
+	
+	
 
 	@Target(ElementType.METHOD)
 	@Inherited
@@ -73,7 +79,7 @@ public @interface Lexer {
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Initialize {
-
+		
 	}
 
 	/**

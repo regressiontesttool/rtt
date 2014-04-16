@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libraries/runtime/logging/logback-classic-1.0.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="libraries/runtime/logging/logback-core-1.0.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="libraries/runtime/logging/slf4j-api-1.7.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libraries/runtime/ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="libraries/runtime/jewelcli-0.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="libraries/runtime/truezip-6.8.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="implementation"/>
 	<classpathentry kind="src" path="tests/tested_repository"/>
 	<classpathentry kind="src" path="src-gen"/>
-	<classpathentry exported="true" kind="lib" path="sources/libraries/ant.jar"/>
-	<classpathentry exported="true" kind="lib" path="sources/libraries/jewelcli-0.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="sources/libraries/truezip-6.8.4.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/RTT/sources/truezip-6.8.4-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="binary"/>
 </classpath>

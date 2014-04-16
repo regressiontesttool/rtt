@@ -15,7 +15,7 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.data.AbstractDataManager;
-import rtt.core.utils.Debug;
+import rtt.core.utils.RTTLogging;
 
 public class InputManager extends AbstractDataManager<History> implements
 		IHistoryManager {
@@ -34,7 +34,7 @@ public class InputManager extends AbstractDataManager<History> implements
 		try {
 			load();
 		} catch (RTTException e) {
-			Debug.printTrace(e);
+			RTTLogging.trace("Could not load input history", e);
 		}
 
 		versionCount = data.getVersion().size();
@@ -113,7 +113,7 @@ public class InputManager extends AbstractDataManager<History> implements
 				os.flush();
 				os.close();
 			} catch (Exception e) {
-				Debug.printTrace(e);
+				RTTLogging.trace("Could not write input data", e);
 			}
 
 			return true;
@@ -133,7 +133,7 @@ public class InputManager extends AbstractDataManager<History> implements
 			try {
 				in.close();
 			} catch (IOException e) {
-				Debug.printTrace(e);
+				RTTLogging.trace("Could not retrieve input", e);
 			}
 
 			return input;
@@ -174,7 +174,7 @@ public class InputManager extends AbstractDataManager<History> implements
 				try {
 					reader.close();
 				} catch (IOException e) {
-					Debug.printTrace(e);
+					RTTLogging.trace("Could not get content from InputStream", e);
 				}
 			}
 			return fileData.toString();

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import rtt.core.utils.Debug;
+import rtt.core.utils.RTTLogging;
 
 public abstract class ArchiveLoader {
 
@@ -25,8 +25,12 @@ public abstract class ArchiveLoader {
 			while (parentFile != null && parentFile.isDirectory() == false) {
 				parentFile.getParentFile();
 			}
-
-			baseDir = parentFile.getAbsolutePath();
+			
+			if (parentFile != null) {
+				baseDir = parentFile.getAbsolutePath();
+			} else {
+				throw new IllegalAccessError("Parent file was null. Base path: " + basePath);
+			}
 		}
 	}
 
@@ -51,7 +55,7 @@ public abstract class ArchiveLoader {
 
 			return this.doGetInput(file);
 		} catch (Exception e) {
-			Debug.printTrace(e);
+			RTTLogging.error("Could not retrieve InputStream", e);
 			return null;
 		}
 	}
@@ -76,7 +80,7 @@ public abstract class ArchiveLoader {
 
 			return this.doGetOutput(file);
 		} catch (Exception e) {
-			Debug.printTrace(e);
+			RTTLogging.error("Could not retrieve OutputStream", e);
 			return null;
 		}
 	}

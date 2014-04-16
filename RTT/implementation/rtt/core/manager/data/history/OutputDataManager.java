@@ -3,6 +3,7 @@ package rtt.core.manager.data.history;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
+import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.history.History;
@@ -17,8 +18,8 @@ import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.LexerExecutor;
 import rtt.core.testing.generation.ParserExecutor;
-import rtt.core.utils.Debug;
 import rtt.core.utils.GenerationInformation.GenerationResult;
+import rtt.core.utils.RTTLogging;
 
 public class OutputDataManager extends AbstractDataManager<History> implements IHistoryManager {
 	
@@ -75,7 +76,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		try {
 			this.load();
 		} catch (Exception e) {
-			Debug.printTrace(e);
+			RTTLogging.trace("Could not load output data history", e);
 		}
 	}
 	
@@ -118,11 +119,11 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return parManager.getData(version);
 	}
 	
-	public InputStream getLexerOutputStream(Integer version) {
+	public InputStream getLexerInputStream(Integer version) {
 		return lexManager.getStreamData(version);
 	}
 	
-	public InputStream getParserOutputStream(Integer version) {
+	public InputStream getParserInputStream(Integer version) {
 		return parManager.getStreamData(version);
 	}
 	
@@ -138,7 +139,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	
 	public boolean isOutDated(Integer latestInputID) {
 		for (Version version : data.getVersion()) {
-			if (version.getInputBase() == latestInputID) {
+			if (version.getInputBase().equals(latestInputID)) {
 				return false;
 			}
 		}
@@ -146,7 +147,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return true;		
 	}
 
-	public GenerationResult createData(LexerExecutor lexer, ParserExecutor parser, Integer inputVersion) {
+	public GenerationResult createData(LexerExecutor lexer, ParserExecutor parser, Integer inputVersion, List<String> params) {
 		GenerationResult result = new GenerationResult(suiteName, caseName);
 
 		LexerOutput newLexOut = null;
@@ -155,10 +156,10 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		try {
 			Input input = inputManager.getInput(inputVersion);
 			
-			newLexOut = DataGenerator.generateOutput(input, lexer);
-			newParOut = DataGenerator.generateOutput(input, parser);
+			newLexOut = DataGenerator.generateOutput(input, params, lexer);
+			newParOut = DataGenerator.generateOutput(input, params, parser);
 		} catch (Throwable t) {
-			Debug.printTrace(t);
+			RTTLogging.trace("Could not create output data", t);
 			if (t instanceof InvocationTargetException) {
 				t = t.getCause();
 			}			
@@ -238,6 +239,12 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
 	}
 	
 	

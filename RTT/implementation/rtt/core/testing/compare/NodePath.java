@@ -34,8 +34,8 @@ public class NodePath {
 			curPos = null;
 
 			if (i < path.size() - 1
-					&& curNode.getChildNodes().size() > 1)
-				curPos = curNode.getChildNodes().indexOf(
+					&& curNode.getNodes().size() > 1)
+				curPos = curNode.getNodes().indexOf(
 						path.get(i + 1));
 
 		}

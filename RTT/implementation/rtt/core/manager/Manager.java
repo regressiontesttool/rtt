@@ -16,7 +16,6 @@ import java.util.List;
 import rtt.core.archive.Archive;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.configuration.Path;
 import rtt.core.archive.logging.Detail;
 import rtt.core.archive.logging.EntryType;
 import rtt.core.archive.testsuite.Testcase;
@@ -39,10 +38,10 @@ import rtt.core.testing.compare.results.TestResult.ResultType;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.LexerExecutor;
 import rtt.core.testing.generation.ParserExecutor;
-import rtt.core.utils.Debug;
 import rtt.core.utils.GenerationInformation;
 import rtt.core.utils.GenerationInformation.GenerationResult;
 import rtt.core.utils.GenerationInformation.GenerationType;
+import rtt.core.utils.RTTLogging;
 
 /**
  * 
@@ -99,6 +98,11 @@ public class Manager {
 
 		Manager.verbose = verbose;
 	}
+	
+	public Manager(File archive, boolean verbose, ClassLoader classLoader) {
+		this(archive, verbose);
+		Thread.currentThread().setContextClassLoader(classLoader);
+	}
 
 	public void createArchive() throws Exception {
 		currentArchive = new Archive(getArchiveLoader(archivePath));
@@ -114,7 +118,7 @@ public class Manager {
 		boolean hasChanged = currentArchive.setActiveConfiguration(config);
 
 		if (hasChanged) {
-			Debug.log("Active configuration: " + config);
+			RTTLogging.info("Active configuration: " + config);
 		}
 	}
 
@@ -158,30 +162,29 @@ public class Manager {
 		return (currentArchive != null);
 	}
 	
+	private void checkInitialize() throws RTTException {
+		if (!isInitialized()) {
+			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
+		}
+	}
+	
 	public Archive getArchive() {
 		return currentArchive;
 	}
 	
 	public void exportLog(File location) throws Exception {
-		if (!isInitialized())
-			throw new Exception("No archive loaded.");
-
+		checkInitialize();
 		currentLog.export(location);
 	}
 
 	public void printArchiveInformations() throws Exception {
-
-		if (!isInitialized())
-			throw new Exception("no archive loaded.");
-
-		System.out.println("Informations of archive:");
-
+		checkInitialize();
+		RTTLogging.info("Informations of archive:");
 		currentArchive.print();
 	}
 
 	public void saveArchive(File archivePath) throws RTTException {
-		if (!isInitialized())
-			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
+		checkInitialize();
 
 		try {
 			currentArchive.save();
@@ -216,12 +219,7 @@ public class Manager {
 		Configuration config = new Configuration();		
 		config.setName(configName);
 		Classpath cPath = new Classpath();
-		for (String entry : cpEntries) {
-			Path path = new Path();
-			path.setValue(entry);
-			
-			cPath.getPath().add(path);
-		}
+		cPath.getPath().addAll(cpEntries);
 		config.setClasspath(cPath);
 		
 		config.setLexerClass(lexerName);
@@ -247,7 +245,7 @@ public class Manager {
 		if (state.lexerSet) {
 			Detail detail = new Detail();
 			detail.setMsg("Lexer class:");
-			if (lexerName.equals("")) {
+			if (lexerName == null || lexerName.trim().isEmpty()) {
 				detail.setSuffix("<None>");
 			} else {
 				detail.setSuffix(lexerName);
@@ -260,7 +258,7 @@ public class Manager {
 		if (state.parserSet) {
 			Detail detail = new Detail();
 			detail.setMsg("Parser class:");
-			if (parserName.equals("")) {
+			if (parserName == null || parserName.trim().isEmpty()) {
 				detail.setSuffix("<None>");
 			} else {
 				detail.setSuffix(parserName);
@@ -316,8 +314,7 @@ public class Manager {
 	}
 	
 	public boolean removeTestsuite(String suiteName) throws RTTException {
-		if (!isInitialized())
-			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
+		checkInitialize();
 		
 		if (!currentArchive.hasTestsuite(suiteName)) {
 			throw new RTTException(Type.DATA_NOT_FOUND, "Cannot find test suite: "
@@ -391,9 +388,8 @@ public class Manager {
 	protected Detail addFile(File file, String suiteName, TestCaseMode mode)
 			throws RTTException {
 
-		if (!isInitialized())
-			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
-
+		checkInitialize();
+		
 		Testsuite t = currentArchive.getTestsuite(suiteName, false);
 		if (t == null) {
 			if (createTestSuite(suiteName) == false) {
@@ -438,15 +434,14 @@ public class Manager {
 		
 		detail.setMsg(message);	
 		
-		Debug.log(detail.getMsg() + detail.getSuffix());
+		RTTLogging.info(detail.getMsg() + detail.getSuffix());
 
 		return detail;
 	}
 	
 	public void removeTest(String suiteName, String caseName)
 			throws RTTException {
-		if (!isInitialized())
-			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
+		checkInitialize();
 		
 		if (!currentArchive.hasTestcase(suiteName, caseName)) {
 			throw new RTTException(Type.DATA_NOT_FOUND, "Cannot find test case: "
@@ -458,8 +453,19 @@ public class Manager {
 				suiteName + "/" + caseName);
 	}
 	
+	public void setParametersToTest(String suiteName, String caseName, List<String> parameters) throws RTTException {
+		checkInitialize();
+		Testcase testcase = currentArchive.getTestcase(suiteName, caseName);
+		if (testcase != null) {
+			testcase.getParameter().clear();
+			testcase.getParameter().addAll(parameters);
+			
+			currentLog.addEntry(EntryType.ARCHIVE, "Parameters set for test case: ", suiteName + "/" + caseName);
+		}
+	}
+	
 	public GenerationInformation generateTests(String suiteName)
-			throws RTTException {
+			throws Exception {
 		GenerationInformation results = new GenerationInformation(GenerationType.REFERENCE_DATA);
 
 		if (suiteName == null) {
@@ -475,29 +481,26 @@ public class Manager {
 	}
 
 	public GenerationInformation generateTests(String suiteName,
-			Configuration config) throws RTTException {
-
-		if (!isInitialized())
-			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
+			Configuration config) throws Exception {
+		
+		checkInitialize();
 
 		if (!currentArchive.hasTestsuite(suiteName)) {
 			throw new RTTException(Type.DATA_NOT_FOUND, "Test suite '" + suiteName
 					+ "' does not exist.");
 		}
-
+		
 		GenerationInformation genInfos = new GenerationInformation(GenerationType.REFERENCE_DATA);
-
-		// create executors
-		LexerExecutor lexer = DataGenerator.getLexerExecutor(config, baseDir);
-		ParserExecutor parser = DataGenerator
-				.getParserExecutor(config, baseDir);
-
-		for (Testcase tcase : currentArchive.getTestcases(suiteName)) {
+		
+		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
+		
+		LexerExecutor lexer = DataGenerator.locateLexerExecutor(config, baseDir);
+		ParserExecutor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		
+		RTTLogging.info("**** Generate reference data ****");
+		
+		for (Testcase tcase : currentArchive.getTestcases(suiteName)) {	
 			
-			Debug.log("Generate tests for [" + suiteName + "/"
-					+ tcase.getName() + "]");
-
-
 			// load reference data for the test case
 			OutputDataManager refManager = new OutputDataManager(
 					currentArchive.getLoader(), suiteName, tcase.getName(),
@@ -505,21 +508,38 @@ public class Manager {
 
 			// create new reference data
 			GenerationResult result = refManager.createData(lexer, parser,
-					tcase.getInputID());
+					tcase.getInputID(), tcase.getParameter());
+			
+			StringBuilder infoMessage = new StringBuilder();
+			infoMessage.append("[" + suiteName + "/" + tcase.getName() + "]");
 
 			if (result.noError) {
 				// No error during the generation of the reference data
 				refManager.save();
+				
+				infoMessage.append(" has been generated");
 
 				// if reference data has replaced, update version data
 				if (result.hasReplaced) {
 					String configName = config.getName();
 					VersionData versionData = currentArchive.getVersionData(tcase, configName, true);
 					versionData.setReferenceID(versionData.getReferenceID() + 1);
+					
+					infoMessage.append(" and replaced");
 				}
+			} else {
+				infoMessage.append(" has NOT been generated");
+				
+				StringBuilder errorMessage = new StringBuilder();
+				errorMessage.append("[Exception] in Test case [");
+				errorMessage.append(suiteName + "/" + tcase.getName());
+				errorMessage.append("]: ");
+				
+				RTTLogging.error(errorMessage.toString(), result.exception);
 			}
 
 			genInfos.addResult(result);
+			RTTLogging.info(infoMessage.toString());
 		}
 
 		List<Detail> details = genInfos.makeDetails(true);
@@ -532,12 +552,12 @@ public class Manager {
 		}
 		
 		currentLog.addEntry(EntryType.GENERATION, message, config.getName(), details);
-
+		
 		return genInfos;
 	}
 
 	public GenerationInformation runTests(String suiteName, boolean matching)
-			throws RTTException {
+			throws Exception {
 
 		GenerationInformation results = new GenerationInformation(GenerationType.TEST_DATA);
 		
@@ -554,42 +574,43 @@ public class Manager {
 	}
 
 	private GenerationInformation runTestsInternal(String suiteName, boolean matching)
-			throws RTTException {
+			throws Exception {
 
-		if (Manager.verbose)
-			System.out.println("Running Tests...");
-
-		if (!isInitialized())
-			throw new RTTException(Type.NO_ARCHIVE, "No archive loaded.");
+		checkInitialize();
 		
 		if (currentArchive.hasTestsuite(suiteName) == false) {
 			throw new RTTException(Type.DATA_NOT_FOUND, "Test suite '"
 					+ suiteName + "' does not exists or has been removed from archive.");
 		}
 		
-		GenerationInformation genInfos = new GenerationInformation(GenerationType.TEST_DATA);
 		
-		Configuration configuration = currentArchive.getActiveConfiguration();
-		LexerExecutor lexer = DataGenerator.getLexerExecutor(configuration,
-				baseDir);
-		ParserExecutor parser = DataGenerator.getParserExecutor(configuration,
-				baseDir);
+		GenerationInformation genInfos = new GenerationInformation(GenerationType.TEST_DATA);
+		Configuration config = currentArchive.getActiveConfiguration();
+		
+		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
+		
+		LexerExecutor lexer = DataGenerator.locateLexerExecutor(config, baseDir);
+		ParserExecutor parser = DataGenerator.locateParserExecutor(config, baseDir);
 		
 		Tester tester = new Tester(currentArchive.getLoader(), matching);
 		List<TestResult> testResults = new ArrayList<TestResult>();
+		
+		RTTLogging.info("**** Running tests ****");
 
 		for (Testcase tcase : currentArchive.getTestcases(suiteName)) {
-				
-			Debug.log("Running tests for [" + suiteName + "/" + tcase.getName() + "]");
 			
 			// Create new test data manager 
 			OutputDataManager testManager = new OutputDataManager(
 					currentArchive.getLoader(), suiteName,
-					tcase.getName(), configuration, OutputDataType.TEST);
+					tcase.getName(), config, OutputDataType.TEST);
 			
 			// Create new test data ...
-			GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID());
+			GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID(), tcase.getParameter());
 			genInfos.addResult(genResult);
+			
+			StringBuilder infoMessage = new StringBuilder();
+			infoMessage.append("[" + suiteName + "/" + tcase.getName() + "]");
+			infoMessage.append(" has been tested");
 			
 			// if test data could not have been generated, show skip
 			TestResult caseResults = new TestResult(ResultType.SKIPPED, suiteName, tcase.getName());
@@ -597,44 +618,55 @@ public class Manager {
 				testManager.save();
 				
 				if (genResult.hasReplaced) {
-					VersionData versionData = currentArchive.getVersionData(tcase, configuration.getName(), true);
+					VersionData versionData = currentArchive.getVersionData(tcase, config.getName(), true);
 					versionData.setTestID(versionData.getTestID() + 1);						
 				}
 				
 				// do testing
-				caseResults = tester.test(suiteName, tcase, configuration);
+				caseResults = tester.test(suiteName, tcase, config);
 				
-				if (caseResults != null) {
+				if (caseResults != null) { 
+					// results for test case are present -> no exceptions occurred
 					if (caseResults.getType() == ResultType.FAILURE) {
 						List<ITestFailure> failures = caseResults.getFailures();
+						StringBuilder warnMessage = new StringBuilder();
+						
 						for (ITestFailure failure : failures) {
-							System.err.println("\n[Failure] in Testcase '"
-									+ tcase.getName() + "', Testsuite '"
-									+ suiteName + "'");
-							System.err.println(failure.getMessage());
+							warnMessage.append("[Failure] in Test case [");
+							warnMessage.append(suiteName + "/" + tcase.getName());
+							warnMessage.append("]: ");
+							warnMessage.append(failure.getMessage());						
 						}
+						
+						RTTLogging.warn(warnMessage.toString());
+						infoMessage.append(" with failures");
 					} else {
-						if (Manager.verbose)
-							System.out.println("No errors occured");
+						infoMessage.append(" with no errors");
 					}
 
 					testResults.add(caseResults);
 				}
 			} else {
-				System.err.println("\n[Exception] in Testcase '"
-						+ tcase.getName() + "', Testsuite '"
-						+ suiteName + "'");
-				System.err.println(genResult.exception.getMessage());
+				// no results for test case -> exception occurred
+				StringBuilder errorMessage = new StringBuilder();
+				errorMessage.append("[Exception] in Test case [");
+				errorMessage.append(suiteName + "/" + tcase.getName());
+				errorMessage.append("]: ");
+
+				RTTLogging.error(errorMessage.toString(), genResult.exception);
+				infoMessage.append(" with exception(s)");
 			}
+			
+			RTTLogging.info(infoMessage.toString());
 		}
 		
 		List<Detail> details = genInfos.makeDetails(false);
 		if (genInfos.hasErrors() && !details.isEmpty()) {
 			String message = "Test data for test suite [" + suiteName + "] generated errors with configuration: ";
-			currentLog.addEntry(EntryType.INFO, message, configuration.getName(), details);
+			currentLog.addEntry(EntryType.INFO, message, config.getName(), details);
 		}
 		
-		currentLog.addTestrunResult(testResults, configuration.getName(), suiteName);
+		currentLog.addTestrunResult(testResults, config.getName(), suiteName);	
 
 		return genInfos;
 	}

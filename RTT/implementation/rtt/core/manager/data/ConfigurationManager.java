@@ -7,11 +7,9 @@ import java.util.TreeSet;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.configuration.Configurations;
-import rtt.core.archive.configuration.Path;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.SimpleFileFetching;
-import rtt.core.utils.Debug;
-import rtt.core.utils.Debug.LogType;
+import rtt.core.utils.RTTLogging;
 
 /**
  * This Manager manages the processing of configurations.
@@ -58,7 +56,7 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		public Set<String> newEntries = new TreeSet<String>();
 
 		/**
-		 * A list containig all deleted entries of a class path
+		 * A list containing all deleted entries of a class path
 		 */
 		public Set<String> deletedEntries = new TreeSet<String>();
 	}
@@ -114,34 +112,41 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 			configList.add(newConfig);
 			
 			state = ConfigStatus.ADDED;
-			state.lexerSet = true;
-			state.parserSet = true;
+			
+			String lexerClass = newConfig.getLexerClass();
+			state.lexerSet = lexerClass != null && !lexerClass.trim().isEmpty();
+			
+			String parserClass = newConfig.getParserClass();
+			state.parserSet = parserClass != null && !parserClass.trim().isEmpty();
 			
 			Classpath cPath = newConfig.getClasspath();
-			
-			for (Path entry : cPath.getPath()) {
-				state.newEntries.add(entry.getValue());
-			}
+			if (cPath != null) {
+				for (String entry : cPath.getPath()) {
+					state.newEntries.add(entry);
+				}
+			}	
 			
 	    // old config exists, update the old one
 		} else {
 			state = ConfigStatus.UPDATED;
 			
 			state.lexerSet = setLexerName(oldConfig, newConfig.getLexerClass());
-			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());			
+			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());		
 			
 			state.newEntries = addClasspathEntries(oldConfig, newConfig);
 			state.deletedEntries = removeClasspathEntries(oldConfig, newConfig);
 			
 			// if nothing done, return skipped 
-			if (!state.lexerSet && !state.parserSet && state.newEntries.isEmpty() && state.deletedEntries.isEmpty()) {
+			if (!state.lexerSet && !state.parserSet 
+					&& state.newEntries.isEmpty() && state.deletedEntries.isEmpty()) {
+				
 				state = ConfigStatus.SKIPPED;
 			}
 		}
 		
 		return state;
 	}
-	
+
 	private boolean setLexerName(Configuration config, String lexerName) {
 		if (config != null && lexerName != null) {
 			String oldClass = config.getLexerClass();
@@ -176,15 +181,13 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		if (oldConfig != null && newConfig != null) {
 			Classpath newClasspath = newConfig.getClasspath();
 			if (newClasspath != null) {
-				for (Path entry : newClasspath.getPath()) {
-					if (addClasspathEntry(oldConfig, entry.getValue())) {
-						newPathEntries.add(entry.getValue());
+				for (String path : newClasspath.getPath()) {
+					if (addClasspathEntry(oldConfig, path)) {
+						newPathEntries.add(path);
 					}
 				}
 			}
-		}
-		
-		
+		}		
 		
 		return newPathEntries;
 	}
@@ -197,16 +200,13 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 				classpath = new Classpath();
 			}
 
-			for (Path path : classpath.getPath()) {
-				if (path.getValue().equals(entry)) {
+			for (String path : classpath.getPath()) {
+				if (path.equals(entry)) {
 					return false;
 				}
 			}
-
-			Path newPath = new Path();
-			newPath.setValue(entry);
-
-			return classpath.getPath().add(newPath);
+			
+			return classpath.getPath().add(entry);
 		}
 
 		return false;
@@ -218,15 +218,15 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		if (oldConfig != null && newConfig != null) {
 			Classpath oldClasspath = oldConfig.getClasspath();
 			if (oldClasspath != null) {
-				for (Path entry : oldClasspath.getPath()) {
-					if (!hasClasspathEntry(newConfig, entry.getValue())) {
-						removedEntries.add(entry.getValue());			
+				for (String path : oldClasspath.getPath()) {
+					if (!hasClasspathEntry(newConfig, path)) {
+						removedEntries.add(path);
 					}
 				}
 			}
+			
+			oldConfig.setClasspath(newConfig.getClasspath());
 		}
-		
-		oldConfig.setClasspath(newConfig.getClasspath());
 		
 		return removedEntries;
 	}
@@ -235,8 +235,8 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		if (config != null && config.getClasspath() != null) {
 			Classpath cPath = config.getClasspath();
 			if (cPath.getPath() != null) {
-				for (Path path : cPath.getPath()) {
-					if (path.getValue() != null && path.getValue().equals(value)) {
+				for (String path : cPath.getPath()) {
+					if (path != null && path.equals(value)) {
 						return true;
 					}
 				}
@@ -252,10 +252,10 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 			Classpath classpath = config.getClasspath();
 
 			if (classpath != null && classpath.getPath() != null) {
-				List<Path> pathList = classpath.getPath();
+				List<String> pathList = classpath.getPath();
 
 				for (int i = 0; i < pathList.size(); i++) {
-					if (pathList.get(i).getValue().equals(entry)) {
+					if (pathList.get(i).equals(entry)) {
 						index = i;
 					}
 				}
@@ -332,24 +332,23 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 	}
 
 	/**
-	 * Prints informations about all configurations to the {@link Debug}.
+	 * Prints informations about all configurations to the current logging.
 	 * 
 	 * @see Configuration
-	 * @see Debug
 	 */
 	public void print() {
-		Debug.log(LogType.ALL, "DefaultConfiguration: " + data.getDefault());
+		RTTLogging.info("DefaultConfiguration: " + data.getDefault());
 
 		for (Configuration c : data.getConfiguration()) {
 
-			Debug.log("Config: " + c.getName());
+			RTTLogging.info("Config: " + c.getName());
 
 			if (c.getLexerClass() != null) {
-				Debug.log("\tLexer: " + c.getLexerClass());
+				RTTLogging.info("\tLexer: " + c.getLexerClass());
 			}
 
 			if (c.getParserClass() != null) {
-				Debug.log("\tParser: " + c.getParserClass());
+				RTTLogging.info("\tParser: " + c.getParserClass());
 			}
 		}
 	}

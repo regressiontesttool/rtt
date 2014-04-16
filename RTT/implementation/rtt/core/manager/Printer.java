@@ -88,7 +88,7 @@ public class Printer {
 			result += na.getName() + ":" + na.getValue();
 		}
 
-		int childCount = (n.getChildNodes() != null) ? n.getChildNodes().size() : 0;
+		int childCount = (n.getNodes() != null) ? n.getNodes().size() : 0;
 
 		result += ")](Children:" + childCount + ")";
 

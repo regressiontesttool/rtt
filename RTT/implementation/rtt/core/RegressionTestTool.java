@@ -91,12 +91,10 @@ public class RegressionTestTool {
 			if (options.isClasspath()) {
 				for (String cpe : options.getClasspath().split(";"))
 					cpEntries.add(cpe);
-			}
-			
+			}			
 			
 			m.setConfiguration(options.getNewConfiguration(), options.getLexer(),
 					options.getParser(), cpEntries, true, options.isOverwrite());
-
 			
 		}
 

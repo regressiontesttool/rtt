@@ -25,14 +25,19 @@
 
 	<import file="jaxb.xml" />
 
-	<property name="rtt.lib" location="${project.dir}/lib" />
-	<property name="rtt.ant-tasks" location="${rtt.lib}/ant-lib.jar" />
-	<property name="rtt.interface" location="${rtt.lib}/rtt-interface.jar" />
+	<!-- library locations -->
+	<property name="rtt.lib" location="${project.dir}/libraries" />
+	<property name="rtt.lib.runtime" location="${rtt.lib}/runtime"/>
+	<property name="rtt.lib.plugin" location="${rtt.lib}/plugin" />	
+	
+	<!-- library destinations for plug-in -->
+	<property name="rtt.plugin.ant-tasks" location="${rtt.lib.plugin}/ant-lib.jar" />
+	<property name="rtt.plugin.interface" location="${rtt.lib.plugin}/rtt-interface.jar" />
 
 	<property name="rtt.base" location="${project.dir}" />
-	<property name="rtt.src.lib" location="${project.dir}/sources/libraries" />
 	<property name="rtt.src" location="${project.dir}/implementation" />
 	<property name="rtt.bin" location="${project.dir}/binary" />
+	<property name="rtt.licenses" location="${project.dir}/LICENSES"/>
 
 	<property name="project.name" value="RTT" />
 	<property name="build.complete" location="${rtt.src-gen}/.done" />
@@ -65,18 +70,22 @@
           target: Create_AntLib              
          ================================= -->
 	<target name="Create_AntLib" description="description">
-		<jar destfile="${rtt.ant-tasks}" index="false" update="false" compress="false">
+		<jar destfile="${rtt.plugin.ant-tasks}" index="false" update="false" compress="false">
 			<manifest>
 				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
 			</manifest>
-			<zipfileset src="${rtt.src.lib}/truezip-6.8.4.jar" />
-			<zipfileset src="${rtt.src.lib}/jewelcli-0.6.jar" />
+			
+			<!-- integrate runtime libraries -->
+			<zipgroupfileset dir="${rtt.lib.runtime}" includes="**/*.jar" />
+			
+			<!-- add license informations -->
+			<zipfileset dir="${rtt.licenses}" includes="*.txt" prefix="LICENSES"/>
+			
+			<!-- logback config file -->
 			<fileset dir="${rtt.base}">
-				<include name="RTT-License.txt" />
-				<include name="TrueZip-License.txt" />
-				<include name="JewelCli-License.txt" />
-				<include name="headliner.treedistance-License.txt" />
+				<include name="logback.xml"/>
 			</fileset>
+			
 			<fileset dir="${rtt.src}">
 				<include name="**/taskdef.properties" />
 				<include name="headliner/treedistance/Makefile" />
@@ -96,16 +105,11 @@
           target: Create_InterfaceLib              
          ================================= -->
 	<target name="Create_InterfaceLib" description="description">
-		<jar destfile="${rtt.interface}" index="false" update="false" compress="false">
-			<fileset dir="${rtt.base}">
-				<include name="RTT-License.txt" />
-				<include name="TrueZip-License.txt" />
-				<include name="JewelCli-License.txt" />
-				<include name="headliner.treedistance-License.txt" />
-			</fileset>
+		<jar destfile="${rtt.plugin.interface}" index="false" update="false" compress="false">			
 			<fileset dir="${rtt.bin}">
 				<include name="rtt/annotations/**/*.class" />
 				<exclude name="rtt/annotations/AnnotationProcessor.class" />
+				<exclude name="rtt/annotations/MethodAnnotationProcessor.class" />
 			</fileset>
 		</jar>
 	</target>

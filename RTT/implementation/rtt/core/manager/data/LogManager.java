@@ -35,7 +35,7 @@ import rtt.core.testing.compare.results.ITestFailure;
 import rtt.core.testing.compare.results.LexerTestFailure;
 import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestResult;
-import rtt.core.utils.Debug;
+import rtt.core.utils.RTTLogging;
 
 /**
  * This manager provides all operations on the {@link ArchiveLog}.
@@ -90,10 +90,74 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 
 			return cal;
 		} catch (DatatypeConfigurationException e) {
-			Debug.printTrace(e);
+			RTTLogging.trace("Could not retrieve gregorian calendar", e);
 			return null;
 		}
 	}
+	
+	/**
+	 * Returns the {@link Entry} found from the given data.
+	 * @param type an {@link EntryType} object
+	 * @param date a {@link XMLGregorianCalendar} date object
+	 * @return an {@linkplain Entry} object
+	 */
+	public Entry getEntry(EntryType type, XMLGregorianCalendar date) {
+		if (type == null || date == null) {
+			throw new IllegalArgumentException("EntryType or date was null.");
+		}
+		
+		for (Entry entry : getData().getEntry()) {
+			if (entry.getType().equals(type) &&	entry.getDate().equals(date)) {
+				return entry;
+			}					
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns a {@link Testrun} from the log. 
+	 * <p>
+	 * Calls {@link #getEntry(EntryType, XMLGregorianCalendar)} with 
+	 * preset {@link EntryType#TESTRUN}.
+	 * 
+	 * @param date a {@link XMLGregorianCalendar} object
+	 * @return a {@link Testrun} object
+	 * @see #getEntry(EntryType, XMLGregorianCalendar)
+	 */
+	public Testrun getTestrun(XMLGregorianCalendar date) {
+		return (Testrun) getEntry(EntryType.TESTRUN, date);
+	}
+	
+	/**
+	 * Returns the corresponding {@link Result} from the given data.
+	 * @param testrun
+	 * @param type
+	 * @param suiteName
+	 * @param caseName
+	 * @return
+	 */
+	public Result getResultFromTestrun(Testrun testrun, ResultType type, String suiteName, String caseName) {
+		if (testrun == null) {
+			throw new IllegalArgumentException("Testrun was null.");
+		}
+		
+		for (Result result : testrun.getResult()) {
+			if (result.getType() == type && 
+					result.getTestsuite().equals(suiteName) &&
+					result.getTestcase().equals(caseName)) {
+				return result;
+			}
+		}
+		
+		return null;
+	}
+	
+	public List<Entry> getLogEntries() {
+		return getData().getEntry();
+	}
+	
+	
 
 	/**
 	 * Adds an {@link Entry} to the {@link ArchiveLog}, with a list of
@@ -120,8 +184,6 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 		if (details != null) {
 			entry.getDetail().addAll(details);
 		}
-
-		Debug.log(message + " " + suffix);
 
 		data.getEntry().add(entry);
 	}
@@ -250,6 +312,6 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
         StreamResult result = new StreamResult(out);
         transformer.transform(source, result);
 
-		Debug.log("Logging File exported to: " + resultFile.getCanonicalPath());
+		RTTLogging.info("Logging File exported to: " + resultFile.getCanonicalPath());
 	}
 }

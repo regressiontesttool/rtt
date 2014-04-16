@@ -10,6 +10,7 @@ package rtt.core.testing.generation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,8 +22,6 @@ import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.Token;
-import rtt.core.exceptions.RTTException.Type;
-import rtt.core.exceptions.RTTException;
 
 /**
  * 
@@ -32,23 +31,31 @@ import rtt.core.exceptions.RTTException;
 public class LexerExecutor extends Executor {
 
 	Object lexer;
-
+	
 	Method nextTokenMethod;
 	Lexer lexerAnnotation;
-
-	public LexerExecutor(String lexerClass, Classpath cp, String baseDir)
+	
+	public LexerExecutor(String className, Classpath cp, String baseDir)
 			throws Exception {
-		
-		super(lexerClass, cp, baseDir);
-		lexerAnnotation = annotationProcessor.getAnnotation(Lexer.class);
+		super(className, cp, baseDir);
+		lexerAnnotation = processor.getAnnotation(Lexer.class);
 	}
 
 	@Override
-	public void loadInput(Input i) throws Exception {
-		lexer = loadInputImpl(i, Lexer.Initialize.class, annotationProcessor);
+	public void initialize(Input input, List<String> params) throws Throwable {
 		
-		if (lexer == null) {
-			throw new RTTException(Type.EXECUTOR, "Could not initialize lexer class.");
+		if (lexerAnnotation.withParams()) {
+			setParams(params);
+		}
+		
+		if (lexerAnnotation.acceptedExceptions() != null) {
+			setAcceptedExceptions(lexerAnnotation.acceptedExceptions());
+		}
+		
+		try {
+			lexer = initializeClass(input, Lexer.Initialize.class);
+		} catch (InvocationTargetException invoException) {
+			throw invoException.getCause();
 		}
 		
 		nextTokenMethod = null;
@@ -56,7 +63,7 @@ public class LexerExecutor extends Executor {
 
 	public Token getToken() throws Exception {
 		if (nextTokenMethod == null)
-			nextTokenMethod = getSingleMethod(Lexer.NextToken.class, annotationProcessor);
+			nextTokenMethod = processor.getMethodWithAnnotation(Lexer.NextToken.class);
 
 		Object o = nextTokenMethod.invoke(lexer);		
 		Token t = computeToken(o);
@@ -80,7 +87,7 @@ public class LexerExecutor extends Executor {
 
 		Method eofMethod = null;
 		try {
-			eofMethod = getSingleMethod(Lexer.Token.EOF.class, tokenProc);
+			eofMethod = tokenProc.getMethodWithAnnotation(Lexer.Token.EOF.class);
 		} catch (Exception e) {
 			// no Method of this type, try attribute
 		}
@@ -130,8 +137,8 @@ public class LexerExecutor extends Executor {
 		Collections.sort(l, c);
 	}
 
-	private void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
-			List<Attribute> l, Class clazz, boolean informational)
+	private <A extends Annotation> void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
+			List<Attribute> l, Class<A> clazz, boolean informational)
 			throws Exception {
 		List<Method> compareMethods = tokenProc.getMethodsWithAnnotation(clazz);
 		for (Method m : compareMethods) {
@@ -155,8 +162,8 @@ public class LexerExecutor extends Executor {
 		}
 	}
 
-	private void addFields(Object tokenObj, AnnotationProcessor tokenProc,
-			List<Attribute> l, Class clazz, boolean informational)
+	private <A extends Annotation> void addFields(Object tokenObj, AnnotationProcessor tokenProc,
+			List<Attribute> l, Class<A> clazz, boolean informational)
 			throws Exception {
 		List<Field> compareFields = tokenProc.getFieldsWithAnnotation(clazz);
 		for (Field f : compareFields) {
@@ -178,6 +185,6 @@ public class LexerExecutor extends Executor {
 
 			l.add(ta);
 		}
-	}
+	}	
 
 }

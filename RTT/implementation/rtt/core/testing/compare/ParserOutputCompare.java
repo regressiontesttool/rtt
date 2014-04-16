@@ -16,8 +16,7 @@ import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.output.Tree;
 import rtt.core.testing.compare.results.ParserTestFailure;
-import rtt.core.utils.Debug;
-import rtt.core.utils.Debug.LogType;
+import rtt.core.utils.RTTLogging;
 
 
 
@@ -75,7 +74,7 @@ public class ParserOutputCompare {
 			result.add(new ParserTestFailure(expTrees.size() - wasTrees.size()
 					+ " more trees expected."));
 
-		Debug.log(LogType.ALL, "Searching for matches");
+		RTTLogging.info("Searching for matches");
 
 		while (wasTrees.size() > 0) {
 			Tree w = wasTrees.get(0);
@@ -177,22 +176,22 @@ public class ParserOutputCompare {
 						i);
 
 		}
-		if ((was.getChildNodes() == null) != (expected.getChildNodes() == null))
+		if ((was.getNodes() == null) != (expected.getNodes() == null))
 			return new ParserTestFailure(was, expected, curPath, null);
 
-		int maxChildren = (was.getChildNodes() == null) ? 0 : Math.max(was
-				.getChildNodes().size(), expected.getChildNodes().size());
+		int maxChildren = (was.getNodes() == null) ? 0 : Math.max(was
+				.getNodes().size(), expected.getNodes().size());
 
 		for (int i = 0; i < maxChildren; ++i) {
 			Node wasChild = null;
 			Node expChild = null;
 			try {
-				wasChild = was.getChildNodes().get(i);
+				wasChild = was.getNodes().get(i);
 			} catch (IndexOutOfBoundsException e) {
 			}
 
 			try {
-				expChild = expected.getChildNodes().get(i);
+				expChild = expected.getNodes().get(i);
 			} catch (IndexOutOfBoundsException e) {
 			}
 

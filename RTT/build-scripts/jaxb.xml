@@ -18,8 +18,10 @@
 	<property name="project.dir" location="${tasks.base}/.." />
 	<property name="rtt.src-gen" location="${project.dir}/src-gen" />
 	<property name="rtt.schemes" location="${project.dir}/schemes" />
-	<property name="rtt.sources" location="${project.dir}/sources" />
-	<property name="rtt.libraries" location="${rtt.sources}/libraries" />
+	<property name="rtt.lib" location="${project.dir}/libraries" />
+	
+	<!-- important libraries -->
+	<property name="lib.jaxb" location="${rtt.lib}/development/jaxb"/>
 
 	<!-- Some package definintions -->
 	<property name="package.core" location="${rtt.src-gen}/rtt/core" />
@@ -27,7 +29,7 @@
 
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 		<classpath>
-			<fileset dir="${rtt.libraries}/jaxb" includes="*.jar" />
+			<fileset dir="${lib.jaxb}" includes="*.jar" />
 		</classpath>
 	</taskdef>
 
@@ -121,7 +123,9 @@
 	</target>
 
 	<target name="XJC Output">
-		<JAXBCreate package="output" schema="Output.xsd" />
+		<JAXBCreate package="output" schema="Output.xsd">
+			<binding file="${rtt.schemes}${file.separator}Output.xjb" />
+		</JAXBCreate>
 	</target>
 
 	<!-- ================================= 

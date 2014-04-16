@@ -34,7 +34,7 @@ public class RTTClasspathContainer implements IClasspathContainer {
 		if (rttBundle != null) {
 			try {
 				URL localUrl = FileLocator.toFileURL(rttBundle
-						.getEntry("/lib/rtt-interface.jar"));
+						.getEntry("/libraries/plugin/rtt-interface.jar"));
 				String fullPath = new File(localUrl.getPath())
 						.getAbsolutePath();
 				IPath path = Path.fromOSString(fullPath);

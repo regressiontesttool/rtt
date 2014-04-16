@@ -9,23 +9,22 @@ import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.output.Token;
 import rtt.core.archive.output.Tree;
-import rtt.core.exceptions.RTTException;
-import rtt.core.exceptions.RTTException.Type;
-import rtt.core.utils.Debug;
-import rtt.core.utils.Debug.LogType;
+import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
 
-	public static LexerOutput generateOutput(Input data, LexerExecutor lexer)
-			throws Exception {	
+	public static LexerOutput generateOutput(Input input, List<String> params,
+			LexerExecutor lexer) throws Throwable {
 
 		LexerOutput lexOut = new LexerOutput();
 
 		if (lexer != null) {
 			lexOut = new LexerOutput();
 
-			lexer.loadInput(data);
+			RTTLogging.debug("Initializing lexer");
+			lexer.initialize(input, params);
 
+			RTTLogging.debug("Generating lexer output data");
 			while (true) {
 				Token t = lexer.getToken();
 				lexOut.getToken().add(t);
@@ -37,16 +36,18 @@ public class DataGenerator {
 		return lexOut;
 	}
 
-	public static ParserOutput generateOutput(Input data, ParserExecutor parser)
-			throws Exception {
+	public static ParserOutput generateOutput(Input input, List<String> params,
+			ParserExecutor parser) throws Throwable {
 
 		ParserOutput parOut = new ParserOutput();
 
 		if (parser != null) {
 			parOut = new ParserOutput();
 
-			parser.loadInput(data);
-
+			RTTLogging.debug("Initialize parser ...");
+			parser.initialize(input, params);
+			
+			RTTLogging.debug("Generating parser output data ...");
 			List<Node> treeNodes = parser.getAst();
 			for (Node astTree : treeNodes) {
 				Tree tree = new Tree();
@@ -61,49 +62,54 @@ public class DataGenerator {
 		return parOut;
 	}
 
-	public static LexerExecutor getLexerExecutor(Configuration config,
-			String baseDir) throws RTTException {
-
-		try {
-
-			String lexerClass = config.getLexerClass();
-
-			if (lexerClass != null && !lexerClass.equals("")) {
-
-				Debug.log(LogType.ALL, "Creating lexer class: " + lexerClass);
-
-				return new LexerExecutor(lexerClass, config.getClasspath(),
-						baseDir);
-			}
-
-		} catch (Exception e) {
-			throw new RTTException(Type.OPERATION_FAILED,
-					"Could not generate lexer class.", e);
-		}
+	/**
+	 * <p>Tries to locate the {@link LexerExecutor} via the class loader. </p>
+	 * 
+	 * <p>Instantiate the lexer through
+	 * {@link Executor#initialize(Input, List)} before use!</p>
+	 * 
+	 * @param config the {@link Configuration}
+	 * @param baseDir the base directory for searching
+	 * @return a {@link LexerExecutor} or null (if config is empty)
+	 * @throws Exception
+	 *             mainly exceptions during class loading
+	 */
+	public static LexerExecutor locateLexerExecutor(Configuration config,
+			String baseDir) throws Exception {
+		
+		String lexerClass = config.getLexerClass();
+		if (lexerClass != null && !lexerClass.trim().isEmpty()) {
+			RTTLogging.info("Lexer: " + lexerClass);
+			return new LexerExecutor(lexerClass, config.getClasspath(), baseDir);
+		} 
+		
+		RTTLogging.info("Lexer: <none>");
 
 		return null;
 	}
 
-	public static ParserExecutor getParserExecutor(Configuration config,
-			String baseDir) throws RTTException {
-
-		try {
-
-			String parserClass = config.getParserClass();
-
-			if (parserClass != null && !parserClass.equals("")) {
-
-				Debug.log(LogType.ALL, "Creating parser class: "
-						+ parserClass);
-
-				return new ParserExecutor(parserClass, config.getClasspath(),
-						baseDir);
-			}
-
-		} catch (Exception e) {
-			throw new RTTException(Type.OPERATION_FAILED,
-					"Could not generate parser class.", e);
+	/**
+	 * <p>Tries to locate the {@link ParserExecutor} via the class loader</p>
+	 * 
+	 * <p>Instantiate the parser through
+	 * {@link Executor#initialize(Input, List)} before use!</p>
+	 * 
+	  * @param config the {@link Configuration}
+	 * @param baseDir the base directory for searching
+	 * @return a {@link ParserExecutor} or null (if config is empty)
+	 * @throws Exception
+	 *             mainly exceptions during class loading
+	 */
+	public static ParserExecutor locateParserExecutor(Configuration config,
+			String baseDir) throws Exception {
+		
+		String parserClass = config.getParserClass();
+		if (parserClass != null && !parserClass.trim().isEmpty()) {
+			RTTLogging.info("Parser: " + parserClass);
+			return new ParserExecutor(parserClass, config.getClasspath(), baseDir);
 		}
+		
+		RTTLogging.info("Parser: <none>");
 
 		return null;
 	}

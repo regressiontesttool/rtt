@@ -53,10 +53,10 @@ public class BasicTree extends TreeDefinition<Node>{
     private void addNode(List<Node> nodes,Node  curNode)
     {
     	nodes.add(curNode);
-    	if (curNode.getChildNodes() == null || curNode.getChildNodes().size() == 0)
+    	if (curNode.getNodes() == null || curNode.getNodes().size() == 0)
     		return;
     	
-    	for(Node c : curNode.getChildNodes())
+    	for(Node c : curNode.getNodes())
     		addNode(nodes, c);
     	
     }
@@ -64,10 +64,10 @@ public class BasicTree extends TreeDefinition<Node>{
     
     /** Returns the children of the node given as a parameter. */
     public List<Node> getChildren(Node nodeLabel) {
-    	if (nodeLabel.getChildNodes() == null)
+    	if (nodeLabel.getNodes() == null)
     		return new LinkedList<Node>();
     	
-	return nodeLabel.getChildNodes();
+	return nodeLabel.getNodes();
     }
 
     public String toString() {

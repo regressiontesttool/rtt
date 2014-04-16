@@ -50,12 +50,15 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Parser {
+	
+	boolean withParams() default false;
+	Class<? extends Throwable>[] acceptedExceptions() default {};
 
 	@Target( { ElementType.METHOD, ElementType.CONSTRUCTOR })
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Initialize {
-
+		
 	}
 
 	@Target(ElementType.METHOD)

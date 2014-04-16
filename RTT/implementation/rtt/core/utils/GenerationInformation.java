@@ -37,9 +37,9 @@ public class GenerationInformation {
 
 			if (noError) {
 				if (hasReplaced) {
-					message += " have been generated.";
+					message += " has been generated.";
 				} else {
-					message += " have not changed.";
+					message += " has not changed.";
 				}
 				
 			} else {

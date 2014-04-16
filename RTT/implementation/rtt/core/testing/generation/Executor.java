@@ -11,17 +11,18 @@ package rtt.core.testing.generation;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotations.AnnotationProcessor;
 import rtt.core.archive.configuration.Classpath;
-import rtt.core.archive.configuration.Path;
 import rtt.core.archive.input.Input;
-import rtt.core.utils.Debug;
+import rtt.core.utils.RTTLogging;
 
 
 /**
@@ -31,15 +32,19 @@ import rtt.core.utils.Debug;
  */
 public abstract class Executor {
 	
-	protected String className;
-	protected AnnotationProcessor annotationProcessor;
+	protected Class<?> executorClass = null;
+	protected AnnotationProcessor processor = null;
+	protected String[] params = null;
+	protected List<Class<? extends Throwable>> acceptedList;
 
 	public Executor(String className, Classpath cp, String baseDir) throws Exception {
-		Class<?> clazz = loadClass(className, cp, baseDir);
+		executorClass = loadClass(className, cp, baseDir);
+		processor = new AnnotationProcessor(executorClass);
 		
-		this.className = className;
-		annotationProcessor = new AnnotationProcessor(clazz);		
+		acceptedList = new ArrayList<Class<? extends Throwable>>();
 	}
+	 
+	public abstract void initialize(Input input, List<String> params) throws Throwable;
 
 	public Class<?> loadClass(String className, Classpath cp, String baseDir)
 			throws Exception {
@@ -47,86 +52,109 @@ public abstract class Executor {
 		if (!(cp == null || cp.getPath().size() == 0)) {
 			URL[] urls = new URL[cp.getPath().size()];
 			int idx = 0;
-			for (Path p : cp.getPath()) {
-				File f = new File(p.getValue()); // test, if absolut
+			for (String pathEntry : cp.getPath()) {
+				File f = new File(pathEntry); // test, if absolut
 				if (!f.exists()) {
-					f = new File(path + File.separator + p.getValue());					
+					f = new File(path + File.separator + pathEntry);					
 					if (!f.exists()) {
-						Debug.log("Classpath does not exist: "
-								+ p.getValue());
+						RTTLogging.warn("Classpath does not exist: "
+								+ pathEntry);
 						continue;
 					}
 				}
 				urls[idx++] = (f.toURI().toURL());
 			}
+			
+//			System.out.println(Thread.currentThread().getContextClassLoader());
 
-			URLClassLoader ucl = new URLClassLoader(urls, this.getClass()
-					.getClassLoader());
+			URLClassLoader ucl = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
 			try {
-				// cpModifier.addPath(urls);
-				// Class c = Class.forName(className);
-				Class<?> c = ucl.loadClass(className);
-				return c;
-			} catch (Exception c) {
-				throw c;
+				return ucl.loadClass(className);
+			} catch (ClassNotFoundException exception) {
+				RTTLogging.error("Executing class not found.", exception);
 			}
+			
 
 		}
 
 		return Class.forName(className);
 	}
+	
+	public void setParams(List<String> params) {
+		if (params != null) {
+			this.params = params.toArray(new String[params.size()]);
+		}
+	}
+	
+	public void setAcceptedExceptions(Class<? extends Throwable>[] acceptedExceptions) {
+		acceptedList.clear();
+		for (Class<? extends Throwable> throwable : acceptedExceptions) {
+			acceptedList.add(throwable);
+		}
+	}
+	
+	public boolean isAcceptedException(Throwable throwable) {
+		return acceptedList.contains(throwable.getClass());
+	}
 
-	public abstract void loadInput(Input i) throws Exception;
+	protected <A extends Annotation> Object initializeClass(Input input, Class<A> annotation) throws Exception {
+		
+		InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes());
 
-	protected Object loadInputImpl(Input i, Class inputAnnotation,
-			AnnotationProcessor proc) throws Exception {
-		Object r;
-		InputStream in = new ByteArrayInputStream(i.getValue().getBytes());
-
-		List<Constructor> cs = proc
-				.getConstructorsWithAnnotation(inputAnnotation);
+		// try to find constructors with the initialize annotation
+		List<Constructor<?>> cs = processor.getConstructorsWithAnnotation(annotation);
 
 		if (cs.size() > 0) {
+			// one ore more constructors found
 			
 			if (cs.size() > 1) {
 				throw new Exception(
-						"More than one Constructors are annotated with "
-						+ inputAnnotation.toString()
+						"More than one constructor is annotated with "
+						+ annotation.toString()
 				);
 			}
 
-			r = cs.get(0).newInstance(in);
-		} else {
-
-			try {
-				Method input = getSingleMethod(inputAnnotation, proc);
-				r = proc.getNewInstance();
-				input.invoke(r, in);
-			} catch (Exception e) {
-				// no method to initialize, try to invoke Constructor
-				try {
-					r = proc.getNewInstance(InputStream.class, in);
-				} catch (Exception e2) {
-					System.err.println("Cant find method to initialize");
-					return null;
-				}
+			if (params != null) {
+				return cs.get(0).newInstance(inputStream, params);
+			} else {
+				return cs.get(0).newInstance(inputStream);
 			}
 		}
-		return r;
-	}
-
-	protected Method getSingleMethod(Class annotationClass,
-			AnnotationProcessor proc) throws Exception {
-		List<Method> methods = proc.getMethodsWithAnnotation(annotationClass);
-
-		if (methods.size() == 1) {
-			return methods.get(0);
+		
+		// TODO annotation verarbeitung der methode überdenken
+		List<Method> methodList = processor.getMethodsWithAnnotation(annotation);
+		if (methodList.size() > 0) {
+			if (methodList.size() > 1) {
+				throw new Exception(
+						"More than one method is annotated with "
+						+ annotation.toString()
+				);
+			}			
+			
+			Object executorObject = null;
+			try {
+				executorObject = processor.getObjectInstance();
+			} catch (Exception ex) {
+				executorObject = executorClass.getConstructor(InputStream.class).newInstance(inputStream);
+			}
+			
+			if (params != null) {
+				methodList.get(0).invoke(executorObject, inputStream, params);
+			} else {
+				methodList.get(0).invoke(executorObject, inputStream);
+			}
+			
+			return executorObject;
+		}		
+		
+		// try to invoke a constructor without a annotation
+		Constructor<?> constructor = null;
+		if (params != null)  {
+			constructor = executorClass.getConstructor(InputStream.class, String[].class);
+			return constructor.newInstance(inputStream, params);
 		} else {
-			// size == 0
-			throw new Exception("Cant specify a method annotated with "
-					+ annotationClass.toString());
+			constructor = executorClass.getConstructor(InputStream.class);
+			return constructor.newInstance(inputStream);
 		}
-
 	}
-
 }

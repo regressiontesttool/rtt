@@ -16,7 +16,7 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.IFileFetching;
-import rtt.core.utils.Debug;
+import rtt.core.utils.RTTLogging;
 
 /**
  * This abstract data manager provides a basic set of operations for loading and
@@ -210,7 +210,7 @@ public abstract class AbstractDataManager<T> {
 
 				outputStream.close();
 			} catch (Exception e) {
-				Debug.printTrace(e);
+				RTTLogging.error("Could not marshall output data", e);
 			}
 		}
 	}

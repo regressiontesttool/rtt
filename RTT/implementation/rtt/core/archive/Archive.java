@@ -12,9 +12,9 @@ import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.Manager.TestCaseMode;
 import rtt.core.manager.data.ConfigurationManager;
+import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.LogManager;
 import rtt.core.manager.data.TestsuiteManager;
-import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.TestsuiteManager.TestcaseStatus;
 
 /**

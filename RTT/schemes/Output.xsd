@@ -23,8 +23,8 @@
 			<xs:annotation>
 				<xs:documentation>type of lexer output</xs:documentation>
 			</xs:annotation>
-			<xs:sequence maxOccurs="unbounded" minOccurs="0">
-				<xs:element name="token" type="rtt:token" />
+			<xs:sequence>
+				<xs:element name="token" type="rtt:token" maxOccurs="unbounded" minOccurs="0"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -33,10 +33,9 @@
 		<xs:complexContent>
 			<xs:extension base="rtt:classable">
 				<xs:sequence>
-					<xs:element name="attributes" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="attribute" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
-				<xs:attribute default="false" name="isEof" type="xs:boolean"
-					use="optional" />
+				<xs:attribute default="false" name="isEof" type="xs:boolean" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -47,8 +46,8 @@
 			<xs:annotation>
 				<xs:documentation>type of parser output</xs:documentation>
 			</xs:annotation>
-			<xs:sequence maxOccurs="unbounded" minOccurs="0">
-				<xs:element name="tree" type="rtt:tree" />
+			<xs:sequence>
+				<xs:element name="tree" type="rtt:tree" maxOccurs="unbounded" minOccurs="0" />	
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -56,8 +55,8 @@
 	<xs:complexType name="tree">
 		<xs:complexContent>
 			<xs:extension base="rtt:classable">
-				<xs:sequence maxOccurs="unbounded" minOccurs="0">
-					<xs:element name="node" type="rtt:node" />
+				<xs:sequence>
+					<xs:element name="node" type="rtt:node" maxOccurs="unbounded" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -67,11 +66,11 @@
 		<xs:complexContent>
 			<xs:extension base="rtt:classable">
 				<xs:sequence>
-					<xs:element name="attributes" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element name="childNodes" type="rtt:node" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="attribute" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="node" type="rtt:node" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
-				<xs:attribute default="false" name="isNull" type="xs:boolean"
-					use="optional" />
+				<xs:attribute name="isNull" type="xs:boolean" default="false" />
+				<xs:attribute name="method" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

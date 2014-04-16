@@ -13,7 +13,7 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.Manager.TestCaseMode;
 import rtt.core.manager.data.history.InputManager;
-import rtt.core.utils.Debug;
+import rtt.core.utils.RTTLogging;
 
 public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 
@@ -40,15 +40,16 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 
 		for (Testsuite testsuite : suiteList) {
 			if (testsuite.getName().equals(suiteName)) {
+				
 				if (testsuite.isDeleted()) {
-					Debug.log("Testsuite '" + suiteName
+					RTTLogging.trace("Testsuite '" + suiteName
 							+ "' was tagged as deleted.");
 					testsuite.setDeleted(false);
 
 					return true;
 				}
 
-				Debug.log("Testsuite '" + suiteName
+				RTTLogging.info("Testsuite '" + suiteName
 						+ "' is already existing.");
 				return false;
 			}
@@ -64,7 +65,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 		Testsuite suite = getTestsuite(suiteName, false);
 
 		if (suite != null) {
-			Debug.log("Testsuite '" + suiteName
+			RTTLogging.trace("Testsuite '" + suiteName
 					+ "' will be tagged as deleted.");
 			suite.setDeleted(true);
 			return true;
@@ -148,7 +149,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 				resultStatus = TestcaseStatus.NEW;
 			} else if (mode == TestCaseMode.SKIP) {
 				// test case existed and wasn't deleted.
-				Debug.log("Testcase '" + caseName + "' in testsuite '"
+				RTTLogging.info("Testcase '" + caseName + "' in testsuite '"
 						+ suiteName + "' already existed.");
 				return TestcaseStatus.NONE;
 			}		
@@ -168,7 +169,7 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 
 		return resultStatus;
 	}
-
+	
 	public boolean removeTestcase(String suiteName, String caseName) {
 		Testcase testcase = getTestcase(suiteName, caseName, true);
 
@@ -225,16 +226,13 @@ public class TestsuiteManager extends AbstractDataManager<Testsuites> {
 	}
 
 	public void print() {
-		List<Testsuite> suites = data.getTestsuite();
+		List<Testsuite> suites = getTestsuites(false);
+		RTTLogging.info("Number of suites: " + suites.size());
+		for (Testsuite suite : suites) {
+			RTTLogging.info("Test suite '" + suite.getName() + "':");
 
-		if (suites != null) {
-			Debug.log("Number of suites: " + suites.size());
-			for (Testsuite suite : suites) {
-				Debug.log("Test suite '" + suite.getName() + "':");
-
-				for (Testcase tcase : suite.getTestcase()) {
-					Debug.log("\tTest case '" + tcase.getName() + "'");
-				}
+			for (Testcase tcase : suite.getTestcase()) {
+				RTTLogging.info("\tTest case '" + tcase.getName() + "'");
 			}
 		}
 	}

@@ -6,49 +6,49 @@
       <antTask
             class="rtt.ant.CreateArchive"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.CreateArchive">
       </antTask>
       
       <antTask
             class="rtt.ant.UpdateArchive"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.UpdateArchive">
       </antTask>
       
       <antTask
             class="rtt.ant.UpdateConfiguration"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.UpdateConfigurations">
       </antTask>
       
       <antTask
             class="rtt.ant.UpdateTests"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.UpdateTests">
       </antTask>
       
       <antTask
             class="rtt.ant.RunTest"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.Test">
       </antTask>
       
       <antTask
             class="rtt.ant.RunTests"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.RunTests">
       </antTask>
       
       <antTask
             class="rtt.ant.ExportLog"
             eclipseRuntime="false"
-            library="lib/ant-lib.jar"
+            library="libraries/plugin/ant-lib.jar"
             name="Rtt.ExportLog">
       </antTask>
    
@@ -59,5 +59,17 @@
             class="rtt.core.classpath.RTTClasspathContainerInitializer"
             id="RTT.ClasspathContainer">
       </classpathContainerInitializer>
+   </extension>
+   <extension
+         id="rtt.core.testapplication"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="1"
+            thread="main"
+            visible="true">
+         <run
+               class="rtt.core.RTTApplication">
+         </run>
+      </application>
    </extension>
 </plugin>

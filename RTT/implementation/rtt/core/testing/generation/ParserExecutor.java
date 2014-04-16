@@ -10,6 +10,7 @@ package rtt.core.testing.generation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,8 +23,7 @@ import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.Node;
-import rtt.core.exceptions.RTTException;
-import rtt.core.exceptions.RTTException.Type;
+import rtt.core.utils.RTTLogging;
 
 /**
  * 
@@ -39,20 +39,30 @@ public class ParserExecutor extends Executor {
 			throws Exception {
 		
 		super(parserClass, cp, baseDir);
-		parserAnnotation = annotationProcessor.getAnnotation(Parser.class);
+		parserAnnotation = processor.getAnnotation(Parser.class);
 	}
 
-	public void loadInput(Input i) throws Exception {
-		parser = loadInputImpl(i, Parser.Initialize.class, annotationProcessor);
+	@Override
+	public void initialize(Input input, List<String> params) throws Throwable {
 		
-		if (parser == null) {
-			throw new RTTException(Type.EXECUTOR, "Could not initialize parser class.");
+		if (parserAnnotation.withParams()) {
+			setParams(params);
+		}
+		
+		if (parserAnnotation.acceptedExceptions() != null) {
+			setAcceptedExceptions(parserAnnotation.acceptedExceptions());
+		}
+		
+		try {
+			parser = initializeClass(input, Parser.Initialize.class);
+		} catch (InvocationTargetException exception) {
+			throw exception.getCause();
 		}
 	}
 
-	public List<Node> getAst() throws Exception {
+	public List<Node> getAst() throws Throwable {
 		List<Node> result = new LinkedList<Node>();
-		Method astMethod = getSingleMethod(Parser.AST.class, annotationProcessor);
+		Method astMethod = processor.getMethodWithAnnotation(Parser.AST.class);
 		Object o = astMethod.invoke(parser);
 		if (o == null)
 			return null;
@@ -60,12 +70,14 @@ public class ParserExecutor extends Executor {
 
 		if (Iterable.class.isAssignableFrom(o.getClass())
 				&& !o.getClass().isAnnotationPresent(Parser.Node.class)) {
-			Iterable io = (Iterable) o;
+			Iterable<?> io = (Iterable<?>) o;
 			for (Object tree : io) {
-				result.add(createNode(tree));
+				result.add(createNode(tree, astMethod.getName()));
 			}
-		} else
-			result.add(createNode(o));
+		} else {
+			result.add(createNode(o, astMethod.getName()));
+		}
+			
 
 		return result;
 
@@ -83,13 +95,18 @@ public class ParserExecutor extends Executor {
 		Collections.sort(l, c);
 	}
 
-	private Node createNode(Object curObj) throws Exception {
+	private Node createNode(Object curObj, String methodName) throws Throwable {
 
 		Node node = new Node();
+		node.setMethod(methodName);
+		
 		if (curObj == null) {
 			node.setIsNull(true);
 			return node;
 		}
+		
+		node.setSimpleName(curObj.getClass().getSimpleName());
+		node.setFullName(curObj.getClass().getName());
 		
 		AnnotationProcessor nodeProc = new AnnotationProcessor(curObj
 				.getClass());
@@ -99,11 +116,8 @@ public class ParserExecutor extends Executor {
 		} catch (Exception e) {
 			System.err.println("Warning:" + Parser.Node.class.toString()
 					+ " not present at " + curObj.getClass());
-			return null;
-		}
-		
-		node.setSimpleName(curObj.getClass().getSimpleName());
-		node.setFullName(curObj.getClass().getName());
+			return node;
+		}	
 		
 		List<Attribute> l = node.getAttributes();
 
@@ -116,8 +130,22 @@ public class ParserExecutor extends Executor {
 		List<Method> methodList = nodeProc.getMethodsWithAnnotation(Parser.Node.Child.class);
 		
 		for (Method method : methodList) {
-			Object value = method.invoke(curObj);
-			addNode(node, value);				
+			try {
+				Object value = method.invoke(curObj);
+				addNode(node, value, method.getName());
+			} catch (Throwable throwable) {
+				if (throwable instanceof InvocationTargetException) {
+					throwable = throwable.getCause();
+				}
+				
+				if (!isAcceptedException(throwable)) {
+					throw throwable;
+				}
+				
+				// TODO was tun wenn exception ?
+				String throwableName = throwable.getClass().getName();
+				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+			}							
 		}
 
 		List<Field> fieldList = nodeProc
@@ -125,7 +153,7 @@ public class ParserExecutor extends Executor {
 		
 		for (Field field : fieldList) {
 			Object value = field.get(curObj);
-			addNode(node, value);
+			addNode(node, value, field.getName());
 		}
 
 		return node;
@@ -133,52 +161,83 @@ public class ParserExecutor extends Executor {
 	}
 
 	private void addNode(Node parentNode, Node childNode) {
-		if (parentNode.getChildNodes() != null) {
-			parentNode.getChildNodes().add(childNode);
+		if (parentNode.getNodes() != null) {
+			parentNode.getNodes().add(childNode);
 		}
 	}
 	
-	private void addNode(Node parentNode, Object object) throws Exception {
+	private void addNode(Node parentNode, Object object, String operationName) throws Throwable {
 		
 		if (object instanceof Iterable) {
 			Iterable<?> tmp = (Iterable<?>) object;
 			
+			int i = 0;
 			for (Object o : tmp) {
-				addNode(parentNode, createNode(o));
+				Node newNode = createNode(o, operationName + "[" + i + "]");
+				addNode(parentNode, newNode);
+				
+				i++;
 			}
 				
 		} else {
-			addNode(parentNode, createNode(object));
+			Node newNode = createNode(object, operationName);
+			addNode(parentNode, newNode);
 		}
 	}
 
-	private void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
-			List<Attribute> l, Class clazz, boolean informational)
-			throws Exception {
-		List<Method> compareMethods = tokenProc.getMethodsWithAnnotation(clazz);
-		for (Method m : compareMethods) {
-			Attribute ta = new Attribute();
+	private <A extends Annotation>void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
+			List<Attribute> l, Class<A> clazz, boolean informational)
+			throws Throwable {
+
+		for (Method method : tokenProc.getMethodsWithAnnotation(clazz)) {
+			Attribute attribute = new Attribute();
 
 			String name = "";
-			Annotation a = m.getAnnotation(clazz);
-			if (informational)
-				name = ((Parser.Node.Informational) a).value();
-			else
-				name = ((Parser.Node.Compare) a).value();
+			Annotation annotation = method.getAnnotation(clazz);
+			if (annotation != null) {
+				if (informational)
+					name = ((Parser.Node.Informational) annotation).value();
+				else
+					name = ((Parser.Node.Compare) annotation).value();
+			}
+			
+			if (name.trim().isEmpty()) {
+				name = method.getName().replace("get", "");
+			}
+			
+			Object returnValue = null;
+			try {
+				returnValue = method.invoke(tokenObj);
+			} catch (Throwable throwable) {
+				if (throwable instanceof InvocationTargetException) {
+					throwable = throwable.getCause();
+				}
+				
+				if (!isAcceptedException(throwable)) {
+					throw throwable;
+				}
+				
+				// TODO was tun wenn exception ?
+				String throwableName = throwable.getClass().getName();
+				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+				returnValue = "EXCEPTION: " + throwableName;
+			}
+			
+			String value = "";
+			if (returnValue != null) {
+				value = returnValue.toString();
+			}
 
-			ta.setName(name.equals("") ? m.getName().replace("get", "") : name);
-			Object v = m.invoke(tokenObj);
-			String value = v == null ? "" : v.toString();
-			ta.setValue(value);
+			attribute.setName(name);
+			attribute.setValue(value);
+			attribute.setInformational(informational);
 
-			ta.setInformational(informational);
-
-			l.add(ta);
+			l.add(attribute);
 		}
 	}
 
-	private void addFields(Object tokenObj, AnnotationProcessor tokenProc,
-			List<Attribute> l, Class clazz, boolean informational)
+	private <A extends Annotation> void addFields(Object tokenObj, AnnotationProcessor tokenProc,
+			List<Attribute> l, Class<A> clazz, boolean informational)
 			throws Exception {
 		List<Field> compareFields = tokenProc.getFieldsWithAnnotation(clazz);
 		for (Field f : compareFields) {

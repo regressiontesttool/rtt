@@ -23,8 +23,8 @@
 
 	<xs:complexType name="testcase">
 		<xs:sequence>
-		<xs:element minOccurs="0" maxOccurs="unbounded" name="versionData"
-				type="rtt:versionData" />
+			<xs:element name="versionData" minOccurs="0" maxOccurs="unbounded" type="rtt:versionData" />
+			<xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="deleted" type="xs:boolean" default="false" />

@@ -23,35 +23,78 @@ import java.util.List;
  */
 public class AnnotationProcessor {
 	
-	private Class<?> clazz;
-
-	public AnnotationProcessor(Class<?> clazz) {
-		this.clazz = clazz;
+	private Class<?> objectClass;
+	
+	/**
+	 * <p>Initialize a new {@link AnnotationProcessor}. <br />
+	 * Note: <br />
+	 * - if the object is null, then a {@link NullPointerException} 
+	 * will be thrown. <br/>
+	 * - if the given class is an interface, then an 
+	 * {@link IllegalArgumentException} will be thrown.</p>
+	 * @param objectClass
+	 */
+	public AnnotationProcessor(Class<?> objectClass) {
+		if (objectClass == null) {
+			throw new NullPointerException("The given object was null.");
+		}
+		
+		if (objectClass.isInterface()) {
+			throw new IllegalArgumentException("The given class was an interface.");
+		}
+		
+		this.objectClass = objectClass;
 	}
 
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass)
-			throws Exception {
-		if (!clazz.isAnnotationPresent(annotationClass))
-			throw new Exception("Annotation " + annotationClass.toString()
-					+ " is not present at class " + clazz.toString());
-
-		return (A) clazz.getAnnotation(annotationClass);
+			throws IllegalArgumentException {
+		if (objectClass.isAnnotationPresent(annotationClass)) {
+			return objectClass.getAnnotation(annotationClass);
+		}
+		
+		for (Class<?> interfaceObject : objectClass.getInterfaces()) {
+			if (interfaceObject.isAnnotationPresent(annotationClass)) {
+				return interfaceObject.getAnnotation(annotationClass);
+			}
+		}
+		
+		throw new IllegalArgumentException("Annotation " + annotationClass.toString()
+				+ " is not present at class " + objectClass.toString());
 	}
 
-	public <A extends Annotation> List<Method> getMethodsWithAnnotation(
-			Class<A> annotationClass) {
-		Method[] ms = clazz.getMethods();
-		List<Method> result = new LinkedList<Method>();
-		for (Method m : ms)
-			if (m.isAnnotationPresent(annotationClass))
-				result.add(m);
-
-		return result;
+	/**
+	 * <p>Returns *all* {@link Method}s which contain the given {@link Annotation}.</p>
+	 * @param annotation
+	 * @return
+	 */
+	public List<Method> getMethodsWithAnnotation(Class<? extends Annotation> annotation) {		
+		return MethodAnnotationProcessor.INSTANCE.findMethods(objectClass, annotation);
+	}
+	
+	/**
+	 * <p>Returns a *single* {@link Method} which contains the given {@link Annotation}.<br />
+	 * Note: if more than one {@link Method} was found, then an {@link Exception} will be thrown.</p>
+	 * @param annotationClass
+	 * @return
+	 * @throws Exception
+	 */
+	public Method getMethodWithAnnotation(Class<? extends Annotation> annotationClass) throws Exception {
+		List<Method> methodList = getMethodsWithAnnotation(annotationClass);
+		if (methodList.size() == 1) {
+			return methodList.get(0);
+		} else {
+			throw new Exception("Can't specify a single method annotated with "
+					+ annotationClass.toString());
+		}
 	}
 
-	public <A extends Annotation> List<Constructor<?>> getConstructorsWithAnnotation(
-			Class<A> annotationClass) {
-		Constructor<?>[] cs = clazz.getConstructors();
+	/**
+	 * Returns *all* {@link Constructor}s which contain the given {@link Annotation}.
+	 * @param annotationClass
+	 * @return
+	 */
+	public List<Constructor<?>> getConstructorsWithAnnotation(Class<? extends Annotation> annotationClass) {
+		Constructor<?>[] cs = objectClass.getConstructors();
 		List<Constructor<?>> result = new LinkedList<Constructor<?>>();
 		for (Constructor<?> c : cs)
 			if (c.isAnnotationPresent(annotationClass))
@@ -60,9 +103,13 @@ public class AnnotationProcessor {
 		return result;
 	}
 
-	public <A extends Annotation> List<Field> getFieldsWithAnnotation(
-			Class<A> annotationClass) {
-		Field[] fs = clazz.getFields();
+	/**
+	 * Returns *all* {@link Field} which contain the given {@link Annotation}.
+	 * @param annotationClass
+	 * @return
+	 */
+	public List<Field> getFieldsWithAnnotation(Class<? extends Annotation> annotationClass) {
+		Field[] fs = objectClass.getFields();
 		List<Field> result = new LinkedList<Field>();
 		for (Field f : fs)
 			if (f.isAnnotationPresent(annotationClass))
@@ -71,14 +118,13 @@ public class AnnotationProcessor {
 		return result;
 	}
 	
-	public Object getNewInstance() throws Exception {
-		return clazz.newInstance();
+	public Object getObjectInstance() throws Exception {
+		return objectClass.newInstance();
 	}
 
 	
-	@SuppressWarnings("unchecked")
-	public <T> Object getNewInstance(Class<T> type, T parameter)
-			throws Exception {
-		return clazz.getConstructor(type).newInstance(parameter);
-	}
+//	public <T> Object getNewInstance(Class<T> type, T parameter)
+//			throws Exception {
+//		return objectClass.getConstructor(type).newInstance(parameter);
+//	}
 }

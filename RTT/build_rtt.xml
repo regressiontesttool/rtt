@@ -18,7 +18,8 @@
 
 	<!-- Important directories -->
 	<property name="distr.dir" location="${rtt.base}/distribution" />
-	<property name="lib.dir" location="${rtt.base}/sources/libraries" />
+	<property name="lib.dir" location="${rtt.base}/libraries/runtime" />
+	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
 	<property name="tasks.dir" location="${rtt.base}/ant-tasks" />
@@ -51,14 +52,20 @@
 			<manifest>
 				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
 			</manifest>
-			<zipfileset src="${lib.dir}/truezip-6.8.4.jar" />
+			
+			<!-- integrate third-party libraries -->
+			<zipfileset src="${lib.dir}/truezip-6.8.4.jar" />			
 			<zipfileset src="${lib.dir}/jewelcli-0.6.jar" />
+			<zipgroupfileset dir="${lib.dir}/logging" includes="*.jar" />
+			
+			<!-- add license informations -->
+			<zipfileset dir="${licenses.dir}" includes="*.txt" prefix="LICENSES"/>
+			
+			<!-- logback config file -->
 			<fileset dir="${rtt.base}">
-				<include name="RTT-License.txt" />
-				<include name="TrueZip-License.txt" />
-				<include name="JewelCli-License.txt" />
-				<include name="headliner.treedistance-License.txt" />
+				<include name="logback.xml"/>
 			</fileset>
+			
 			<fileset dir="${src.dir}">
 				<include name="**/taskdef.properties" />
 				<include name="headliner/treedistance/Makefile" />

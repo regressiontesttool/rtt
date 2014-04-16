@@ -17,11 +17,11 @@
 	</xs:element>	
 	
 	<xs:complexType name="configuration">
-		<xs:all>
-			<xs:element minOccurs="0" name="lexerClass" type="xs:string"/>
-			<xs:element minOccurs="0" name="parserClass" type="xs:string"/>
-			<xs:element minOccurs="0" name="classpath" type="rtt:classpath"/>
-		</xs:all>
+		<xs:sequence>
+			<xs:element name="lexerClass" type="xs:string" minOccurs="0" />
+			<xs:element name="parserClass" type="xs:string" minOccurs="0" />
+			<xs:element name="classpath" type="rtt:classpath" minOccurs="0"/>
+		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="description" type="xs:string" use="optional"/>
 	</xs:complexType>
@@ -29,14 +29,8 @@
 	<!-- List of classpath entries -->
 	<xs:complexType name="classpath">
 		<xs:sequence>
-			<xs:element maxOccurs="unbounded" minOccurs="0" name="path" type="rtt:path"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="path" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
-	
-	<!-- Classpath entry -->
-	<xs:complexType name="path">
-		<xs:simpleContent>
-			<xs:extension base="xs:string"/>
-		</xs:simpleContent>
-	</xs:complexType>	
+
 </xs:schema>

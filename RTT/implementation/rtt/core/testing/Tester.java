@@ -19,8 +19,7 @@ import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestExecutionFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
-import rtt.core.utils.Debug;
-import rtt.core.utils.Debug.LogType;
+import rtt.core.utils.RTTLogging;
 
 public class Tester {
 
@@ -93,7 +92,7 @@ public class Tester {
 
 				somethingTested = true;
 			} catch (RTTException e) {
-				Debug.printTrace(e);
+				RTTLogging.debug(e.getMessage(), e);
 				result.addFailure(new TestExecutionFailure(e));
 				testSuccess = false;
 			}
@@ -116,7 +115,7 @@ public class Tester {
 
 				somethingTested = true;
 			} catch (RTTException e) {
-				Debug.printTrace(e);
+				RTTLogging.debug(e.getMessage(), e);
 				result.addFailure(new TestExecutionFailure(e));
 				testSuccess = false;
 			}
@@ -137,7 +136,7 @@ public class Tester {
 			throws RTTException {
 		
 		checkData(testData, refData);
-		Debug.log(LogType.VERBOSE, "Testing Lexic Results");
+		RTTLogging.info("Testing Lexic Results");
 		return LexerOutputCompare.compareLexerOutput(testData, refData, false);
 	}
 
@@ -145,7 +144,7 @@ public class Tester {
 			ParserOutput refData) throws RTTException {
 		
 		checkData(testData, refData);
-		Debug.log(LogType.VERBOSE, "Testing Syntactic Results");
+		RTTLogging.info("Testing Syntactic Results");
 		return ParserOutputCompare.compareParserOuput(testData, refData, false,
 				matching);
 	}
