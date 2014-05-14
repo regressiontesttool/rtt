@@ -144,6 +144,7 @@
           resolveProxies="false"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Variable" eSuperTypes="../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//TypedElement ../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//NamedElement">
+      <eAnnotations source="rtt/annotation/node"/>
       <eOperations name="asParameter" eType="ecore:EClass ../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//Parameter">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="&lt;p>&#xD;&#xA;The OCL 2.0 specification defines an additional operation that returns a&#xD;&#xA;corresponding {@link Parameter} for a &lt;code>Variable&lt;/code>.&#xD;&#xA;&#xD;&#xA;It is specified as follows:&#xD;&#xA;&lt;pre>&#xD;&#xA;context Variable::asParameter() : Parameter&#xD;&#xA;post: result.name = self.name&#xD;&#xA;post: result.direction = ParameterDirectionKind::in&#xD;&#xA;post: result.type = self.type&#xD;&#xA;&lt;/pre>&#xD;&#xA;&lt;/p>"/>
@@ -192,12 +193,18 @@
     <eClassifiers xsi:type="ecore:EClass" name="PrimitiveLiteralExp" abstract="true"
         eSuperTypes="#//expressions/LiteralExp"/>
     <eClassifiers xsi:type="ecore:EClass" name="OperationCallExp" eSuperTypes="#//expressions/FeatureCallExp">
+      <eAnnotations source="rtt/annotation/node"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="argument" upperBound="-1"
-          eType="#//expressions/OclExpression" containment="true" resolveProxies="false"/>
+          eType="#//expressions/OclExpression" containment="true" resolveProxies="false">
+        <eAnnotations source="rtt/annotation/node/children"/>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="referredOperation" eType="ecore:EClass ../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//Operation"
-          resolveProxies="false"/>
+          resolveProxies="false">
+        <eAnnotations source="rtt/annotation/node/compare"/>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OclExpression" abstract="true" eSuperTypes="../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//TypedElement ../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//NamedElement">
+      <eAnnotations source="rtt/annotation/node"/>
       <eOperations name="withAtPre" eType="#//expressions/OperationCallExp">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="&lt;p>&#xD;&#xA;The OCL 2.0 specification defines an additional operation that returns&#xD;&#xA;an {@link OperationCallExp operation call expression} for the predefined&#xD;&#xA;&lt;code>atPre()&lt;/code> operation with the self expression as its source.&#xD;&#xA;&lt;/p>&#xD;&#xA;&#xD;&#xA;&lt;p>&#xD;&#xA;It is specified as follows:&#xD;&#xA;&#xD;&#xA;&lt;pre>&#xD;&#xA;context OclExpression::withAtPre() : OperationCallExp&#xD;&#xA;post: result.name = 'atPre'&#xD;&#xA;post: result.argument->isEmpty()&#xD;&#xA;post: result.source = self&#xD;&#xA;&lt;/pre>&#xD;&#xA;&#xD;&#xA;&lt;/p>"/>
@@ -289,14 +296,23 @@
           resolveProxies="false"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ExpressionInOcl" eSuperTypes="../../tudresden.ocl20.pivot.pivotmodel/model/pivotmodel.ecore#//Expression">
+      <eAnnotations source="rtt/annotation/node"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="bodyExpression" lowerBound="1"
-          eType="#//expressions/OclExpression" containment="true" resolveProxies="false"/>
+          eType="#//expressions/OclExpression" containment="true" resolveProxies="false">
+        <eAnnotations source="rtt/annotation/node/children"/>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="context" eType="#//expressions/Variable"
-          containment="true" resolveProxies="false"/>
+          containment="true" resolveProxies="false">
+        <eAnnotations source="rtt/annotation/node/children"/>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="result" eType="#//expressions/Variable"
-          containment="true" resolveProxies="false"/>
+          containment="true" resolveProxies="false">
+        <eAnnotations source="rtt/annotation/node/children"/>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" upperBound="-1"
-          eType="#//expressions/Variable" containment="true" resolveProxies="false"/>
+          eType="#//expressions/Variable" containment="true" resolveProxies="false">
+        <eAnnotations source="rtt/annotation/node/children"/>
+      </eStructuralFeatures>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
