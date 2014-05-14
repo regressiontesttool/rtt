@@ -6,6 +6,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="&lt;p>&#xD;&#xA;A &lt;code>NamedElement&lt;/code> represents elements that &#xD;&#xA;may have a name. The name is used for identification of &#xD;&#xA;the named element within the elements owned by its owner. &#xD;&#xA;A named element also has a qualified name that allows it to &#xD;&#xA;be unambiguously identified within a hierarchy of nested &#xD;&#xA;named elements. &lt;code>NamedElement&lt;/code> is an &#xD;&#xA;abstract metaclass.&#xD;&#xA;&lt;/p>"/>
     </eAnnotations>
+    <eAnnotations source="rtt/annotation/node"/>
     <eOperations name="clone" lowerBound="1" eType="#//NamedElement" eExceptions="#//CloneNotSupportedException">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;Creates a copy of this &lt;code>NamedElement&lt;/code>. In the Pivot Model,&#xD;&#xA;all clone operations are intended to perform deep cloning (as opposed&#xD;&#xA;to a shallow clone). That means, that all contained elements (i.e., all elements&#xD;&#xA;for which this &lt;code>NamedElement&lt;/code> is the owner) have to be&#xD;&#xA;cloned as well. Cloning support is necessary for binding {@link GenericElement}s&#xD;&#xA;because such an element needs to be cloned first before its {@link TypeParameter}s&#xD;&#xA;can be bound.&#xD;&#xA;&lt;/p>"/>
@@ -21,6 +22,7 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;Represents the name of the &lt;code>NamedElement&lt;/code>.&#xD;&#xA;&lt;/p>"/>
       </eAnnotations>
+      <eAnnotations source="rtt/annotation/node/compare"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifiedName" eType="ecore:EDataType datatypes.ecore#//String"
         changeable="false" volatile="true" transient="true" derived="true">
@@ -39,11 +41,13 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="&lt;p>&#xD;&#xA;A &lt;code>TypedElement&lt;/code> represents elements that &#xD;&#xA;have a {@link Type}.&#xD;&#xA;&lt;/p>"/>
     </eAnnotations>
+    <eAnnotations source="rtt/annotation/node"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//Type"
         resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;Specifies the type of the element.&#xD;&#xA;&lt;/p>"/>
       </eAnnotations>
+      <eAnnotations source="rtt/annotation/node/compare"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="genericType" eType="#//GenericType"
         containment="true"/>
@@ -529,6 +533,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="&lt;p>&#xD;&#xA;A &lt;code>Constraint&lt;/code> is a condition or restriction &#xD;&#xA;expressed in natural language text or in a machine readable &#xD;&#xA;language for the purpose of declaring some of the &#xD;&#xA;semantics of an element. The semantics are specified via &#xD;&#xA;an associated {@link Expression}.&#xD;&#xA;&lt;/p>"/>
     </eAnnotations>
+    <eAnnotations source="rtt/annotation/node"/>
     <eOperations name="addConstrainedElement" lowerBound="1" eType="#//Constraint">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;Adds a {@link ConstrainableElement} to the constrained elements of&#xD;&#xA;this &lt;code>Constraint&lt;/code>. This operation is required to properly&#xD;&#xA;support cloning constraints. The operation returns a reference to this&#xD;&#xA;&lt;code>Constraint&lt;/code>.&#xD;&#xA;&lt;/p>"/>
@@ -539,6 +544,7 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;This attribute determines the semantics of a constraint in &#xD;&#xA;relation to its {@link #getConstrainedElement() constrained &#xD;&#xA;elements}.&#xD;&#xA;&lt;/p>"/>
       </eAnnotations>
+      <eAnnotations source="rtt/annotation/node/compare"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" eType="#//Namespace"
         transient="true" eOpposite="#//Namespace/ownedRule">
@@ -551,12 +557,14 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;This is the specification of the constraint as an {@link &#xD;&#xA;Expression} in a human- or machine-readable language.&#xD;&#xA;&lt;/p>"/>
       </eAnnotations>
+      <eAnnotations source="rtt/annotation/node/children"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="constrainedElement" upperBound="-1"
         eType="#//ConstrainableElement" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;This is the ordered set of {@link ConstrainableElement}s &#xD;&#xA;referenced by this Constraint.&#xD;&#xA;&lt;/p>"/>
       </eAnnotations>
+      <eAnnotations source="rtt/annotation/node/compare"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="definedFeature" eType="#//Feature"
         resolveProxies="false" eOpposite="#//Feature/semantics">
@@ -609,6 +617,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="&lt;p>&#xD;&#xA;An &lt;code>Expression&lt;/code> contains a language-&#xD;&#xA;specific text string used to describe a value or values, and &#xD;&#xA;an optional specification of the language. One predefined &#xD;&#xA;language for specifying expressions is OCL. Natural &#xD;&#xA;language or programming languages may also be&#xD;&#xA;used.&#xD;&#xA;Contrary to the UML specification, the Pivot Model only &#xD;&#xA;permits one body string for each expression. This is &#xD;&#xA;because the Pivot Model has been designed with an OCL&#xD;&#xA;integration in mind.&#xD;&#xA;&lt;/p>"/>
     </eAnnotations>
+    <eAnnotations source="rtt/annotation/node"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="body" eType="ecore:EDataType datatypes.ecore#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="&lt;p>&#xD;&#xA;This is the uninterpreted text of the expression.&#xD;&#xA;&lt;/p>"/>
@@ -620,7 +629,9 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="constraint" eType="#//Constraint"
-        transient="true" eOpposite="#//Constraint/specification"/>
+        transient="true" eOpposite="#//Constraint/specification">
+      <eAnnotations source="rtt/annotation/node/compare"/>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="CloneNotSupportedException" instanceClassName="java.lang.CloneNotSupportedException"
       serializable="false"/>
