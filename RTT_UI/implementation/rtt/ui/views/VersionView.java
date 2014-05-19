@@ -51,6 +51,7 @@ import rtt.ui.viewer.RttDoubleClickListener;
 import rtt.ui.viewer.RttSimpleLabelProvider;
 import rtt.ui.viewer.RttStructuredContentProvider;
 import rtt.ui.viewer.RttTreeContentProvider;
+import rtt.ui.viewer.ViewerUtils;
 import rtt.ui.views.utils.AbstractProjectListener;
 import rtt.ui.views.utils.AbstractTestsuiteListener;
 
@@ -178,12 +179,11 @@ public class VersionView extends ViewPart implements ISelectionListener {
 		historyLoadButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ISelection sel = caseComboViewer.getSelection();
-				if (sel instanceof IStructuredSelection) {
-					Object item = ((IStructuredSelection)sel).getFirstElement();
-					if (item instanceof TestcaseContent) {
-						loadTestcase((TestcaseContent) item);
-					}
+				TestcaseContent selectedTestcase = ViewerUtils.getSelection(
+						caseComboViewer.getSelection(), TestcaseContent.class);
+				
+				if (selectedTestcase != null) {
+					loadTestcase(selectedTestcase);
 				}
 			}
 		});

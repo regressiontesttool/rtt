@@ -1,21 +1,16 @@
 package rtt.ui.ecore.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -24,6 +19,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -32,14 +28,57 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 
 import rtt.ui.ecore.editor.util.AbstractSelectionChangedListener;
 import rtt.ui.ecore.util.Messages;
+import rtt.ui.ecore.wizard.ExportAnnotationsWizard.ListWorkbenchAdapter;
+import rtt.ui.ecore.wizard.data.GenModelData;
+import rtt.ui.ecore.wizard.data.ProjectData;
 import rtt.ui.utils.RttLog;
+import rtt.ui.viewer.ViewerUtils;
 
-public class DestinationWizardPage extends WizardPage {
+public class DestinationWizardPage extends WizardPage implements Observer {
+	
+	public final class DestinationLabelDecorator implements ILabelDecorator {
+
+		@Override
+		public void addListener(ILabelProviderListener listener) { }
+
+		@Override
+		public void removeListener(ILabelProviderListener listener) { }
+
+
+		@Override
+		public boolean isLabelProperty(Object element, String property) {
+			return false;
+		}
+
+		
+		@Override
+		public Image decorateImage(Image image, Object element) {
+			return image;
+		}
+
+		@Override
+		public String decorateText(String text, Object element) {
+			String labelText = text;
+			
+			if (element instanceof IProject) {
+				IProject project = (IProject) element;
+				if (project.equals(genModelData.getModelProject())) {
+					labelText += " (parent project)";
+				}
+			}
+			
+			return labelText;
+		}
+		
+		@Override
+		public void dispose() { }		
+	}
 
 	private static final String TITLE = 
 			"rtt.ecore.wizard.generate.destination.title";
@@ -50,57 +89,35 @@ public class DestinationWizardPage extends WizardPage {
 	private static final String PACKAGE_LABEL = 
 			"rtt.ecore.wizard.generate.destination.label.package";
 	private static final String NEWBUTTON_LABEL = 
-			"rtt.ecore.wizard.generate.destination.label.newPackage";
+			"rtt.ecore.wizard.generate.destination.label.newPackage";	
+
+	private TableViewer packageViewer;
+	private TableViewer projectViewer;
+	private Button newPackageButton;
 	
 	private IContentProvider contentProvider;
 	private ILabelProvider labelProvider;
 	
-	private List<IJavaProject> projects;
-	private IJavaProject currentProject;
-	
-	private List<IPackageFragment> packages;
-	private IPackageFragment currentPackage;
-	
-	private TableViewer packageViewer;
-	private TableViewer projectViewer;
-	private Button newPackageButton;	
-	
+	private GenModelData genModelData;	
+	private ProjectData projectData;
 
 	/**
 	 * Create the wizard.
-	 * @param generateAnntotationsWizard 
+	 * @param genModelData 
+	 * @param projectData
 	 */
-	public DestinationWizardPage() {
+	public DestinationWizardPage(GenModelData genModelData, ProjectData projectData) {
 		super("wizardPage");
+		
 		setPageComplete(false);
 		setTitle(Messages.getString(TITLE));
 		setDescription(Messages.getString(DESCRIPTION));
 		
-		this.projects = new ArrayList<IJavaProject>();
-		this.packages = new ArrayList<IPackageFragment>();
+		this.genModelData = genModelData;
+		genModelData.addObserver(this);
 		
-		loadProjects();
-	}
-	
-	private void loadProjects() {
-		projects.clear();
-		
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		if (root == null) {
-			throw new RuntimeException("The workspace root was null.");
-		}
-		
-		IProject[] projectArray = root.getProjects();
-		for (IProject project : projectArray) {
-			try {
-				if (project.exists() && project.isOpen() && !project.isHidden()
-						&& project.hasNature(JavaCore.NATURE_ID)) {
-					projects.add(JavaCore.create(project));
-				}
-			} catch (CoreException e) {
-				RttLog.log(e);
-			}
-		}
+		this.projectData = projectData;
+		projectData.addObserver(this);
 	}
 
 	/**
@@ -113,8 +130,8 @@ public class DestinationWizardPage extends WizardPage {
 		setControl(container);
 		container.setLayout(new GridLayout(2, false));
 		
-		contentProvider = new ArrayContentProvider();
-		labelProvider = new WorkbenchLabelProvider();
+		contentProvider = new WorkbenchContentProvider();
+		labelProvider = new DecoratingLabelProvider(new WorkbenchLabelProvider(), new DestinationLabelDecorator());
 		
 		Label projectLabel = new Label(container, SWT.NONE);
 		projectLabel.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, false, 3, 1));
@@ -123,18 +140,15 @@ public class DestinationWizardPage extends WizardPage {
 		projectViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
 		projectViewer.setContentProvider(contentProvider);
 		projectViewer.setLabelProvider(labelProvider);
-		projectViewer.setInput(projects);
+		projectViewer.setInput(new ListWorkbenchAdapter(projectData.getAvailableProjects()));
+		
 		projectViewer.addSelectionChangedListener(new AbstractSelectionChangedListener() {
-
+			
 			@Override
 			public void handleObject(Object object) {
-				if (object instanceof IJavaProject) {
-					try {
-						setProject((IJavaProject) object);
-					} catch (JavaModelException e) {
-						RttLog.log(e);
-					}
-				}			
+				if (object instanceof IProject) {
+					projectData.setTargetProject((IProject) object);
+				}
 			}
 		});
 		
@@ -156,38 +170,47 @@ public class DestinationWizardPage extends WizardPage {
 				
 				if (descriptor != null) {					
 					try {
-						INewWizard packageWizard = (INewWizard) descriptor.createWizard();
-						IStructuredSelection selection = StructuredSelection.EMPTY;
-						if (currentPackage != null) {
-							selection = new StructuredSelection(currentPackage);
-						} else if (currentProject != null) {
-							selection = new StructuredSelection(currentProject);
-						}
-						packageWizard.init(PlatformUI.getWorkbench(), selection);
-						
-						WizardDialog dialog = new WizardDialog(getShell(), packageWizard);
-						dialog.open();
-						
-						setProject(currentProject);
+						openWizard(descriptor);
 					} catch (Exception exception) {
 						RttLog.log(exception);
 					}
 				}
 			}
+
+			private void openWizard(IWizardDescriptor descriptor) throws CoreException {
+				INewWizard packageWizard = (INewWizard) descriptor.createWizard();
+				
+				IPackageFragment selectedPackage = ViewerUtils.getSelection(
+						packageViewer.getSelection(), IPackageFragment.class);
+				IProject selectedProject = ViewerUtils.getSelection(
+						projectViewer.getSelection(), IProject.class);
+				
+				IStructuredSelection selection = StructuredSelection.EMPTY;
+				if (selectedPackage != null) {
+					selection = new StructuredSelection(selectedPackage);
+				} else if (selectedProject != null) {
+					selection = new StructuredSelection(selectedProject);
+				}
+				
+				packageWizard.init(PlatformUI.getWorkbench(), selection);
+				
+				WizardDialog dialog = new WizardDialog(getShell(), packageWizard);
+				dialog.open();
+				
+				projectData.setTargetProject(selectedProject);
+			}			
 		});
 		
 		packageViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
 		packageViewer.setContentProvider(contentProvider);
 		packageViewer.setLabelProvider(labelProvider);
-		packageViewer.setInput(packages);
+		packageViewer.setInput(new ListWorkbenchAdapter(projectData.getAvailablePackages()));
 		packageViewer.addSelectionChangedListener(new AbstractSelectionChangedListener() {
 			
 			@Override
 			public void handleObject(Object object) {
-				setPageComplete(object != null);
-				
 				if (object instanceof IPackageFragment) {
-					currentPackage = (IPackageFragment) object;
+					projectData.setTargetPackage((IPackageFragment) object);
 				}
 			}
 		});
@@ -195,35 +218,15 @@ public class DestinationWizardPage extends WizardPage {
 		Table packageTable = packageViewer.getTable();
 		packageTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 	}
-	
-	protected void setProject(IJavaProject project) throws JavaModelException {
-		currentProject = project;		
-		newPackageButton.setEnabled(project != null);
-		
-		packages.clear();
-		if (project != null) {
-			IPackageFragment[] fragments = project.getPackageFragments();
-			for (IPackageFragment packageFragment : fragments) {
-				if (packageFragment.getKind() == IPackageFragmentRoot.K_SOURCE) {
-					packages.add(packageFragment);
-				}
-			}
-		}
-		
-		packageViewer.refresh();
-		packageViewer.setSelection(StructuredSelection.EMPTY);
-	}
-
-	public IJavaProject getProject() {
-		return currentProject;
-	}
-
-	public IPackageFragment getPackage() {
-		return currentPackage;
-	}
 
 	@Override
 	public void dispose() {
+		genModelData.deleteObserver(this);
+		genModelData = null;
+		
+		projectData.deleteObserver(this);
+		projectData = null;
+		
 		if (contentProvider != null) {
 			contentProvider.dispose();
 			contentProvider = null;
@@ -237,5 +240,22 @@ public class DestinationWizardPage extends WizardPage {
 		super.dispose();
 	}
 
-	public void setFile(IFile file) { }
+	@Override
+	public void update(Observable o, Object arg) {
+		projectViewer.refresh();
+		packageViewer.refresh();
+		
+		newPackageButton.setEnabled(projectData.getTargetProject() != null);
+		
+		setPageComplete(projectData.hasTargetProject() && projectData.hasTargetPackage());
+		
+		if (genModelData.equals(o)) {
+			IProject modelProject = genModelData.getModelProject();
+			if (modelProject != null && projectViewer != null) {
+				projectViewer.setSelection(new StructuredSelection(modelProject));
+			}			
+		}
+	}
+	
+	
 }

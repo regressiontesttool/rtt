@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: rtt.ui; singleton:=true
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: rtt.ui.RttPluginUI$Implementation
 Bundle-Localization: plugin
 Require-Bundle: rtt.core;bundle-version="1.0.0",

@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import rtt.core.archive.testsuite.Testcase;
 import rtt.ui.content.testsuite.TestcaseContent;
+import rtt.ui.viewer.ViewerUtils;
 
 public class ParametersDialog extends TitleAreaDialog {
 	
@@ -124,16 +125,16 @@ public class ParametersDialog extends TitleAreaDialog {
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
-				if (!selection.isEmpty()) {
-					Object object = selection.getFirstElement();
-					if (object instanceof String) {
-						parameterList.remove(object);
-						listViewer.setInput(parameterList);
-						
-						setOkButtonEnabled(true);
-					}
+				String selectedParameter = ViewerUtils.getSelection(
+						listViewer.getSelection(), String.class);
+				
+				if (selectedParameter != null && !selectedParameter.isEmpty()) {
+					parameterList.remove(selectedParameter);
+					listViewer.setInput(parameterList);
+					
+					setOkButtonEnabled(true);
 				}
+				
 				removeButton.setEnabled(false);
 			}
 		});

@@ -1,8 +1,6 @@
 package rtt.ui.ecore.editor.util.selectionAdapter;
 
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -10,6 +8,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Shell;
 
 import rtt.ui.ecore.util.Messages;
+import rtt.ui.viewer.ViewerUtils;
 
 /**
  * A special {@link SelectionListener} which passes the
@@ -54,16 +53,13 @@ public abstract class ViewerSourceSelectionAdapter extends SelectionAdapter {
 	
 	@Override
 	public final void widgetSelected(final SelectionEvent e) {
-		ISelection selection = viewer.getSelection();
-		if (selection instanceof IStructuredSelection) {				
-			Object object = ((IStructuredSelection) selection).getFirstElement();
-			if (object != null) {
-				handleObject(object);
-			}
-			
-			viewer.refresh();
-			viewer.setSelection(selection);
+		Object selectedObject = ViewerUtils.getSelection(viewer.getSelection());
+		if (selectedObject != null) {
+			handleObject(selectedObject);
 		}
+		
+		viewer.refresh();
+		viewer.setSelection(viewer.getSelection());
 	}
 	
 	/**

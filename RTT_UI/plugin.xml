@@ -905,7 +905,7 @@
       <wizard
             category="rtt.ui.ecore.wizard.category"
             class="rtt.ui.ecore.wizard.ExportAnnotationsWizard"
-            icon="icons/sample.gif"
+            icon="icons/RTT-Logo.png"
             id="rtt.ui.ecore.wizard.exportAnnotations"
             name="Ecore annotations">
       </wizard>
