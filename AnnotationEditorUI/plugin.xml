@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="rtt.annotation.editor.ui.AnnotationEditor"
+            default="false"
+            extensions="rtt"
+            id="rtt.annotation.editor"
+            name="RTT Annotation Editor">
+      </editor>
+   </extension>
+
+</plugin>

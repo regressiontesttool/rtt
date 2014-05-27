@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RTT Annotation Editor UI
+Bundle-SymbolicName: rtt.annotation.editor.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: rtt.annotation.editor.ui.AnnotationEditorUIPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.editors
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
