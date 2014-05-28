@@ -3,9 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RTT Annotation Editor UI
 Bundle-SymbolicName: rtt.annotation.editor.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: rtt.annotation.editor.ui.AnnotationEditorUIPlugin
+Bundle-Activator: rtt.annotation.editor.AnnotationEditorPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.editors
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: libraries/runtime/asm-5.0.3.jar,
+ libraries/runtime/asm-commons-5.0.3.jar,
+ libraries/runtime/asm-tree-5.0.3.jar,
+ libraries/runtime/asm-util-5.0.3.jar,
+ libraries/runtime/asm-xml-5.0.3.jar,
+ .

@@ -1,4 +1,4 @@
-package rtt.annotation.editor.ui;
+package rtt.annotation.editor;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -6,18 +6,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AnnotationEditorUIPlugin extends AbstractUIPlugin {
+public class AnnotationEditorPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "rtt.annotation.editor.ui"; //$NON-NLS-1$
 
 	// The shared instance
-	private static AnnotationEditorUIPlugin plugin;
+	private static AnnotationEditorPlugin plugin;
 	
 	/**
 	 * The constructor
 	 */
-	public AnnotationEditorUIPlugin() {
+	public AnnotationEditorPlugin() {
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class AnnotationEditorUIPlugin extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static AnnotationEditorUIPlugin getDefault() {
+	public static AnnotationEditorPlugin getDefault() {
 		return plugin;
 	}
 

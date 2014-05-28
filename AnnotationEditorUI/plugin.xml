@@ -6,7 +6,7 @@
       <editor
             class="rtt.annotation.editor.ui.AnnotationEditor"
             default="false"
-            extensions="rtt"
+            extensions="rtt,jar"
             id="rtt.annotation.editor"
             name="RTT Annotation Editor">
       </editor>
