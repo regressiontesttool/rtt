@@ -2,8 +2,11 @@ package rtt.annotation.editor.ui;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -19,15 +22,22 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.ClassModel;
 import rtt.annotation.ClassModelFactory;
-import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
+
+	private IContentProvider contentProvider;
+	private ILabelProvider labelProvider;
+	private TreeViewer detailViewer;
+	private TreeViewer elementViewer;
+	private TreeViewer nodeViewer;
 
 	public AnnotationEditor() {
 		// TODO Auto-generated constructor stub
@@ -80,19 +90,34 @@ public class AnnotationEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		
+		if (contentProvider == null) {
+			contentProvider = new WorkbenchContentProvider();
+		}
+		
+		if (labelProvider == null) {
+			labelProvider = new WorkbenchLabelProvider();
+		}		
+		
 		SashForm sashForm = new SashForm(parent, SWT.NONE);
 		
-		Composite leftSashComposite = new Composite(sashForm, SWT.NONE);
-		leftSashComposite.setLayout(new GridLayout(1, false));
+		createLeftEditorPanel(sashForm);
+		createRightEditorPanel(sashForm);	
 		
-		Group nodesGroup = new Group(leftSashComposite, SWT.NONE);
+		sashForm.setWeights(new int[] {1, 1});
+	}
+
+	private void createLeftEditorPanel(Composite parentComposite) {
+		Composite mainComposite = new Composite(parentComposite, SWT.NONE);
+		mainComposite.setLayout(new GridLayout(1, false));
+		
+		Group nodesGroup = new Group(mainComposite, SWT.NONE);
 		nodesGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		nodesGroup.setText("Nodes");
 		nodesGroup.setLayout(new GridLayout(2, false));
 		
-		Label classLabel = new Label(nodesGroup, SWT.WRAP);
-		classLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		classLabel.setText("Displaying classes (and nodes)");
+		Label descriptionLabel = new Label(nodesGroup, SWT.WRAP);
+		descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		descriptionLabel.setText("Displaying classes (and nodes)");
 		
 		Composite addClassesComposite = new Composite(nodesGroup, SWT.NONE);
 		addClassesComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -105,10 +130,7 @@ public class AnnotationEditor extends EditorPart {
 		nodeViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		nodeViewerComposite.setLayout(new TreeColumnLayout());
 		
-		TreeViewer treeViewer = new TreeViewer(nodeViewerComposite, SWT.BORDER);
-		Tree tree = treeViewer.getTree();
-		tree.setHeaderVisible(true);
-		tree.setLinesVisible(true);
+		createNodeViewer(nodeViewerComposite);
 		
 		Composite nodeButtonsComposite = new Composite(nodesGroup, SWT.NONE);
 		FillLayout fl_nodeButtonsComposite = new FillLayout(SWT.HORIZONTAL);
@@ -117,15 +139,38 @@ public class AnnotationEditor extends EditorPart {
 		nodeButtonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		
 		Button setNodeButton = new Button(nodeButtonsComposite, SWT.NONE);
+		setNodeButton.setEnabled(false);
 		setNodeButton.setText("Set Node");
 		
 		Button removeNodeButton = new Button(nodeButtonsComposite, SWT.NONE);
+		removeNodeButton.setEnabled(false);
 		removeNodeButton.setText("Remove Node");
+	}
+	
+	private void createNodeViewer(Composite viewerComposite) {
+		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER);
+		nodeViewer.setContentProvider(contentProvider);
+		nodeViewer.setLabelProvider(labelProvider);
 		
-		Composite rightSashComposite = new Composite(sashForm, SWT.NONE);
-		rightSashComposite.setLayout(new GridLayout(1, false));
+		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				elementViewer.setInput(event.getSelection());
+				elementViewer.getControl().setEnabled(true);
+			}
+		});
 		
-		Group elementsGroup = new Group(rightSashComposite, SWT.NONE);
+		Tree nodeTree = nodeViewer.getTree();
+		nodeTree.setHeaderVisible(true);
+		nodeTree.setLinesVisible(true);	
+	}
+
+	private void createRightEditorPanel(Composite parentComposite) {
+		Composite rightMainComposite = new Composite(parentComposite, SWT.NONE);
+		rightMainComposite.setLayout(new GridLayout(1, false));
+		
+		Group elementsGroup = new Group(rightMainComposite, SWT.NONE);
 		elementsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		elementsGroup.setText("Elements");
 		elementsGroup.setLayout(new GridLayout(1, false));
@@ -134,10 +179,7 @@ public class AnnotationEditor extends EditorPart {
 		elementViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		elementViewerComposite.setLayout(new TreeColumnLayout());
 		
-		TreeViewer treeViewer_1 = new TreeViewer(elementViewerComposite, SWT.BORDER);
-		Tree tree_1 = treeViewer_1.getTree();
-		tree_1.setHeaderVisible(true);
-		tree_1.setLinesVisible(true);
+		createElementViewer(elementViewerComposite);
 		
 		Composite annotationComposite = new Composite(elementsGroup, SWT.NONE);
 		annotationComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -147,36 +189,78 @@ public class AnnotationEditor extends EditorPart {
 		annotationComposite.setLayout(fl_annotationComposite);
 		
 		Button compareAnnotationButton = new Button(annotationComposite, SWT.NONE);
+		compareAnnotationButton.setEnabled(false);
 		compareAnnotationButton.setText("Compare");
 		
 		Button informationalAnnotationButton = new Button(annotationComposite, SWT.NONE);
+		informationalAnnotationButton.setEnabled(false);
 		informationalAnnotationButton.setText("Informational");
 		
 		Button removeAnnotationButton = new Button(annotationComposite, SWT.NONE);
+		removeAnnotationButton.setEnabled(false);
 		removeAnnotationButton.setBounds(0, 0, 75, 25);
 		removeAnnotationButton.setText("Remove");
 		
-		Group detailsGroup = new Group(rightSashComposite, SWT.NONE);
+		Group detailsGroup = new Group(rightMainComposite, SWT.NONE);
 		detailsGroup.setLayout(new GridLayout(1, false));
 		detailsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		detailsGroup.setText("Details");
 		
-		Composite composite = new Composite(detailsGroup, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		composite.setLayout(new TreeColumnLayout());
+		Composite detailViewerComposite = new Composite(detailsGroup, SWT.NONE);
+		detailViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		detailViewerComposite.setLayout(new TreeColumnLayout());
 		
-		TreeViewer treeViewer_2 = new TreeViewer(composite, SWT.BORDER);
-		Tree tree_2 = treeViewer_2.getTree();
-		tree_2.setHeaderVisible(true);
-		tree_2.setLinesVisible(true);
-		sashForm.setWeights(new int[] {1, 1});
-		// TODO Auto-generated method stub
+		createDetailViewer(detailViewerComposite);
+	}
 
+	private void createElementViewer(Composite viewerComposite) {
+		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER);
+		elementViewer.setContentProvider(contentProvider);
+		elementViewer.setLabelProvider(labelProvider);
+		
+		elementViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				detailViewer.setInput(event.getSelection());
+				detailViewer.getControl().setEnabled(true);
+			}
+		});
+		
+		Tree elementTree = elementViewer.getTree();
+		elementTree.setHeaderVisible(true);
+		elementTree.setLinesVisible(true);		
+		elementTree.setEnabled(false);		
+	}
+	
+	private void createDetailViewer(Composite detailViewerComposite) {
+		detailViewer = new TreeViewer(detailViewerComposite, SWT.BORDER);
+		detailViewer.setContentProvider(contentProvider);
+		detailViewer.setLabelProvider(labelProvider);
+		
+		Tree detailTree = detailViewer.getTree();
+		detailTree.setHeaderVisible(true);
+		detailTree.setLinesVisible(true);		
+		detailTree.setEnabled(false);		
 	}
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		nodeViewer.getControl().setFocus();
+	}
+	
+	@Override
+	public void dispose() {
+		if (labelProvider != null) {
+			labelProvider.dispose();
+			labelProvider = null;
+		}
+		
+		if (contentProvider != null) {
+			contentProvider.dispose();
+			contentProvider = null;
+		}
+		
+		super.dispose();
 	}
 }
