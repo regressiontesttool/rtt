@@ -6,10 +6,21 @@
       <editor
             class="rtt.annotation.editor.ui.AnnotationEditor"
             default="false"
-            extensions="rtt,jar"
             id="rtt.annotation.editor"
             name="RTT Annotation Editor">
+         <contentTypeBinding
+               contentTypeId="rtt.annotation.content.jar">
+         </contentTypeBinding>
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="jar"
+            id="rtt.annotation.content.jar"
+            name="RTT JAR Content Type"
+            priority="normal">
+      </content-type>
    </extension>
 
 </plugin>

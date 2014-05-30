@@ -1,23 +1,31 @@
 package rtt.annotation.editor.ui;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.layout.TreeColumnLayout;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.ui.part.FileEditorInput;
+
+import rtt.annotation.ClassModel;
+import rtt.annotation.ClassModelFactory;
+import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
 
@@ -40,6 +48,19 @@ public class AnnotationEditor extends EditorPart {
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
+
+		if (input instanceof FileEditorInput) {
+			FileEditorInput fileInput = (FileEditorInput) input;
+			IFile inputFile = fileInput.getFile();
+			
+			if (inputFile == null) {
+				throw new PartInitException(
+						StatusFactory.createError("Input file was null."));
+			}
+			
+			ClassModel model = ClassModelFactory.createModel(inputFile);
+		}		
+		
 		super.setSite(site);
 		super.setInput(input);
 	}
