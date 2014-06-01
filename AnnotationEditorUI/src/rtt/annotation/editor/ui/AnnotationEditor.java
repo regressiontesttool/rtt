@@ -1,5 +1,7 @@
 package rtt.annotation.editor.ui;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
@@ -38,6 +40,7 @@ public class AnnotationEditor extends EditorPart {
 	private TreeViewer detailViewer;
 	private TreeViewer elementViewer;
 	private TreeViewer nodeViewer;
+	private ClassModel model;
 
 	public AnnotationEditor() {
 		// TODO Auto-generated constructor stub
@@ -68,7 +71,11 @@ public class AnnotationEditor extends EditorPart {
 						StatusFactory.createError("Input file was null."));
 			}
 			
-			ClassModel model = ClassModelFactory.createModel(inputFile);
+			try {
+				model = ClassModelFactory.createModel(inputFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}		
 		
 		super.setSite(site);
@@ -163,7 +170,11 @@ public class AnnotationEditor extends EditorPart {
 		
 		Tree nodeTree = nodeViewer.getTree();
 		nodeTree.setHeaderVisible(true);
-		nodeTree.setLinesVisible(true);	
+		nodeTree.setLinesVisible(true);		
+		
+		if (model != null) {
+			nodeViewer.setInput(model);
+		}
 	}
 
 	private void createRightEditorPanel(Composite parentComposite) {
