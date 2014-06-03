@@ -1,4 +1,4 @@
-package rtt.annotation;
+package rtt.annotation.editor.model;
 
 import java.io.IOException;
 import java.util.Enumeration;

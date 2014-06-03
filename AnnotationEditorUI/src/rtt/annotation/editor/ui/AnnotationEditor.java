@@ -24,13 +24,13 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
-import rtt.annotation.ClassModel;
-import rtt.annotation.ClassModelFactory;
+import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
@@ -98,7 +98,7 @@ public class AnnotationEditor extends EditorPart {
 	public void createPartControl(Composite parent) {
 		
 		if (contentProvider == null) {
-			contentProvider = new WorkbenchContentProvider();
+			contentProvider = new BaseWorkbenchContentProvider();
 		}
 		
 		if (labelProvider == null) {

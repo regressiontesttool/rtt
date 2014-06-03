@@ -22,5 +22,22 @@
             priority="normal">
       </content-type>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="rtt.annotation.editor.model.ClassModel"
+            class="rtt.annotation.editor.adapter.AnnotationModelAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.objectweb.asm.tree.ClassNode"
+            class="rtt.annotation.editor.adapter.AnnotationModelAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
 
 </plugin>

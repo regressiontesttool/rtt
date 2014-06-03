@@ -1,4 +1,4 @@
-package rtt.annotation;
+package rtt.annotation.editor.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,10 @@ public class ClassModel {
 
 	public void add(ClassNode node) {
 		nodes.add(node);
+	}
+
+	public List<ClassNode> getNodes() {
+		return nodes;
 	}
 
 }
