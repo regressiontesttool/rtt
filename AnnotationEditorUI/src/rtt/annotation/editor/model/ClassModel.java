@@ -1,24 +1,63 @@
 package rtt.annotation.editor.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.objectweb.asm.tree.ClassNode;
 
-public class ClassModel {
+@SuppressWarnings("rawtypes")
+public class ClassModel extends ModelElement {
+	
+	public static class PackageElement extends NamedModelElement<ClassModel> {
 
-	private List<ClassNode> nodes;
+		public PackageElement(String name) {
+			setName(name);
+		}		
+	}
+
+	private Map<PackageElement, List<ClassElement>> classElements;
 	
 	public ClassModel() {
-		nodes = new ArrayList<ClassNode>();
+		classElements = new HashMap<PackageElement, List<ClassElement>>();
 	}
-
-	public void add(ClassNode node) {
-		nodes.add(node);
+	
+	public void addClassElement(ClassElement newElement) {
+		PackageElement packageElement = 
+				new PackageElement(newElement.getPackageName());		
+		
+		if (!classElements.containsKey(packageElement)) {
+			classElements.put(packageElement, new ArrayList<ClassElement>());
+		}
+		
+		List<ClassElement> elements = classElements.get(packageElement);
+		if (!elements.contains(newElement)) {
+			elements.add(newElement);
+			packageElement.setParent(this);
+		}
 	}
-
-	public List<ClassNode> getNodes() {
-		return nodes;
+	
+	public Map<PackageElement, List<ClassElement>> getClassElements() {
+		return classElements;
 	}
-
+	
+	public List<ClassElement> getClassElement(String packageName) {
+		PackageElement packageElement = new PackageElement(packageName);
+		
+		if (classElements.containsKey(packageElement)) {
+			return classElements.get(packageElement);
+		}
+		
+		return null;
+	}
+	
+	public Set<PackageElement> getPackages() {
+		return classElements.keySet();
+	}
+	
+	@Override
+	public String getLabel() {
+		return toString();
+	}
 }
