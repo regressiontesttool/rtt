@@ -30,16 +30,21 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.ClassModelFactory;
+import rtt.annotation.editor.model.importer.ASMImporter;
+import rtt.annotation.editor.model.importer.Importer;
+import rtt.annotation.editor.ui.viewer.util.ClassViewerContentProvider;
+import rtt.annotation.editor.ui.viewer.util.ModelElementLabelProvider;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
 
 	private IContentProvider contentProvider;
 	private ILabelProvider labelProvider;
+	
 	private TreeViewer detailViewer;
 	private TreeViewer elementViewer;
 	private TreeViewer nodeViewer;
+	
 	private ClassModel model;
 
 	public AnnotationEditor() {
@@ -72,7 +77,8 @@ public class AnnotationEditor extends EditorPart {
 			}
 			
 			try {
-				model = ClassModelFactory.createModel(inputFile);
+				Importer importer = new ASMImporter();
+				model = importer.importModel(inputFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -156,8 +162,8 @@ public class AnnotationEditor extends EditorPart {
 	
 	private void createNodeViewer(Composite viewerComposite) {
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER);
-		nodeViewer.setContentProvider(contentProvider);
-		nodeViewer.setLabelProvider(labelProvider);
+		nodeViewer.setContentProvider(new ClassViewerContentProvider());
+		nodeViewer.setLabelProvider(new ModelElementLabelProvider());
 		
 		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
