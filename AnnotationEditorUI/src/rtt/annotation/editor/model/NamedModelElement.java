@@ -1,5 +1,7 @@
 package rtt.annotation.editor.model;
 
+import rtt.annotations.Parser.Node;
+
 public class NamedModelElement<T extends ModelElement<?>> extends ModelElement<T> {
 	
 	protected String name = null;
@@ -8,6 +10,7 @@ public class NamedModelElement<T extends ModelElement<?>> extends ModelElement<T
 		this.name = name;
 	}
 	
+	@Node.Compare
 	public String getName() {
 		return name;
 	}

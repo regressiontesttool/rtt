@@ -6,10 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import rtt.annotations.Parser.Node;
+
 
 @SuppressWarnings("rawtypes")
+@Node
 public class ClassModel extends ModelElement {
 	
+	@Node
 	public static class PackageElement extends NamedModelElement<ClassModel> {
 
 		public PackageElement(String name) {
@@ -38,6 +42,7 @@ public class ClassModel extends ModelElement {
 		}
 	}
 	
+	@Node.Child
 	public Map<PackageElement, List<ClassElement>> getClassElements() {
 		return classElements;
 	}
@@ -52,11 +57,13 @@ public class ClassModel extends ModelElement {
 		return null;
 	}
 	
+	@Node.Child
 	public Set<PackageElement> getPackages() {
 		return classElements.keySet();
 	}
 	
 	@Override
+	@Node.Compare
 	public String getLabel() {
 		return toString();
 	}

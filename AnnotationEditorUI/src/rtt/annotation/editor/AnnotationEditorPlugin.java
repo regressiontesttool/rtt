@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class AnnotationEditorPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "rtt.annotation.editor.ui"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "AnnotationEditorUI"; //$NON-NLS-1$
 
 	// The shared instance
 	private static AnnotationEditorPlugin plugin;

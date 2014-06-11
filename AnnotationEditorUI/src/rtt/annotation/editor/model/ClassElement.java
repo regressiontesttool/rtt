@@ -3,8 +3,9 @@ package rtt.annotation.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotation.editor.rules.Annotation;
+import rtt.annotations.Parser.Node;
 
+@Node
 public class ClassElement extends Annotatable<ClassModel> {
 	
 	private String packageName = null;
@@ -17,6 +18,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 		methods = new ArrayList<MethodElement>();
 	}
 	
+	@Node.Compare
 	public String getPackageName() {
 		return packageName;
 	}
@@ -25,6 +27,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 		this.packageName = packageName;
 	}
 	
+	@Node.Child
 	public List<FieldElement> getFields() {
 		return fields;
 	}
@@ -36,6 +39,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 		}
 	}
 
+	@Node.Child
 	public List<MethodElement> getMethods() {
 		return methods;
 	}

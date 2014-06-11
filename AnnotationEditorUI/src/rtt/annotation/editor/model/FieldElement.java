@@ -1,11 +1,10 @@
 package rtt.annotation.editor.model;
 
+import rtt.annotations.Parser.Node;
 
 
-public class FieldElement extends Annotatable<ClassElement> {
-	
-	protected FieldElement() {
-		
-	}	
-	
+@Node
+public class FieldElement extends Annotatable<ClassElement> {	
+
+	protected FieldElement() {}	
 }

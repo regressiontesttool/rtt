@@ -1,0 +1,3 @@
+bin/rtt/annotation/editor/model/ClassElement.class
+bin/rtt/annotation/editor/model/MethodElement.class
+bin/rtt/annotation/editor/model/FieldElement.class

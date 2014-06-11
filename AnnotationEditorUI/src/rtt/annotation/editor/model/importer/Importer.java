@@ -1,12 +1,14 @@
 package rtt.annotation.editor.model.importer;
 
+import java.io.File;
 import java.io.IOException;
-
-import org.eclipse.core.resources.IFile;
+import java.io.InputStream;
 
 import rtt.annotation.editor.model.ClassModel;
 
 public interface Importer {
 	
-	public ClassModel importModel(IFile inputFile) throws IOException;
+	public ClassModel importModel(File inputFile) throws IOException;
+
+	public void importClass(InputStream in, ClassModel model) throws IOException;
 }

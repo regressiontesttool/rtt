@@ -1,11 +1,12 @@
 package rtt.annotation.editor.model.importer;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.eclipse.core.resources.IFile;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -27,23 +28,17 @@ public class ASMImporter implements Importer {
 	}
 
 	@Override
-	public ClassModel importModel(IFile inputFile) throws IOException {
-		JarFile jar = new JarFile(inputFile.getLocation().toFile(), false, JarFile.OPEN_READ);
+	public ClassModel importModel(File inputFile) throws IOException {
+		JarFile jar = new JarFile(inputFile, false, JarFile.OPEN_READ);
 		Enumeration<JarEntry> entries = jar.entries();
 		
-		ClassReader reader = null;
 		ClassModel model = factory.createClassModel();
 		
 		while(entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
 			System.out.println("Entry: " + entry.getName());
 			if (entry.getName().endsWith(".class")) {
-				reader = new ClassReader(jar.getInputStream(entry));
-				ClassNode node = new ClassNode(Opcodes.ASM5);
-				
-				reader.accept(node, ClassReader.SKIP_CODE);
-				
-				importClass(node, model);
+				importClass(jar.getInputStream(entry), model);
 			}
 		}
 		
@@ -52,7 +47,13 @@ public class ASMImporter implements Importer {
 		return model;
 	}
 	
-	public void importClass(ClassNode node, ClassModel model) {
+	@Override
+	public void importClass(InputStream in, ClassModel model) throws IOException {
+		ClassReader reader = new ClassReader(in);
+		ClassNode node = new ClassNode(Opcodes.ASM5);
+		
+		reader.accept(node, ClassReader.SKIP_CODE);
+		
 		String className = node.name.replace("/", ".");
 		String packageName = "";
 		int packageBoundary = className.lastIndexOf(".");

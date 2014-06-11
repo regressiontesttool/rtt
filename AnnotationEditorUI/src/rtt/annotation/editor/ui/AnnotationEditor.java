@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -78,7 +80,7 @@ public class AnnotationEditor extends EditorPart {
 			
 			try {
 				Importer importer = new ASMImporter();
-				model = importer.importModel(inputFile);
+				model = importer.importModel(inputFile.getLocation().toFile());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -140,8 +142,7 @@ public class AnnotationEditor extends EditorPart {
 		addClassButton.setText("Add Class");
 		
 		Composite nodeViewerComposite = new Composite(nodesGroup, SWT.NONE);
-		nodeViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		nodeViewerComposite.setLayout(new TreeColumnLayout());
+		nodeViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));	
 		
 		createNodeViewer(nodeViewerComposite);
 		
@@ -161,7 +162,7 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createNodeViewer(Composite viewerComposite) {
-		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER);
+		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		nodeViewer.setContentProvider(new ClassViewerContentProvider());
 		nodeViewer.setLabelProvider(new ModelElementLabelProvider());
 		
@@ -176,7 +177,14 @@ public class AnnotationEditor extends EditorPart {
 		
 		Tree nodeTree = nodeViewer.getTree();
 		nodeTree.setHeaderVisible(true);
-		nodeTree.setLinesVisible(true);		
+		nodeTree.setLinesVisible(true);
+		
+		TreeColumnLayout columnLayout = new TreeColumnLayout();
+		viewerComposite.setLayout(columnLayout);
+		
+		TreeColumn column = new TreeColumn(nodeTree, SWT.NONE);
+		columnLayout.setColumnData(column, new ColumnWeightData(1, 100, true));
+		column.setText("Elements");
 		
 		if (model != null) {
 			nodeViewer.setInput(model);
