@@ -3,14 +3,16 @@ package rtt.annotation.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassElement extends NamedModelElement<ClassModel> {
+import rtt.annotation.editor.rules.Annotation;
+
+public class ClassElement extends Annotatable<ClassModel> {
 	
 	private String packageName = null;
 	
 	private List<FieldElement> fields;
 	private List<MethodElement> methods;
 	
-	public ClassElement() {		
+	protected ClassElement() {		
 		fields = new ArrayList<FieldElement>();
 		methods = new ArrayList<MethodElement>();
 	}
@@ -75,7 +77,5 @@ public class ClassElement extends NamedModelElement<ClassModel> {
 		}
 		return true;
 	}
-	
-	
 	
 }

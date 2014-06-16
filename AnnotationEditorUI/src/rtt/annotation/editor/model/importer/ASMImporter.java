@@ -14,9 +14,9 @@ import org.objectweb.asm.tree.MethodNode;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.factory.ClassModelFactory;
 
 public class ASMImporter implements Importer {
 	
@@ -85,7 +85,7 @@ public class ASMImporter implements Importer {
 	}
 	
 	private void importMethodElement(MethodNode methodNode, ClassElement classElement) {
-		MethodElement methodElement = new MethodElement();		
+		MethodElement methodElement = factory.createMethodElement();	
 		methodElement.setName(methodNode.name);
 		
 		classElement.addMethod(methodElement);

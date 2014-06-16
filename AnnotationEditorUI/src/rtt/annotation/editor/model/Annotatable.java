@@ -1,5 +1,20 @@
 package rtt.annotation.editor.model;
 
-public interface Annotatable {
+import rtt.annotation.editor.rules.Annotation;
 
+public abstract class Annotatable<T extends ModelElement<?>> extends NamedModelElement<T> {
+	
+	private Annotation annotation;
+	
+	public final void setAnnotation(Annotation annotation) {
+		this.annotation = annotation;
+	}
+	
+	public final Annotation getAnnotation() {
+		return annotation;
+	}
+	
+	public final boolean hasAnnotation()  {
+		return this.annotation != null;
+	}
 }

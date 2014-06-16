@@ -1,9 +1,5 @@
-package rtt.annotation.editor.model.factory;
+package rtt.annotation.editor.model;
 
-import rtt.annotation.editor.model.ClassElement;
-import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.MethodElement;
 
 public class ClassModelFactory {
 	

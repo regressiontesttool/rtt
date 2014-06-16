@@ -1,8 +1,11 @@
 package rtt.annotation.editor.model;
 
 
-public class FieldElement extends NamedModelElement<ClassElement> implements Annotatable {
 
+public class FieldElement extends Annotatable<ClassElement> {
 	
+	protected FieldElement() {
+		
+	}	
 	
 }

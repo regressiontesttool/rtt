@@ -1,4 +1,4 @@
-package rtt.annotation.test.model;
+package rtt.annotation.test;
 
 import static org.junit.Assert.*;
 
@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.factory.ClassModelFactory;
 
 public class ClassElementTests {
 
@@ -20,21 +20,27 @@ public class ClassElementTests {
 	
 	@Before
 	public void setUp() throws Exception { 
-		element = new ClassElement();	
 		factory = ClassModelFactory.getFactory();
+		element = factory.createClassElement();		
 	}
 	
 	@Test
-	public void testEmptyElement() throws Exception {
+	public void testEmptyNames() throws Exception {
 		assertEquals("Class name", null, element.getName());
 		assertEquals("Package name", null, element.getPackageName());
-		
-		List<? extends Annotatable> fields = element.getFields();
+	}
+	
+	@Test
+	public void testEmptyFields() throws Exception {
+		List<? extends Annotatable<?>> fields = element.getFields();
 		assertNotNull("Field list", fields);
 		assertEquals("Field size", 0, fields.size());
-		
-		List<? extends Annotatable> methods = element.getMethods();
-		assertNotNull("Mehtod list", methods);
+	}
+	
+	@Test
+	public void testEmtpyMethods() throws Exception {
+		List<? extends Annotatable<?>> methods = element.getMethods();
+		assertNotNull("Method list", methods);
 		assertEquals("Method size", 0, methods.size());
 	}
 	
@@ -99,6 +105,4 @@ public class ClassElementTests {
 		newSize = element.getMethods().size();
 		assertEquals("Method list size", oldSize, newSize);
 	}
-	
-
 }

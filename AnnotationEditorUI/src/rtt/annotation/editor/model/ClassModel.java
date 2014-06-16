@@ -19,7 +19,7 @@ public class ClassModel extends ModelElement {
 
 	private Map<PackageElement, List<ClassElement>> classElements;
 	
-	public ClassModel() {
+	protected ClassModel() {
 		classElements = new HashMap<PackageElement, List<ClassElement>>();
 	}
 	
