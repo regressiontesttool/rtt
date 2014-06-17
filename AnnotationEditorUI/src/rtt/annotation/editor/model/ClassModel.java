@@ -57,7 +57,6 @@ public class ClassModel extends ModelElement {
 		return null;
 	}
 	
-	@Node.Child
 	public Set<PackageElement> getPackages() {
 		return classElements.keySet();
 	}

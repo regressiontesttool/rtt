@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.lang.model.element.Element;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -50,7 +52,18 @@ public class ClassViewerContentProvider implements ITreeContentProvider {
 			ClassElement classElement = (ClassElement) parentElement;
 			
 			List<String> details = new ArrayList<String>();
-			details.add("Say Hello");
+			if (classElement.isInterface()) {
+				details.add("Is Interface");
+			}
+			
+			if (classElement.isAbstract()) {
+				details.add("Is Abstract");
+			}
+			
+			for (String interfaceName : classElement.getInterfaces()) {
+				details.add("Interface: " + interfaceName);
+			}
+			
 
 			results = details;
 		}

@@ -1,4 +1,4 @@
-package rtt.annotation.editor.model.importer;
+package rtt.annotation.editor.importer;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package rtt.annotation.editor.model.importer;
+package rtt.annotation.editor.importer;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import rtt.annotation.editor.importer.asm.ASMClassNodeImporter;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
@@ -54,18 +55,8 @@ public class ASMImporter implements Importer {
 		
 		reader.accept(node, ClassReader.SKIP_CODE);
 		
-		String className = node.name.replace("/", ".");
-		String packageName = "";
-		int packageBoundary = className.lastIndexOf(".");
-		
-		if (packageBoundary > -1) {
-			packageName = className.substring(0, packageBoundary);
-			className = className.substring(packageBoundary + 1, className.length());
-		}
-		
-		ClassElement element = factory.createClassElement();		
-		element.setName(className);
-		element.setPackageName(packageName);
+		ASMClassNodeImporter nodeImporter = new ASMClassNodeImporter(node, factory);
+		ClassElement element = nodeImporter.createClassElement();		
 		
 		for (Object fieldObject : node.fields) {
 			importFieldElement((FieldNode) fieldObject, element);

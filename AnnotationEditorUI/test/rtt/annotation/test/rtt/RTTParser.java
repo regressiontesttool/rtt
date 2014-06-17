@@ -1,4 +1,4 @@
-package rtt.annotation.test.model;
+package rtt.annotation.test.rtt;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -11,10 +11,10 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.importer.ASMImporter;
+import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
-import rtt.annotation.editor.model.importer.ASMImporter;
-import rtt.annotation.editor.model.importer.Importer;
 import rtt.annotations.Parser;
 
 @Parser

@@ -9,11 +9,17 @@ import rtt.annotations.Parser.Node;
 public class ClassElement extends Annotatable<ClassModel> {
 	
 	private String packageName = null;
+	private boolean isInterface = false;
+	private boolean isAbstract = false;
+	
+	private List<String> interfaces;
 	
 	private List<FieldElement> fields;
 	private List<MethodElement> methods;
 	
 	protected ClassElement() {		
+		interfaces = new ArrayList<String>();
+		
 		fields = new ArrayList<FieldElement>();
 		methods = new ArrayList<MethodElement>();
 	}
@@ -23,8 +29,35 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return packageName;
 	}
 	
-	public void setPackageName(String packageName) {
+	public void setPackageName(final String packageName) {
 		this.packageName = packageName;
+	}
+	
+	@Node.Compare
+	public boolean isInterface() {
+		return isInterface;
+	}
+	
+	public void setInterface(boolean isInterface) {
+		this.isInterface = isInterface;
+	}
+	
+	@Node.Compare
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+	
+	public void setAbstract(boolean isAbstract) {
+		this.isAbstract = isAbstract;
+	}
+	
+	@Node.Compare
+	public List<String> getInterfaces() {
+		return interfaces;
+	}
+	
+	public void setInterfaces(List<String> interfaces) {
+		this.interfaces = interfaces;
 	}
 	
 	@Node.Child
@@ -80,6 +113,5 @@ public class ClassElement extends Annotatable<ClassModel> {
 			return false;
 		}
 		return true;
-	}
-	
+	}	
 }

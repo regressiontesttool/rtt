@@ -31,9 +31,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
+import rtt.annotation.editor.importer.ASMImporter;
+import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.importer.ASMImporter;
-import rtt.annotation.editor.model.importer.Importer;
 import rtt.annotation.editor.ui.viewer.util.ClassViewerContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementLabelProvider;
 import rtt.annotation.editor.util.StatusFactory;
