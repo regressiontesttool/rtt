@@ -70,7 +70,7 @@ public class RTTApplication implements IApplication {
 	}
 	
 	public static final String JAVA_TYPE = "java";
-	public static final String PLUGIN_TYPE = "pugin";
+	public static final String PLUGIN_TYPE = "plugin";
 	public static final String GENERATE = "generate";
 	public static final String RUN = "run";
 
@@ -147,7 +147,7 @@ public class RTTApplication implements IApplication {
 		if (projectType.equals(PLUGIN_TYPE)) {
 			Bundle bundle = Platform.getBundle(projectName);
 			if (bundle == null) {
-				System.err.println("Could not load bundle class loader.");
+				System.err.println("Could not load bundle '" + projectName + "'.");
 				return IApplication.EXIT_OK;
 			}
 			

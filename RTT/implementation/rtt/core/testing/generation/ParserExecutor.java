@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import rtt.annotations.AnnotationProcessor;
 import rtt.annotations.Parser;
@@ -142,7 +144,6 @@ public class ParserExecutor extends Executor {
 					throw throwable;
 				}
 				
-				// TODO was tun wenn exception ?
 				String throwableName = throwable.getClass().getName();
 				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
 			}							
@@ -177,8 +178,16 @@ public class ParserExecutor extends Executor {
 				addNode(parentNode, newNode);
 				
 				i++;
-			}
-				
+			}				
+		} else if (object instanceof Map<?, ?>) {
+			Map<?, ?> tmp = (Map<?, ?>) object;
+			
+			int i = 0;
+			for (Entry<?, ?> entry : tmp.entrySet()) {
+				Node keyNode = createNode(entry.getKey(), operationName + "<" + i++ + ", ?>");
+				addNode(keyNode, entry.getValue(), "mapValue");
+				addNode(parentNode, keyNode);
+			}			
 		} else {
 			Node newNode = createNode(object, operationName);
 			addNode(parentNode, newNode);
