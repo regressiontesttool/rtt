@@ -42,6 +42,8 @@ import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
 
+	private static final int CLASS_LEVEL = 2;
+	
 	private IContentProvider contentProvider;
 	private ILabelProvider labelProvider;
 	
@@ -204,6 +206,8 @@ public class AnnotationEditor extends EditorPart {
 		if (model != null) {
 			nodeViewer.setInput(model);
 		}
+		
+		nodeViewer.expandToLevel(CLASS_LEVEL);
 	}
 
 	private void createRightEditorPanel(Composite parentComposite) {
