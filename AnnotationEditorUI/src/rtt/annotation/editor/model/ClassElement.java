@@ -8,20 +8,32 @@ import rtt.annotations.Parser.Node;
 @Node
 public class ClassElement extends Annotatable<ClassModel> {
 	
-	private String packageName = null;
-	private boolean isInterface = false;
-	private boolean isAbstract = false;
+	public enum ClassType {
+		INTERFACE, ABSTRACT, CONCRETE;
+	}
 	
+	private String name = null;
+	private String packageName = null;	
+	private ClassType type = ClassType.CONCRETE;
+	
+	private String superClass = null;
 	private List<String> interfaces;
 	
 	private List<FieldElement> fields;
 	private List<MethodElement> methods;
 	
 	protected ClassElement() {		
-		interfaces = new ArrayList<String>();
-		
 		fields = new ArrayList<FieldElement>();
 		methods = new ArrayList<MethodElement>();
+	}
+	
+	@Node.Compare
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String className) {
+		this.name = className;
 	}
 	
 	@Node.Compare
@@ -34,30 +46,38 @@ public class ClassElement extends Annotatable<ClassModel> {
 	}
 	
 	@Node.Compare
-	public boolean isInterface() {
-		return isInterface;
+	public ClassType getType() {
+		return type;
 	}
 	
-	public void setInterface(boolean isInterface) {
-		this.isInterface = isInterface;
-	}
-	
-	@Node.Compare
-	public boolean isAbstract() {
-		return isAbstract;
-	}
-	
-	public void setAbstract(boolean isAbstract) {
-		this.isAbstract = isAbstract;
-	}
+	public void setType(ClassType type) {
+		this.type = type;
+	}	
 	
 	@Node.Compare
 	public List<String> getInterfaces() {
 		return interfaces;
 	}
 	
+	public boolean hasInterfaces() {
+		return interfaces != null && ! interfaces.isEmpty();
+	}
+	
 	public void setInterfaces(List<String> interfaces) {
 		this.interfaces = interfaces;
+	}
+	
+	@Node.Compare
+	public String getSuperClass() {
+		return superClass;
+	}
+	
+	public boolean hasSuperClass() {
+		return superClass != null && !superClass.equals("");
+	}
+	
+	public void setSuperClass(String superClass) {
+		this.superClass = superClass;
 	}
 	
 	@Node.Child
@@ -83,13 +103,25 @@ public class ClassElement extends Annotatable<ClassModel> {
 			method.setParent(this);
 		}
 	}
+//	
+//	@Override
+//	public String getLabel() {
+//		
+//	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
+				+ ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((interfaces == null) ? 0 : interfaces.hashCode());
+		result = prime * result
 				+ ((packageName == null) ? 0 : packageName.hashCode());
+		result = prime * result
+				+ ((superClass == null) ? 0 : superClass.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -98,13 +130,24 @@ public class ClassElement extends Annotatable<ClassModel> {
 		if (this == obj) {
 			return true;
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		ClassElement other = (ClassElement) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (interfaces == null) {
+			if (other.interfaces != null) {
+				return false;
+			}
+		} else if (!interfaces.equals(other.interfaces)) {
+			return false;
+		}
 		if (packageName == null) {
 			if (other.packageName != null) {
 				return false;
@@ -112,6 +155,16 @@ public class ClassElement extends Annotatable<ClassModel> {
 		} else if (!packageName.equals(other.packageName)) {
 			return false;
 		}
+		if (superClass == null) {
+			if (other.superClass != null) {
+				return false;
+			}
+		} else if (!superClass.equals(other.superClass)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
 		return true;
-	}	
+	}
 }

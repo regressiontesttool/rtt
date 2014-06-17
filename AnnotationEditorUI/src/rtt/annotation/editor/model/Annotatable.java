@@ -2,7 +2,7 @@ package rtt.annotation.editor.model;
 
 import rtt.annotation.editor.rules.Annotation;
 
-public abstract class Annotatable<T extends ModelElement<?>> extends NamedModelElement<T> {
+public abstract class Annotatable<T extends ModelElement<?>> extends ModelElement<T> {
 	
 	private Annotation annotation;
 	

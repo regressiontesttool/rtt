@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.lang.model.element.Element;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -14,7 +12,22 @@ import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 import rtt.annotation.editor.model.ModelElement;
 
-public class ClassViewerContentProvider implements ITreeContentProvider {
+public class ClassModelContentProvider implements ITreeContentProvider {
+	
+	public final class Detail {
+		
+		String label;
+		List<String> items;
+		
+		public Detail(String label, List<String> items) {
+			this.label = label;
+			this.items = items;
+		}
+		
+		public Detail(String label) {
+			this(label, new ArrayList<String>());
+		}				
+	}
 
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
@@ -51,21 +64,21 @@ public class ClassViewerContentProvider implements ITreeContentProvider {
 		if (parentElement instanceof ClassElement) {
 			ClassElement classElement = (ClassElement) parentElement;
 			
-			List<String> details = new ArrayList<String>();
-			if (classElement.isInterface()) {
-				details.add("Is Interface");
+			List<Detail> details = new ArrayList<Detail>();
+			
+			if (classElement.hasSuperClass()) {
+				details.add(new Detail("Extends: " + classElement.getSuperClass()));
 			}
 			
-			if (classElement.isAbstract()) {
-				details.add("Is Abstract");
-			}
+			if (classElement.hasInterfaces()) {
+				details.add(new Detail("Implements: ", classElement.getInterfaces()));
+			}						
 			
-			for (String interfaceName : classElement.getInterfaces()) {
-				details.add("Interface: " + interfaceName);
-			}
-			
-
 			results = details;
+		}
+		
+		if (parentElement instanceof Detail) {
+			results = ((Detail) parentElement).items;
 		}
 		
 		if (results != null) {

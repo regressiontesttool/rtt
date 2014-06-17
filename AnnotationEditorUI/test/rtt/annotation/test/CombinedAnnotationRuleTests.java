@@ -11,7 +11,7 @@ import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.rules.Annotation;
 import rtt.annotation.editor.rules.CombinedAnnotationRule;
 
-public class ChainableAnnotationRuleTest {
+public class CombinedAnnotationRuleTests {
 
 	private CombinedAnnotationRule<ClassElement> rule;
 	private ClassModelFactory factory;

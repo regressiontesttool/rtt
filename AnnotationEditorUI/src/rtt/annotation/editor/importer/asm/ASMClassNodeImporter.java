@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
 import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModelFactory;
 
 public class ASMClassNodeImporter {
@@ -18,6 +19,7 @@ public class ASMClassNodeImporter {
 		this.factory = factory;
 	}	
 
+	@SuppressWarnings("unchecked")
 	public ClassElement createClassElement() {
 		ClassElement element = factory.createClassElement();
 		
@@ -33,10 +35,19 @@ public class ASMClassNodeImporter {
 		element.setName(nodeName);
 		element.setPackageName(packageName.replace("/", "."));
 		
-		element.setInterface(checkAccess(node, Opcodes.ACC_INTERFACE));
-		element.setAbstract(checkAccess(node, Opcodes.ACC_ABSTRACT));
+		if (checkAccess(node, Opcodes.ACC_ABSTRACT)) {
+			element.setType(ClassType.ABSTRACT);
+		}
+		
+		if (checkAccess(node, Opcodes.ACC_INTERFACE)) {
+			element.setType(ClassType.INTERFACE);
+		}
 		
 		element.setInterfaces((List<String>) node.interfaces);
+		
+		if (node.superName != null && !node.superName.equals("java/lang/Object")) {
+			element.setSuperClass(node.superName.replace("/", "."));
+		}
 
 		return element;
 	}

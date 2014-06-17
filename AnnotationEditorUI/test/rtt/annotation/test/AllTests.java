@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ClassElementAnnotationTests.class,
-		ChainableAnnotationRuleTest.class,
+		CombinedAnnotationRuleTests.class,
 		ClassElementTests.class })
 public class AllTests {
 
