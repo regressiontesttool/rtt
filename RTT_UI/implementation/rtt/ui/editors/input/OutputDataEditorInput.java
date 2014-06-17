@@ -66,24 +66,63 @@ public class OutputDataEditorInput implements IEditorInput {
 	public OutputDataType getType() {
 		return type;
 	}
+	
+	
+	
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj.getClass() != this.getClass()) {
+//			return false;
+//		}
+//
+//		if (obj instanceof OutputDataEditorInput) {
+//			OutputDataEditorInput input = (OutputDataEditorInput) obj;
+//			
+//			return projectName.equals(input.projectName) && 
+//					configName.equals(input.configName) &&
+//					suiteName.equals(input.suiteName) &&
+//					caseName.equals(input.caseName) &&
+//					type.equals(input.type);			
+//		}
+//
+//		return false;
+//	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((caseName == null) ? 0 : caseName.hashCode());
+		result = prime * result
+				+ ((configName == null) ? 0 : configName.hashCode());
+		result = prime * result
+				+ ((projectName == null) ? 0 : projectName.hashCode());
+		result = prime * result
+				+ ((suiteName == null) ? 0 : suiteName.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + version;
+		return result;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj.getClass() != this.getClass()) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-
-		if (obj instanceof OutputDataEditorInput) {
-			OutputDataEditorInput input = (OutputDataEditorInput) obj;
-			
-			return projectName.equals(input.projectName) && 
-					configName.equals(input.configName) &&
-					suiteName.equals(input.suiteName) &&
-					caseName.equals(input.caseName) &&
-					type.equals(input.type);			
-		}
-
-		return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OutputDataEditorInput other = (OutputDataEditorInput) obj;
+		
+		return projectName.equals(other.projectName) && 
+				configName.equals(other.configName) &&
+				suiteName.equals(other.suiteName) &&
+				caseName.equals(other.caseName) &&
+				type.equals(other.type) &&
+				version == other.version;		
+		
 	}
 
 	@Override

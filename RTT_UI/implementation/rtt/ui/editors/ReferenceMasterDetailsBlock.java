@@ -2,8 +2,8 @@ package rtt.ui.editors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.edit.provider.IItemPropertySource;
-import org.eclipse.emf.edit.ui.provider.PropertySource;
+import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IDetailsPageProvider;
@@ -21,11 +22,7 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import regression.test.Attribute;
 import regression.test.DocumentRoot;
-import regression.test.Node;
-import regression.test.ParserOutputType;
-import regression.test.provider.TestItemProviderAdapterFactory;
 
 class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		
@@ -50,22 +47,30 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		layout.marginWidth = 2;
 		client.setLayout(layout);
 		
-		Tree tree = toolkit.createTree(client, SWT.NULL);
-		
+		Composite treeComposite = toolkit.createComposite(client, SWT.WRAP);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
 		gd.widthHint = 100;
-		tree.setLayoutData(gd);
+		treeComposite.setLayoutData(gd);
+		
+		TreeColumnLayout columnLayout = new TreeColumnLayout(); 
+		treeComposite.setLayout(columnLayout);
+		
+		Tree tree = toolkit.createTree(treeComposite, SWT.FULL_SELECTION);
+		tree.setHeaderVisible(true);
+		TreeColumn column = new TreeColumn(tree, SWT.NONE);
+		columnLayout.setColumnData(column, new ColumnWeightData(1, 100, true));
+		column.setText("Node Element");
+		
+		TreeViewer viewer = new TreeViewer(tree);
+		viewer.setContentProvider(page.getContentProvider());
+		viewer.setLabelProvider(page.getLabelProvider());		
 		
 		toolkit.paintBordersFor(client);			
 		section.setClient(client);
 		
 		final SectionPart sPart = new SectionPart(section);
-		managedForm.addPart(sPart);
-		
-		TreeViewer viewer = new TreeViewer(tree);
-		viewer.setContentProvider(page.getContentProvider());
-		viewer.setLabelProvider(page.getLabelProvider());
+		managedForm.addPart(sPart);		
 		
 		// set viewer input 
 		Resource resource = page.getResource();

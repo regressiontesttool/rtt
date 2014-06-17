@@ -160,12 +160,7 @@ public class AttributeItemProvider
 		
 		String value = attribute.getValue();
 		if (value != null && value.length() > 0) {
-			if (value.length() > 10) {
-				buffer.append(value.substring(0, 10));
-				buffer.append("...");
-			} else {
-				buffer.append(value);
-			}
+			buffer.append(value);
 		} else {
 			buffer.append("<null>");
 		}
