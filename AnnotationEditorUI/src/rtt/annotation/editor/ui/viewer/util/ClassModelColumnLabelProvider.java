@@ -2,20 +2,17 @@ package rtt.annotation.editor.ui.viewer.util;
 
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.IFontProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 import rtt.annotation.editor.model.ClassElement;
-import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider.Detail;
 
-public class ClassModelLabelProvider extends LabelProvider implements ILabelProvider, IFontProvider, IColorProvider {
+public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 
 	private static final Color BLUE = JFaceResources.getColorRegistry().get(JFacePreferences.HYPERLINK_COLOR);
 	private static final Font ITALIC_FONT = JFaceResources.getFontRegistry().getItalic(JFaceResources.DEFAULT_FONT);

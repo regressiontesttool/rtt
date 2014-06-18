@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
@@ -36,8 +37,8 @@ import rtt.annotation.editor.importer.ASMImporter;
 import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider;
-import rtt.annotation.editor.ui.viewer.util.ClassModelLabelProvider;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
@@ -52,7 +53,7 @@ public class AnnotationEditor extends EditorPart {
 	private TreeViewer nodeViewer;
 	
 	private ClassModel model;
-	private Button nodeButton;
+	private Button setNodeButton;
 
 	public AnnotationEditor() {
 		// TODO Auto-generated constructor stub
@@ -118,20 +119,27 @@ public class AnnotationEditor extends EditorPart {
 			labelProvider = new WorkbenchLabelProvider();
 		}		
 		
-		SashForm sashForm = new SashForm(parent, SWT.NONE);
+		SashForm verticalSash = new SashForm(parent, SWT.SMOOTH | SWT.VERTICAL);
 		
-		createLeftEditorPanel(sashForm);
-		createRightEditorPanel(sashForm);	
+		createTopPanel(verticalSash);
+		createBottomPanel(verticalSash);		
+
+		verticalSash.setWeights(new int[] {2, 1});
+	}
+	
+	private void createTopPanel(Composite composite) {
+		
+		SashForm sashForm = new SashForm(composite, SWT.SMOOTH);
+		
+		createLeftPanel(sashForm);
+		createRightPanel(sashForm);	
 		
 		sashForm.setWeights(new int[] {1, 1});
 	}
-
-	private void createLeftEditorPanel(Composite parentComposite) {
-		Composite mainComposite = new Composite(parentComposite, SWT.NONE);
-		mainComposite.setLayout(new GridLayout(1, false));
+	
+	private void createLeftPanel(Composite composite) {
 		
-		Group nodesGroup = new Group(mainComposite, SWT.NONE);
-		nodesGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Group nodesGroup = new Group(composite, SWT.NONE);
 		nodesGroup.setText("Nodes");
 		nodesGroup.setLayout(new GridLayout(2, false));
 		
@@ -139,12 +147,12 @@ public class AnnotationEditor extends EditorPart {
 		descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		descriptionLabel.setText("Displaying classes (and nodes)");
 		
-		Composite addClassesComposite = new Composite(nodesGroup, SWT.NONE);
-		addClassesComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
-		addClassesComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+		Composite filterComposite = new Composite(nodesGroup, SWT.NONE);
+		filterComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		filterComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
 		
-		Button addClassButton = new Button(addClassesComposite, SWT.NONE);
-		addClassButton.setText("Add Class");
+		Button filterButton = new Button(filterComposite, SWT.CHECK);
+		filterButton.setText("Nodes only");
 		
 		Composite nodeViewerComposite = new Composite(nodesGroup, SWT.NONE);
 		nodeViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));	
@@ -157,32 +165,31 @@ public class AnnotationEditor extends EditorPart {
 		nodeButtonsComposite.setLayout(fl_nodeButtonsComposite);
 		nodeButtonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		
-		nodeButton = new Button(nodeButtonsComposite, SWT.NONE);
-		nodeButton.setEnabled(false);
-		nodeButton.setText("Set Node");
+		setNodeButton = new Button(nodeButtonsComposite, SWT.NONE);
+		setNodeButton.setEnabled(false);
+		setNodeButton.setText("Set Node");
 		
 		Button removeNodeButton = new Button(nodeButtonsComposite, SWT.NONE);
 		removeNodeButton.setEnabled(false);
 		removeNodeButton.setText("Remove Node");
 	}
 	
-	private void createNodeViewer(Composite viewerComposite) {
+	private void createNodeViewer(Composite viewerComposite) {		
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		nodeViewer.setContentProvider(new ClassModelContentProvider());
-		nodeViewer.setLabelProvider(new ClassModelLabelProvider());
 		
 		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				
-				nodeButton.setEnabled(false);
+				setNodeButton.setEnabled(false);
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection sSelection = (IStructuredSelection) event.getSelection();
 					if (!sSelection.isEmpty()) {
 						if (sSelection.getFirstElement() instanceof ClassElement) {
 							ClassElement element = (ClassElement) sSelection.getFirstElement();
-							nodeButton.setEnabled(!element.hasAnnotation());
+							setNodeButton.setEnabled(!element.hasAnnotation());
 						}
 					}
 				}
@@ -199,29 +206,28 @@ public class AnnotationEditor extends EditorPart {
 		TreeColumnLayout columnLayout = new TreeColumnLayout();
 		viewerComposite.setLayout(columnLayout);
 		
-		TreeColumn column = new TreeColumn(nodeTree, SWT.NONE);
-		columnLayout.setColumnData(column, new ColumnWeightData(1, 100, true));
-		column.setText("Elements");
+		TreeViewerColumn nodeViewerColumn = new TreeViewerColumn(nodeViewer, SWT.NONE);
+		nodeViewerColumn.setLabelProvider(new ClassModelColumnLabelProvider());
+		
+		TreeColumn nodesColumn = nodeViewerColumn.getColumn();
+		columnLayout.setColumnData(nodesColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		nodesColumn.setText("Nodes");
+		
+		nodeViewer.expandToLevel(CLASS_LEVEL);
 		
 		if (model != null) {
 			nodeViewer.setInput(model);
 		}
-		
-		nodeViewer.expandToLevel(CLASS_LEVEL);
 	}
-
-	private void createRightEditorPanel(Composite parentComposite) {
-		Composite rightMainComposite = new Composite(parentComposite, SWT.NONE);
-		rightMainComposite.setLayout(new GridLayout(1, false));
+	
+	private void createRightPanel(Composite composite) {
 		
-		Group elementsGroup = new Group(rightMainComposite, SWT.NONE);
-		elementsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Group elementsGroup = new Group(composite, SWT.NONE);
 		elementsGroup.setText("Elements");
 		elementsGroup.setLayout(new GridLayout(1, false));
 		
 		Composite elementViewerComposite = new Composite(elementsGroup, SWT.NONE);
 		elementViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		elementViewerComposite.setLayout(new TreeColumnLayout());
 		
 		createElementViewer(elementViewerComposite);
 		
@@ -243,20 +249,9 @@ public class AnnotationEditor extends EditorPart {
 		Button removeAnnotationButton = new Button(annotationComposite, SWT.NONE);
 		removeAnnotationButton.setEnabled(false);
 		removeAnnotationButton.setBounds(0, 0, 75, 25);
-		removeAnnotationButton.setText("Remove");
-		
-		Group detailsGroup = new Group(rightMainComposite, SWT.NONE);
-		detailsGroup.setLayout(new GridLayout(1, false));
-		detailsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		detailsGroup.setText("Details");
-		
-		Composite detailViewerComposite = new Composite(detailsGroup, SWT.NONE);
-		detailViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		detailViewerComposite.setLayout(new TreeColumnLayout());
-		
-		createDetailViewer(detailViewerComposite);
+		removeAnnotationButton.setText("Remove");		
 	}
-
+	
 	private void createElementViewer(Composite viewerComposite) {
 		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER);
 		elementViewer.setContentProvider(contentProvider);
@@ -274,8 +269,27 @@ public class AnnotationEditor extends EditorPart {
 		Tree elementTree = elementViewer.getTree();
 		elementTree.setHeaderVisible(true);
 		elementTree.setLinesVisible(true);		
-		elementTree.setEnabled(false);		
+		elementTree.setEnabled(false);
+		
+		TreeColumnLayout tcl_elementViewerComposite = new TreeColumnLayout();
+		viewerComposite.setLayout(tcl_elementViewerComposite);
+		
+		TreeViewerColumn elementViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
+		TreeColumn elementColumn = elementViewerColumn.getColumn();
+		tcl_elementViewerComposite.setColumnData(elementColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		elementColumn.setText("Elements");
 	}
+	
+	private void createBottomPanel(Composite composite) {		
+		Group detailsGroup = new Group(composite, SWT.NONE);
+		detailsGroup.setLayout(new GridLayout(1, false));
+		detailsGroup.setText("Details");
+		
+		Composite detailViewerComposite = new Composite(detailsGroup, SWT.NONE);
+		detailViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		createDetailViewer(detailViewerComposite);		
+	}	
 	
 	private void createDetailViewer(Composite detailViewerComposite) {
 		detailViewer = new TreeViewer(detailViewerComposite, SWT.BORDER);
@@ -285,7 +299,15 @@ public class AnnotationEditor extends EditorPart {
 		Tree detailTree = detailViewer.getTree();
 		detailTree.setHeaderVisible(true);
 		detailTree.setLinesVisible(true);		
-		detailTree.setEnabled(false);		
+		detailTree.setEnabled(false);
+		
+		TreeColumnLayout tcl_detailViewerComposite = new TreeColumnLayout();
+		detailViewerComposite.setLayout(tcl_detailViewerComposite);
+		
+		TreeViewerColumn detailViewerColumn = new TreeViewerColumn(detailViewer, SWT.NONE);
+		TreeColumn detailColumn = detailViewerColumn.getColumn();
+		tcl_detailViewerComposite.setColumnData(detailColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		detailColumn.setText("Details");
 	}
 
 	@Override
