@@ -17,14 +17,16 @@ public class ClassModel extends ModelElement {
 	public static class PackageElement extends ModelElement<ClassModel> {
 
 		public PackageElement(ClassModel parent, String name) {
+			super(parent);
 			super.setName(name);
-			super.setParent(parent);
 		}
 	}
 
 	private Map<PackageElement, List<ClassElement>> classElements;
 	
+	@SuppressWarnings("unchecked")
 	protected ClassModel() {
+		super(null);
 		classElements = new HashMap<PackageElement, List<ClassElement>>();
 	}
 	

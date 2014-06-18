@@ -31,7 +31,7 @@ public class CombinedAnnotationRuleTests {
 	public void testEmptyRule() throws Exception {
 		assertFalse("Rule should be empty.", rule.hasElements());
 		assertFalse("No rules were added, but has to retrun false.", 
-				rule.isAllowed(Annotation.NODE, factory.createClassElement()));
+				rule.isAllowed(Annotation.NODE, factory.createClassElement(null)));
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class CombinedAnnotationRuleTests {
 	public void testSimpleRule() throws Exception {
 		rule.addRule(new ClassElementAnnotationController.ClassElementNodeRule());
 		assertTrue("NODE annotation should be allowed to add.", 
-				rule.isAllowed(Annotation.NODE, factory.createClassElement()));
+				rule.isAllowed(Annotation.NODE, factory.createClassElement(null)));
 	}
 
 }

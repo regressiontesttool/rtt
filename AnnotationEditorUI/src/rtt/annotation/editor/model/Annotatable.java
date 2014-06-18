@@ -4,6 +4,10 @@ import rtt.annotation.editor.rules.Annotation;
 
 public abstract class Annotatable<T extends ModelElement<?>> extends ModelElement<T> {
 	
+	protected Annotatable(T parent) {
+		super(parent);
+	}
+
 	private Annotation annotation;
 	
 	public final void setAnnotation(Annotation annotation) {

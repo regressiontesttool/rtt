@@ -19,7 +19,7 @@ public class ClassElementAnnotationTests {
 	@Before
 	public void setUp() throws Exception {
 		factory = ClassModelFactory.getFactory();
-		element = factory.createClassElement();
+		element = factory.createClassElement(null);
 	}
 	
 	@Test

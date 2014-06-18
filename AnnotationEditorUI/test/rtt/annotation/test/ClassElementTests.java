@@ -21,7 +21,7 @@ public class ClassElementTests {
 	@Before
 	public void setUp() throws Exception { 
 		factory = ClassModelFactory.getFactory();
-		element = factory.createClassElement();		
+		element = factory.createClassElement(null);		
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class ClassElementTests {
 	public void testAddField() throws Exception {
 		String fieldName = "TestFieldName";
 		
-		FieldElement field = factory.createFieldElement();
+		FieldElement field = factory.createFieldElement(element);
 		field.setName(fieldName);
 		
 		int oldSize = element.getFields().size();		
@@ -74,7 +74,7 @@ public class ClassElementTests {
 		
 		assertTrue("Field list contains", element.getFields().contains(field));
 		
-		FieldElement field2 = factory.createFieldElement();
+		FieldElement field2 = factory.createFieldElement(element);
 		field2.setName(fieldName);
 		
 		oldSize = newSize;
@@ -87,7 +87,7 @@ public class ClassElementTests {
 	public void testAddMethod() throws Exception {
 		String methodName = "TestMethodName";
 		
-		MethodElement method = factory.createMethodElement();
+		MethodElement method = factory.createMethodElement(element);
 		method.setName(methodName);
 		
 		int oldSize = element.getMethods().size();
@@ -97,7 +97,7 @@ public class ClassElementTests {
 		
 		assertTrue("Method List contains", element.getMethods().contains(method));
 		
-		MethodElement method2 = factory.createMethodElement();
+		MethodElement method2 = factory.createMethodElement(element);
 		method2.setName(methodName);
 		
 		oldSize = newSize;

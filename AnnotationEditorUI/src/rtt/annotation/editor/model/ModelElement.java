@@ -6,7 +6,11 @@ import rtt.annotations.Parser.Node;
 public abstract class ModelElement<T extends ModelElement<?>> {
 	
 	private String name = null;
-	private T parent = null;	
+	private T parent = null;
+	
+	protected ModelElement(T parent) {
+		this.parent = parent;
+	}
 	
 	@Node.Compare
 	public final String getName() {

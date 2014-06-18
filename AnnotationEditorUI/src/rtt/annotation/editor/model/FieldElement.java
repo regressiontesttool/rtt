@@ -4,8 +4,9 @@ import rtt.annotations.Parser.Node;
 
 
 @Node
-public class FieldElement extends Annotatable<ClassElement> {
-	
+public class FieldElement extends Annotatable<ClassElement> {	
 
-	protected FieldElement() {}
+	protected FieldElement(ClassElement parent) {
+		super(parent);		
+	}
 }

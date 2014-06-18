@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.ClassNode;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
+import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 
 public class ASMClassNodeImporter {
@@ -20,8 +21,8 @@ public class ASMClassNodeImporter {
 	}	
 
 	@SuppressWarnings("unchecked")
-	public ClassElement createClassElement() {
-		ClassElement element = factory.createClassElement();
+	public ClassElement createClassElement(ClassModel parent) {
+		ClassElement element = factory.createClassElement(parent);
 		
 		String nodeName = node.name;
 		int packageBoundary = nodeName.lastIndexOf("/");

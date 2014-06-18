@@ -56,7 +56,7 @@ public class ASMImporter implements Importer {
 		reader.accept(node, ClassReader.SKIP_CODE);
 		
 		ASMClassNodeImporter nodeImporter = new ASMClassNodeImporter(node, factory);
-		ClassElement element = nodeImporter.createClassElement();		
+		ClassElement element = nodeImporter.createClassElement(model);		
 		
 		for (Object fieldObject : node.fields) {
 			importFieldElement((FieldNode) fieldObject, element);
@@ -70,14 +70,14 @@ public class ASMImporter implements Importer {
 	}
 
 	private void importFieldElement(FieldNode fieldNode, ClassElement classElement) {
-		FieldElement element = factory.createFieldElement();		
+		FieldElement element = factory.createFieldElement(classElement);		
 		element.setName(fieldNode.name);
 		
 		classElement.addField(element);
 	}
 	
 	private void importMethodElement(MethodNode methodNode, ClassElement classElement) {
-		MethodElement methodElement = factory.createMethodElement();	
+		MethodElement methodElement = factory.createMethodElement(classElement);	
 		methodElement.setName(methodNode.name);
 		
 		classElement.addMethod(methodElement);

@@ -15,18 +15,18 @@ public class ClassModelFactory {
 		return new ClassModel();
 	}
 	
-	public ClassElement createClassElement() {
-		ClassElement element = new ClassElement();		
+	public ClassElement createClassElement(ClassModel parent) {
+		ClassElement element = new ClassElement(parent);		
 		return element;
 	}
 	
-	public FieldElement createFieldElement() {
-		FieldElement element = new FieldElement();		
+	public FieldElement createFieldElement(ClassElement parent) {
+		FieldElement element = new FieldElement(parent);		
 		return element;
 	}
 	
-	public MethodElement createMethodElement() {
-		MethodElement element = new MethodElement();		
+	public MethodElement createMethodElement(ClassElement parent) {
+		MethodElement element = new MethodElement(parent);		
 		return element;
 	}
 

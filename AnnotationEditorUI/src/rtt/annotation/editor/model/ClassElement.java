@@ -21,7 +21,8 @@ public class ClassElement extends Annotatable<ClassModel> {
 	private List<FieldElement> fields;
 	private List<MethodElement> methods;
 	
-	protected ClassElement() {		
+	protected ClassElement(ClassModel parent) {
+		super(parent);
 		fields = new ArrayList<FieldElement>();
 		methods = new ArrayList<MethodElement>();
 	}
