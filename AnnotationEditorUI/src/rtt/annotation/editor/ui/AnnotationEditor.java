@@ -9,7 +9,6 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -39,16 +38,22 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider;
+import rtt.annotation.editor.ui.viewer.util.ModelElementSelectionChangedListener;
+import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
 import rtt.annotation.editor.util.StatusFactory;
+
+import org.eclipse.jface.viewers.ColumnPixelData;
+
+import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 
 public class AnnotationEditor extends EditorPart {
 
-	private static final int CLASS_LEVEL = 2;
+	private static final int SECOND_LEVEL = 2;
 	
 	private IContentProvider contentProvider;
 	private ILabelProvider labelProvider;
 	
-	private TreeViewer detailViewer;
+	private TreeViewer propertyViewer;
 	private TreeViewer elementViewer;
 	private TreeViewer nodeViewer;
 	
@@ -178,24 +183,19 @@ public class AnnotationEditor extends EditorPart {
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		nodeViewer.setContentProvider(new ClassModelContentProvider());
 		
-		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		nodeViewer.addSelectionChangedListener(new ModelElementSelectionChangedListener() {
 			
 			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				
+			protected void handleSelection(Object selectedObject) {
 				setNodeButton.setEnabled(false);
-				if (event.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection sSelection = (IStructuredSelection) event.getSelection();
-					if (!sSelection.isEmpty()) {
-						if (sSelection.getFirstElement() instanceof ClassElement) {
-							ClassElement element = (ClassElement) sSelection.getFirstElement();
-							setNodeButton.setEnabled(!element.hasAnnotation());
-						}
-					}
+				if (selectedObject instanceof ClassElement) {
+					ClassElement element = (ClassElement) selectedObject;
+					setNodeButton.setEnabled(!element.hasAnnotation());
 				}
 				
-				elementViewer.setInput(event.getSelection());
-				elementViewer.getControl().setEnabled(true);
+				propertyViewer.setInput(selectedObject);
+				propertyViewer.getControl().setEnabled(true);
+				propertyViewer.expandToLevel(SECOND_LEVEL);
 			}
 		});
 		
@@ -213,10 +213,9 @@ public class AnnotationEditor extends EditorPart {
 		columnLayout.setColumnData(nodesColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
 		nodesColumn.setText("Nodes");
 		
-		nodeViewer.expandToLevel(CLASS_LEVEL);
-		
 		if (model != null) {
 			nodeViewer.setInput(model);
+			nodeViewer.expandToLevel(SECOND_LEVEL);
 		}
 	}
 	
@@ -261,8 +260,8 @@ public class AnnotationEditor extends EditorPart {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				detailViewer.setInput(event.getSelection());
-				detailViewer.getControl().setEnabled(true);
+				propertyViewer.setInput(event.getSelection());
+				propertyViewer.getControl().setEnabled(true);
 			}
 		});
 		
@@ -281,33 +280,39 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createBottomPanel(Composite composite) {		
-		Group detailsGroup = new Group(composite, SWT.NONE);
-		detailsGroup.setLayout(new GridLayout(1, false));
-		detailsGroup.setText("Details");
+		Group propertiesGroup = new Group(composite, SWT.NONE);
+		propertiesGroup.setLayout(new GridLayout(1, false));
+		propertiesGroup.setText("Details");
 		
-		Composite detailViewerComposite = new Composite(detailsGroup, SWT.NONE);
-		detailViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Composite propertyViewerComposite = new Composite(propertiesGroup, SWT.NONE);
+		propertyViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		createDetailViewer(detailViewerComposite);		
+		createPropertyViewer(propertyViewerComposite);		
 	}	
 	
-	private void createDetailViewer(Composite detailViewerComposite) {
-		detailViewer = new TreeViewer(detailViewerComposite, SWT.BORDER);
-		detailViewer.setContentProvider(contentProvider);
-		detailViewer.setLabelProvider(labelProvider);
+	private void createPropertyViewer(Composite propertyViewerComposite) {
+		propertyViewer = new TreeViewer(propertyViewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		propertyViewer.setContentProvider(new PropertyContentProvider());
 		
-		Tree detailTree = detailViewer.getTree();
-		detailTree.setHeaderVisible(true);
-		detailTree.setLinesVisible(true);		
-		detailTree.setEnabled(false);
+		Tree propertyTree = propertyViewer.getTree();
+		propertyTree.setHeaderVisible(true);
+		propertyTree.setLinesVisible(true);		
+		propertyTree.setEnabled(false);
 		
-		TreeColumnLayout tcl_detailViewerComposite = new TreeColumnLayout();
-		detailViewerComposite.setLayout(tcl_detailViewerComposite);
+		TreeColumnLayout tcl_propertyViewerComposite = new TreeColumnLayout();
+		propertyViewerComposite.setLayout(tcl_propertyViewerComposite);
 		
-		TreeViewerColumn detailViewerColumn = new TreeViewerColumn(detailViewer, SWT.NONE);
-		TreeColumn detailColumn = detailViewerColumn.getColumn();
-		tcl_detailViewerComposite.setColumnData(detailColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		detailColumn.setText("Details");
+		TreeViewerColumn descriptionViewerColumn = new TreeViewerColumn(propertyViewer, SWT.NONE);
+		descriptionViewerColumn.setLabelProvider(new PropertyColumnLabelProvider(PropertyColumnLabelProvider.DESCRIPTION_COLUMN));
+		TreeColumn descriptionColumn = descriptionViewerColumn.getColumn();
+		tcl_propertyViewerComposite.setColumnData(descriptionColumn, new ColumnPixelData(150, true, true));
+		descriptionColumn.setText("Description");
+		
+		TreeViewerColumn valueViewerColumn = new TreeViewerColumn(propertyViewer, SWT.NONE);
+		valueViewerColumn.setLabelProvider(new PropertyColumnLabelProvider(PropertyColumnLabelProvider.VALUE_COLUMN));
+		TreeColumn valueColumn = valueViewerColumn.getColumn();
+		tcl_propertyViewerComposite.setColumnData(valueColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		valueColumn.setText("Value");
 	}
 
 	@Override
