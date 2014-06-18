@@ -1,5 +1,6 @@
 package rtt.annotation.editor.importer.asm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.objectweb.asm.Opcodes;
@@ -44,7 +45,11 @@ public class ASMClassNodeImporter {
 			element.setType(ClassType.INTERFACE);
 		}
 		
-		element.setInterfaces((List<String>) node.interfaces);
+		List<String> interfaceList = new ArrayList<String>();
+		for (String interfaceName : (List<String>) node.interfaces) {
+			interfaceList.add(interfaceName.replace("/", "."));
+		}
+		element.setInterfaces(interfaceList);
 		
 		if (node.superName != null && !node.superName.equals("java/lang/Object")) {
 			element.setSuperClass(node.superName.replace("/", "."));

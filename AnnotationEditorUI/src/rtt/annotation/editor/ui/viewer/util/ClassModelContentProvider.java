@@ -14,21 +14,6 @@ import rtt.annotation.editor.model.ModelElement;
 
 public class ClassModelContentProvider implements ITreeContentProvider {
 	
-	public final class Detail {
-		
-		String label;
-		List<String> items;
-		
-		public Detail(String label, List<String> items) {
-			this.label = label;
-			this.items = items;
-		}
-		
-		public Detail(String label) {
-			this(label, new ArrayList<String>());
-		}				
-	}
-
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	@Override
@@ -59,26 +44,6 @@ public class ClassModelContentProvider implements ITreeContentProvider {
 		if (parentElement instanceof PackageElement) {
 			PackageElement packageElement = (PackageElement) parentElement;
 			results = packageElement.getParent().getClassElement(packageElement.getName());
-		}
-		
-		if (parentElement instanceof ClassElement) {
-			ClassElement classElement = (ClassElement) parentElement;
-			
-			List<Detail> details = new ArrayList<Detail>();
-			
-			if (classElement.hasSuperClass()) {
-				details.add(new Detail("Extends: " + classElement.getSuperClass()));
-			}
-			
-			if (classElement.hasInterfaces()) {
-				details.add(new Detail("Implements: ", classElement.getInterfaces()));
-			}						
-			
-			results = details;
-		}
-		
-		if (parentElement instanceof Detail) {
-			results = ((Detail) parentElement).items;
 		}
 		
 		if (results != null) {

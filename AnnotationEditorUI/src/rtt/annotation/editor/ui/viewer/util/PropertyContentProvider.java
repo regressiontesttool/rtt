@@ -34,11 +34,11 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		}
 	}
 	
-	protected class MultipleProperty<T> extends Property {
+	protected class MultipleProperty extends Property {
 
-		protected List<T> items;
+		protected List<Property> items;
 
-		public MultipleProperty(String label, List<T> items) {
+		public MultipleProperty(String label, List<Property> items) {
 			super(label);	
 			this.items = items;
 		}
@@ -65,7 +65,7 @@ public class PropertyContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		Collection<?> results = new ArrayList<Property>(0);
+		Collection<Property> results = new ArrayList<Property>(0);
 		
 		if (parentElement instanceof PackageElement) {
 			results = createPackageDetails((PackageElement) parentElement);
@@ -76,7 +76,7 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		}
 		
 		if (parentElement instanceof MultipleProperty) {
-			results = ((MultipleProperty<?>) parentElement).items;
+			results = ((MultipleProperty) parentElement).items;
 		}
 		
 		if (results != null) {
@@ -112,10 +112,19 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		}
 		
 		if (parentElement.hasInterfaces()) {
-			results.add(new MultipleProperty<String>("Implements", parentElement.getInterfaces()));
-		}		
+			StringBuilder builder = null;
+			for (String interfaceString : parentElement.getInterfaces()) {
+				if (builder == null) {
+					builder = new StringBuilder(interfaceString);
+				} else {
+					builder.append(",");
+					builder.append(interfaceString);
+				}				
+			}
+			classProperties.add(new Property("Implements", builder.toString()));
+		}
 		
-		results.add(new MultipleProperty<Property>("Properties", classProperties));
+		results.add(new MultipleProperty("Properties", classProperties));
 		
 		return results;
 	}

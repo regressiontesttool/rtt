@@ -7,10 +7,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 import rtt.annotation.editor.model.ClassElement;
-import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassElement.ClassType;
+import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
-import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider.Detail;
 
 public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 
@@ -28,29 +27,7 @@ public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 		}
 		
 		if (element instanceof ClassElement) {
-			ClassElement classElement = (ClassElement) element;
-			
-			StringBuilder builder = new StringBuilder();
-			builder.append(classElement.getName());
-			
-			switch (classElement.getType()) {
-			case INTERFACE:
-				builder.append(" [I]");
-				break;
-				
-			case ABSTRACT:
-				builder.append(" [A]");
-				break;
-				
-			default:
-				break;
-			}
-	
-			return builder.toString();
-		}
-		
-		if (element instanceof Detail) {
-			return ((Detail) element).label;
+			return ((ClassElement) element).getName();
 		}
 		
 		return super.getText(element);

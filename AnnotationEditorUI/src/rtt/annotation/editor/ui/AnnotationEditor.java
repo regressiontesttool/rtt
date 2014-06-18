@@ -139,7 +139,7 @@ public class AnnotationEditor extends EditorPart {
 		createLeftPanel(sashForm);
 		createRightPanel(sashForm);	
 		
-		sashForm.setWeights(new int[] {1, 1});
+		sashForm.setWeights(new int[] {2, 3});
 	}
 	
 	private void createLeftPanel(Composite composite) {
