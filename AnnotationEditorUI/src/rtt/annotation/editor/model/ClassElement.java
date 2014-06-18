@@ -12,7 +12,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		INTERFACE, ABSTRACT, CONCRETE;
 	}
 	
-	private String name = null;
 	private String packageName = null;	
 	private ClassType type = ClassType.CONCRETE;
 	
@@ -25,15 +24,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 	protected ClassElement() {		
 		fields = new ArrayList<FieldElement>();
 		methods = new ArrayList<MethodElement>();
-	}
-	
-	@Node.Compare
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String className) {
-		this.name = className;
 	}
 	
 	@Node.Compare
@@ -103,18 +93,11 @@ public class ClassElement extends Annotatable<ClassModel> {
 			method.setParent(this);
 		}
 	}
-//	
-//	@Override
-//	public String getLabel() {
-//		
-//	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((name == null) ? 0 : name.hashCode());
 		result = prime * result
 				+ ((interfaces == null) ? 0 : interfaces.hashCode());
 		result = prime * result
@@ -130,17 +113,21 @@ public class ClassElement extends Annotatable<ClassModel> {
 		if (this == obj) {
 			return true;
 		}
+		if (!super.equals(obj)) {
+			return false;
+		}
 		if (getClass() != obj.getClass()) {
 			return false;
-		}
-		ClassElement other = (ClassElement) obj;
-		if (name == null) {
-			if (other.name != null) {
+		}		
+		
+		ClassElement other = (ClassElement) obj;		
+		if (packageName == null) {
+			if (other.packageName != null) {
 				return false;
 			}
-		} else if (!name.equals(other.name)) {
+		} else if (!packageName.equals(other.packageName)) {
 			return false;
-		}
+		}		
 		if (interfaces == null) {
 			if (other.interfaces != null) {
 				return false;
@@ -148,13 +135,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 		} else if (!interfaces.equals(other.interfaces)) {
 			return false;
 		}
-		if (packageName == null) {
-			if (other.packageName != null) {
-				return false;
-			}
-		} else if (!packageName.equals(other.packageName)) {
-			return false;
-		}
+		
 		if (superClass == null) {
 			if (other.superClass != null) {
 				return false;
