@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
-import rtt.annotation.editor.importer.ASMImporter;
 import rtt.annotation.editor.importer.Importer;
+import rtt.annotation.editor.importer.asm.ASMImporter;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotations.Parser;

@@ -8,4 +8,8 @@ public class MethodElement extends Annotatable<ClassElement> {
 	protected MethodElement(ClassElement parent) {
 		super(parent);
 	}
+
+	public String getClassName() {
+		return "TODO";
+	}
 }
