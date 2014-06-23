@@ -7,8 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -28,8 +26,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.model.BaseWorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -44,15 +40,13 @@ import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementSelectionChangedListener;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
-import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider.ColumnKey;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
 
+	private static final int MIN_COLUMN_WIDTH = 200;
+
 	private static final int SECOND_LEVEL = 2;
-	
-	private IContentProvider contentProvider;
-	private ILabelProvider labelProvider;
 	
 	private TreeViewer propertyViewer;
 	private TreeViewer elementViewer;
@@ -90,6 +84,8 @@ public class AnnotationEditor extends EditorPart {
 						StatusFactory.createError("Input file was null."));
 			}
 			
+			setPartName(getPartName() + " - " + inputFile.getName());
+			
 			try {
 				Importer importer = new ASMImporter();
 				model = importer.importModel(inputFile.getLocation().toFile());
@@ -116,14 +112,6 @@ public class AnnotationEditor extends EditorPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		
-		if (contentProvider == null) {
-			contentProvider = new BaseWorkbenchContentProvider();
-		}
-		
-		if (labelProvider == null) {
-			labelProvider = new WorkbenchLabelProvider();
-		}		
 		
 		SashForm verticalSash = new SashForm(parent, SWT.SMOOTH | SWT.VERTICAL);
 		
@@ -265,7 +253,7 @@ public class AnnotationEditor extends EditorPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				propertyViewer.setInput(event.getSelection());
-				propertyViewer.getControl().setEnabled(true);
+				propertyViewer.getControl().setEnabled(!event.getSelection().isEmpty());
 			}
 		});
 		
@@ -277,22 +265,16 @@ public class AnnotationEditor extends EditorPart {
 		TreeColumnLayout tcl_elementViewerComposite = new TreeColumnLayout();
 		viewerComposite.setLayout(tcl_elementViewerComposite);
 		
-		TreeViewerColumn kindViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		kindViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ColumnKey.KIND_COLUMN));
-		TreeColumn kindColumn = kindViewerColumn.getColumn();
-		tcl_elementViewerComposite.setColumnData(kindColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		kindColumn.setText("Kind");
-		
 		TreeViewerColumn nameViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		nameViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ColumnKey.NAME_COLUMN));
+		nameViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ClassElementColumnLabelProvider.DESCRIPTION_COLUMN));
 		TreeColumn nameColumn = nameViewerColumn.getColumn();
-		tcl_elementViewerComposite.setColumnData(nameColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		tcl_elementViewerComposite.setColumnData(nameColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		nameColumn.setText("Name");
 		
 		TreeViewerColumn typeViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		typeViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ColumnKey.TYPE_COLUMN));
+		typeViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ClassElementColumnLabelProvider.TYPE_COLUMN));
 		TreeColumn typeColumn = typeViewerColumn.getColumn();
-		tcl_elementViewerComposite.setColumnData(typeColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
+		tcl_elementViewerComposite.setColumnData(typeColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		typeColumn.setText("Type");
 	}
 	
@@ -339,16 +321,6 @@ public class AnnotationEditor extends EditorPart {
 	
 	@Override
 	public void dispose() {
-		if (labelProvider != null) {
-			labelProvider.dispose();
-			labelProvider = null;
-		}
-		
-		if (contentProvider != null) {
-			contentProvider.dispose();
-			contentProvider = null;
-		}
-		
 		super.dispose();
 	}
 }

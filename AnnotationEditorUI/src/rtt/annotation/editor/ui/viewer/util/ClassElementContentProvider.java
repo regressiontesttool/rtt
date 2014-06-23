@@ -7,18 +7,24 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
-import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.ClassModel.PackageElement;
 import rtt.annotation.editor.model.FieldElement;
+import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.ModelElement;
 
 public class ClassElementContentProvider implements ITreeContentProvider {
 	
-	private static final Object[] EMPTY_ARRAY = new Object[0];
+	protected class MultipleDetail<T extends ModelElement<?>> {
 
+		protected String label;
+		protected List<T> items;
+
+		public MultipleDetail(String label, List<T> items) {
+			this.label = label;	
+			this.items = items;
+		}
+	}
+	
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
@@ -41,18 +47,17 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 		Collection<? extends Object> results = new ArrayList<Object>(0);
 		
 		if (parentElement instanceof ClassElement) {
-			List<Annotatable<?>> elements = new ArrayList<Annotatable<?>>();
-			
+			List<MultipleDetail<?>> details = new ArrayList<MultipleDetail<?>>();			
 			ClassElement classElement = (ClassElement) parentElement;
-			for (FieldElement field : classElement.getFields()) {
-				elements.add(field);
-			}
 			
-			for (MethodElement method : classElement.getMethods()) {
-				elements.add(method);
-			}
+			details.add(new MultipleDetail<FieldElement>("Fields", classElement.getFields()));
+			details.add(new MultipleDetail<MethodElement>("Methods", classElement.getMethods()));
 			
-			results = elements;			
+			results = details;			
+		}
+		
+		if (parentElement instanceof MultipleDetail) {
+			results = ((MultipleDetail<?>) parentElement).items;			
 		}
 		
 		return results.toArray();
@@ -60,10 +65,10 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof ModelElement<?>) {
-			return ((ModelElement<?>) element).getParent();
-		}
-
+		if (element instanceof MultipleDetail<?>) {
+			return this;
+		}		
+		
 		return null;
 	}
 

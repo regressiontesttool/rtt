@@ -4,56 +4,37 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.MultipleDetail;
 
 public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	
-	public enum ColumnKey {
-		KIND_COLUMN, NAME_COLUMN, TYPE_COLUMN;
-	}
+	public static final int DESCRIPTION_COLUMN = 0;
+	public static final int TYPE_COLUMN = 1;
 	
-	private ColumnKey column = ColumnKey.NAME_COLUMN;
+	private int columnIndex = DESCRIPTION_COLUMN;
 	
-	public ClassElementColumnLabelProvider(ColumnKey column) {
-		this.column = column;
+	public ClassElementColumnLabelProvider(int column) {
+		this.columnIndex = column;
 	}
 	
 	@Override
 	public String getText(Object element) {
-		String text = null;
-		switch (column) {
-		case KIND_COLUMN:
-			text = getKind(element);
-			break;
-			
-		case NAME_COLUMN:
-			text = getName(element);
-			break;
-			
-		case TYPE_COLUMN:
-			text = getType(element);
-			break;
+		if (columnIndex == DESCRIPTION_COLUMN) {
+			return getDescriptionColumn(element);
 		}
 		
-		if (text != null && !text.equals("")) {
-			return text;
-		} else {
-			return super.getText(element);
-		}	
+		if (columnIndex == TYPE_COLUMN) {
+			return getTypeColumn(element);
+		}
+
+		return super.getText(element);
 	}
 
-	private String getKind(Object element) {
-		if (element instanceof FieldElement) {
-			return "Field";
+	private String getDescriptionColumn(Object element) {
+		if (element instanceof MultipleDetail<?>) {
+			return ((MultipleDetail<?>) element).label;
 		}
-		
-		if (element instanceof MethodElement) {
-			return "Method";
-		}
-		
-		return null;		
-	}
 
-	private String getName(Object element) {
 		if (element instanceof FieldElement) {
 			return ((FieldElement) element).getName();
 		}
@@ -62,21 +43,19 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 			return ((MethodElement) element).getName();
 		}
 		
-		return null;
+		return "";
 	}
 
-	private String getType(Object element) {
+	private String getTypeColumn(Object element) {
 		if (element instanceof FieldElement) {
-			return ((FieldElement) element).getClassName();
+			return ((FieldElement) element).getType();
 		}
 		
 		if (element instanceof MethodElement) {
-			return ((MethodElement) element).getClassName();
+			return ((MethodElement) element).getType();
 		}
 		
-		return null;
+		return "";
 	}
-	
-	
 
 }

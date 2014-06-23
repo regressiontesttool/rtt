@@ -2,12 +2,10 @@ package rtt.annotation.editor.ui.viewer.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 import rtt.annotation.editor.model.ModelElement;
