@@ -6,18 +6,18 @@ import rtt.annotations.Parser.Node;
 @Node
 public class FieldElement extends Annotatable<ClassElement> {	
 
-	private String className;
+	private String type;
 
 	protected FieldElement(ClassElement parent) {
 		super(parent);		
 	}
 
 	@Node.Compare
-	public String getClassName() {
-		return className;
+	public String getType() {
+		return type;
 	}
 	
-	public void setClassName(String className) {
-		this.className = className;
+	public void setType(String typeName) {
+		this.type = typeName;
 	}
 }

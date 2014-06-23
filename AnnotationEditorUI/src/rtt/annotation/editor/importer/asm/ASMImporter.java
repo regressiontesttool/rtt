@@ -71,21 +71,42 @@ public class ASMImporter implements Importer {
 	}
 
 	private void importFieldElement(FieldNode fieldNode, ClassElement classElement) {
-		FieldElement element = factory.createFieldElement(classElement);		
-		element.setName(fieldNode.name);
-		
-		Type fieldType = Type.getType(fieldNode.desc);
-		element.setClassName(fieldType.getClassName());
-		
-		classElement.addField(element);
+		if (!isSynthetic(fieldNode)) {
+			FieldElement element = factory.createFieldElement(classElement);		
+			element.setName(fieldNode.name);
+			
+			Type fieldType = Type.getType(fieldNode.desc);
+			element.setType(fieldType.getClassName());
+			
+			classElement.addField(element);
+		}		
 	}
-	
 	
 
-	private void importMethodElement(MethodNode methodNode, ClassElement classElement) {
-		MethodElement methodElement = factory.createMethodElement(classElement);	
-		methodElement.setName(methodNode.name);
-		
-		classElement.addMethod(methodElement);
+	private boolean isSynthetic(FieldNode fieldNode) {
+		return (fieldNode.access & Opcodes.ACC_SYNTHETIC) == Opcodes.ACC_SYNTHETIC;
 	}
+
+	private void importMethodElement(MethodNode methodNode, ClassElement classElement) {
+		Type methodType = Type.getMethodType(methodNode.desc);
+		if (!hasVoidReturnType(methodType) && !hasArguments(methodType)) {
+			
+			MethodElement methodElement = factory.createMethodElement(classElement);	
+			methodElement.setName(methodNode.name);
+
+			methodElement.setType(methodType.getReturnType().getClassName());
+			
+			classElement.addMethod(methodElement);
+		}
+	}
+
+	private boolean hasVoidReturnType(Type methodType) {
+		return Type.VOID_TYPE.equals(methodType.getReturnType());
+	}
+
+	private boolean hasArguments(Type methodType) {
+		return methodType.getArgumentTypes().length > 0;
+	}
+	
+	
 }
