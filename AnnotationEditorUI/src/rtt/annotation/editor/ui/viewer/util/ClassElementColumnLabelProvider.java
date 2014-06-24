@@ -17,6 +17,8 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	
 	private static final Color COMPARE_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.COMPARE_COLOR);
 	private static final Color INFORMATIONAL_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.INFORMATIONAL_COLOR);
+	
+	private static final Font DEFAULT_FONT = JFaceResources.getFontRegistry().get(JFaceResources.DEFAULT_FONT);
 	private static final Font BOLD_FONT = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
 	
 	public static final int DESCRIPTION_COLUMN = 0;
@@ -86,7 +88,7 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 			}
 		}
 		
-		return super.getFont(element);
+		return DEFAULT_FONT;
 	}
 
 	private String getTypeColumn(Object element) {

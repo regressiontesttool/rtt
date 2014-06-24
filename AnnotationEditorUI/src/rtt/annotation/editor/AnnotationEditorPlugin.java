@@ -36,7 +36,7 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 		
 		JFaceResources.getColorRegistry().put(ANNOTATED_COLOR, new RGB(0, 0, 255));
 		JFaceResources.getColorRegistry().put(COMPARE_COLOR, new RGB(0, 0, 255));
-		JFaceResources.getColorRegistry().put(INFORMATIONAL_COLOR, new RGB(0, 255, 100));
+		JFaceResources.getColorRegistry().put(INFORMATIONAL_COLOR, new RGB(0, 155, 255));
 	}
 
 	/*
