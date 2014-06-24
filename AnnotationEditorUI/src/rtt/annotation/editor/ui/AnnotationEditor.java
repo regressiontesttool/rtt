@@ -7,10 +7,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,7 +26,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
@@ -32,20 +39,59 @@ import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.importer.asm.ASMImporter;
 import rtt.annotation.editor.model.Annotatable;
-import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.ModelElement;
 import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider;
-import rtt.annotation.editor.ui.viewer.util.ModelElementSelectionAdapter;
-import rtt.annotation.editor.ui.viewer.util.ModelElementSelectionChangedListener;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
+import rtt.annotation.editor.ui.viewer.util.SelectionChangedAdapter;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
+
+	private final class NodeFilter extends ViewerFilter {
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof Annotatable<?>) {
+				return ((Annotatable<?>) element).getAnnotation() == Annotation.NODE;
+			}
+			
+			return true;
+		}
+	}
+
+	private final class SetAnnotationSelectionAdapter extends SelectionAdapter {
+		
+		private Annotation annotation;
+		private Viewer viewer;
+		
+		public SetAnnotationSelectionAdapter(Viewer viewer, Annotation annotation) {
+			this.viewer = viewer;
+			this.annotation = annotation;
+		}
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			Object selectedObject = getSelection(viewer);
+			if (selectedObject instanceof Annotatable<?>) {
+				ControllerRegistry.apply(annotation, (Annotatable<?>) selectedObject);
+				viewer.setSelection(new StructuredSelection(selectedObject), true);
+				viewer.refresh();
+			}
+		}
+		
+		private Object getSelection(Viewer viewer) {
+			ISelection selection = viewer.getSelection();
+			
+			if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+				return ((IStructuredSelection) selection).getFirstElement();
+			}
+
+			return null;
+		}
+	}
 
 	private static final int MIN_COLUMN_WIDTH = 200;
 
@@ -55,19 +101,19 @@ public class AnnotationEditor extends EditorPart {
 	private TreeViewer elementViewer;
 	private TreeViewer nodeViewer;
 	
+	private ViewerFilter nodeFilter;
+	
 	private ClassModel model;
+	
 	private Button setNodeButton;
-
-	private Button compareAnnotationButton;
-
-	private Button informationalAnnotationButton;
-
+	private Button setCompareButton;
+	private Button setInformationalButton;
 	private Button removeAnnotationButton;
-
 	private Button removeNodeButton;
+	private Button filterButton;
 
 	public AnnotationEditor() {
-		// TODO Auto-generated constructor stub
+		nodeFilter = new NodeFilter();
 	}
 
 	@Override
@@ -146,18 +192,23 @@ public class AnnotationEditor extends EditorPart {
 		
 		Group nodesGroup = new Group(composite, SWT.NONE);
 		nodesGroup.setText("Nodes");
-		nodesGroup.setLayout(new GridLayout(2, false));
-		
-		Label descriptionLabel = new Label(nodesGroup, SWT.WRAP);
-		descriptionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		descriptionLabel.setText("Displaying classes (and nodes)");
+		nodesGroup.setLayout(new GridLayout(1, false));
 		
 		Composite filterComposite = new Composite(nodesGroup, SWT.NONE);
 		filterComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
-		filterComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+		filterComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 1, 1));
 		
-		Button filterButton = new Button(filterComposite, SWT.CHECK);
+		filterButton = new Button(filterComposite, SWT.CHECK);
 		filterButton.setText("Nodes only");
+		filterButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				nodeViewer.resetFilters();				
+				if (filterButton.getSelection()) {
+					nodeViewer.setFilters(new ViewerFilter[] { nodeFilter });
+				}
+			}
+		});
 		
 		Composite nodeViewerComposite = new Composite(nodesGroup, SWT.NONE);
 		nodeViewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));	
@@ -177,25 +228,28 @@ public class AnnotationEditor extends EditorPart {
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		nodeViewer.setContentProvider(new ClassModelContentProvider());
 		
-		nodeViewer.addSelectionChangedListener(new ModelElementSelectionChangedListener() {
+		nodeViewer.addSelectionChangedListener(new SelectionChangedAdapter() {
 			
 			@Override
-			protected void handleSelection(Object selectedObject) {
-				setNodeButton.setEnabled(false);
-				removeNodeButton.setEnabled(false);
-				if (selectedObject instanceof ClassElement) {
-					ClassElement element = (ClassElement) selectedObject;
-					setNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NODE, element));
-					removeNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, element));
-					
-					elementViewer.setInput(selectedObject);
-					elementViewer.getControl().setEnabled(true);
-					elementViewer.expandToLevel(SECOND_LEVEL);
-				}
+			public void selectionChanged(SelectionChangedEvent event) {				
+				Object selectedObject = getSelection(event);
 				
+				setNodeButton.setEnabled(false);
+				removeNodeButton.setEnabled(false);	
+				
+				elementViewer.getControl().setEnabled(selectedObject != null);
+				elementViewer.setInput(selectedObject);
+				elementViewer.expandToLevel(SECOND_LEVEL);
+				
+				propertyViewer.getControl().setEnabled(selectedObject != null);
 				propertyViewer.setInput(selectedObject);
-				propertyViewer.getControl().setEnabled(true);
-				propertyViewer.expandToLevel(SECOND_LEVEL);				
+				propertyViewer.expandToLevel(SECOND_LEVEL);					
+				
+				if (selectedObject instanceof Annotatable<?>) {
+					Annotatable<?> element = (Annotatable<?>) selectedObject;
+					setNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NODE, element));
+					removeNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, element));					
+				}
 			}
 		});
 		
@@ -222,31 +276,13 @@ public class AnnotationEditor extends EditorPart {
 	private void createNodeButtons(Composite composite) {
 		setNodeButton = new Button(composite, SWT.NONE);
 		setNodeButton.setEnabled(false);
-		setNodeButton.setText("Set Node");
-		setNodeButton.addSelectionListener(new ModelElementSelectionAdapter(nodeViewer) {
-			
-			@Override
-			protected void handleElement(ModelElement<?> selectedObject) {
-				if (selectedObject instanceof Annotatable<?>) {
-					ControllerRegistry.apply(Annotation.NODE, (Annotatable<?>) selectedObject);
-					nodeViewer.refresh();
-				}
-			}
-		});
+		setNodeButton.setText("Node");
+		setNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter(nodeViewer, Annotation.NODE));
 		
 		removeNodeButton = new Button(composite, SWT.NONE);
 		removeNodeButton.setEnabled(false);
-		removeNodeButton.setText("Remove Node");
-		removeNodeButton.addSelectionListener(new ModelElementSelectionAdapter(nodeViewer) {
-			
-			@Override
-			protected void handleElement(ModelElement<?> selectedObject) {
-				if (selectedObject instanceof Annotatable<?>) {
-					ControllerRegistry.apply(Annotation.NONE, (Annotatable<?>) selectedObject);
-					nodeViewer.refresh();
-				}
-			}
-		});
+		removeNodeButton.setText("Remove");
+		removeNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter(nodeViewer, Annotation.NONE));
 	}
 	
 	private void createRightPanel(Composite composite) {
@@ -274,25 +310,27 @@ public class AnnotationEditor extends EditorPart {
 		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		elementViewer.setContentProvider(new ClassElementContentProvider());
 		
-		elementViewer.addSelectionChangedListener(new ModelElementSelectionChangedListener() {
+		elementViewer.addSelectionChangedListener(new SelectionChangedAdapter() {
 			
 			@Override
-			protected void handleSelection(Object selectedObject) {
-				compareAnnotationButton.setEnabled(false);
-				informationalAnnotationButton.setEnabled(false);
+			public void selectionChanged(SelectionChangedEvent event) {
+				setCompareButton.setEnabled(false);
+				setInformationalButton.setEnabled(false);
 				removeAnnotationButton.setEnabled(false);
+				
+				Object selectedObject = getSelection(event);
+				
+				propertyViewer.getControl().setEnabled(selectedObject != null);
+				propertyViewer.setInput(selectedObject);				
+				propertyViewer.expandToLevel(SECOND_LEVEL);
 				
 				if (selectedObject instanceof Annotatable<?>) {
 					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
 					
-					compareAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.COMPARE, annotatable));
-					informationalAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.INFORMATIONAL, annotatable));
+					setCompareButton.setEnabled(ControllerRegistry.canApply(Annotation.COMPARE, annotatable));
+					setInformationalButton.setEnabled(ControllerRegistry.canApply(Annotation.INFORMATIONAL, annotatable));
 					removeAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, annotatable));
 				}
-				
-				propertyViewer.setInput(selectedObject);
-				propertyViewer.getControl().setEnabled(true);
-				propertyViewer.expandToLevel(SECOND_LEVEL);
 			}
 		});
 		
@@ -318,47 +356,23 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createAnnotationButtons(Composite composite) {
-		compareAnnotationButton = new Button(composite, SWT.NONE);
-		compareAnnotationButton.setEnabled(false);
-		compareAnnotationButton.setText("Compare");
-		compareAnnotationButton.addSelectionListener(new ModelElementSelectionAdapter(elementViewer) {
-			
-			@Override
-			protected void handleElement(ModelElement<?> selectedObject) {
-				if (selectedObject instanceof Annotatable<?>) {
-					ControllerRegistry.apply(Annotation.COMPARE, (Annotatable<?>) selectedObject);
-					elementViewer.refresh();
-				}
-			}
-		});
+		setCompareButton = new Button(composite, SWT.NONE);
+		setCompareButton.setEnabled(false);
+		setCompareButton.setText("Compare");
+		setCompareButton.addSelectionListener(
+				new SetAnnotationSelectionAdapter(elementViewer, Annotation.COMPARE));
 		
-		informationalAnnotationButton = new Button(composite, SWT.NONE);
-		informationalAnnotationButton.setEnabled(false);
-		informationalAnnotationButton.setText("Informational");
-		informationalAnnotationButton.addSelectionListener(new ModelElementSelectionAdapter(elementViewer) {
-			
-			@Override
-			protected void handleElement(ModelElement<?> selectedObject) {
-				if (selectedObject instanceof Annotatable<?>) {
-					ControllerRegistry.apply(Annotation.INFORMATIONAL, (Annotatable<?>) selectedObject);
-					elementViewer.refresh();
-				}
-			}
-		});
+		setInformationalButton = new Button(composite, SWT.NONE);
+		setInformationalButton.setEnabled(false);
+		setInformationalButton.setText("Informational");
+		setInformationalButton.addSelectionListener(
+				new SetAnnotationSelectionAdapter(elementViewer, Annotation.INFORMATIONAL));
 		
 		removeAnnotationButton = new Button(composite, SWT.NONE);
 		removeAnnotationButton.setEnabled(false);
 		removeAnnotationButton.setText("Remove");
-		removeAnnotationButton.addSelectionListener(new ModelElementSelectionAdapter(elementViewer) {
-			
-			@Override
-			protected void handleElement(ModelElement<?> selectedObject) {
-				if (selectedObject instanceof Annotatable<?>) {
-					ControllerRegistry.apply(Annotation.NONE, (Annotatable<?>) selectedObject);
-					elementViewer.refresh();
-				}
-			}
-		});
+		removeAnnotationButton.addSelectionListener(
+				new SetAnnotationSelectionAdapter(elementViewer, Annotation.NONE));
 	}
 	
 	private void createBottomPanel(Composite composite) {		

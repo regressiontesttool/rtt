@@ -5,24 +5,16 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 
-public abstract class ModelElementSelectionChangedListener implements
+public abstract class SelectionChangedAdapter implements
 		ISelectionChangedListener {
 
-	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
-		Object selectedObject = getSelection(event.getSelection());
-		if (selectedObject != null) {
-			handleSelection(selectedObject);
-		}
-	}
-
-	private Object getSelection(ISelection selection) {
+	protected Object getSelection(SelectionChangedEvent event) {
+		ISelection selection = event.getSelection();
+		
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			return ((IStructuredSelection) selection).getFirstElement();
 		}
 
 		return null;
 	}
-	
-	protected abstract void handleSelection(Object selectedObject);
 }
