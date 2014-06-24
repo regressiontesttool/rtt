@@ -4,6 +4,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.Detail;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.MultipleDetail;
 
 public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
@@ -31,6 +32,10 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	}
 
 	private String getDescriptionColumn(Object element) {
+		if (element instanceof Detail) {
+			return ((Detail) element).label;
+		}
+		
 		if (element instanceof MultipleDetail<?>) {
 			return ((MultipleDetail<?>) element).label;
 		}

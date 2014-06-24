@@ -14,13 +14,21 @@ import rtt.annotation.editor.model.ModelElement;
 
 public class ClassElementContentProvider implements ITreeContentProvider {
 	
-	protected class MultipleDetail<T extends ModelElement<?>> {
+	protected class Detail {
+		protected String label;
+		
+		public Detail(String label) {
+			this.label = label;
+		}
+	}
+	
+	protected class MultipleDetail<T extends ModelElement<?>> extends Detail {
 
 		protected String label;
 		protected List<T> items;
 
 		public MultipleDetail(String label, List<T> items) {
-			this.label = label;	
+			super(label);
 			this.items = items;
 		}
 	}
@@ -47,11 +55,11 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 		Collection<? extends Object> results = new ArrayList<Object>(0);
 		
 		if (parentElement instanceof ClassElement) {
-			List<MultipleDetail<?>> details = new ArrayList<MultipleDetail<?>>();			
+			List<Detail> details = new ArrayList<Detail>();			
 			ClassElement classElement = (ClassElement) parentElement;
 			
-			details.add(new MultipleDetail<FieldElement>("Fields", classElement.getFields()));
-			details.add(new MultipleDetail<MethodElement>("Methods", classElement.getMethods()));
+			details.add(createFieldElements(classElement.getFields()));
+			details.add(createMethodElements(classElement.getMethods()));
 			
 			results = details;			
 		}
@@ -63,11 +71,27 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 		return results.toArray();
 	}
 
+	private Detail createFieldElements(List<FieldElement> fields) {		
+		if (fields != null && !fields.isEmpty()) {
+			return new MultipleDetail<FieldElement>("Fields", fields);
+		} else {
+			return new Detail("No annotatable fields found.");
+		}
+	}
+
+	private Detail createMethodElements(List<MethodElement> methods) {
+		if (methods != null && !methods.isEmpty()) {
+			return new MultipleDetail<MethodElement>("Methods", methods);
+		} else {
+			return new Detail("No annotatable methods found.");
+		}
+	}
+
 	@Override
 	public Object getParent(Object element) {
 		if (element instanceof MultipleDetail<?>) {
 			return this;
-		}		
+		}	
 		
 		return null;
 	}

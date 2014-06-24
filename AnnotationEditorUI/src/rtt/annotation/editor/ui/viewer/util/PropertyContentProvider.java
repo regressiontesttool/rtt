@@ -10,6 +10,8 @@ import org.eclipse.jface.viewers.Viewer;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.FieldElement;
+import rtt.annotation.editor.model.MethodElement;
 
 public class PropertyContentProvider implements ITreeContentProvider {
 	
@@ -73,6 +75,14 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		
 		if (parentElement instanceof ClassElement) {
 			results = createClassElementDetails((ClassElement) parentElement);
+		}
+		
+		if (parentElement instanceof FieldElement) {
+			results = createFieldElementDetails((FieldElement) parentElement);
+		}
+		
+		if (parentElement instanceof MethodElement) {
+			results = createMethodElementDetails((MethodElement) parentElement);
 		}
 		
 		if (parentElement instanceof MultipleProperty) {
@@ -141,6 +151,45 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		
 		return new Property("Type", builder.toString());
 	}
+	
+	private Collection<Property> createFieldElementDetails(
+			FieldElement parentElement) {
+		
+		List<Property> results = new ArrayList<PropertyContentProvider.Property>();
+		
+		if (parentElement.hasAnnotation()) {
+			results.add(new Property("Annotation", parentElement.getAnnotation().name()));
+		}
+		
+		List<Property> properties = new ArrayList<PropertyContentProvider.Property>();
+		
+		properties.add(new Property("Name", parentElement.getName()));
+		properties.add(new Property("Type", parentElement.getType()));
+		
+		results.add(new MultipleProperty("Properties", properties));
+		
+		return results;
+	}
+	
+	private Collection<Property> createMethodElementDetails(
+			MethodElement parentElement) {
+		
+		List<Property> results = new ArrayList<PropertyContentProvider.Property>();
+		
+		if (parentElement.hasAnnotation()) {
+			results.add(new Property("Annotation", parentElement.getAnnotation().name()));
+		}
+		
+		List<Property> properties = new ArrayList<PropertyContentProvider.Property>();
+		
+		properties.add(new Property("Name", parentElement.getName()));
+		properties.add(new Property("Return Type", parentElement.getType()));
+		
+		results.add(new MultipleProperty("Properties", properties));
+		
+		return results;
+	}
+
 
 	@Override
 	public Object getParent(Object element) {

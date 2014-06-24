@@ -7,8 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
@@ -248,12 +246,13 @@ public class AnnotationEditor extends EditorPart {
 		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		elementViewer.setContentProvider(new ClassElementContentProvider());
 		
-		elementViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		elementViewer.addSelectionChangedListener(new ModelElementSelectionChangedListener() {
 			
 			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				propertyViewer.setInput(event.getSelection());
-				propertyViewer.getControl().setEnabled(!event.getSelection().isEmpty());
+			protected void handleSelection(Object selectedObject) {
+				propertyViewer.setInput(selectedObject);
+				propertyViewer.getControl().setEnabled(true);
+				propertyViewer.expandToLevel(SECOND_LEVEL);
 			}
 		});
 		
