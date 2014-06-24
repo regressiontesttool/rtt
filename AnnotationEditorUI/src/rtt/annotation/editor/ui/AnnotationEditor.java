@@ -28,14 +28,13 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.editor.controller.ControllerRegistry;
+import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.importer.asm.ASMImporter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.rules.Annotation;
-import rtt.annotation.editor.rules.RuleEngine;
 import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
@@ -186,8 +185,8 @@ public class AnnotationEditor extends EditorPart {
 				removeNodeButton.setEnabled(false);
 				if (selectedObject instanceof ClassElement) {
 					ClassElement element = (ClassElement) selectedObject;
-					setNodeButton.setEnabled(RuleEngine.canApply(Annotation.NODE, element));
-					removeNodeButton.setEnabled(RuleEngine.canApply(Annotation.NONE, element));
+					setNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NODE, element));
+					removeNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, element));
 					
 					elementViewer.setInput(selectedObject);
 					elementViewer.getControl().setEnabled(true);
@@ -286,9 +285,9 @@ public class AnnotationEditor extends EditorPart {
 				if (selectedObject instanceof Annotatable<?>) {
 					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
 					
-					compareAnnotationButton.setEnabled(RuleEngine.canApply(Annotation.COMPARE, annotatable));
-					informationalAnnotationButton.setEnabled(RuleEngine.canApply(Annotation.INFORMATIONAL, annotatable));
-					removeAnnotationButton.setEnabled(RuleEngine.canApply(Annotation.NONE, annotatable));
+					compareAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.COMPARE, annotatable));
+					informationalAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.INFORMATIONAL, annotatable));
+					removeAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, annotatable));
 				}
 				
 				propertyViewer.setInput(selectedObject);

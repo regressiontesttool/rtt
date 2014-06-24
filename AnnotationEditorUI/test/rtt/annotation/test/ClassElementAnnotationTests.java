@@ -7,9 +7,9 @@ import org.junit.Test;
 
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController;
+import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModelFactory;
-import rtt.annotation.editor.rules.Annotation;
 
 public class ClassElementAnnotationTests {
 

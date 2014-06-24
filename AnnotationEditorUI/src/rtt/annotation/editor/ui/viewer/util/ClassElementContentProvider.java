@@ -1,7 +1,5 @@
 package rtt.annotation.editor.ui.viewer.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -31,7 +29,18 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 			super(label);
 			this.items = items;
 		}
+		
+		public MultipleDetail(String label) {
+			super(label);
+		}
+		
 	}
+
+	private static final Object[] EMPTY_RESULT = new Object[0];
+	
+	private MultipleDetail<FieldElement> fields = new MultipleDetail<FieldElement>("Fields");
+	private MultipleDetail<MethodElement> methods = new MultipleDetail<MethodElement>("Methods");
+	private Detail[] details = new Detail[] {fields, methods};
 	
 	@Override
 	public void dispose() {
@@ -41,8 +50,11 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// TODO Auto-generated method stub
-
+		if (newInput instanceof ClassElement) {
+			ClassElement classElement = (ClassElement) newInput;
+			fields.items = classElement.getFields();
+			methods.items = classElement.getMethods();
+		}
 	}
 
 	@Override
@@ -52,39 +64,20 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		Collection<? extends Object> results = new ArrayList<Object>(0);
-		
 		if (parentElement instanceof ClassElement) {
-			List<Detail> details = new ArrayList<Detail>();			
-			ClassElement classElement = (ClassElement) parentElement;
-			
-			details.add(createFieldElements(classElement.getFields()));
-			details.add(createMethodElements(classElement.getMethods()));
-			
-			results = details;			
+			return details;			
 		}
 		
-		if (parentElement instanceof MultipleDetail) {
-			results = ((MultipleDetail<?>) parentElement).items;			
+		if (parentElement instanceof MultipleDetail<?>) {
+			List<?> items = ((MultipleDetail<?>) parentElement).items;
+			if (items == null || items.isEmpty()) {
+				return new Object[] {new Detail("No annotatable element found.")};
+			} else {
+				return ((MultipleDetail<?>) parentElement).items.toArray();
+			}						
 		}
 		
-		return results.toArray();
-	}
-
-	private Detail createFieldElements(List<FieldElement> fields) {		
-		if (fields != null && !fields.isEmpty()) {
-			return new MultipleDetail<FieldElement>("Fields", fields);
-		} else {
-			return new Detail("No annotatable fields found.");
-		}
-	}
-
-	private Detail createMethodElements(List<MethodElement> methods) {
-		if (methods != null && !methods.isEmpty()) {
-			return new MultipleDetail<MethodElement>("Methods", methods);
-		} else {
-			return new Detail("No annotatable methods found.");
-		}
+		return EMPTY_RESULT;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package rtt.annotation.editor;
 
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -10,6 +12,10 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "AnnotationEditorUI"; //$NON-NLS-1$
+
+	public static final String ANNOTATED_COLOR = "ANNOTATED_COLOR";
+	public static final String COMPARE_COLOR = "COMPARE_COLOR";
+	public static final String INFORMATIONAL_COLOR = "INFORMATIONAL_COLOR";
 
 	// The shared instance
 	private static AnnotationEditorPlugin plugin;
@@ -27,6 +33,10 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
+		JFaceResources.getColorRegistry().put(ANNOTATED_COLOR, new RGB(0, 0, 255));
+		JFaceResources.getColorRegistry().put(COMPARE_COLOR, new RGB(0, 0, 255));
+		JFaceResources.getColorRegistry().put(INFORMATIONAL_COLOR, new RGB(0, 255, 100));
 	}
 
 	/*

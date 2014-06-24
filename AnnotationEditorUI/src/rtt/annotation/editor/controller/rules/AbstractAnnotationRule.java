@@ -1,4 +1,4 @@
-package rtt.annotation.editor.rules;
+package rtt.annotation.editor.controller.rules;
 
 import rtt.annotation.editor.model.Annotatable;
 

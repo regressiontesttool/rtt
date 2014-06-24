@@ -1,10 +1,12 @@
 package rtt.annotation.editor.ui.viewer.util;
 
-import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 
+import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
@@ -13,7 +15,9 @@ import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.Multiple
 
 public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	
-	private static final Color BLUE = JFaceResources.getColorRegistry().get(JFacePreferences.HYPERLINK_COLOR);
+	private static final Color COMPARE_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.COMPARE_COLOR);
+	private static final Color INFORMATIONAL_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.INFORMATIONAL_COLOR);
+	private static final Font BOLD_FONT = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
 	
 	public static final int DESCRIPTION_COLUMN = 0;
 	public static final int TYPE_COLUMN = 1;
@@ -61,12 +65,28 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	public Color getForeground(Object element) {
 		if (element instanceof Annotatable<?>) {
 			Annotatable<?> annotatable = (Annotatable<?>) element;
-			if (annotatable.hasAnnotation()) {
-				return BLUE;
+			if (annotatable.getAnnotation() == Annotation.COMPARE) {
+				return COMPARE_COLOR;
+			}
+			
+			if (annotatable.getAnnotation() == Annotation.INFORMATIONAL) {
+				return INFORMATIONAL_COLOR;
 			}
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public Font getFont(Object element) {
+		if (element instanceof Annotatable<?>) {
+			Annotatable<?> annotatable = (Annotatable<?>) element;
+			if (annotatable.hasAnnotation()) {
+				return BOLD_FONT;
+			}
+		}
+		
+		return super.getFont(element);
 	}
 
 	private String getTypeColumn(Object element) {
