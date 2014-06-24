@@ -8,7 +8,7 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 		super(parent);
 	}
 
-	private Annotation annotation;
+	private Annotation annotation = Annotation.NONE;
 	
 	public final void setAnnotation(Annotation annotation) {
 		this.annotation = annotation;
@@ -19,6 +19,6 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 	}
 	
 	public final boolean hasAnnotation()  {
-		return this.annotation != null;
+		return annotation != Annotation.NONE;
 	}
 }

@@ -27,14 +27,20 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
+import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.importer.asm.ASMImporter;
+import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.ModelElement;
+import rtt.annotation.editor.rules.Annotation;
+import rtt.annotation.editor.rules.RuleEngine;
 import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelContentProvider;
+import rtt.annotation.editor.ui.viewer.util.ModelElementSelectionAdapter;
 import rtt.annotation.editor.ui.viewer.util.ModelElementSelectionChangedListener;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
@@ -52,6 +58,14 @@ public class AnnotationEditor extends EditorPart {
 	
 	private ClassModel model;
 	private Button setNodeButton;
+
+	private Button compareAnnotationButton;
+
+	private Button informationalAnnotationButton;
+
+	private Button removeAnnotationButton;
+
+	private Button removeNodeButton;
 
 	public AnnotationEditor() {
 		// TODO Auto-generated constructor stub
@@ -157,13 +171,7 @@ public class AnnotationEditor extends EditorPart {
 		nodeButtonsComposite.setLayout(fl_nodeButtonsComposite);
 		nodeButtonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		
-		setNodeButton = new Button(nodeButtonsComposite, SWT.NONE);
-		setNodeButton.setEnabled(false);
-		setNodeButton.setText("Set Node");
-		
-		Button removeNodeButton = new Button(nodeButtonsComposite, SWT.NONE);
-		removeNodeButton.setEnabled(false);
-		removeNodeButton.setText("Remove Node");
+		createNodeButtons(nodeButtonsComposite);		
 	}
 	
 	private void createNodeViewer(Composite viewerComposite) {		
@@ -175,9 +183,11 @@ public class AnnotationEditor extends EditorPart {
 			@Override
 			protected void handleSelection(Object selectedObject) {
 				setNodeButton.setEnabled(false);
+				removeNodeButton.setEnabled(false);
 				if (selectedObject instanceof ClassElement) {
 					ClassElement element = (ClassElement) selectedObject;
-					setNodeButton.setEnabled(!element.hasAnnotation());
+					setNodeButton.setEnabled(RuleEngine.canApply(Annotation.NODE, element));
+					removeNodeButton.setEnabled(RuleEngine.canApply(Annotation.NONE, element));
 					
 					elementViewer.setInput(selectedObject);
 					elementViewer.getControl().setEnabled(true);
@@ -210,6 +220,36 @@ public class AnnotationEditor extends EditorPart {
 		}
 	}
 	
+	private void createNodeButtons(Composite composite) {
+		setNodeButton = new Button(composite, SWT.NONE);
+		setNodeButton.setEnabled(false);
+		setNodeButton.setText("Set Node");
+		setNodeButton.addSelectionListener(new ModelElementSelectionAdapter(nodeViewer) {
+			
+			@Override
+			protected void handleElement(ModelElement<?> selectedObject) {
+				if (selectedObject instanceof Annotatable<?>) {
+					ControllerRegistry.apply(Annotation.NODE, (Annotatable<?>) selectedObject);
+					nodeViewer.refresh();
+				}
+			}
+		});
+		
+		removeNodeButton = new Button(composite, SWT.NONE);
+		removeNodeButton.setEnabled(false);
+		removeNodeButton.setText("Remove Node");
+		removeNodeButton.addSelectionListener(new ModelElementSelectionAdapter(nodeViewer) {
+			
+			@Override
+			protected void handleElement(ModelElement<?> selectedObject) {
+				if (selectedObject instanceof Annotatable<?>) {
+					ControllerRegistry.apply(Annotation.NONE, (Annotatable<?>) selectedObject);
+					nodeViewer.refresh();
+				}
+			}
+		});
+	}
+	
 	private void createRightPanel(Composite composite) {
 		
 		Group elementsGroup = new Group(composite, SWT.NONE);
@@ -228,18 +268,7 @@ public class AnnotationEditor extends EditorPart {
 		fl_annotationComposite.spacing = 2;
 		annotationComposite.setLayout(fl_annotationComposite);
 		
-		Button compareAnnotationButton = new Button(annotationComposite, SWT.NONE);
-		compareAnnotationButton.setEnabled(false);
-		compareAnnotationButton.setText("Compare");
-		
-		Button informationalAnnotationButton = new Button(annotationComposite, SWT.NONE);
-		informationalAnnotationButton.setEnabled(false);
-		informationalAnnotationButton.setText("Informational");
-		
-		Button removeAnnotationButton = new Button(annotationComposite, SWT.NONE);
-		removeAnnotationButton.setEnabled(false);
-		removeAnnotationButton.setBounds(0, 0, 75, 25);
-		removeAnnotationButton.setText("Remove");		
+		createAnnotationButtons(annotationComposite);
 	}
 	
 	private void createElementViewer(Composite viewerComposite) {
@@ -250,6 +279,18 @@ public class AnnotationEditor extends EditorPart {
 			
 			@Override
 			protected void handleSelection(Object selectedObject) {
+				compareAnnotationButton.setEnabled(false);
+				informationalAnnotationButton.setEnabled(false);
+				removeAnnotationButton.setEnabled(false);
+				
+				if (selectedObject instanceof Annotatable<?>) {
+					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
+					
+					compareAnnotationButton.setEnabled(RuleEngine.canApply(Annotation.COMPARE, annotatable));
+					informationalAnnotationButton.setEnabled(RuleEngine.canApply(Annotation.INFORMATIONAL, annotatable));
+					removeAnnotationButton.setEnabled(RuleEngine.canApply(Annotation.NONE, annotatable));
+				}
+				
 				propertyViewer.setInput(selectedObject);
 				propertyViewer.getControl().setEnabled(true);
 				propertyViewer.expandToLevel(SECOND_LEVEL);
@@ -275,6 +316,50 @@ public class AnnotationEditor extends EditorPart {
 		TreeColumn typeColumn = typeViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(typeColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		typeColumn.setText("Type");
+	}
+	
+	private void createAnnotationButtons(Composite composite) {
+		compareAnnotationButton = new Button(composite, SWT.NONE);
+		compareAnnotationButton.setEnabled(false);
+		compareAnnotationButton.setText("Compare");
+		compareAnnotationButton.addSelectionListener(new ModelElementSelectionAdapter(elementViewer) {
+			
+			@Override
+			protected void handleElement(ModelElement<?> selectedObject) {
+				if (selectedObject instanceof Annotatable<?>) {
+					ControllerRegistry.apply(Annotation.COMPARE, (Annotatable<?>) selectedObject);
+					elementViewer.refresh();
+				}
+			}
+		});
+		
+		informationalAnnotationButton = new Button(composite, SWT.NONE);
+		informationalAnnotationButton.setEnabled(false);
+		informationalAnnotationButton.setText("Informational");
+		informationalAnnotationButton.addSelectionListener(new ModelElementSelectionAdapter(elementViewer) {
+			
+			@Override
+			protected void handleElement(ModelElement<?> selectedObject) {
+				if (selectedObject instanceof Annotatable<?>) {
+					ControllerRegistry.apply(Annotation.INFORMATIONAL, (Annotatable<?>) selectedObject);
+					elementViewer.refresh();
+				}
+			}
+		});
+		
+		removeAnnotationButton = new Button(composite, SWT.NONE);
+		removeAnnotationButton.setEnabled(false);
+		removeAnnotationButton.setText("Remove");
+		removeAnnotationButton.addSelectionListener(new ModelElementSelectionAdapter(elementViewer) {
+			
+			@Override
+			protected void handleElement(ModelElement<?> selectedObject) {
+				if (selectedObject instanceof Annotatable<?>) {
+					ControllerRegistry.apply(Annotation.NONE, (Annotatable<?>) selectedObject);
+					elementViewer.refresh();
+				}
+			}
+		});
 	}
 	
 	private void createBottomPanel(Composite composite) {		
