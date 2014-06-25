@@ -11,6 +11,10 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 	private Annotation annotation = Annotation.NONE;
 	
 	public final void setAnnotation(Annotation annotation) {
+		if (annotation == null) {
+			throw new IllegalArgumentException("Annotation can not be null.");
+		}
+		
 		this.annotation = annotation;
 	}
 	

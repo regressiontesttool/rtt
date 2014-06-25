@@ -1,4 +1,4 @@
-package rtt.annotation.test.model;
+package rtt.annotation.testing;
 
 public abstract class TestAbstractClassA implements TestInterfaceA {
 

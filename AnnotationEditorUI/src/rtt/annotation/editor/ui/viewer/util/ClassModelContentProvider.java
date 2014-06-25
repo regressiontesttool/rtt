@@ -41,7 +41,7 @@ public class ClassModelContentProvider implements ITreeContentProvider {
 		
 		if (parentElement instanceof PackageElement) {
 			PackageElement packageElement = (PackageElement) parentElement;
-			results = packageElement.getParent().getClassElement(packageElement.getName());
+			results = packageElement.getParent().getClasses(packageElement.getName());
 		}
 		
 		if (results != null) {

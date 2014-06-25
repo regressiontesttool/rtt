@@ -109,13 +109,13 @@ public class ClassElement extends Annotatable<ClassModel> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((interfaces == null) ? 0 : interfaces.hashCode());
-		result = prime * result
-				+ ((packageName == null) ? 0 : packageName.hashCode());
+		result = prime * result + getName().hashCode();
+		result = prime * result + packageName.hashCode();
+		result = prime * result + type.hashCode();
 		result = prime * result
 				+ ((superClass == null) ? 0 : superClass.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result
+				+ ((interfaces == null) ? 0 : interfaces.hashCode());		
 		return result;
 	}
 
@@ -131,22 +131,16 @@ public class ClassElement extends Annotatable<ClassModel> {
 			return false;
 		}		
 		
-		ClassElement other = (ClassElement) obj;		
-		if (packageName == null) {
-			if (other.packageName != null) {
-				return false;
-			}
-		} else if (!packageName.equals(other.packageName)) {
-			return false;
-		}		
-		if (interfaces == null) {
-			if (other.interfaces != null) {
-				return false;
-			}
-		} else if (!interfaces.equals(other.interfaces)) {
+		ClassElement other = (ClassElement) obj;
+		if (!getName().equals(other.getName())) {
 			return false;
 		}
-		
+		if (!packageName.equals(other.packageName)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
 		if (superClass == null) {
 			if (other.superClass != null) {
 				return false;
@@ -154,9 +148,14 @@ public class ClassElement extends Annotatable<ClassModel> {
 		} else if (!superClass.equals(other.superClass)) {
 			return false;
 		}
-		if (type != other.type) {
+		if (interfaces == null) {
+			if (other.interfaces != null) {
+				return false;
+			}
+		} else if (!interfaces.equals(other.interfaces)) {
 			return false;
 		}
+
 		return true;
 	}
 }

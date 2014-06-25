@@ -31,30 +31,39 @@ public class ClassModel extends ModelElement {
 	}
 	
 	public void addClassElement(ClassElement newElement) {
-		PackageElement packageElement = 
-				new PackageElement(this, newElement.getPackageName());		
-		
-		if (!classElements.containsKey(packageElement)) {
-			classElements.put(packageElement, new ArrayList<ClassElement>());
+		if (newElement == null) {
+			throw new IllegalArgumentException("The new class element must not be null.");
 		}
 		
-		List<ClassElement> elements = classElements.get(packageElement);
+		PackageElement packageKey = createPackageKey(newElement.getPackageName(), true);
+		
+		List<ClassElement> elements = classElements.get(packageKey);
 		if (!elements.contains(newElement)) {
 			elements.add(newElement);
-			packageElement.setParent(this);
+			packageKey.setParent(this);
 		}
 	}
 	
+	private PackageElement createPackageKey(String packageName, boolean createEntry) {
+		PackageElement packageKey = new PackageElement(this, packageName);
+		
+		if (createEntry && !classElements.containsKey(packageKey)) {
+			classElements.put(packageKey, new ArrayList<ClassElement>());
+		}
+		
+		return packageKey;
+	}
+
 	@Node.Child
 	public Map<PackageElement, List<ClassElement>> getClassElements() {
 		return classElements;
 	}
 	
-	public List<ClassElement> getClassElement(String packageName) {
-		PackageElement packageElement = new PackageElement(this, packageName);
+	public List<ClassElement> getClasses(String packageName) {
+		PackageElement packageKey = createPackageKey(packageName, false);
 		
-		if (classElements.containsKey(packageElement)) {
-			return classElements.get(packageElement);
+		if (classElements.containsKey(packageKey)) {
+			return classElements.get(packageKey);
 		}
 		
 		return null;
