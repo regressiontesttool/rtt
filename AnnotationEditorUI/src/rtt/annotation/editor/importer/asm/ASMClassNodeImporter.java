@@ -8,9 +8,9 @@ import org.objectweb.asm.tree.ClassNode;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
+import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
-import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.NameResolver;
 
 public class ASMClassNodeImporter {
@@ -42,15 +42,14 @@ public class ASMClassNodeImporter {
 			element.setType(ClassType.INTERFACE);
 		}
 		
-		List<ElementReference<ClassElement>> interfaceList = new ArrayList<ElementReference<ClassElement>>();
+		List<ClassElementReference> interfaceList = new ArrayList<ClassElementReference>();
 		for (String interfaceName : (List<String>) node.interfaces) {
-			interfaceList.add(new ElementReference<ClassElement>(interfaceName.replace("/", ".")));
+			interfaceList.add(new ClassElementReference(interfaceName.replace("/", ".")));
 		}
 		element.setInterfaces(interfaceList);
 		
 		if (node.superName != null && !node.superName.equals("java/lang/Object")) {
-			element.setSuperClass(new ElementReference<ClassElement>(
-					node.superName.replace("/", ".")));
+			element.setSuperClass(new ClassElementReference(node.superName.replace("/", ".")));
 		}
 
 		return element;

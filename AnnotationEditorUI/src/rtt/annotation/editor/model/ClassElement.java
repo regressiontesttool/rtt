@@ -25,8 +25,8 @@ public class ClassElement extends Annotatable<ClassModel> {
 	private String packageName = null;	
 	private ClassType type = ClassType.CONCRETE;
 	
-	private ElementReference<ClassElement> superClass = null;
-	private List<ElementReference<ClassElement>> interfaces;
+	private ClassElementReference superClass = null;
+	private List<ClassElementReference> interfaces;
 	
 	private List<FieldElement> fields;
 	private List<MethodElement> methods;
@@ -56,11 +56,11 @@ public class ClassElement extends Annotatable<ClassModel> {
 	}	
 	
 	@Node.Compare
-	public List<ElementReference<ClassElement>> getInterfaces() {
+	public List<ClassElementReference> getInterfaces() {
 		return interfaces;
 	}
 	
-	public void setInterfaces(List<ElementReference<ClassElement>> interfaces) {
+	public void setInterfaces(List<ClassElementReference> interfaces) {
 		this.interfaces = interfaces;
 	}
 	
@@ -73,7 +73,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return superClass;
 	}
 	
-	public void setSuperClass(ElementReference<ClassElement> superClass) {
+	public void setSuperClass(ClassElementReference superClass) {
 		this.superClass = superClass;
 	}
 	
@@ -82,19 +82,24 @@ public class ClassElement extends Annotatable<ClassModel> {
 	}
 	
 	public boolean hasExtendedAnnotation() {
+		boolean hasExtendedAnnotation = false;
+		
 		if (hasSuperClass() && superClass.isResolved()) {
-			return superClass.getReference().hasAnnotation();
+			hasExtendedAnnotation = superClass.isAnnotated();
 		}
 		
-		if (hasInterfaces()) {
-			for (ElementReference<ClassElement> interfaceRef : interfaces) {
-				if (interfaceRef.isResolved() && interfaceRef.getReference().hasAnnotation()) {
-					return true;
-				}
+		if (!hasExtendedAnnotation && hasInterfaces()) {
+			for (ClassElementReference interfaceRef : interfaces) {
+				if (interfaceRef.isResolved()) {
+					hasExtendedAnnotation = interfaceRef.isAnnotated();
+					if (hasExtendedAnnotation == true) {
+						break;
+					}
+				}				
 			}
 		}
 		
-		return false;
+		return hasExtendedAnnotation;
 	}
 	
 	@Node.Child

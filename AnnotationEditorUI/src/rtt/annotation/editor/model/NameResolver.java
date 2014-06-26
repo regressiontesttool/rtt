@@ -18,10 +18,11 @@ public class NameResolver {
 		for (List<ClassElement> classList : model.getClassElements().values()) {
 			for (ClassElement classElement : classList) {
 				resolver.resolveSuperClass(classElement);
+				resolver.resolveInterfaces(classElement);
 			}
 		}		
 	}
-	
+
 	public static final String computePackageName(String completeName) {
 		String packageName = "";
 		int packageIndex = completeName.lastIndexOf(PACKAGE_SEPERATOR);
@@ -55,6 +56,27 @@ public class NameResolver {
 		}
 	}
 	
+	private void resolveInterfaces(ClassElement classElement) {
+		List<ClassElementReference> interfaces = classElement.getInterfaces();
+		if (interfaces != null && !interfaces.isEmpty()) {
+			for (ElementReference<ClassElement> interfaceRef : interfaces) {
+				interfaceRef.setReference(resolveInterface(interfaceRef));
+			}
+		}
+	}
+	
+	private ClassElement resolveInterface(ElementReference<ClassElement> interfaceRef) {
+		if (interfaceRef != null && !interfaceRef.isResolved()) {
+			System.out.println("Searching Interface: " + interfaceRef.getName());
+			ClassElement interfaceElement = findClass(interfaceRef.getName());
+			if (interfaceElement != null) {
+				return interfaceElement;
+			}
+		}
+		
+		return null;
+	}
+
 	private ClassElement findClass(String completeName) {
 		String packageName = computePackageName(completeName);
 		String className = computeClassName(completeName);

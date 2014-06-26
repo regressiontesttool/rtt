@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
+import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
@@ -74,20 +75,20 @@ public class ClassElementTests {
 		assertTrue(element.hasSuperClass());
 		assertEquals("Superclass", createSuperClass(SUPERCLASS), element.getSuperClass());
 		
-		List<ElementReference<ClassElement>> interfaces = createInterfaces("InterfaceA", "InterfaceB");
+		List<ClassElementReference> interfaces = createInterfaces("InterfaceA", "InterfaceB");
 		element.setInterfaces(interfaces);
 		assertTrue(element.hasInterfaces());
 		assertEquals("Interfaces", interfaces, element.getInterfaces());
 	}
 	
-	private ElementReference<ClassElement> createSuperClass(String superClassName) {
-		return new ElementReference<ClassElement>(superClassName);
+	private ClassElementReference createSuperClass(String superClassName) {
+		return new ClassElementReference(superClassName);
 	}
 	
-	private List<ElementReference<ClassElement>> createInterfaces(String... interfaces) {
-		List<ElementReference<ClassElement>> result = new ArrayList<ElementReference<ClassElement>>();
+	private List<ClassElementReference> createInterfaces(String... interfaces) {
+		List<ClassElementReference> result = new ArrayList<ClassElementReference>();
 		for (String interfaceName : interfaces) {
-			result.add(new ElementReference<ClassElement>(interfaceName));
+			result.add(new ClassElementReference(interfaceName));
 		}
 		
 		return result;
