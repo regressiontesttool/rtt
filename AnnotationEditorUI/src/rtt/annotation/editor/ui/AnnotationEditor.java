@@ -40,6 +40,7 @@ import rtt.annotation.editor.importer.Importer;
 import rtt.annotation.editor.importer.asm.ASMImporter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.NameResolver;
 import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
@@ -146,6 +147,7 @@ public class AnnotationEditor extends EditorPart {
 			try {
 				Importer importer = new ASMImporter();
 				model = importer.importModel(inputFile.getLocation().toFile());
+				NameResolver.resolveModel(model);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.Viewer;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 
@@ -118,7 +119,13 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		classProperties.add(new Property("Package", parentElement.getPackageName()));		
 		
 		if (parentElement.hasSuperClass()) {
-			classProperties.add(new Property("Extends", parentElement.getSuperClass()));
+			ElementReference<ClassElement> reference = parentElement.getSuperClass();
+			if (reference.isResolved()) {
+				classProperties.add(new Property("Extends", reference.getName() + " - " + reference.getReference().getAnnotation().name()));
+			} else {
+				classProperties.add(new Property("Extends", reference.getName()));
+			}
+			
 		}
 		
 		if (parentElement.hasInterfaces()) {

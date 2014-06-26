@@ -10,6 +10,8 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
+import rtt.annotation.editor.model.ElementReference;
+import rtt.annotation.editor.model.NameResolver;
 
 public class ASMClassNodeImporter {
 	
@@ -25,17 +27,12 @@ public class ASMClassNodeImporter {
 	public ClassElement createClassElement(ClassModel parent) {
 		ClassElement element = factory.createClassElement(parent);
 		
-		String nodeName = node.name;
-		int packageBoundary = nodeName.lastIndexOf("/");
+		String nodeName = node.name.replace("/", ".");
+		String packageName = NameResolver.computePackageName(nodeName);
+		String className = NameResolver.computeClassName(nodeName);
 		
-		String packageName = "";		
-		if (packageBoundary > -1) {
-			packageName = nodeName.substring(0, packageBoundary);
-			nodeName = nodeName.substring(packageBoundary + 1, nodeName.length());
-		}		
-		
-		element.setName(nodeName);
-		element.setPackageName(packageName.replace("/", "."));
+		element.setName(className);
+		element.setPackageName(packageName);
 		
 		if (checkAccess(node, Opcodes.ACC_ABSTRACT)) {
 			element.setType(ClassType.ABSTRACT);
@@ -52,7 +49,8 @@ public class ASMClassNodeImporter {
 		element.setInterfaces(interfaceList);
 		
 		if (node.superName != null && !node.superName.equals("java/lang/Object")) {
-			element.setSuperClass(node.superName.replace("/", "."));
+			element.setSuperClass(new ElementReference<ClassElement>(
+					node.superName.replace("/", ".")));
 		}
 
 		return element;

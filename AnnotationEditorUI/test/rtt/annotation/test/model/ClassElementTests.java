@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModelFactory;
+import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
@@ -18,7 +19,9 @@ public class ClassElementTests {
 
 	private static final String PACKAGENAME = "abc.def.ghi";
 	private static final String CLASSNAME = "TestClassName";
-	private static final String SUPERCLASS = "SuperClass";
+	
+	private static final ElementReference<ClassElement> SUPERCLASS = 
+			new ElementReference<ClassElement>("x.y.z.SuperClass");
 	
 	private ClassElement element;
 	private ClassModelFactory factory;
@@ -66,7 +69,7 @@ public class ClassElementTests {
 		element.setType(ClassType.ABSTRACT);
 		assertEquals("Class Type", ClassType.ABSTRACT, element.getType());
 		
-		element.setSuperClass(SUPERCLASS);
+		element.setSuperClass(SUPERCLASS);		
 		assertTrue(element.hasSuperClass());
 		assertEquals("Superclass", SUPERCLASS, element.getSuperClass());
 		

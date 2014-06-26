@@ -25,7 +25,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 	private String packageName = null;	
 	private ClassType type = ClassType.CONCRETE;
 	
-	private String superClass = null;
+	private ElementReference<ClassElement> superClass = null;
 	private List<String> interfaces;
 	
 	private List<FieldElement> fields;
@@ -69,15 +69,15 @@ public class ClassElement extends Annotatable<ClassModel> {
 	}
 	
 	@Node.Compare
-	public String getSuperClass() {
+	public ElementReference<ClassElement> getSuperClass() {
 		return superClass;
 	}
 	
 	public boolean hasSuperClass() {
-		return superClass != null && !superClass.equals("");
+		return superClass != null;
 	}
 	
-	public void setSuperClass(String superClass) {
+	public void setSuperClass(ElementReference<ClassElement> superClass) {
 		this.superClass = superClass;
 	}
 	

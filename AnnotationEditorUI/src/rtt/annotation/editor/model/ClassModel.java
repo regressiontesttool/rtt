@@ -35,7 +35,10 @@ public class ClassModel extends ModelElement {
 			throw new IllegalArgumentException("The new class element must not be null.");
 		}
 		
-		PackageElement packageKey = createPackageKey(newElement.getPackageName(), true);
+		PackageElement packageKey = createPackageKey(newElement.getPackageName());
+		if (!classElements.containsKey(packageKey)) {
+			classElements.put(packageKey, new ArrayList<ClassElement>());
+		}
 		
 		List<ClassElement> elements = classElements.get(packageKey);
 		if (!elements.contains(newElement)) {
@@ -44,14 +47,8 @@ public class ClassModel extends ModelElement {
 		}
 	}
 	
-	private PackageElement createPackageKey(String packageName, boolean createEntry) {
-		PackageElement packageKey = new PackageElement(this, packageName);
-		
-		if (createEntry && !classElements.containsKey(packageKey)) {
-			classElements.put(packageKey, new ArrayList<ClassElement>());
-		}
-		
-		return packageKey;
+	public PackageElement createPackageKey(String packageName) {
+		return new PackageElement(this, packageName);
 	}
 
 	@Node.Child
@@ -60,7 +57,7 @@ public class ClassModel extends ModelElement {
 	}
 	
 	public List<ClassElement> getClasses(String packageName) {
-		PackageElement packageKey = createPackageKey(packageName, false);
+		PackageElement packageKey = createPackageKey(packageName);
 		
 		if (classElements.containsKey(packageKey)) {
 			return classElements.get(packageKey);
