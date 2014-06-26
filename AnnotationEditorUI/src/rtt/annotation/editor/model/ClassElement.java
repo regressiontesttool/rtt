@@ -81,6 +81,14 @@ public class ClassElement extends Annotatable<ClassModel> {
 		this.superClass = superClass;
 	}
 	
+	public boolean hasExtendedAnnotation() {
+		if (superClass != null && superClass.isResolved()) {
+			return superClass.getReference().hasAnnotation();
+		}
+		
+		return false;
+	}
+	
 	@Node.Child
 	public List<FieldElement> getFields() {
 		return fields;

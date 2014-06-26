@@ -14,6 +14,7 @@ import rtt.annotation.editor.model.ClassModel.PackageElement;
 public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 
 	private static final Color ANNOTATED_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.ANNOTATED_COLOR);
+	private static final Color EXTENDED_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.EXTENDED_COLOR);
 	
 	private static final Font DEFAULT_FONT = JFaceResources.getFontRegistry().get(JFaceResources.DEFAULT_FONT);
 	private static final Font BOLD_FONT = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
@@ -41,7 +42,11 @@ public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 			ClassElement classElement = (ClassElement) element;
 			if (classElement.hasAnnotation()) {
 				return ANNOTATED_COLOR;
-			}			
+			}
+			
+			if (classElement.hasExtendedAnnotation()) {
+				return EXTENDED_COLOR;
+			}
 		}
 		
 		return null;
