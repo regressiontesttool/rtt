@@ -130,12 +130,12 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		
 		if (parentElement.hasInterfaces()) {
 			StringBuilder builder = null;
-			for (String interfaceString : parentElement.getInterfaces()) {
+			for (ElementReference<ClassElement> interfaceRef : parentElement.getInterfaces()) {
 				if (builder == null) {
-					builder = new StringBuilder(interfaceString);
+					builder = new StringBuilder(interfaceRef.getName());
 				} else {
 					builder.append(",");
-					builder.append(interfaceString);
+					builder.append(interfaceRef.getName());
 				}				
 			}
 			classProperties.add(new Property("Implements", builder.toString()));

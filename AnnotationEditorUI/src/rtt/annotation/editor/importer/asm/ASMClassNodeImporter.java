@@ -42,9 +42,9 @@ public class ASMClassNodeImporter {
 			element.setType(ClassType.INTERFACE);
 		}
 		
-		List<String> interfaceList = new ArrayList<String>();
+		List<ElementReference<ClassElement>> interfaceList = new ArrayList<ElementReference<ClassElement>>();
 		for (String interfaceName : (List<String>) node.interfaces) {
-			interfaceList.add(interfaceName.replace("/", "."));
+			interfaceList.add(new ElementReference<ClassElement>(interfaceName.replace("/", ".")));
 		}
 		element.setInterfaces(interfaceList);
 		

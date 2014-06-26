@@ -1,27 +1,28 @@
 package rtt.annotation.test.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.ClassElement.ClassType;
 
 public class ClassElementTests {
 
 	private static final String PACKAGENAME = "abc.def.ghi";
-	private static final String CLASSNAME = "TestClassName";
-	
-	private static final ElementReference<ClassElement> SUPERCLASS = 
-			new ElementReference<ClassElement>("x.y.z.SuperClass");
+	private static final String CLASSNAME = "TestClassName";	
+	private static final String SUPERCLASS = "x.y.z.SuperClass";
 	
 	private ClassElement element;
 	private ClassModelFactory factory;
@@ -69,14 +70,27 @@ public class ClassElementTests {
 		element.setType(ClassType.ABSTRACT);
 		assertEquals("Class Type", ClassType.ABSTRACT, element.getType());
 		
-		element.setSuperClass(SUPERCLASS);		
+		element.setSuperClass(createSuperClass(SUPERCLASS));		
 		assertTrue(element.hasSuperClass());
-		assertEquals("Superclass", SUPERCLASS, element.getSuperClass());
+		assertEquals("Superclass", createSuperClass(SUPERCLASS), element.getSuperClass());
 		
-		List<String> interfaces = Arrays.asList("InterfaceA", "InterfaceB");
+		List<ElementReference<ClassElement>> interfaces = createInterfaces("InterfaceA", "InterfaceB");
 		element.setInterfaces(interfaces);
 		assertTrue(element.hasInterfaces());
 		assertEquals("Interfaces", interfaces, element.getInterfaces());
+	}
+	
+	private ElementReference<ClassElement> createSuperClass(String superClassName) {
+		return new ElementReference<ClassElement>(superClassName);
+	}
+	
+	private List<ElementReference<ClassElement>> createInterfaces(String... interfaces) {
+		List<ElementReference<ClassElement>> result = new ArrayList<ElementReference<ClassElement>>();
+		for (String interfaceName : interfaces) {
+			result.add(new ElementReference<ClassElement>(interfaceName));
+		}
+		
+		return result;
 	}
 	
 	@Test
@@ -143,14 +157,14 @@ public class ClassElementTests {
 		element2.setType(ClassType.ABSTRACT);
 		assertTrue(checkEqual(element2));
 		
-		element.setSuperClass(SUPERCLASS);
+		element.setSuperClass(createSuperClass(SUPERCLASS));
 		assertFalse(checkEqual(element2));
-		element2.setSuperClass(SUPERCLASS);
+		element2.setSuperClass(createSuperClass(SUPERCLASS));
 		assertTrue(checkEqual(element2));
 		
-		element.setInterfaces(Arrays.asList("IntA", "IntB"));
+		element.setInterfaces(createInterfaces("IntA", "IntB"));
 		assertFalse(checkEqual(element2));
-		element2.setInterfaces(Arrays.asList("IntA", "IntB"));
+		element2.setInterfaces(createInterfaces("IntA", "IntB"));
 		assertTrue(checkEqual(element2));
 	}
 

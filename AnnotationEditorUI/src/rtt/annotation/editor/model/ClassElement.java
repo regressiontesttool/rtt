@@ -26,7 +26,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 	private ClassType type = ClassType.CONCRETE;
 	
 	private ElementReference<ClassElement> superClass = null;
-	private List<String> interfaces;
+	private List<ElementReference<ClassElement>> interfaces;
 	
 	private List<FieldElement> fields;
 	private List<MethodElement> methods;
@@ -56,16 +56,16 @@ public class ClassElement extends Annotatable<ClassModel> {
 	}	
 	
 	@Node.Compare
-	public List<String> getInterfaces() {
+	public List<ElementReference<ClassElement>> getInterfaces() {
 		return interfaces;
 	}
 	
-	public boolean hasInterfaces() {
-		return interfaces != null && ! interfaces.isEmpty();
+	public void setInterfaces(List<ElementReference<ClassElement>> interfaces) {
+		this.interfaces = interfaces;
 	}
 	
-	public void setInterfaces(List<String> interfaces) {
-		this.interfaces = interfaces;
+	public boolean hasInterfaces() {
+		return interfaces != null && !interfaces.isEmpty();
 	}
 	
 	@Node.Compare
@@ -73,17 +73,25 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return superClass;
 	}
 	
-	public boolean hasSuperClass() {
-		return superClass != null;
-	}
-	
 	public void setSuperClass(ElementReference<ClassElement> superClass) {
 		this.superClass = superClass;
 	}
 	
+	public boolean hasSuperClass() {
+		return superClass != null;
+	}
+	
 	public boolean hasExtendedAnnotation() {
-		if (superClass != null && superClass.isResolved()) {
+		if (hasSuperClass() && superClass.isResolved()) {
 			return superClass.getReference().hasAnnotation();
+		}
+		
+		if (hasInterfaces()) {
+			for (ElementReference<ClassElement> interfaceRef : interfaces) {
+				if (interfaceRef.isResolved() && interfaceRef.getReference().hasAnnotation()) {
+					return true;
+				}
+			}
 		}
 		
 		return false;
