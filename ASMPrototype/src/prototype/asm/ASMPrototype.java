@@ -11,29 +11,52 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.util.CheckClassAdapter;
+
+import rtt.annotations.Parser.Node;
 
 public class ASMPrototype {
 	
-	private static final class MyClassVisitor extends ClassVisitor {
-		private MyClassVisitor(int api) {
-			super(api);
-		}
+	private static final class AddAnnotationAdapter extends ClassVisitor {
+		
+		private static final String NODE_DESC = Type.getDescriptor(Node.class);
+		private boolean hasAnnotation = false;
 
+		public AddAnnotationAdapter(ClassVisitor visitor) {
+			super(Opcodes.ASM5, visitor);
+		}
+		
 		@Override
-		public AnnotationVisitor visitAnnotation(String desc,
-				boolean visible) {
-			System.out.println("Annotation: " + desc + " - " + visible);
+		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+			System.out.println("Annotation: " + desc);
+			if (NODE_DESC.equals(desc)) {
+				hasAnnotation  = true;
+				System.out.println("Node annotation found.");
+			}
 			
-			return new AnnotationVisitor(api, super.visitAnnotation(desc, visible)) {
-			};
+			return cv.visitAnnotation(desc, visible);
+		}
+		
+		@Override
+		public void visitEnd() {
+			if (hasAnnotation == false) {
+				AnnotationVisitor av = cv.visitAnnotation(NODE_DESC, true);
+				if (av != null) {
+					av.visitEnd();
+				}
+			}
+			
+			// TODO Auto-generated method stub
+			super.visitEnd();
 		}
 	}
 
-	public static final File ANNOTATED = new File("./bin/testing/AnnotatedClass.class");
-	public static final File NOTANNOTATED = new File("./bin/testing/NotAnnotatedClass.class");
+	public static final File ANNOTATED = new File("./dump/input/AnnotatedClass.class");
+	public static final File NOTANNOTATED = new File("./dump/input/NotAnnotatedClass.class");
 	
-	public static final File ANNOTATED_DUMP = new File("./dump/AnnotatedClass.class");
-	public static final File NOTANNOTATED_DUMP = new File("./dump/NotAnnotatedClass.txt");
+	public static final File ANNOTATED_DUMP = new File("./dump/output/AnnotatedClass.class");
+	public static final File NOTANNOTATED_DUMP = new File("./dump/output/NotAnnotatedClass.class");
 	
 	public static void main(String[] args) throws Exception {
 		visitClass(new FileInputStream(ANNOTATED), new FileOutputStream(ANNOTATED_DUMP, false));		
@@ -41,17 +64,14 @@ public class ASMPrototype {
 	}
 
 	private static void visitClass(FileInputStream input, FileOutputStream output) throws IOException, FileNotFoundException {
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+		ClassReader reader = new ClassReader(input);		
+		ClassWriter writer = new ClassWriter(reader, 0);
+				
+		CheckClassAdapter checkAdapter = new CheckClassAdapter(writer);
 		
-		ClassReader reader = new ClassReader(input);
-		System.out.println(reader.getClassName());
-		reader.accept(new MyClassVisitor(Opcodes.ASM5), ClassReader.SKIP_CODE);
-		reader.accept(writer, 0);
-		
-		input.close();
+		reader.accept(new AddAnnotationAdapter(checkAdapter), 0);	
 		
 		output.write(writer.toByteArray());
-		output.close();
 	}
 
 }
