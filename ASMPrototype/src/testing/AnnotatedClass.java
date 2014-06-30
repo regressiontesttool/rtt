@@ -1,5 +1,8 @@
 package testing;
 
+import rtt.annotations.Parser.Node;
+
+@Node
 public class AnnotatedClass {
 	
 	public String getGreeting() {
