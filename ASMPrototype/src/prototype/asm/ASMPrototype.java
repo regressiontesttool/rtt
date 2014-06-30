@@ -63,7 +63,7 @@ public class ASMPrototype {
 	public static final File NOTANNOTATED_DUMP = new File("./dump/output/NotAnnotatedClass.class");
 	
 	public static void main(String[] args) throws Exception {
-		File binFolder = new File("./bin/");
+		File binFolder = new File("./dump/input/");
 		if (!binFolder.exists() && !binFolder.isDirectory()) {
 			throw new IllegalStateException("Could not find binary folder");
 		}
@@ -74,6 +74,8 @@ public class ASMPrototype {
 		}
 		
 		List<ClassElement> elements = readClasses(classFiles);
+		
+		elements.get(3).setAnnotation(Annotation.NODE);
 		for (ClassElement classElement : elements) {
 			System.out.println(classElement.getClassName() + " - " + classElement.getAnnotation());
 		}
@@ -81,17 +83,67 @@ public class ASMPrototype {
 		writeClasses(elements);
 		
 		
-		
-		
-		
-		
 //		visitClass(new FileInputStream(ANNOTATED), new FileOutputStream(ANNOTATED_DUMP, false));		
 //		visitClass(new FileInputStream(NOTANNOTATED), new FileOutputStream(NOTANNOTATED_DUMP, false));
 	}
 
-	private static void writeClasses(List<ClassElement> elements) {
-		// TODO Auto-generated method stub
+	private static void writeClasses(List<ClassElement> elements) throws Exception {
+		for (ClassElement classElement : elements) {
+			writeClass(classElement);
+		}		
+	}
+
+	private static void writeClass(final ClassElement classElement) throws Exception {
+		File inputFile = new File("./dump/input/" + classElement.getClassName() + ".class");
+		ClassReader reader = new ClassReader(new FileInputStream(inputFile));
+		ClassWriter writer = new ClassWriter(reader, 0);
 		
+		reader.accept(new ClassVisitor(Opcodes.ASM5, writer) {
+			private final boolean needAnnotation = classElement.getAnnotation() == Annotation.NODE;
+			private boolean hasAnnotation;
+
+			@Override
+			public AnnotationVisitor visitAnnotation(String desc,
+					boolean visible) {
+				
+//				annotation | desc   | ziel
+//				NONE       | ""     | richtig;
+//				NONE       | "Node" | löschen;
+//				NODE       | ""     | setzen
+//				NODE       | "Node" | richtig;
+				
+				if (NODE_DESC.equals(desc)) {
+					if (classElement.getAnnotation() == Annotation.NONE) {
+						return null;
+					}
+					
+					if (classElement.getAnnotation() == Annotation.NODE) {
+						hasAnnotation = true;
+					}
+				}
+				
+				return cv.visitAnnotation(desc, visible);
+			}
+			
+			@Override
+			public void visitEnd() {
+				if (needAnnotation && !hasAnnotation) {
+					AnnotationVisitor av = cv.visitAnnotation(NODE_DESC, true);
+					if (av != null) {
+						av.visitEnd();
+					}
+				}
+				
+				cv.visitEnd();
+			}
+			
+		}, 0);
+		
+		File outputFile = new File("./dump/output/" + classElement.getClassName() + ".class");
+		
+		FileOutputStream fos = new FileOutputStream(outputFile);
+		fos.write(writer.toByteArray());
+		fos.close();
 	}
 
 	private static List<ClassElement> readClasses(List<File> classFiles) throws Exception {
