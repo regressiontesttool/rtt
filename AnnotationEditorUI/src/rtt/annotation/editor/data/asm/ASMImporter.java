@@ -1,11 +1,13 @@
-package rtt.annotation.editor.importer.asm;
+package rtt.annotation.editor.data.asm;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -14,7 +16,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import rtt.annotation.editor.importer.Importer;
+import rtt.annotation.editor.data.Importer;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
@@ -30,26 +32,20 @@ public class ASMImporter implements Importer {
 	}
 
 	@Override
-	public ClassModel importModel(File inputFile) throws IOException {
-		JarFile jar = new JarFile(inputFile, false, JarFile.OPEN_READ);
-		Enumeration<JarEntry> entries = jar.entries();
+	public ClassModel importModel(URI input) throws IOException {
+		Map<String, String> env = new HashMap<>();
+		env.put("create", "false");
 		
+		URI zipUri = URI.create("jar:" + input);
 		ClassModel model = factory.createClassModel();
 		
-		while(entries.hasMoreElements()) {
-			JarEntry entry = entries.nextElement();
-			System.out.println("Entry: " + entry.getName());
-			if (entry.getName().endsWith(".class")) {
-				importClass(jar.getInputStream(entry), model);
-			}
+		try (FileSystem zipFs = FileSystems.newFileSystem(zipUri, env)) {
+			Files.walkFileTree(zipFs.getPath("/"), new ReadFileWalker(model));
 		}
-		
-		jar.close();
 		
 		return model;
 	}
 	
-	@Override
 	public void importClass(InputStream in, ClassModel model) throws IOException {
 		ClassReader reader = new ClassReader(in);
 		ClassNode node = new ClassNode(Opcodes.ASM5);

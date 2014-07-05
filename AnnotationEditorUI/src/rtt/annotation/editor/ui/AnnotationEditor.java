@@ -36,8 +36,8 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.rules.Annotation;
-import rtt.annotation.editor.importer.Importer;
-import rtt.annotation.editor.importer.asm.ASMImporter;
+import rtt.annotation.editor.data.Importer;
+import rtt.annotation.editor.data.asm.ASMImporter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.NameResolver;
@@ -146,7 +146,7 @@ public class AnnotationEditor extends EditorPart {
 			
 			try {
 				Importer importer = new ASMImporter();
-				model = importer.importModel(inputFile.getLocation().toFile());
+				model = importer.importModel(inputFile.getLocationURI());
 				NameResolver.resolveModel(model);
 			} catch (IOException e) {
 				e.printStackTrace();

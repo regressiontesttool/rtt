@@ -1,4 +1,4 @@
-package rtt.annotation.editor.importer.asm;
+package rtt.annotation.editor.data.asm;
 
 import java.util.ArrayList;
 import java.util.List;
