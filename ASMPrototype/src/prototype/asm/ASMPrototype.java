@@ -1,212 +1,47 @@
 package prototype.asm;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Random;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.util.CheckClassAdapter;
 
-import prototype.asm.ClassElement.Annotation;
+import prototype.asm.model.ClassElement;
+import prototype.asm.model.ClassElement.Annotation;
+import prototype.asm.model.ClassModel;
+import prototype.asm.model.ClassModel.PackageElement;
 import rtt.annotations.Parser.Node;
 
 public class ASMPrototype {
 	
-	private static final class AddAnnotationAdapter extends ClassVisitor {
-	
-		private boolean hasAnnotation = false;
+	public static final String NODE_DESC = Type.getDescriptor(Node.class);
+	public static final Random r = new Random();
 
-		public AddAnnotationAdapter(ClassVisitor visitor) {
-			super(Opcodes.ASM5, visitor);
-		}
-		
-		@Override
-		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-			System.out.println("Annotation: " + desc);
-			if (NODE_DESC.equals(desc)) {
-				hasAnnotation  = true;
-				System.out.println("Node annotation found.");
-			}
-			
-			return cv.visitAnnotation(desc, visible);
-		}
-		
-		@Override
-		public void visitEnd() {
-			if (hasAnnotation == false) {
-				AnnotationVisitor av = cv.visitAnnotation(NODE_DESC, true);
-				if (av != null) {
-					av.visitEnd();
-				}
-			}
-			
-			// TODO Auto-generated method stub
-			super.visitEnd();
-		}
-	}
-	
-	private static final String NODE_DESC = Type.getDescriptor(Node.class);
-
-	public static final File ANNOTATED = new File("./dump/input/AnnotatedClass.class");
-	public static final File NOTANNOTATED = new File("./dump/input/NotAnnotatedClass.class");
-	
-	public static final File ANNOTATED_DUMP = new File("./dump/output/AnnotatedClass.class");
-	public static final File NOTANNOTATED_DUMP = new File("./dump/output/NotAnnotatedClass.class");
-	
 	public static void main(String[] args) throws Exception {
-		File binFolder = new File("./dump/input/");
-		if (!binFolder.exists() && !binFolder.isDirectory()) {
-			throw new IllegalStateException("Could not find binary folder");
-		}
 		
-		List<File> classFiles = getFiles(binFolder);
-		for (File classFile : classFiles) {
-			System.out.println(classFile.getName());
-		}
+		Path zipPath = Paths.get("jar/asm-5.0.3.jar").toAbsolutePath();
+		Path newZipPath = Paths.get("jar/asm-changed.jar").toAbsolutePath();
 		
-		List<ClassElement> elements = readClasses(classFiles);
+		JarASMTransform transform = new JarASMTransform();
+		transform.importModel(zipPath);
 		
-		elements.get(3).setAnnotation(Annotation.NODE);
-		for (ClassElement classElement : elements) {
-			System.out.println(classElement.getClassName() + " - " + classElement.getAnnotation());
-		}
+		printModel(transform.getModel(), true);
+		printModel(transform.getModel(), false);
 		
-		writeClasses(elements);
-		
-		
-//		visitClass(new FileInputStream(ANNOTATED), new FileOutputStream(ANNOTATED_DUMP, false));		
-//		visitClass(new FileInputStream(NOTANNOTATED), new FileOutputStream(NOTANNOTATED_DUMP, false));
+		transform.exportModel(zipPath, newZipPath);
 	}
 
-	private static void writeClasses(List<ClassElement> elements) throws Exception {
-		for (ClassElement classElement : elements) {
-			writeClass(classElement);
-		}		
-	}
-
-	private static void writeClass(final ClassElement classElement) throws Exception {
-		File inputFile = new File("./dump/input/" + classElement.getClassName() + ".class");
-		ClassReader reader = new ClassReader(new FileInputStream(inputFile));
-		ClassWriter writer = new ClassWriter(reader, 0);
-		
-		reader.accept(new ClassVisitor(Opcodes.ASM5, writer) {
-			private final boolean needAnnotation = classElement.getAnnotation() == Annotation.NODE;
-			private boolean hasAnnotation;
-
-			@Override
-			public AnnotationVisitor visitAnnotation(String desc,
-					boolean visible) {
+	private static void printModel(ClassModel model, boolean randomNodes) {
+		for (PackageElement packageElement : model.getClasses().keySet()) {
+			System.out.println("Entry: " + packageElement.getName());
+			for (ClassElement element : model.getClasses(packageElement)) {
+				System.out.println(packageElement.getName() + "." + element.getClassName() + " - " + element.getAnnotation());
 				
-//				annotation | desc   | ziel
-//				NONE       | ""     | richtig;
-//				NONE       | "Node" | löschen;
-//				NODE       | ""     | setzen
-//				NODE       | "Node" | richtig;
-				
-				if (NODE_DESC.equals(desc)) {
-					if (classElement.getAnnotation() == Annotation.NONE) {
-						return null;
-					}
-					
-					if (classElement.getAnnotation() == Annotation.NODE) {
-						hasAnnotation = true;
-					}
+				if (randomNodes && r.nextInt(10) == 0) {
+					element.setAnnotation(Annotation.NODE);
+					element.setChanged(true);
 				}
-				
-				return cv.visitAnnotation(desc, visible);
-			}
-			
-			@Override
-			public void visitEnd() {
-				if (needAnnotation && !hasAnnotation) {
-					AnnotationVisitor av = cv.visitAnnotation(NODE_DESC, true);
-					if (av != null) {
-						av.visitEnd();
-					}
-				}
-				
-				cv.visitEnd();
-			}
-			
-		}, 0);
-		
-		File outputFile = new File("./dump/output/" + classElement.getClassName() + ".class");
-		
-		FileOutputStream fos = new FileOutputStream(outputFile);
-		fos.write(writer.toByteArray());
-		fos.close();
-	}
-
-	private static List<ClassElement> readClasses(List<File> classFiles) throws Exception {
-		List<ClassElement> elements = new ArrayList<ClassElement>();
-		for (File classFile : classFiles) {
-			elements.add(readClass(new FileInputStream(classFile)));
-		}
-		
-		return elements;
-	}
-
-	private static ClassElement readClass(FileInputStream fileInputStream) throws Exception {
-		final ClassElement result = new ClassElement();
-		
-		ClassReader reader = new ClassReader(fileInputStream);
-		result.setName(reader.getClassName());
-		result.setSuperClass(reader.getSuperName());
-		result.setInterfaces(reader.getInterfaces());
-		
-		reader.accept(new ClassVisitor(Opcodes.ASM5) {
-			@Override
-			public AnnotationVisitor visitAnnotation(String desc,
-					boolean visible) {
-				if (NODE_DESC.equals(desc)) {
-					result.setAnnotation(Annotation.NODE);
-				}
-				
-				return null;
-			}
-			
-		}, ClassReader.SKIP_CODE);
-		
-		return result;
-	}
-
-	private static List<File> getFiles(File folder) {
-		List<File> files = new ArrayList<File>();
-		
-		String[] fileNames = folder.list();
-		for (String fileName : fileNames) {
-			String path = folder.getPath() + File.separator + fileName;
-			File file = new File(path);
-			if (file.exists()) {
-				if (file.isDirectory()) {
-					files.addAll(getFiles(file));
-				} else if (file.getName().endsWith(".class")) {
-					files.add(file);
-				}				
 			}			
 		}
-
-		return files;
 	}
-
-	private static void visitClass(FileInputStream input, FileOutputStream output) throws IOException, FileNotFoundException {
-		ClassReader reader = new ClassReader(input);		
-		ClassWriter writer = new ClassWriter(reader, 0);
-				
-		CheckClassAdapter checkAdapter = new CheckClassAdapter(writer);
-		
-		reader.accept(new AddAnnotationAdapter(checkAdapter), 0);	
-		
-		output.write(writer.toByteArray());
-	}
-
 }
