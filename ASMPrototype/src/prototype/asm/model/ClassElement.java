@@ -14,7 +14,6 @@ public class ClassElement {
 	private String[] interfaces;
 	private Annotation annotation = Annotation.NONE;
 	
-	private Source source;
 	private boolean changed;
 	
 	public Annotation getAnnotation() {
@@ -55,14 +54,6 @@ public class ClassElement {
 
 	public void setInterfaces(String[] interfaces) {
 		this.interfaces = interfaces;
-	}
-
-	public void setSource(Source source) {
-		this.source = source;
-	}
-	
-	public Source getSource() {
-		return source;
 	}
 	
 	public void setChanged(boolean changed) {

@@ -12,7 +12,6 @@ import org.objectweb.asm.Opcodes;
 import prototype.asm.model.ClassElement;
 import prototype.asm.model.ClassElement.Annotation;
 import prototype.asm.model.ClassModel;
-import prototype.asm.model.Source;
 
 final class ReadFileWalker extends AbstractFileWalker {
 
@@ -58,7 +57,6 @@ final class ReadFileWalker extends AbstractFileWalker {
 		classElement.setSuperClass(reader.getSuperName());
 		
 		reader.accept(adapter.setElement(classElement), ClassReader.SKIP_CODE);
-		classElement.setSource(new Source(reader));
 		
 		model.addClass(classElement);
 	}
