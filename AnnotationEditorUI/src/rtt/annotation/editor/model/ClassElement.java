@@ -9,7 +9,10 @@ import rtt.annotations.Parser.Node;
 public class ClassElement extends Annotatable<ClassModel> {
 	
 	public enum ClassType {
-		INTERFACE("Interface"), ABSTRACT("Abstract"), CONCRETE("Concrete");
+		INTERFACE("Interface"), 
+		ABSTRACT("Abstract"), 
+		ENUMERATION("Enum"), 
+		CONCRETE("Concrete");
 		
 		private String text;
 

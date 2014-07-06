@@ -68,8 +68,7 @@ public class ASMImporter implements Importer {
 
 	private void importFieldElement(FieldNode fieldNode, ClassElement classElement) {
 		if (!isSynthetic(fieldNode)) {
-			FieldElement element = factory.createFieldElement(classElement);		
-			element.setName(fieldNode.name);
+			FieldElement element = factory.createFieldElement(classElement, fieldNode.name);
 			
 			Type fieldType = Type.getType(fieldNode.desc);
 			element.setType(fieldType.getClassName());
@@ -87,9 +86,7 @@ public class ASMImporter implements Importer {
 		Type methodType = Type.getMethodType(methodNode.desc);
 		if (!hasVoidReturnType(methodType) && !hasArguments(methodType)) {
 			
-			MethodElement methodElement = factory.createMethodElement(classElement);	
-			methodElement.setName(methodNode.name);
-
+			MethodElement methodElement = factory.createMethodElement(classElement, methodNode.name);
 			methodElement.setType(methodType.getReturnType().getClassName());
 			
 			classElement.addMethod(methodElement);

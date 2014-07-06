@@ -98,8 +98,7 @@ public class ClassElementTests {
 	public void testAddField() throws Exception {
 		String fieldName = "TestFieldName";
 		
-		FieldElement field = factory.createFieldElement(element);
-		field.setName(fieldName);
+		FieldElement field = factory.createFieldElement(element, fieldName);
 		
 		int oldSize = element.getFields().size();		
 		element.addField(field);
@@ -108,8 +107,7 @@ public class ClassElementTests {
 		
 		assertTrue("Field list contains", element.getFields().contains(field));
 		
-		FieldElement field2 = factory.createFieldElement(element);
-		field2.setName(fieldName);
+		FieldElement field2 = factory.createFieldElement(element, fieldName);
 		
 		oldSize = newSize;
 		element.addField(field2);
@@ -121,8 +119,7 @@ public class ClassElementTests {
 	public void testAddMethod() throws Exception {
 		String methodName = "TestMethodName";
 		
-		MethodElement method = factory.createMethodElement(element);
-		method.setName(methodName);
+		MethodElement method = factory.createMethodElement(element, methodName);
 		
 		int oldSize = element.getMethods().size();
 		element.addMethod(method);
@@ -131,8 +128,7 @@ public class ClassElementTests {
 		
 		assertTrue("Method List contains", element.getMethods().contains(method));
 		
-		MethodElement method2 = factory.createMethodElement(element);
-		method2.setName(methodName);
+		MethodElement method2 = factory.createMethodElement(element, methodName);
 		
 		oldSize = newSize;
 		element.addMethod(method2);

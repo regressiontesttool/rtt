@@ -20,13 +20,17 @@ public class ClassModelFactory {
 		return element;
 	}
 	
-	public FieldElement createFieldElement(ClassElement parent) {
+	public FieldElement createFieldElement(ClassElement parent, String name) {
 		FieldElement element = new FieldElement(parent);		
+		element.setName(name);
+		
 		return element;
 	}
 	
-	public MethodElement createMethodElement(ClassElement parent) {
-		MethodElement element = new MethodElement(parent);		
+	public MethodElement createMethodElement(ClassElement parent, String name) {
+		MethodElement element = new MethodElement(parent);
+		element.setName(name);
+		
 		return element;
 	}
 
