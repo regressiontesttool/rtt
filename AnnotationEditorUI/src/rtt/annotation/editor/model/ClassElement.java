@@ -128,7 +128,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 			method.setParent(this);
 		}
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -181,5 +181,5 @@ public class ClassElement extends Annotatable<ClassModel> {
 		}
 
 		return true;
-	}
+	}	
 }

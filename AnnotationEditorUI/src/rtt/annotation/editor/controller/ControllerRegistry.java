@@ -38,6 +38,7 @@ public class ControllerRegistry {
 		IAnnotationController<T> controller = INSTANCE.findController(element);
 		if (controller != null) {
 			controller.setAnnotation(annotation, element);
+			element.setChanged(true);
 		}
 	}
 	

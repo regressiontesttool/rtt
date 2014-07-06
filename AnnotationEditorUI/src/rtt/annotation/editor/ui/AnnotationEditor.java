@@ -3,6 +3,9 @@ package rtt.annotation.editor.ui;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -36,6 +39,7 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
 import rtt.annotation.editor.data.asm.ASMImporter;
 import rtt.annotation.editor.model.Annotatable;
@@ -78,6 +82,11 @@ public class AnnotationEditor extends EditorPart {
 			Object selectedObject = getSelection(viewer);
 			if (selectedObject instanceof Annotatable<?>) {
 				ControllerRegistry.apply(annotation, (Annotatable<?>) selectedObject);
+				
+				// TODO implement improved change detection
+				dirty = true;
+				firePropertyChange(PROP_DIRTY);
+				
 				viewer.setSelection(new StructuredSelection(selectedObject), true);
 				viewer.refresh();
 			}
@@ -113,14 +122,27 @@ public class AnnotationEditor extends EditorPart {
 	private Button removeNodeButton;
 	private Button filterButton;
 
+	private boolean dirty = false;
+
+	private IFile inputFile;
+
 	public AnnotationEditor() {
 		nodeFilter = new NodeFilter();
 	}
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
+		Exporter exporter = new ASMImporter();
+		try {
+			exporter.exportModel(model, inputFile.getLocationURI());
+			dirty = false;
+			firePropertyChange(PROP_DIRTY);
+			
+			inputFile.refreshLocal(IResource.DEPTH_ZERO, monitor);
+			
+		} catch (IOException | CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -135,7 +157,7 @@ public class AnnotationEditor extends EditorPart {
 
 		if (input instanceof FileEditorInput) {
 			FileEditorInput fileInput = (FileEditorInput) input;
-			IFile inputFile = fileInput.getFile();
+			inputFile = fileInput.getFile();
 			
 			if (inputFile == null) {
 				throw new PartInitException(
@@ -159,8 +181,7 @@ public class AnnotationEditor extends EditorPart {
 
 	@Override
 	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
+		return dirty;
 	}
 
 	@Override

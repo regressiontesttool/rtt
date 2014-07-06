@@ -9,6 +9,7 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 	}
 
 	private Annotation annotation = Annotation.NONE;
+	private boolean changed = false;
 	
 	public final void setAnnotation(Annotation annotation) {
 		if (annotation == null) {
@@ -24,5 +25,13 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 	
 	public final boolean hasAnnotation()  {
 		return annotation != Annotation.NONE;
+	}
+	
+	public final boolean hasChanged() {
+		return changed;
+	}
+	
+	public final void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 }
