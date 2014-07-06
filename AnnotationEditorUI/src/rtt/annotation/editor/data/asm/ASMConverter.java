@@ -12,14 +12,17 @@ import java.util.Map;
 
 import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
+import rtt.annotation.editor.data.NameResolver;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 
-public class ASMImporter implements Importer, Exporter {
+public class ASMConverter implements Importer, Exporter {
+	
+	public static final NameResolver RESOLVER = NameResolver.create("/");
 	
 	private ClassModelFactory factory;
 	
-	public ASMImporter() {
+	public ASMConverter() {
 		factory = ClassModelFactory.getFactory();
 	}
 
@@ -27,6 +30,8 @@ public class ASMImporter implements Importer, Exporter {
 	public ClassModel importModel(URI input) throws IOException {
 		ClassModel model = factory.createClassModel();
 		walkFileTree(input, new ImportModelFileWalker(model));
+		
+		RESOLVER.resolveModel(model);
 		
 		return model;
 	}

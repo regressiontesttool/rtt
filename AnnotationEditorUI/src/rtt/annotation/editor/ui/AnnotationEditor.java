@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
@@ -41,10 +40,9 @@ import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
-import rtt.annotation.editor.data.asm.ASMImporter;
+import rtt.annotation.editor.data.asm.ASMConverter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.NameResolver;
 import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassModelColumnLabelProvider;
@@ -132,7 +130,7 @@ public class AnnotationEditor extends EditorPart {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		Exporter exporter = new ASMImporter();
+		Exporter exporter = new ASMConverter();
 		try {
 			exporter.exportModel(model, inputFile.getLocationURI());
 			dirty = false;
@@ -167,9 +165,8 @@ public class AnnotationEditor extends EditorPart {
 			setPartName(getPartName() + " - " + inputFile.getName());
 			
 			try {
-				Importer importer = new ASMImporter();
+				Importer importer = new ASMConverter();
 				model = importer.importModel(inputFile.getLocationURI());
-				NameResolver.resolveModel(model);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -1,5 +1,6 @@
 package rtt.annotation.editor;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -59,6 +60,10 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 	 */
 	public static AnnotationEditorPlugin getDefault() {
 		return plugin;
+	}
+
+	public static void log(int severity, String message) {
+		plugin.getLog().log(new Status(severity, PLUGIN_ID, message));
 	}
 
 }

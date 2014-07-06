@@ -11,8 +11,6 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
-import rtt.annotation.editor.data.Importer;
-import rtt.annotation.editor.data.asm.ASMImporter;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotations.Parser;
@@ -50,7 +48,7 @@ public class RTTParser {
 			URL resourceURL = bundle.getEntry(fileName);
 			System.out.println("Reading: " + resourceURL);
 
-			Importer importer = new ASMImporter();
+//			Importer importer = new ASMImporter();
 //			importer.importClass(resourceURL.openStream(), model);
 		}		
 	}
