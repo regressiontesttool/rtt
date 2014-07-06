@@ -20,7 +20,7 @@ import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 
-final class ReadFileWalker extends AbstractFileWalker {
+final class ImportModelFileWalker extends AbstractFileWalker {
 
 	final class ClassElementAnnotationAdapter extends ClassVisitor {
 		
@@ -86,7 +86,7 @@ final class ReadFileWalker extends AbstractFileWalker {
 		}
 	}
 	
-	public ReadFileWalker(ClassModel model) {
+	public ImportModelFileWalker(ClassModel model) {
 		super(model);
 	}
 	

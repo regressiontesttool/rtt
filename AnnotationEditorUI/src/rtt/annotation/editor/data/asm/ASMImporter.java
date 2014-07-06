@@ -40,7 +40,7 @@ public class ASMImporter implements Importer {
 		ClassModel model = factory.createClassModel();
 		
 		try (FileSystem zipFs = FileSystems.newFileSystem(zipUri, env)) {
-			Files.walkFileTree(zipFs.getPath("/"), new ReadFileWalker(model));
+			Files.walkFileTree(zipFs.getPath("/"), new ImportModelFileWalker(model));
 		}
 		
 		return model;
