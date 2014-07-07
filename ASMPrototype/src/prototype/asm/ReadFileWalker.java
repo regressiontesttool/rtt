@@ -30,11 +30,11 @@ final class ReadFileWalker extends AbstractFileWalker {
 
 		@Override
 		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-			if (ASMPrototype.NODE_DESC.equals(desc) && element != null) {
+			if (desc.equals(ASMPrototype.NODE_DESC)) {
 				element.setAnnotation(Annotation.NODE);
 			}
 			
-			return cv.visitAnnotation(desc, visible);
+			return super.visitAnnotation(desc, visible);
 		}
 	}
 	

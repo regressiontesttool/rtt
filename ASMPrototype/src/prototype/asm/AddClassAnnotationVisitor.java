@@ -7,7 +7,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import prototype.asm.model.ClassElement;
-import prototype.asm.model.ClassElement.Annotation;
 
 public class AddClassAnnotationVisitor extends ClassVisitor {
 
@@ -63,7 +62,7 @@ public class AddClassAnnotationVisitor extends ClassVisitor {
 	}
 
 	private void addAnnotation() {
-		if (annotationPresent == false && classElement.getAnnotation() == Annotation.NODE) {
+		if (annotationPresent == false && classElement.hasAnnotation()) {
 			AnnotationVisitor av = cv.visitAnnotation(ASMPrototype.NODE_DESC, true);
 			if (av != null) {
 				av.visitEnd();

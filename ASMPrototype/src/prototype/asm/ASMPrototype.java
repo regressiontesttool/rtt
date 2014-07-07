@@ -19,28 +19,35 @@ public class ASMPrototype {
 
 	public static void main(String[] args) throws Exception {
 		
-		Path zipPath = Paths.get("jar/asm-5.0.3.jar").toAbsolutePath();
+		Path zipPath = Paths.get("jar/asm-changed.jar").toAbsolutePath();
 		Path newZipPath = Paths.get("jar/asm-changed.jar").toAbsolutePath();
 		
 		JarASMTransform transform = new JarASMTransform();
 		transform.importModel(zipPath);
 		
 		printModel(transform.getModel(), true);
-		printModel(transform.getModel(), false);
 		
 		transform.exportModel(zipPath, newZipPath);
 	}
 
 	private static void printModel(ClassModel model, boolean randomNodes) {
 		for (PackageElement packageElement : model.getClasses().keySet()) {
-			System.out.println("Entry: " + packageElement.getName());
+			System.out.println("Package: " + packageElement.getName());
 			for (ClassElement element : model.getClasses(packageElement)) {
-				System.out.println(packageElement.getName() + "." + element.getClassName() + " - " + element.getAnnotation());
+				String text = element.getClassName();
+				text += " - " + element.getAnnotation();
 				
-				if (randomNodes && r.nextInt(10) == 0) {
-					element.setAnnotation(Annotation.NODE);
+				if (randomNodes && r.nextInt(5) == 0) {
+					if (element.hasAnnotation()) {
+						element.setAnnotation(Annotation.EMPTY);
+					} else {
+						element.setAnnotation(Annotation.NODE);
+					}					
 					element.setChanged(true);
+					text += "(*) = " + element.getAnnotation();
 				}
+				
+				System.out.println(text);				
 			}			
 		}
 	}

@@ -5,7 +5,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
 import prototype.asm.model.ClassElement;
-import prototype.asm.model.ClassElement.Annotation;
 
 public class RemoveClassAnnotationVisitor extends ClassVisitor {
 
@@ -18,7 +17,7 @@ public class RemoveClassAnnotationVisitor extends ClassVisitor {
 	
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		if (desc.equals(ASMPrototype.NODE_DESC) && element.getAnnotation() == Annotation.NODE) {
+		if (desc.equals(ASMPrototype.NODE_DESC) && !element.hasAnnotation()) {
 			return null;
 		}		
 		

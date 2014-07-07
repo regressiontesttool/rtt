@@ -1,7 +1,5 @@
 package prototype.asm.model;
 
-
-
 public class ClassElement {
 
 	public enum Annotation {
@@ -22,6 +20,10 @@ public class ClassElement {
 	
 	public void setAnnotation(Annotation annotation) {
 		this.annotation = annotation;
+	}
+	
+	public boolean hasAnnotation() {
+		return annotation != Annotation.EMPTY;
 	}
 
 	public String getClassName() {

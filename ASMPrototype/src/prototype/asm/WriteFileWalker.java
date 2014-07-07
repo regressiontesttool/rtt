@@ -72,8 +72,8 @@ final class WriteFileWalker extends AbstractFileWalker {
 			ClassWriter writer = new ClassWriter(reader, 0);
 			System.out.println("Change: " + file.toString());
 			
-//			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, writer);
-			ClassVisitor addVisitor = new AddClassAnnotationVisitor(element, writer);
+			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, writer);
+			ClassVisitor addVisitor = new AddClassAnnotationVisitor(element, removeVisitor);
 			
 			reader.accept(addVisitor, ClassReader.SKIP_CODE);
 			
