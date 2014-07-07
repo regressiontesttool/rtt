@@ -1,8 +1,19 @@
 package rtt.annotation.editor.data.asm;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
+import org.eclipse.core.runtime.Status;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+
+import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.data.asm.visitor.AddClassAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.RemoveClassAnnotationVisitor;
+import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 
 
@@ -54,15 +65,18 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	
 	@Override
 	protected void processData(Path file) throws IOException {
-//		ClassReader reader = new ClassReader(Files.readAllBytes(file));
-//		ClassElement element = findClass(reader.getClassName()); 
-//		if (element != null && element.hasChanged()) {
-//			ClassWriter writer = new ClassWriter(reader, 0);
-//			
-//			WriteAnnotationClassVisitor visitor = new WriteAnnotationClassVisitor(writer);				
-//			reader.accept(visitor.setElement(element), ClassReader.SKIP_CODE);
-//			
-//			Files.write(file, writer.toByteArray(), StandardOpenOption.DSYNC);
-//		}
+		ClassReader reader = new ClassReader(Files.readAllBytes(file));
+		ClassElement element = ASMConverter.RESOLVER.findClass(reader.getClassName(), model); 
+		if (element != null && element.hasChanged()) {
+			ClassWriter writer = new ClassWriter(reader, 0);
+		
+//			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, writer);
+			ClassVisitor addVisitor = new AddClassAnnotationVisitor(element, writer);
+			
+			reader.accept(addVisitor, ClassReader.SKIP_CODE);
+			
+//			AnnotationEditorPlugin.log(Status.INFO, "Delete1: " + Files.deleteIfExists(file));
+			AnnotationEditorPlugin.log(Status.INFO, "Write: " + Files.write(file, writer.toByteArray(), StandardOpenOption.WRITE));
+		}
 	}
 }

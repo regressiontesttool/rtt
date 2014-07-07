@@ -10,15 +10,24 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.objectweb.asm.Type;
+
 import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
 import rtt.annotation.editor.data.NameResolver;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
+import rtt.annotations.Parser.Node;
+import rtt.annotations.Parser.Node.Compare;
+import rtt.annotations.Parser.Node.Informational;
 
 public class ASMConverter implements Importer, Exporter {
 	
 	public static final NameResolver RESOLVER = NameResolver.create("/");
+	
+	public static final String NODE_DESC = Type.getDescriptor(Node.class);
+	public static final String COMPARE_DESC = Type.getDescriptor(Compare.class);
+	public static final String INFO_DESC = Type.getDescriptor(Informational.class);
 	
 	private ClassModelFactory factory;
 	

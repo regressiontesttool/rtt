@@ -87,7 +87,7 @@ public class NameResolver {
 		return null;
 	}
 
-	private ClassElement findClass(String completeName, ClassModel model) {
+	public ClassElement findClass(String completeName, ClassModel model) {
 		String packageName = computePackageName(completeName);
 		String className = computeClassName(completeName);
 		

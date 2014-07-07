@@ -63,7 +63,7 @@ public final class ImportClassElementVisitor extends AbstractClassVisitor<ClassE
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		if (NODE_DESC.equals(desc)) {
+		if (desc.equals(ASMConverter.NODE_DESC)) {
 			element.setAnnotation(Annotation.NODE);
 		}
 

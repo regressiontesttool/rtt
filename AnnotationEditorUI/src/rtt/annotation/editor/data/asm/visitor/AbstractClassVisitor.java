@@ -10,10 +10,6 @@ import rtt.annotations.Parser.Node.Compare;
 import rtt.annotations.Parser.Node.Informational;
 
 public abstract class AbstractClassVisitor<T extends ModelElement<?>> extends ClassVisitor {
-	
-	public static final String NODE_DESC = Type.getDescriptor(Node.class);
-	public static final String COMPARE_DESC = Type.getDescriptor(Compare.class);
-	public static final String INFO_DESC = Type.getDescriptor(Informational.class);
 
 	protected T element;
 

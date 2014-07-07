@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.eclipse.core.runtime.Status;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 
+import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.data.asm.visitor.ImportClassElementVisitor;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
@@ -20,6 +22,8 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 	@Override
 	protected void processData(Path file) throws IOException {
 		ClassReader reader = new ClassReader(Files.readAllBytes(file));
+		
+		AnnotationEditorPlugin.log(Status.INFO, "Reading: " + file.toString() + " - " + reader.getClassName());
 
 		ClassElement element = factory.createClassElement(model);
 		ClassVisitor visitor = new ImportClassElementVisitor(element, factory);
