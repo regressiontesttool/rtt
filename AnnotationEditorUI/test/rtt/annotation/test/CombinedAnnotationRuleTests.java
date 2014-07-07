@@ -1,11 +1,10 @@
 package rtt.annotation.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotation.editor.controller.impl.ClassElementAnnotationController;
 import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.controller.rules.CombinedAnnotationRule;
 import rtt.annotation.editor.model.ClassElement;
