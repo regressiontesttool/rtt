@@ -34,7 +34,7 @@ final class WriteFileWalker extends AbstractFileWalker {
 			if (desc.equals(ASMPrototype.NODE_DESC)) {
 				hasNodeAnnotation  = true;
 				
-				if (element.getAnnotation() == Annotation.NONE) {
+				if (element.getAnnotation() == Annotation.EMPTY) {
 					return null;
 				}
 			}		
@@ -70,11 +70,14 @@ final class WriteFileWalker extends AbstractFileWalker {
 		ClassElement element = findClass(reader.getClassName()); 
 		if (element != null && element.hasChanged()) {
 			ClassWriter writer = new ClassWriter(reader, 0);
+			System.out.println("Change: " + file.toString());
 			
-			WriteAnnotationClassVisitor visitor = new WriteAnnotationClassVisitor(writer);				
-			reader.accept(visitor.setElement(element), ClassReader.SKIP_CODE);
+//			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, writer);
+			ClassVisitor addVisitor = new AddClassAnnotationVisitor(element, writer);
 			
-			Files.write(file, writer.toByteArray(), StandardOpenOption.DSYNC);
+			reader.accept(addVisitor, ClassReader.SKIP_CODE);
+			
+			Files.write(file, writer.toByteArray(), StandardOpenOption.WRITE);
 		}
 	}
 	

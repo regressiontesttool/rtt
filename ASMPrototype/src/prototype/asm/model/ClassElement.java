@@ -5,14 +5,14 @@ package prototype.asm.model;
 public class ClassElement {
 
 	public enum Annotation {
-		NONE, NODE;
+		EMPTY, NODE;
 	}
 	
 	private String className;
 	private String packageName;
 	private String superName;
 	private String[] interfaces;
-	private Annotation annotation = Annotation.NONE;
+	private Annotation annotation = Annotation.EMPTY;
 	
 	private boolean changed;
 	
