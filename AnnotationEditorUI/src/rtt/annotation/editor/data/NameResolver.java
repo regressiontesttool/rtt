@@ -3,9 +3,6 @@ package rtt.annotation.editor.data;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.Status;
-
-import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModel;
@@ -57,8 +54,6 @@ public class NameResolver {
 	private void resolveSuperClass(ClassElement classElement, ClassModel model) {
 		ElementReference<ClassElement> reference = classElement.getSuperClass();
 		if (reference != null && !reference.isResolved()) {
-			AnnotationEditorPlugin.log(Status.INFO, "Search SuperClass: " + reference.getName());
-			
 			ClassElement superClass = findClass(reference.getName(), model);
 			if (superClass != null) {
 				reference.setReference(superClass);
@@ -77,7 +72,6 @@ public class NameResolver {
 	
 	private ClassElement resolveInterface(ElementReference<ClassElement> interfaceRef, ClassModel model) {
 		if (interfaceRef != null && !interfaceRef.isResolved()) {
-			AnnotationEditorPlugin.log(Status.INFO, "Searching Interface: " + interfaceRef.getName());
 			ClassElement interfaceElement = findClass(interfaceRef.getName(), model);
 			if (interfaceElement != null) {
 				return interfaceElement;

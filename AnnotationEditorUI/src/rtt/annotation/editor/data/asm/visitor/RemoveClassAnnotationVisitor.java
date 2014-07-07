@@ -2,14 +2,18 @@ package rtt.annotation.editor.data.asm.visitor;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.ASMConverter;
 import rtt.annotation.editor.model.ClassElement;
 
-public class RemoveClassAnnotationVisitor extends AbstractClassVisitor<ClassElement> {
+public class RemoveClassAnnotationVisitor extends ClassVisitor {
+
+	private ClassElement element;
 
 	public RemoveClassAnnotationVisitor(ClassElement modelElement, ClassVisitor cv) {
-		super(modelElement, cv);
+		super(Opcodes.ASM5, cv);
+		this.element = modelElement;
 	}
 	
 	@Override

@@ -7,6 +7,8 @@ public abstract class ModelElement<T extends ModelElement<?>> {
 	
 	private String name = null;
 	private T parent = null;
+
+	private boolean changed = false;
 	
 	protected ModelElement(T parent) {
 		this.parent = parent;
@@ -28,6 +30,17 @@ public abstract class ModelElement<T extends ModelElement<?>> {
 	
 	public void setParent(T parent) {
 		this.parent = parent;
+	}
+	
+	public final boolean hasChanged() {
+		return changed;
+	}
+	
+	public final void setChanged(boolean changed) {
+		this.changed = changed;
+		if (parent != null) {
+			parent.setChanged(changed);
+		}
 	}
 
 	@Override

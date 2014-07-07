@@ -116,6 +116,17 @@ public class ClassElement extends Annotatable<ClassModel> {
 			field.setParent(this);
 		}
 	}
+	
+	public FieldElement getField(String name, String className) {
+		for (FieldElement field : fields) {
+			if (name.equals(field.getName()) 
+					&& className.equals(field.getType())) {
+				return field;
+			}
+		}
+		
+		return null;
+	}
 
 	@Node.Child
 	public List<MethodElement> getMethods() {
@@ -127,6 +138,18 @@ public class ClassElement extends Annotatable<ClassModel> {
 			methods.add(method);
 			method.setParent(this);
 		}
+	}
+	
+	public MethodElement getMethod(String name, String className) {
+		for (MethodElement method : methods) {
+			if (name.equals(method.getName()) 
+					&& className.equals(method.getType())) {
+				
+				return method;
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override
@@ -181,5 +204,9 @@ public class ClassElement extends Annotatable<ClassModel> {
 		}
 
 		return true;
-	}	
+	}
+
+	
+
+		
 }

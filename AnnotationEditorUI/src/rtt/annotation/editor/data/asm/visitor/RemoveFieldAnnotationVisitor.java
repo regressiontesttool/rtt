@@ -11,7 +11,7 @@ public class RemoveFieldAnnotationVisitor extends FieldVisitor {
 
 	private FieldElement fieldElement;
 
-	public RemoveFieldAnnotationVisitor(FieldVisitor fv, FieldElement fieldElement) {
+	public RemoveFieldAnnotationVisitor(FieldElement fieldElement, FieldVisitor fv) {
 		super(Opcodes.ASM5, fv);
 		this.fieldElement = fieldElement;
 	}

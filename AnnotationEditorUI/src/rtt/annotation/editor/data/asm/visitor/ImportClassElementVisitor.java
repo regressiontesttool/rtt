@@ -1,6 +1,7 @@
 package rtt.annotation.editor.data.asm.visitor;
 
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -15,13 +16,15 @@ import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 
-public final class ImportClassElementVisitor extends AbstractClassVisitor<ClassElement> {
+public final class ImportClassElementVisitor extends ClassVisitor {
 	
 	private ClassModelFactory factory;
+	private ClassElement element;
 
 	public ImportClassElementVisitor(ClassElement element, ClassModelFactory factory) {
-		super(element, null);
+		super(Opcodes.ASM5, null);
 		this.factory = factory;
+		this.element = element;
 	}
 	
 	@Override
@@ -78,7 +81,11 @@ public final class ImportClassElementVisitor extends AbstractClassVisitor<ClassE
 			FieldElement field = factory.createFieldElement(element, name);
 			field.setType(Type.getType(desc).getClassName());
 			
+			FieldVisitor fv = super.visitField(access, name, desc, signature, value);
+			FieldVisitor importVisitor = new ImportFieldElementVisitor(field, fv);
+			
 			element.addField(field);
+			return importVisitor;
 		}			
 		
 		return super.visitField(access, name, desc, signature, value);
@@ -94,10 +101,14 @@ public final class ImportClassElementVisitor extends AbstractClassVisitor<ClassE
 		
 		Type methodType = Type.getType(desc);
 		if (!hasVoidReturnType(methodType) && !hasArguments(methodType)) {
-			MethodElement method = factory.createMethodElement(element, name);
+			final MethodElement method = factory.createMethodElement(element, name);
 			method.setType(methodType.getReturnType().getClassName());
 			
+			MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+			MethodVisitor importVisitor = new ImportMethodElementVisitor(method, mv);
+			
 			element.addMethod(method);
+			return importVisitor;
 		}			
 		
 		return super.visitMethod(access, name, desc, signature, exceptions);

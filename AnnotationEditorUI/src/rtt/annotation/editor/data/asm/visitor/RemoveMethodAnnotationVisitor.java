@@ -11,7 +11,7 @@ public class RemoveMethodAnnotationVisitor extends MethodVisitor {
 	
 	private MethodElement methodElement;
 
-	public RemoveMethodAnnotationVisitor(MethodVisitor mv, MethodElement methodElement) {
+	public RemoveMethodAnnotationVisitor(MethodElement methodElement, MethodVisitor mv) {
 		super(Opcodes.ASM5, mv);
 		this.methodElement = methodElement;
 	}
