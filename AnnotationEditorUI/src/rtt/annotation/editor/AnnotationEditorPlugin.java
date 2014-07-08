@@ -16,6 +16,7 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 
 	public static final String ANNOTATED_COLOR = "ANNOTATED_COLOR";
 	public static final String EXTENDED_COLOR = "EXTENDED_COLOR";
+	public static final String MEMBER_COLOR = "MEMBER_COLOR";
 	
 	public static final String COMPARE_COLOR = "COMPARE_COLOR";
 	public static final String INFORMATIONAL_COLOR = "INFORMATIONAL_COLOR";
@@ -39,6 +40,7 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 		
 		JFaceResources.getColorRegistry().put(ANNOTATED_COLOR, new RGB(0, 0, 255));
 		JFaceResources.getColorRegistry().put(EXTENDED_COLOR, new RGB(255, 0, 0));
+		JFaceResources.getColorRegistry().put(MEMBER_COLOR, new RGB(0, 155, 0));
 		
 		JFaceResources.getColorRegistry().put(COMPARE_COLOR, new RGB(0, 0, 255));
 		JFaceResources.getColorRegistry().put(INFORMATIONAL_COLOR, new RGB(0, 155, 255));

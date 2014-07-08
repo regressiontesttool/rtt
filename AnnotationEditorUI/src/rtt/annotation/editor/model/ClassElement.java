@@ -105,6 +105,27 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return hasExtendedAnnotation;
 	}
 	
+	public boolean hasMemberAnnotation() {
+		
+		if (fields != null && !fields.isEmpty()) {
+			for (FieldElement element : fields) {
+				if (element.hasAnnotation()) {
+					return true;
+				}
+			}
+		}
+		
+		if (methods != null && !fields.isEmpty()) {
+			for (MethodElement element : methods) {
+				if (element.hasAnnotation()) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	@Node.Child
 	public List<FieldElement> getFields() {
 		return fields;

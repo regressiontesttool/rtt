@@ -86,7 +86,8 @@ public class AnnotationEditor extends EditorPart {
 				firePropertyChange(PROP_DIRTY);
 				
 				viewer.setSelection(new StructuredSelection(selectedObject), true);
-				viewer.refresh();
+				elementViewer.refresh();
+				nodeViewer.refresh();
 			}
 		}
 		
