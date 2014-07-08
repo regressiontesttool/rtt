@@ -13,6 +13,7 @@ import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
@@ -130,35 +131,39 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		classProperties.add(createClassNameProperty(parentElement));
 		classProperties.add(new Property("Package", parentElement.getPackageName()));		
 		
-		if (parentElement.hasSuperClass()) {
-			ElementReference<ClassElement> reference = parentElement.getSuperClass();
-			Property property = new Property("Extends", reference.getName());
-			
-			if (reference.isResolved() && reference.getReference().hasAnnotation()) {
-				property = new Property("Extends", reference.getName() + " - " + reference.getReference().getAnnotation());
-				property.setColor(JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.ANNOTATED_COLOR));
-			}
-			
-			classProperties.add(property);
-			
+		if (parentElement.hasSuperClass()) {			
+			classProperties.add(createReferenceProperty("Extends", parentElement.getSuperClass()));			
 		}
 		
 		if (parentElement.hasInterfaces()) {
-			StringBuilder builder = null;
-			for (ElementReference<ClassElement> interfaceRef : parentElement.getInterfaces()) {
-				if (builder == null) {
-					builder = new StringBuilder(interfaceRef.getName());
-				} else {
-					builder.append(",");
-					builder.append(interfaceRef.getName());
-				}				
+			List<Property> interfaces = new ArrayList<>();
+			
+			for (ElementReference<ClassElement> reference : parentElement.getInterfaces()) {
+				interfaces.add(createReferenceProperty("", reference));	
 			}
-			classProperties.add(new Property("Implements", builder.toString()));
+			
+			classProperties.add(new MultipleProperty("Implements", interfaces));
 		}
 		
 		results.add(new MultipleProperty("Properties", classProperties));
 		
 		return results;
+	}
+	
+	private Property createReferenceProperty(String firstColumn, 
+			ElementReference<? extends Annotatable<?>> reference) {
+		
+		Property property = new Property(firstColumn, reference.getName());
+		
+		if (reference.isResolved() && reference.getReference().hasAnnotation()) {
+			property = new Property(firstColumn, reference.getName() 
+					+ " - " + reference.getReference().getAnnotation());
+			
+			property.setColor(JFaceResources.getColorRegistry().get(
+					AnnotationEditorPlugin.ANNOTATED_COLOR));
+		}
+		
+		return property;
 	}
 
 	private Property createClassNameProperty(ClassElement parentElement) {

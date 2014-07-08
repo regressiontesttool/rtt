@@ -264,7 +264,7 @@ public class AnnotationEditor extends EditorPart {
 				
 				propertyViewer.getControl().setEnabled(selectedObject != null);
 				propertyViewer.setInput(selectedObject);
-				propertyViewer.expandToLevel(SECOND_LEVEL);					
+				propertyViewer.expandToLevel(TreeViewer.ALL_LEVELS);					
 				
 				if (selectedObject instanceof Annotatable<?>) {
 					Annotatable<?> element = (Annotatable<?>) selectedObject;
