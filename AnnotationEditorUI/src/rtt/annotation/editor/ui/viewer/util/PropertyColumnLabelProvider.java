@@ -1,6 +1,7 @@
 package rtt.annotation.editor.ui.viewer.util;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.graphics.Color;
 
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider.Property;
 
@@ -27,6 +28,15 @@ public class PropertyColumnLabelProvider extends ColumnLabelProvider {
 		}
 
 		return super.getText(element);
+	}
+	
+	@Override
+	public Color getForeground(Object element) {
+		if (element instanceof Property) {
+			Property property = (Property) element;
+			return property.getForeground();
+		}
+		return super.getForeground(element);
 	}
 
 }

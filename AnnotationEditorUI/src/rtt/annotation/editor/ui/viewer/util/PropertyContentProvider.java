@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.graphics.Color;
 
+import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
@@ -19,6 +22,7 @@ public class PropertyContentProvider implements ITreeContentProvider {
 	protected class Property {
 		protected Object parent = null;
 		protected List<String> columns;
+		private Color foreground = null;
 		
 		public Property(String... columns) {
 			this.columns = new ArrayList<String>();
@@ -34,6 +38,14 @@ public class PropertyContentProvider implements ITreeContentProvider {
 			}
 			
 			return null;
+		}
+
+		public void setColor(Color color) {
+			this.foreground = color;
+		}
+		
+		public Color getForeground() {
+			return foreground;
 		}
 	}
 	
@@ -120,11 +132,14 @@ public class PropertyContentProvider implements ITreeContentProvider {
 		
 		if (parentElement.hasSuperClass()) {
 			ElementReference<ClassElement> reference = parentElement.getSuperClass();
-			if (reference.isResolved()) {
-				classProperties.add(new Property("Extends", reference.getName() + " - " + reference.getReference().getAnnotation().name()));
-			} else {
-				classProperties.add(new Property("Extends", reference.getName()));
+			Property property = new Property("Extends", reference.getName());
+			
+			if (reference.isResolved() && reference.getReference().hasAnnotation()) {
+				property = new Property("Extends", reference.getName() + " - " + reference.getReference().getAnnotation());
+				property.setColor(JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.ANNOTATED_COLOR));
 			}
+			
+			classProperties.add(property);
 			
 		}
 		
