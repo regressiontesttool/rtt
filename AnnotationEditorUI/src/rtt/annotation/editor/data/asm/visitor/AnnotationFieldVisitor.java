@@ -7,13 +7,22 @@ import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.visitor.AnnotationChanger.IAnnotationVisitor;
 
-public class AddAnnotationFieldVisitor extends FieldVisitor implements IAnnotationVisitor {
+public class AnnotationFieldVisitor extends FieldVisitor implements IAnnotationVisitor {
 	
-	private AddTest instance;
+	private AnnotationChanger instance;
 	
-	public AddAnnotationFieldVisitor(AddTest instance, FieldVisitor fv) {
+	public AnnotationFieldVisitor(AnnotationChanger instance, FieldVisitor fv) {
 		super(Opcodes.ASM5, fv);
 		this.instance = instance;
+	}
+	
+	public static FieldVisitor create(FieldVisitor fv, AnnotationChanger... changers) {		
+		FieldVisitor nextVisitor = fv;
+		for (AnnotationChanger changer : changers) {
+			nextVisitor = new AnnotationFieldVisitor(changer, nextVisitor);
+		}
+		
+		return nextVisitor;
 	}
 	
 	@Override
@@ -37,4 +46,6 @@ public class AddAnnotationFieldVisitor extends FieldVisitor implements IAnnotati
 	public AnnotationVisitor getVisitor(String descriptor, boolean visible) {
 		return super.visitAnnotation(descriptor, visible);
 	}
+
+	
 }

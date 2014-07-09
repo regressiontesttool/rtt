@@ -8,13 +8,24 @@ import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.visitor.AnnotationChanger.IAnnotationVisitor;
 
-public class AddAnnotationClassVisitor extends ClassVisitor implements IAnnotationVisitor {
+public class AnnotationClassVisitor extends ClassVisitor implements IAnnotationVisitor {
 
 	private AnnotationChanger instance;
 
-	public AddAnnotationClassVisitor(AnnotationChanger instance, ClassVisitor cv) {
+	public AnnotationClassVisitor(AnnotationChanger instance, ClassVisitor cv) {
 		super(Opcodes.ASM5, cv);
 		this.instance = instance;
+	}
+	
+	public static ClassVisitor create(
+			ClassVisitor cv, AnnotationChanger... changers) {
+		
+		ClassVisitor nextVisitor = cv;
+		for (AnnotationChanger changer : changers) {
+			nextVisitor = new AnnotationClassVisitor(changer, nextVisitor);
+		}
+		
+		return nextVisitor;
 	}
 	
 	@Override

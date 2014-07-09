@@ -6,13 +6,22 @@ import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.visitor.AnnotationChanger.IAnnotationVisitor;
 
-public class AddAnnotationMethodVisitor extends MethodVisitor implements IAnnotationVisitor {
+public class AnnotationMethodVisitor extends MethodVisitor implements IAnnotationVisitor {
 	
-	private AddTest instance;
+	private AnnotationChanger instance;
 	
-	public AddAnnotationMethodVisitor(AddTest instance, MethodVisitor mv) {
+	public AnnotationMethodVisitor(AnnotationChanger instance, MethodVisitor mv) {
 		super(Opcodes.ASM5, mv);
 		this.instance = instance;
+	}
+	
+	public static MethodVisitor create(MethodVisitor mv, AnnotationChanger... changers) {
+		MethodVisitor nextVisitor = mv;
+		for (AnnotationChanger changer : changers) {
+			nextVisitor = new AnnotationMethodVisitor(changer, nextVisitor);
+		}
+		
+		return nextVisitor;
 	}
 	
 	@Override
