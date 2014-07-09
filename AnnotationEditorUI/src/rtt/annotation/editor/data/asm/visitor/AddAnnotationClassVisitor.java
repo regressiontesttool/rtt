@@ -6,17 +6,20 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.data.asm.ASMConverter;
-import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.data.asm.visitor.AddTest.IAnnotationVisitor;
 
-public class AddClassAnnotationVisitor extends ClassVisitor {
+public class AddAnnotationClassVisitor extends ClassVisitor implements IAnnotationVisitor {
 
-	private ClassElement classElement;
-	private boolean annotationPresent = false;
+	private AddTest instance;
 
-	public AddClassAnnotationVisitor(ClassElement classElement, ClassVisitor cv) {
+	public AddAnnotationClassVisitor(AddTest instance, ClassVisitor cv) {
 		super(Opcodes.ASM5, cv);
-		this.classElement = classElement;
+		this.instance = instance;
+	}
+	
+	@Override
+	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+		return instance.checkAnnotation(this, desc, visible);
 	}
 	
 	@Override
@@ -27,50 +30,35 @@ public class AddClassAnnotationVisitor extends ClassVisitor {
 	}
 	
 	@Override
-	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		if (visible && desc.equals(ASMConverter.NODE_DESC)) {
-			annotationPresent = true;
-		}		
-		
-		return super.visitAnnotation(desc, visible);
-	}
-	
-	@Override
 	public void visitInnerClass(String name, String outerName,
 			String innerName, int access) {
-		addAnnotation();
+		instance.addAnnotation(this);
 		super.visitInnerClass(name, outerName, innerName, access);
 	}
 	
 	@Override
 	public FieldVisitor visitField(int access, String name, String desc,
 			String signature, Object value) {
-		addAnnotation();		
+		instance.addAnnotation(this);		
 		return super.visitField(access, name, desc, signature, value);
 	}
 	
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc,
 			String signature, String[] exceptions) {
-		addAnnotation();
+		instance.addAnnotation(this);
 		return super.visitMethod(access, name, desc, signature, exceptions);
 	}
 	
 	@Override
 	public void visitEnd() {
-		addAnnotation();
+		instance.addAnnotation(this);
 		super.visitEnd();
 	}
 
-	private void addAnnotation() {
-		if (annotationPresent == false && classElement.hasAnnotation()) {
-			AnnotationVisitor av = cv.visitAnnotation(ASMConverter.NODE_DESC, true);
-			if (av != null) {
-				av.visitEnd();
-			}
-			
-			annotationPresent = true;
-		}
+	@Override
+	public AnnotationVisitor getVisitor(String descriptor, boolean visible) {
+		return super.visitAnnotation(descriptor, visible);
 	}
 
 }

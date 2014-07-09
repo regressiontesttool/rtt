@@ -13,9 +13,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import rtt.annotation.editor.data.asm.visitor.AddClassAnnotationVisitor;
-import rtt.annotation.editor.data.asm.visitor.AddFieldAnnotationVisitor;
-import rtt.annotation.editor.data.asm.visitor.AddMethodAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.AddAnnotationClassVisitor;
+import rtt.annotation.editor.data.asm.visitor.AddAnnotationFieldVisitor;
+import rtt.annotation.editor.data.asm.visitor.AddAnnotationMethodVisitor;
+import rtt.annotation.editor.data.asm.visitor.AddTest;
 import rtt.annotation.editor.data.asm.visitor.RemoveClassAnnotationVisitor;
 import rtt.annotation.editor.data.asm.visitor.RemoveFieldAnnotationVisitor;
 import rtt.annotation.editor.data.asm.visitor.RemoveMethodAnnotationVisitor;
@@ -26,6 +27,41 @@ import rtt.annotation.editor.model.MethodElement;
 
 final class ExportModelFileWalker extends AbstractFileWalker {
 	
+	private final class WriteFieldsVisitor extends ClassVisitor {
+		private final ClassElement element;
+
+		private WriteFieldsVisitor(int api, ClassVisitor cv,
+				ClassElement element) {
+			super(api, cv);
+			this.element = element;
+		}
+
+		@Override
+		public FieldVisitor visitField(int access, String name,
+				String desc, String signature, Object value) {
+			
+			if (!isSynthetic(access)) {
+				FieldElement field = element.getField(name, Type.getType(desc).getClassName());
+				if (field != null) {
+					FieldVisitor fv = super.visitField(access, name, desc, signature, value);
+					
+					AddTest instance = new AddTest(field);
+					
+					FieldVisitor removeVisitor = new RemoveFieldAnnotationVisitor(field, fv);
+					FieldVisitor addVisitor = new AddAnnotationFieldVisitor(instance, removeVisitor);
+					
+					return addVisitor;
+				}
+			}
+			
+			return super.visitField(access, name, desc, signature, value);
+		}
+
+		private boolean isSynthetic(int access) {
+			return (access & Opcodes.ACC_SYNTHETIC) == Opcodes.ACC_SYNTHETIC;
+		}
+	}
+
 	private final class WriteMethodsVisitor extends ClassVisitor {
 		private final ClassElement element;
 
@@ -45,8 +81,10 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 				if (method != null) {
 					MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);				
 					
+					AddTest instance = new AddTest(method);
+					
 					MethodVisitor removeVisitor = new RemoveMethodAnnotationVisitor(method, mv);
-					MethodVisitor addVisitor = new AddMethodAnnotationVisitor(method, removeVisitor);
+					MethodVisitor addVisitor = new AddAnnotationMethodVisitor(instance, removeVisitor);
 					
 					return addVisitor;
 				}						
@@ -76,33 +114,13 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		if (element != null && element.hasChanged()) {
 			ClassWriter writer = new ClassWriter(reader, 0);		
 
-			ClassVisitor fieldVisitors = new ClassVisitor(Opcodes.ASM5, writer) {
-				@Override
-				public FieldVisitor visitField(int access, String name,
-						String desc, String signature, Object value) {
-					
-					if (!isSynthetic(access)) {
-						FieldElement field = element.getField(name, Type.getType(desc).getClassName());
-						if (field != null) {
-							FieldVisitor fv = super.visitField(access, name, desc, signature, value);
-							FieldVisitor removeVisitor = new RemoveFieldAnnotationVisitor(field, fv);
-							FieldVisitor addVisitor = new AddFieldAnnotationVisitor(field, removeVisitor);
-							
-							return addVisitor;
-						}
-					}
-					
-					return super.visitField(access, name, desc, signature, value);
-				}
-				
-				private boolean isSynthetic(int access) {
-					return (access & Opcodes.ACC_SYNTHETIC) == Opcodes.ACC_SYNTHETIC;
-				}
-			};
-			ClassVisitor methodVisitors = new WriteMethodsVisitor(Opcodes.ASM5, fieldVisitors, element);
+			ClassVisitor methodVisitors = new WriteMethodsVisitor(Opcodes.ASM5, writer, element);
+			ClassVisitor fieldVisitors = new WriteFieldsVisitor(Opcodes.ASM5, methodVisitors, element);
 			
-			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, methodVisitors);
-			ClassVisitor addVisitor = new AddClassAnnotationVisitor(element, removeVisitor);			
+			AddTest instance = new AddTest(element);
+			
+			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, fieldVisitors);
+			ClassVisitor addVisitor = new AddAnnotationClassVisitor(instance, removeVisitor);			
 			
 			reader.accept(addVisitor, 0);
 			
