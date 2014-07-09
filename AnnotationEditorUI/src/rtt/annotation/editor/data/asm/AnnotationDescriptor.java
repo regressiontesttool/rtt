@@ -24,6 +24,10 @@ public enum AnnotationDescriptor {
 	public String getDescriptor() {
 		return descriptor;
 	}
+	
+	public Annotation getAnnotation() {
+		return annotation;
+	}
 
 	public static AnnotationDescriptor findAnnotation(String descriptor) {
 		for (AnnotationDescriptor annotation : values()) {

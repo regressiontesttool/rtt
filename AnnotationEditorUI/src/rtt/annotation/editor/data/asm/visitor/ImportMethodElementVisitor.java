@@ -4,8 +4,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.controller.rules.Annotation;
-import rtt.annotation.editor.data.asm.ASMConverter;
+import rtt.annotation.editor.data.asm.AnnotationDescriptor;
 import rtt.annotation.editor.model.MethodElement;
 
 final class ImportMethodElementVisitor extends MethodVisitor {
@@ -19,12 +18,9 @@ final class ImportMethodElementVisitor extends MethodVisitor {
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc,
 			boolean visible) {
-		if (desc.equals(ASMConverter.COMPARE_DESC)) {
-			method.setAnnotation(Annotation.COMPARE);
-		}
-		
-		if (desc.equals(ASMConverter.INFO_DESC)) {
-			method.setAnnotation(Annotation.INFORMATIONAL);
+		AnnotationDescriptor descriptor = AnnotationDescriptor.findAnnotation(desc);
+		if (descriptor != null) {
+			method.setAnnotation(descriptor.getAnnotation());
 		}
 		
 		return super.visitAnnotation(desc, visible);

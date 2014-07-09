@@ -17,7 +17,7 @@ public abstract class AnnotationChanger {
 	}
 
 	protected abstract AnnotationVisitor checkAnnotation(
-			IAnnotationVisitor visitor,	String desc,boolean visible);
+			IAnnotationVisitor visitor,	String desc, boolean visible);
 	
 	protected abstract void addAnnotation(IAnnotationVisitor visitor);
 }

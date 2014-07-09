@@ -7,8 +7,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.data.asm.ASMConverter;
+import rtt.annotation.editor.data.asm.AnnotationDescriptor;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassElementReference;
@@ -66,8 +66,9 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		if (desc.equals(ASMConverter.NODE_DESC)) {
-			element.setAnnotation(Annotation.NODE);
+		AnnotationDescriptor descriptor = AnnotationDescriptor.findAnnotation(desc);
+		if (descriptor != null) {
+			element.setAnnotation(descriptor.getAnnotation());
 		}
 
 		return super.visitAnnotation(desc, visible);
