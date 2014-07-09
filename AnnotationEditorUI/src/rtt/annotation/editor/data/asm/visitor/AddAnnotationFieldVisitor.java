@@ -5,7 +5,7 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.data.asm.visitor.AddTest.IAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.AnnotationChanger.IAnnotationVisitor;
 
 public class AddAnnotationFieldVisitor extends FieldVisitor implements IAnnotationVisitor {
 	

@@ -6,13 +6,13 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.data.asm.visitor.AddTest.IAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.AnnotationChanger.IAnnotationVisitor;
 
 public class AddAnnotationClassVisitor extends ClassVisitor implements IAnnotationVisitor {
 
-	private AddTest instance;
+	private AnnotationChanger instance;
 
-	public AddAnnotationClassVisitor(AddTest instance, ClassVisitor cv) {
+	public AddAnnotationClassVisitor(AnnotationChanger instance, ClassVisitor cv) {
 		super(Opcodes.ASM5, cv);
 		this.instance = instance;
 	}
@@ -60,5 +60,4 @@ public class AddAnnotationClassVisitor extends ClassVisitor implements IAnnotati
 	public AnnotationVisitor getVisitor(String descriptor, boolean visible) {
 		return super.visitAnnotation(descriptor, visible);
 	}
-
 }

@@ -4,7 +4,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.data.asm.visitor.AddTest.IAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.AnnotationChanger.IAnnotationVisitor;
 
 public class AddAnnotationMethodVisitor extends MethodVisitor implements IAnnotationVisitor {
 	

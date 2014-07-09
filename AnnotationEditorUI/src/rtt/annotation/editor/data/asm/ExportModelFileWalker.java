@@ -17,9 +17,10 @@ import rtt.annotation.editor.data.asm.visitor.AddAnnotationClassVisitor;
 import rtt.annotation.editor.data.asm.visitor.AddAnnotationFieldVisitor;
 import rtt.annotation.editor.data.asm.visitor.AddAnnotationMethodVisitor;
 import rtt.annotation.editor.data.asm.visitor.AddTest;
-import rtt.annotation.editor.data.asm.visitor.RemoveClassAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.AnnotationChanger;
 import rtt.annotation.editor.data.asm.visitor.RemoveFieldAnnotationVisitor;
 import rtt.annotation.editor.data.asm.visitor.RemoveMethodAnnotationVisitor;
+import rtt.annotation.editor.data.asm.visitor.RemoveTest;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.FieldElement;
@@ -117,10 +118,11 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 			ClassVisitor methodVisitors = new WriteMethodsVisitor(Opcodes.ASM5, writer, element);
 			ClassVisitor fieldVisitors = new WriteFieldsVisitor(Opcodes.ASM5, methodVisitors, element);
 			
-			AddTest instance = new AddTest(element);
+			AnnotationChanger addInstance = new AddTest(element);
+			AnnotationChanger removeInstance = new RemoveTest(element);
 			
-			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, fieldVisitors);
-			ClassVisitor addVisitor = new AddAnnotationClassVisitor(instance, removeVisitor);			
+			ClassVisitor removeVisitor = new AddAnnotationClassVisitor(removeInstance, fieldVisitors);
+			ClassVisitor addVisitor = new AddAnnotationClassVisitor(addInstance, removeVisitor);			
 			
 			reader.accept(addVisitor, 0);
 			

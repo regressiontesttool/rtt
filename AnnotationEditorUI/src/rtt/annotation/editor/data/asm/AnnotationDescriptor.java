@@ -2,20 +2,23 @@ package rtt.annotation.editor.data.asm;
 
 import org.objectweb.asm.Type;
 
+import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotations.Parser.Node;
 import rtt.annotations.Parser.Node.Compare;
 import rtt.annotations.Parser.Node.Informational;
 
 public enum AnnotationDescriptor {
 	
-	NODE (Type.getDescriptor(Node.class)),
-	COMPARE (Type.getDescriptor(Compare.class)),
-	INFORMATIONAL (Type.getDescriptor(Informational.class));
+	NODE (Annotation.NODE, Type.getDescriptor(Node.class)),
+	COMPARE (Annotation.COMPARE, Type.getDescriptor(Compare.class)),
+	INFORMATIONAL (Annotation.INFORMATIONAL, Type.getDescriptor(Informational.class));
 	
 	private String descriptor;
+	private Annotation annotation;
 
-	private AnnotationDescriptor(String description) {
+	private AnnotationDescriptor(Annotation annotation, String description) {
 		this.descriptor = description;
+		this.annotation = annotation;
 	}
 	
 	public String getDescriptor() {
@@ -30,5 +33,9 @@ public enum AnnotationDescriptor {
 		}
 		
 		return null;
+	}
+
+	public boolean equalsAnnotation(Annotation annotation) {
+		return annotation.equals(this.annotation);
 	}
 }

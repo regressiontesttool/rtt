@@ -6,20 +6,14 @@ import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.data.asm.AnnotationDescriptor;
 import rtt.annotation.editor.model.Annotatable;
 
-public class AddTest {
-	
-	public static interface IAnnotationVisitor {
-		AnnotationVisitor getVisitor(String descriptor, boolean visible);
-	}
-	
-	private Annotatable<?> annotatable;
+public class AddTest extends AnnotationChanger {
 	
 	private boolean hasCompareAnnotation = false;
 	private boolean hasInfoAnnotation = false;
 	private boolean hasNodeAnnotation = false;
-
+	
 	public AddTest(Annotatable<?> annotatable) {
-		this.annotatable = annotatable;
+		super(annotatable);
 	}
 
 	protected AnnotationVisitor checkAnnotation(IAnnotationVisitor visitor, String desc, boolean visible) {
@@ -45,7 +39,7 @@ public class AddTest {
 			if (av != null) {
 				av.visitEnd();
 			}
-		}		
+		}
 	}
 	
 	private AnnotationDescriptor getDescriptor(Annotation annotation) {
