@@ -14,10 +14,10 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import rtt.annotation.editor.data.asm.visitor.AnnotationFieldVisitor;
-import rtt.annotation.editor.data.asm.visitor.AddTest;
+import rtt.annotation.editor.data.asm.visitor.AddAnnotationChanger;
 import rtt.annotation.editor.data.asm.visitor.AnnotationClassVisitor;
 import rtt.annotation.editor.data.asm.visitor.AnnotationMethodVisitor;
-import rtt.annotation.editor.data.asm.visitor.RemoveTest;
+import rtt.annotation.editor.data.asm.visitor.RemoveAnnotationChanger;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.FieldElement;
@@ -43,7 +43,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 				FieldElement field = element.getField(name, Type.getType(desc).getClassName());
 				if (field != null) {
 					fieldVisitor = AnnotationFieldVisitor.create(fieldVisitor, 
-							new RemoveTest(field), new AddTest(field));
+							new RemoveAnnotationChanger(field), new AddAnnotationChanger(field));
 				}
 			}
 			
@@ -73,7 +73,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 				MethodElement method = element.getMethod(name, methodType.getReturnType().getClassName());
 				if (method != null) {				
 					methodVisitor = AnnotationMethodVisitor.create(methodVisitor, 
-							new RemoveTest(method), new AddTest(method));
+							new RemoveAnnotationChanger(method), new AddAnnotationChanger(method));
 				}
 			}
 			
@@ -105,7 +105,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 			ClassVisitor fieldVisitors = new WriteFieldsVisitor(methodVisitors, element);			
 			
 			ClassVisitor classVisitors = AnnotationClassVisitor.create(fieldVisitors, 
-					new RemoveTest(element), new AddTest(element));
+					new RemoveAnnotationChanger(element), new AddAnnotationChanger(element));
 			
 			reader.accept(classVisitors, 0);
 			

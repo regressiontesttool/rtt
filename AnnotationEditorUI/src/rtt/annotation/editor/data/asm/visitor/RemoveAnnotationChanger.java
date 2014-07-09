@@ -5,9 +5,9 @@ import org.objectweb.asm.AnnotationVisitor;
 import rtt.annotation.editor.data.asm.AnnotationDescriptor;
 import rtt.annotation.editor.model.Annotatable;
 
-public class RemoveTest extends AnnotationChanger {
+public class RemoveAnnotationChanger extends AnnotationChanger {
 	
-	public RemoveTest(Annotatable<?> annotatable) {
+	public RemoveAnnotationChanger(Annotatable<?> annotatable) {
 		super(annotatable); 
 	}
 	

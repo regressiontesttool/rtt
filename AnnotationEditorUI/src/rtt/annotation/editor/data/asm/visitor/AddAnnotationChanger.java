@@ -6,13 +6,13 @@ import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.data.asm.AnnotationDescriptor;
 import rtt.annotation.editor.model.Annotatable;
 
-public class AddTest extends AnnotationChanger {
+public class AddAnnotationChanger extends AnnotationChanger {
 	
 	private boolean hasCompareAnnotation = false;
 	private boolean hasInfoAnnotation = false;
 	private boolean hasNodeAnnotation = false;
 	
-	public AddTest(Annotatable<?> annotatable) {
+	public AddAnnotationChanger(Annotatable<?> annotatable) {
 		super(annotatable);
 	}
 
