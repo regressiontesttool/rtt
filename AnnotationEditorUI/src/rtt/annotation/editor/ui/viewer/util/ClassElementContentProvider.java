@@ -71,7 +71,7 @@ public class ClassElementContentProvider implements ITreeContentProvider {
 		if (parentElement instanceof MultipleDetail<?>) {
 			List<?> items = ((MultipleDetail<?>) parentElement).items;
 			if (items == null || items.isEmpty()) {
-				return new Object[] {new Detail("No annotatable element found.")};
+				return new Object[] {new Detail("No annotatable elements.")};
 			} else {
 				return ((MultipleDetail<?>) parentElement).items.toArray();
 			}						

@@ -9,7 +9,7 @@ import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
-import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.ModelElement;
 
 public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 
@@ -26,12 +26,8 @@ public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 			return ((ClassModel) element).toString();
 		}
 		
-		if (element instanceof PackageElement) {
-			return ((PackageElement) element).getName();
-		}
-		
-		if (element instanceof ClassElement) {
-			return ((ClassElement) element).getName();
+		if (element instanceof ModelElement<?>) {
+			return ((ModelElement<?>) element).getName();
 		}
 		
 		return super.getText(element);

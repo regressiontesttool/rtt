@@ -10,6 +10,7 @@ import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.ModelElement;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.Detail;
 import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.MultipleDetail;
 
@@ -52,12 +53,20 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 			return ((MultipleDetail<?>) element).label;
 		}
 
+		if (element instanceof ModelElement<?>) {
+			return ((ModelElement<?>) element).getName();
+		}
+		
+		return "";
+	}
+	
+	private String getTypeColumn(Object element) {
 		if (element instanceof FieldElement) {
-			return ((FieldElement) element).getName();
+			return ((FieldElement) element).getType();
 		}
 		
 		if (element instanceof MethodElement) {
-			return ((MethodElement) element).getName();
+			return ((MethodElement) element).getType();
 		}
 		
 		return "";
@@ -90,17 +99,4 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 		
 		return DEFAULT_FONT;
 	}
-
-	private String getTypeColumn(Object element) {
-		if (element instanceof FieldElement) {
-			return ((FieldElement) element).getType();
-		}
-		
-		if (element instanceof MethodElement) {
-			return ((MethodElement) element).getType();
-		}
-		
-		return "";
-	}
-
 }

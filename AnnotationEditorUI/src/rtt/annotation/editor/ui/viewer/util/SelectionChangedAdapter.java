@@ -5,6 +5,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 
+import rtt.annotation.editor.model.ModelElement;
+
 public abstract class SelectionChangedAdapter implements
 		ISelectionChangedListener {
 
@@ -15,6 +17,15 @@ public abstract class SelectionChangedAdapter implements
 			return ((IStructuredSelection) selection).getFirstElement();
 		}
 
+		return null;
+	}
+	
+	protected ModelElement<?> getSelectedElement(SelectionChangedEvent event) {
+		Object selection = getSelection(event);
+		if (selection instanceof ModelElementViewerItem) {
+			return ((ModelElementViewerItem) selection).getModelElement();
+		}
+		
 		return null;
 	}
 }
