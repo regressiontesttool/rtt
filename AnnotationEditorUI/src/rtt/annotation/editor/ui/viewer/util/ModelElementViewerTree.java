@@ -9,5 +9,13 @@ public class ModelElementViewerTree extends ModelElementViewerItem {
 	
 	public ModelElementViewerTree(Object parent, String... columns) {
 		super(parent, columns);
-	}		
+	}
+	
+	public void addItem(ModelElementViewerItem item) {
+		items.add(item);
+	}
+	
+	public void clear() {
+		items.clear();
+	}
 }

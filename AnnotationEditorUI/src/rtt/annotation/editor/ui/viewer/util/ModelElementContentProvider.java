@@ -7,13 +7,36 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
 
 public class ModelElementContentProvider implements ITreeContentProvider {
 	
-	public static interface ItemProvider {
-		List<ModelElementViewerItem> setInput(Object input, Object parent);
+	public static abstract class ItemProvider {
+		Object parent;
+		
+		public ItemProvider(Object parent) {
+			this.parent = parent;
+		}
+		
+		protected ModelElementViewerItem createItem(Object parent, String... columns) {
+			return new ModelElementViewerItem(parent, columns);
+		}
+		
+		protected ModelElementViewerItem createItem(String... columns) {
+			return createItem(parent, columns);
+		}
+		
+		protected ModelElementViewerTree createTree(Object parent, String... columns) {
+			return new ModelElementViewerTree(parent, columns);
+		}
+		
+		protected ModelElementViewerTree createTree(String... columns) {
+			return createTree(parent, columns);
+		}	
+		
+		abstract List<ModelElementViewerItem> setInput(Object input);
 	}
 	
 	private static final Object[] EMPTY_ARRAY = new Object[0];
@@ -24,7 +47,8 @@ public class ModelElementContentProvider implements ITreeContentProvider {
 	
 	public ModelElementContentProvider() {
 		providerMap = new HashMap<>();
-		providerMap.put(ClassModel.class, new ClassModelItemProvider());
+		providerMap.put(ClassModel.class, new ClassModelItemProvider(mainItem));
+		providerMap.put(ClassElement.class, new ClassElementItemProvider(mainItem));
 	}	
 	
 	public void addProvider(Class<ModelElement<?>> modelClass, ItemProvider provider) {
@@ -38,15 +62,24 @@ public class ModelElementContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		mainItem.items.clear();
-		
-		if (newInput != null && providerMap.containsKey(newInput.getClass())) {
-			ItemProvider provider = providerMap.get(newInput.getClass());
-			List<ModelElementViewerItem> newData = provider.setInput(newInput, mainItem);
-			if (newData != null && !newData.isEmpty()) {
-				mainItem.items = newData;
+		if (newInput == null) {
+			mainItem.items.clear();
+		} else {
+			if (!newInput.equals(oldInput)) {
+				mainItem.items.clear();
+				createItems(newInput);
 			}
-		}			
+		}		
+	}
+
+	private void createItems(Object newInput) {
+		if (providerMap.containsKey(newInput.getClass())) {
+			ItemProvider provider = providerMap.get(newInput.getClass());
+			List<ModelElementViewerItem> newData = provider.setInput(newInput);
+			if (newData != null && !newData.isEmpty()) {
+				mainItem.items.addAll(newData);
+			}
+		}
 	}
 
 	@Override

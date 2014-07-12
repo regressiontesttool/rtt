@@ -44,8 +44,6 @@ import rtt.annotation.editor.data.asm.ASMConverter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.ui.viewer.util.ClassElementColumnLabelProvider;
-import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
@@ -334,7 +332,7 @@ public class AnnotationEditor extends EditorPart {
 	
 	private void createElementViewer(Composite viewerComposite) {
 		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		elementViewer.setContentProvider(new ClassElementContentProvider());
+		elementViewer.setContentProvider(contentProvider);
 		
 		elementViewer.addSelectionChangedListener(new SelectionChangedAdapter() {
 			
@@ -369,13 +367,13 @@ public class AnnotationEditor extends EditorPart {
 		viewerComposite.setLayout(tcl_elementViewerComposite);
 		
 		TreeViewerColumn nameViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		nameViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ClassElementColumnLabelProvider.DESCRIPTION_COLUMN));
+		nameViewerColumn.setLabelProvider(ModelElementLabelProvider.create(0));
 		TreeColumn nameColumn = nameViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(nameColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		nameColumn.setText("Name");
 		
 		TreeViewerColumn typeViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		typeViewerColumn.setLabelProvider(new ClassElementColumnLabelProvider(ClassElementColumnLabelProvider.TYPE_COLUMN));
+		typeViewerColumn.setLabelProvider(ModelElementLabelProvider.create(1));
 		TreeColumn typeColumn = typeViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(typeColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		typeColumn.setText("Type");
