@@ -10,10 +10,8 @@ import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.Detail;
-import rtt.annotation.editor.ui.viewer.util.ClassElementContentProvider.MultipleDetail;
 
+@Deprecated
 public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	
 	private static final Color COMPARE_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.COMPARE_COLOR);
@@ -45,18 +43,18 @@ public class ClassElementColumnLabelProvider extends ColumnLabelProvider {
 	}
 
 	private String getDescriptionColumn(Object element) {
-		if (element instanceof Detail) {
-			return ((Detail) element).label;
-		}
-		
-		if (element instanceof MultipleDetail<?>) {
-			return ((MultipleDetail<?>) element).label;
-		}
-
-		if (element instanceof ModelElement<?>) {
-			return ((ModelElement<?>) element).getName();
-		}
-		
+//		if (element instanceof Detail) {
+//			return ((Detail) element).label;
+//		}
+//		
+//		if (element instanceof MultipleDetail<?>) {
+//			return ((MultipleDetail<?>) element).label;
+//		}
+//
+//		if (element instanceof ModelElement<?>) {
+//			return ((ModelElement<?>) element).getName();
+//		}
+//		
 		return "";
 	}
 	

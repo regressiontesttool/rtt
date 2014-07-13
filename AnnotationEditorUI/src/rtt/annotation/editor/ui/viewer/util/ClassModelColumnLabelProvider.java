@@ -11,6 +11,7 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
 
+@Deprecated
 public class ClassModelColumnLabelProvider extends ColumnLabelProvider {
 
 	private static final Color ANNOTATED_COLOR = JFaceResources.getColorRegistry().get(AnnotationEditorPlugin.ANNOTATED_COLOR);
