@@ -2,25 +2,27 @@ package rtt.annotation.editor.ui.viewer.util;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
-public class ModelElementLabelProvider extends ColumnLabelProvider {
+import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ViewerItem;
+
+public class ViewerItemLabelProvider extends ColumnLabelProvider {
 	
 	private int column = 0;
 	
-	protected ModelElementLabelProvider(int column) {
+	protected ViewerItemLabelProvider(int column) {
 		this.column = column;
 	}
 	
 	@Override
 	public String getText(Object element) {
-		if (element instanceof ModelElementViewerItem) {
-			return ((ModelElementViewerItem) element).getColumnText(column);
+		if (element instanceof ViewerItem) {
+			return ((ViewerItem) element).getColumnText(column);
 		}
 		
 		return super.getText(element);
 	}
 	
 	public static ColumnLabelProvider create(int column) {
-		return new ModelElementLabelProvider(column);
+		return new ViewerItemLabelProvider(column);
 	}
 	
 	

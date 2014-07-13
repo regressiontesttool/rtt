@@ -6,26 +6,24 @@ import java.util.List;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.ui.viewer.util.ModelElementContentProvider.ItemProvider;
 
-public class ClassElementItemProvider extends ItemProvider {
+public class ClassElementItemProvider extends ViewerItemProvider {
 	
-	List<ModelElementViewerItem> items = new ArrayList<>(2);
+	List<ViewerItem> items = new ArrayList<>(2);
 	
-	ModelElementViewerTree fieldTree;
-	ModelElementViewerTree methodTree;
+	ViewerTree fieldTree;
+	ViewerTree methodTree;
 	
-	public ClassElementItemProvider(Object parent) {
-		super(parent);
-		fieldTree = createTree("Fields");
-		methodTree = createTree("Methods");
+	public ClassElementItemProvider() {
+		fieldTree = new ViewerTree(this, "Fields");
+		methodTree = new ViewerTree(this, "Methods");
 		
 		items.add(fieldTree);
 		items.add(methodTree);
 	}
 	
 	@Override
-	public List<ModelElementViewerItem> setInput(Object input) {
+	public List<ViewerItem> setInput(Object input) {
 		ClassElement classElement = (ClassElement) input;
 		
 		updateFieldItems(classElement.getFields());
@@ -38,14 +36,14 @@ public class ClassElementItemProvider extends ItemProvider {
 		fieldTree.clear();
 		
 		for (FieldElement field : fields) {
-			ModelElementViewerItem fieldItem = createItem(fieldTree, field.getName(), field.getType());
+			ViewerItem fieldItem = createItem(fieldTree, field.getName(), field.getType());
 			fieldItem.setModelElement(field);
 			
 			fieldTree.addItem(fieldItem);
 		}
 		
 		if (fieldTree.items.isEmpty()) {
-			fieldTree.addItem(new ModelElementViewerItem(fieldTree, "No annotatable elements."));
+			fieldTree.addItem(new ViewerItem(fieldTree, "No annotatable elements."));
 		}	
 	}
 
@@ -53,15 +51,19 @@ public class ClassElementItemProvider extends ItemProvider {
 		methodTree.clear();
 		
 		for (MethodElement method : methods) {
-			ModelElementViewerItem fieldItem = createItem(methodTree, method.getName(), method.getType());
+			ViewerItem fieldItem = createItem(methodTree, method.getName(), method.getType());
 			fieldItem.setModelElement(method);
 			
 			methodTree.addItem(fieldItem);
 		}
 		
 		if (methodTree.items.isEmpty()) {
-			methodTree.addItem(new ModelElementViewerItem(methodTree, "No annotatable elements."));
+			methodTree.addItem(new ViewerItem(methodTree, "No annotatable elements."));
 		}
 	}
 
+	@Override
+	boolean hasRoot(Object parentElement) {
+		return parentElement.getClass().equals(ClassElement.class);
+	}
 }

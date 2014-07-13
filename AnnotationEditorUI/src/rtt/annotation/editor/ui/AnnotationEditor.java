@@ -9,10 +9,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -44,11 +42,12 @@ import rtt.annotation.editor.data.asm.ASMConverter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.ui.viewer.util.ModelElementContentProvider;
-import rtt.annotation.editor.ui.viewer.util.ModelElementLabelProvider;
+import rtt.annotation.editor.ui.viewer.util.ClassModelItemProvider;
+import rtt.annotation.editor.ui.viewer.util.ClassElementItemProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
-import rtt.annotation.editor.ui.viewer.util.SelectionChangedAdapter;
+import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
+import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
 import rtt.annotation.editor.util.StatusFactory;
 
 public class AnnotationEditor extends EditorPart {
@@ -76,28 +75,16 @@ public class AnnotationEditor extends EditorPart {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			Object selectedObject = getSelection(viewer);
-			if (selectedObject instanceof Annotatable<?>) {
-				ControllerRegistry.apply(annotation, (Annotatable<?>) selectedObject);
+			ModelElement<?> modelElement = ViewerSelectionUtil.getModelElement(viewer.getSelection());
+			if (modelElement instanceof Annotatable<?>) {
+				ControllerRegistry.apply(annotation, (Annotatable<?>) modelElement);
 				
 				// TODO implement improved change detection
 				dirty = true;
 				firePropertyChange(PROP_DIRTY);
-				
-				viewer.setSelection(new StructuredSelection(selectedObject), true);
-				elementViewer.refresh();
-				nodeViewer.refresh();
 			}
-		}
-		
-		private Object getSelection(Viewer viewer) {
-			ISelection selection = viewer.getSelection();
 			
-			if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-				return ((IStructuredSelection) selection).getFirstElement();
-			}
-
-			return null;
+			viewer.setSelection(viewer.getSelection(), true);
 		}
 	}
 
@@ -109,9 +96,11 @@ public class AnnotationEditor extends EditorPart {
 	private TreeViewer elementViewer;
 	private TreeViewer nodeViewer;
 	
-	private ViewerFilter nodeFilter;
-	private ModelElementContentProvider contentProvider;
+	private ViewerItemProvider nodeProvider;
+	private ViewerItemProvider elementProvider;
+	private ViewerItemProvider propertyProvider;
 	
+	private ViewerFilter nodeFilter;	
 	
 	private ClassModel model;
 	
@@ -192,8 +181,6 @@ public class AnnotationEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		
-		contentProvider = new ModelElementContentProvider();
-		
 		SashForm verticalSash = new SashForm(parent, SWT.SMOOTH | SWT.VERTICAL);
 		
 		createTopPanel(verticalSash);
@@ -249,14 +236,16 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createNodeViewer(Composite viewerComposite) {		
-		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		nodeViewer.setContentProvider(contentProvider);
+		nodeProvider = new ClassModelItemProvider();		
 		
-		nodeViewer.addSelectionChangedListener(new SelectionChangedAdapter() {
+		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		nodeViewer.setContentProvider(nodeProvider.getContentProvider());
+		
+		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			@Override
-			public void selectionChanged(SelectionChangedEvent event) {				
-				ModelElement<?> element = getSelectedElement(event);
+			public void selectionChanged(SelectionChangedEvent event) {
+				ModelElement<?> element = ViewerSelectionUtil.getModelElement(event.getSelection());
 				
 				setNodeButton.setEnabled(false);
 				removeNodeButton.setEnabled(false);	
@@ -285,7 +274,7 @@ public class AnnotationEditor extends EditorPart {
 		viewerComposite.setLayout(columnLayout);
 		
 		TreeViewerColumn nodeViewerColumn = new TreeViewerColumn(nodeViewer, SWT.NONE);
-		nodeViewerColumn.setLabelProvider(ModelElementLabelProvider.create(0));
+		nodeViewerColumn.setLabelProvider(nodeProvider.getLabelProvider(0));
 		
 		TreeColumn nodesColumn = nodeViewerColumn.getColumn();
 		columnLayout.setColumnData(nodesColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
@@ -331,10 +320,12 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createElementViewer(Composite viewerComposite) {
-		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		elementViewer.setContentProvider(contentProvider);
+		elementProvider = new ClassElementItemProvider();
 		
-		elementViewer.addSelectionChangedListener(new SelectionChangedAdapter() {
+		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		elementViewer.setContentProvider(elementProvider.getContentProvider());
+		
+		elementViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -342,11 +333,11 @@ public class AnnotationEditor extends EditorPart {
 				setInformationalButton.setEnabled(false);
 				removeAnnotationButton.setEnabled(false);
 				
-				Object selectedObject = getSelection(event);
+				ModelElement<?> selectedObject = ViewerSelectionUtil.getModelElement(event.getSelection());
 				
 				propertyViewer.getControl().setEnabled(selectedObject != null);
 				propertyViewer.setInput(selectedObject);				
-				propertyViewer.expandToLevel(SECOND_LEVEL);
+				propertyViewer.expandToLevel(TreeViewer.ALL_LEVELS);
 				
 				if (selectedObject instanceof Annotatable<?>) {
 					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
@@ -367,13 +358,13 @@ public class AnnotationEditor extends EditorPart {
 		viewerComposite.setLayout(tcl_elementViewerComposite);
 		
 		TreeViewerColumn nameViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		nameViewerColumn.setLabelProvider(ModelElementLabelProvider.create(0));
+		nameViewerColumn.setLabelProvider(elementProvider.getLabelProvider(0));
 		TreeColumn nameColumn = nameViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(nameColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		nameColumn.setText("Name");
 		
 		TreeViewerColumn typeViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		typeViewerColumn.setLabelProvider(ModelElementLabelProvider.create(1));
+		typeViewerColumn.setLabelProvider(elementProvider.getLabelProvider(1));
 		TreeColumn typeColumn = typeViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(typeColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		typeColumn.setText("Type");
@@ -442,6 +433,22 @@ public class AnnotationEditor extends EditorPart {
 	
 	@Override
 	public void dispose() {
+
+		if (nodeProvider != null) {
+			nodeProvider.dispose();
+			nodeProvider = null;
+		}
+
+		if (elementProvider != null) {
+			elementProvider.dispose();
+			elementProvider = null;
+		}
+
+		if (propertyProvider != null) {
+			propertyProvider.dispose();
+			propertyProvider = null;
+		}
+		
 		super.dispose();
 	}
 }

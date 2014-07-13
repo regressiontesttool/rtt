@@ -10,10 +10,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Color;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
-import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;

@@ -6,24 +6,19 @@ import java.util.List;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
-import rtt.annotation.editor.ui.viewer.util.ModelElementContentProvider.ItemProvider;
 
-final class ClassModelItemProvider extends ItemProvider {
+public final class ClassModelItemProvider extends ViewerItemProvider {
 	
-	List<ModelElementViewerItem> packages = new ArrayList<>(0);
-	
-	public ClassModelItemProvider(Object parent) {
-		super(parent);
-	}
+	List<ViewerItem> packages = new ArrayList<>(0);
 
 	@Override
-	public List<ModelElementViewerItem> setInput(Object input) {
+	List<ViewerItem> setInput(Object input) {
 		ClassModel model = (ClassModel) input;
 		
 		packages.clear();
 		for (PackageElement packageElement : model.getPackages()) {
 			String packageName = packageElement.getName();
-			ModelElementViewerTree packageTree = createTree(packageName);
+			ViewerTree packageTree = new ViewerTree(this, packageName);
 			packageTree.setModelElement(packageElement);
 			
 			packageTree.items = createClassItems(model.getClasses(packageName), packageTree);
@@ -34,15 +29,20 @@ final class ClassModelItemProvider extends ItemProvider {
 		return packages;
 	}
 
-	public List<ModelElementViewerItem> createClassItems(List<ClassElement> classes, ModelElementViewerTree parent) {
-		List<ModelElementViewerItem> classItems = new ArrayList<>(classes.size());
+	public List<ViewerItem> createClassItems(List<ClassElement> classes, ViewerTree parent) {
+		List<ViewerItem> classItems = new ArrayList<>(classes.size());
 		for (ClassElement classElement : classes) {
-			ModelElementViewerItem item = createItem(parent, classElement.getName());
+			ViewerItem item = createItem(parent, classElement.getName());
 			item.setModelElement(classElement);
 			
 			classItems.add(item);
 		}
 		
 		return classItems;
+	}
+
+	@Override
+	boolean hasRoot(Object parentElement) {
+		return parentElement.getClass().equals(ClassModel.class);
 	}
 }
