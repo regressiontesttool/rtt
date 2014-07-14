@@ -96,7 +96,9 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	@Override
 	protected void processData(Path file) throws IOException {
 		ClassReader reader = new ClassReader(Files.readAllBytes(file));
-		final ClassElement element = ASMConverter.RESOLVER.findClass(reader.getClassName(), model);
+		String className = reader.getClassName().replace("/", ".");
+		
+		final ClassElement element = ASMConverter.RESOLVER.findClass(className, model);
 		
 		if (element != null && element.hasChanged()) {
 			ClassWriter writer = new ClassWriter(reader, 0);		

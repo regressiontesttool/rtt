@@ -23,7 +23,7 @@ import rtt.annotations.Parser.Node.Informational;
 
 public class ASMConverter implements Importer, Exporter {
 	
-	public static final NameResolver RESOLVER = NameResolver.create("/");
+	public static final NameResolver RESOLVER = NameResolver.create(".");
 	
 	private ClassModelFactory factory;
 	

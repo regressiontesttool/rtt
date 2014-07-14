@@ -31,8 +31,10 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 	public void visit(int version, int access, String name, String signature,
 			String superName, String[] interfaces) {
 		
-		String className = ASMConverter.RESOLVER.computeClassName(name);
-		String packageName = ASMConverter.RESOLVER.computePackageName(name);
+		String completeName = name.replace("/", ".");
+		
+		String className = ASMConverter.RESOLVER.computeClassName(completeName);
+		String packageName = ASMConverter.RESOLVER.computePackageName(completeName);
 		
 		element.setName(className);
 		element.setPackageName(packageName);
@@ -50,11 +52,15 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 		}
 		
 		if (superName != null && !superName.equals("java/lang/Object")) {
-			element.setSuperClass(ClassElementReference.create(superName));
+			element.setSuperClass(ClassElementReference.create(superName.replace("/", ".")));
 		}
 		
 		if (interfaces != null) {
-			element.setInterfaces(ClassElementReference.create(interfaces));
+			String[] changedInterfaces = interfaces.clone();
+			for (int i = 0; i < changedInterfaces.length; i++) {
+				changedInterfaces[i] = changedInterfaces[i].replace("/", ".");
+			}
+			element.setInterfaces(ClassElementReference.create(changedInterfaces));
 		}
 		
 		super.visit(version, access, name, signature, superName, interfaces);
