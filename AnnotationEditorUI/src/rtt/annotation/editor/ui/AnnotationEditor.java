@@ -42,8 +42,8 @@ import rtt.annotation.editor.data.asm.ASMConverter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.ui.viewer.util.ClassElementItemProvider;
-import rtt.annotation.editor.ui.viewer.util.ClassModelItemProvider;
+import rtt.annotation.editor.ui.viewer.util.ElementViewerItemProvider;
+import rtt.annotation.editor.ui.viewer.util.NodeViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
@@ -249,7 +249,7 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createNodeViewer(Composite viewerComposite) {		
-		nodeProvider = new ClassModelItemProvider();		
+		nodeProvider = new NodeViewerItemProvider();		
 		
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		nodeViewer.setContentProvider(nodeProvider.getContentProvider());
@@ -333,7 +333,7 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	private void createElementViewer(Composite viewerComposite) {
-		elementProvider = new ClassElementItemProvider();
+		elementProvider = new ElementViewerItemProvider();
 		
 		elementViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		elementViewer.setContentProvider(elementProvider.getContentProvider());

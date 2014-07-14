@@ -11,9 +11,9 @@ import org.eclipse.swt.graphics.RGB;
 public abstract class ViewerItem {
 	
 	public enum ItemColor {
-		NODE("NODE_COLOR", new RGB(0, 0, 155)),
-		EXTEND_NODE("EXTENDED_NODE_COLOR", new RGB(200, 0, 0)),
-		EXTEND_MEMBER("EXTEND_MEMBER_COLOR", new RGB(0, 155, 0)),
+		ANNOTATED("ANNOTATED_COLOR", new RGB(0, 0, 155)),
+		ANNOTATED_EXTEND("ANNOTATED_EXTEND_COLOR", new RGB(200, 0, 0)),
+		ANNOTATED_MEMBER("ANNOTATED_MEMBER_COLOR", new RGB(0, 155, 0)),
 		
 		COMPARE("COMPARE_COLOR", new RGB(0, 0, 155)),
 		INFORMATIONAL("INFORMATIONAL_COLOR", new RGB(0, 155, 255));

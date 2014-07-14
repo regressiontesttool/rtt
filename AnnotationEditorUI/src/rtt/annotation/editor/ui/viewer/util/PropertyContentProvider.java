@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Color;
 
-import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
@@ -17,6 +15,7 @@ import rtt.annotation.editor.model.ClassModel.PackageElement;
 import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.ui.viewer.util.ViewerItem.ItemColor;
 
 public class PropertyContentProvider implements ITreeContentProvider {
 	
@@ -159,8 +158,7 @@ public class PropertyContentProvider implements ITreeContentProvider {
 			property = new Property(firstColumn, reference.getName() 
 					+ " - " + reference.getReference().getAnnotation());
 			
-			property.setColor(JFaceResources.getColorRegistry().get(
-					AnnotationEditorPlugin.ANNOTATED_COLOR));
+			property.setColor(ItemColor.getColor(ItemColor.ANNOTATED));
 		}
 		
 		return property;

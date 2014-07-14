@@ -7,7 +7,7 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 
-public final class ClassModelItemProvider extends ViewerItemProvider {
+public final class NodeViewerItemProvider extends ViewerItemProvider {
 
 	private final class ClassElementItem extends
 			ModelElementViewerItem<ClassElement> {
@@ -18,15 +18,15 @@ public final class ClassModelItemProvider extends ViewerItemProvider {
 		@Override
 		protected ItemColor getItemColor(ClassElement element) {
 			if (element.hasAnnotation()) {
-				return ItemColor.NODE;
+				return ItemColor.ANNOTATED;
 			}
 			
 			if (element.hasExtendedAnnotation()) {
-				return ItemColor.EXTEND_NODE;
+				return ItemColor.ANNOTATED_EXTEND;
 			}
 			
 			if (element.hasMemberAnnotation()) {
-				return ItemColor.EXTEND_MEMBER;
+				return ItemColor.ANNOTATED_MEMBER;
 			}					
 			
 			return super.getItemColor(element);

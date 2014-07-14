@@ -8,7 +8,7 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 
-public class ClassElementItemProvider extends ViewerItemProvider {
+public class ElementViewerItemProvider extends ViewerItemProvider {
 	
 	private final class MethodElementItem extends
 			ModelElementViewerItem<MethodElement> {
@@ -102,7 +102,7 @@ public class ClassElementItemProvider extends ViewerItemProvider {
 	ViewerItem fieldTree;
 	ViewerItem methodTree;
 	
-	public ClassElementItemProvider() {
+	public ElementViewerItemProvider() {
 		fieldTree = new TextViewerItem(null, "Fields");
 		methodTree = new TextViewerItem(null, "Methods");
 		
