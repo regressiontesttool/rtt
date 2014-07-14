@@ -35,6 +35,21 @@ public final class ClassModelItemProvider extends ViewerItemProvider {
 			ViewerItem item = createItem(parent, classElement.getName());
 			item.setModelElement(classElement);
 			
+			if (classElement.hasMemberAnnotation()) {
+				item.setForeground(ItemColor.EXTEND_MEMBER);
+				item.setFont(ItemFont.ITALIC_FONT);
+			}
+			
+			if (classElement.hasExtendedAnnotation()) {
+				item.setForeground(ItemColor.EXTEND_NODE);
+				item.setFont(ItemFont.ITALIC_FONT);
+			}
+			
+			if (classElement.hasAnnotation()) {
+				item.setForeground(ItemColor.NODE);
+				item.setFont(ItemFont.BOLD_FONT);
+			}
+			
 			classItems.add(item);
 		}
 		

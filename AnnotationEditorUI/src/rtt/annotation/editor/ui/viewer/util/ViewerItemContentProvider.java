@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ViewerItem;
 import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ViewerTree;
 
 public class ViewerItemContentProvider implements ITreeContentProvider {

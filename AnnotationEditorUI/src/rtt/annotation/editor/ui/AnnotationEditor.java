@@ -46,6 +46,7 @@ import rtt.annotation.editor.ui.viewer.util.ClassModelItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ClassElementItemProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
+import rtt.annotation.editor.ui.viewer.util.ViewerItem;
 import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
 import rtt.annotation.editor.util.StatusFactory;
@@ -57,6 +58,14 @@ public class AnnotationEditor extends EditorPart {
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (element instanceof Annotatable<?>) {
 				return ((Annotatable<?>) element).getAnnotation() == Annotation.NODE;
+			}
+			
+			if (element instanceof ViewerItem) {
+				ViewerItem item = (ViewerItem) element;
+				if (item.getModelElement() instanceof Annotatable<?>) {
+					Annotatable<?> annotatable = (Annotatable<?>) item.getModelElement();
+					return annotatable.hasAnnotation();
+				}
 			}
 			
 			return true;

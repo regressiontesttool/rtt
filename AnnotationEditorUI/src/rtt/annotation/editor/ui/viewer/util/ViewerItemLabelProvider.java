@@ -1,8 +1,8 @@
 package rtt.annotation.editor.ui.viewer.util;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ViewerItem;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 
 public class ViewerItemLabelProvider extends ColumnLabelProvider {
 	
@@ -25,5 +25,22 @@ public class ViewerItemLabelProvider extends ColumnLabelProvider {
 		return new ViewerItemLabelProvider(column);
 	}
 	
+	@Override
+	public Color getForeground(Object element) {
+		if (element instanceof ViewerItem) {
+			return ((ViewerItem) element).getForeground();
+		}
+		
+		return super.getForeground(element);
+	}
+	
+	@Override
+	public Font getFont(Object element) {
+		if (element instanceof ViewerItem) {
+			return ((ViewerItem) element).getFont();
+		}
+		
+		return super.getFont(element);
+	}
 	
 }

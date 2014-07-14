@@ -4,7 +4,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ViewerItem;
 
 public class ViewerSelectionUtil {
 	

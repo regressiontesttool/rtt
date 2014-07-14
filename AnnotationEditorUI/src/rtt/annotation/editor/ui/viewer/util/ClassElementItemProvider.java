@@ -39,6 +39,17 @@ public class ClassElementItemProvider extends ViewerItemProvider {
 			ViewerItem fieldItem = createItem(fieldTree, field.getName(), field.getType());
 			fieldItem.setModelElement(field);
 			
+			switch(field.getAnnotation()) {
+				case COMPARE:
+					fieldItem.setForeground(ItemColor.COMPARE);
+					break;
+				case INFORMATIONAL:
+					fieldItem.setForeground(ItemColor.INFORMATIONAL);
+					break;
+				default:
+					break;
+			}
+			
 			fieldTree.addItem(fieldItem);
 		}
 		
@@ -53,6 +64,17 @@ public class ClassElementItemProvider extends ViewerItemProvider {
 		for (MethodElement method : methods) {
 			ViewerItem fieldItem = createItem(methodTree, method.getName(), method.getType());
 			fieldItem.setModelElement(method);
+			
+			switch(method.getAnnotation()) {
+				case COMPARE:
+					fieldItem.setForeground(ItemColor.COMPARE);
+					break;
+				case INFORMATIONAL:
+					fieldItem.setForeground(ItemColor.INFORMATIONAL);
+					break;
+				default:
+					break;
+			}
 			
 			methodTree.addItem(fieldItem);
 		}
