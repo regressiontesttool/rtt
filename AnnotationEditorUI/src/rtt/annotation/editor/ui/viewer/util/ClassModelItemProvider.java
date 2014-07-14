@@ -8,20 +8,54 @@ import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 
 public final class ClassModelItemProvider extends ViewerItemProvider {
-	
+
+	private final class ClassElementItem extends
+			ModelElementViewerItem<ClassElement> {
+		private ClassElementItem(ViewerItem parent, ClassElement element) {
+			super(parent, element);
+		}
+
+		@Override
+		protected ItemColor getItemColor(ClassElement element) {
+			if (element.hasAnnotation()) {
+				return ItemColor.NODE;
+			}
+			
+			if (element.hasExtendedAnnotation()) {
+				return ItemColor.EXTEND_NODE;
+			}
+			
+			if (element.hasMemberAnnotation()) {
+				return ItemColor.EXTEND_MEMBER;
+			}					
+			
+			return super.getItemColor(element);
+		}
+
+		@Override
+		protected ItemFont getItemFont(ClassElement element) {
+			if (element.hasAnnotation()) {
+				return ItemFont.BOLD_FONT;
+			}
+			
+			if (element.hasExtendedAnnotation() || element.hasMemberAnnotation()) {
+				return ItemFont.ITALIC_FONT;
+			}
+			
+			return super.getItemFont(element);
+		}
+	}
+
 	List<ViewerItem> packages = new ArrayList<>(0);
 
 	@Override
-	List<ViewerItem> setInput(Object input) {
+	List<ViewerItem> setInput(Object input, ViewerItem parent) {
 		ClassModel model = (ClassModel) input;
 		
 		packages.clear();
 		for (PackageElement packageElement : model.getPackages()) {
-			String packageName = packageElement.getName();
-			ViewerTree packageTree = new ViewerTree(this, packageName);
-			packageTree.setModelElement(packageElement);
-			
-			packageTree.items = createClassItems(model.getClasses(packageName), packageTree);
+			ViewerItem packageTree = new ModelElementViewerItem<PackageElement>(parent, packageElement);
+			createClassItems(model.getClasses(packageElement.getName()), packageTree);
 			
 			packages.add(packageTree);
 		}
@@ -29,31 +63,12 @@ public final class ClassModelItemProvider extends ViewerItemProvider {
 		return packages;
 	}
 
-	public List<ViewerItem> createClassItems(List<ClassElement> classes, ViewerTree parent) {
-		List<ViewerItem> classItems = new ArrayList<>(classes.size());
+	public void createClassItems(List<ClassElement> classes, ViewerItem parent) {
 		for (ClassElement classElement : classes) {
-			ViewerItem item = createItem(parent, classElement.getName());
-			item.setModelElement(classElement);
+			ViewerItem item = new ClassElementItem(parent, classElement);
 			
-			if (classElement.hasMemberAnnotation()) {
-				item.setForeground(ItemColor.EXTEND_MEMBER);
-				item.setFont(ItemFont.ITALIC_FONT);
-			}
-			
-			if (classElement.hasExtendedAnnotation()) {
-				item.setForeground(ItemColor.EXTEND_NODE);
-				item.setFont(ItemFont.ITALIC_FONT);
-			}
-			
-			if (classElement.hasAnnotation()) {
-				item.setForeground(ItemColor.NODE);
-				item.setFont(ItemFont.BOLD_FONT);
-			}
-			
-			classItems.add(item);
+			parent.add(item);
 		}
-		
-		return classItems;
 	}
 
 	@Override

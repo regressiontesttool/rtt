@@ -1,60 +1,119 @@
 package rtt.annotation.editor.ui.viewer.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.RGB;
 
-import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ItemColor;
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ItemFont;
+public abstract class ViewerItem {
+	
+	public enum ItemColor {
+		NODE("NODE_COLOR", new RGB(0, 0, 155)),
+		EXTEND_NODE("EXTENDED_NODE_COLOR", new RGB(200, 0, 0)),
+		EXTEND_MEMBER("EXTEND_MEMBER_COLOR", new RGB(0, 155, 0)),
+		
+		COMPARE("COMPARE_COLOR", new RGB(0, 0, 155)),
+		INFORMATIONAL("INFORMATIONAL_COLOR", new RGB(0, 155, 255));
+		
+		
+		private String colorKey;
 
-public class ViewerItem {
-
-	private Object parent;
-	private String[] columns;
-
-	private Color foreground = null;
-	private Font font = null;
-
-	private ModelElement<?> modelElement;
-
-	public ViewerItem(Object parent, String... columns) {
-		this.parent = parent;
-		this.columns = columns;
+		private ItemColor(String colorKey, RGB colorData) {
+			this.colorKey = colorKey;
+			JFaceResources.getColorRegistry().put(colorKey, colorData);
+		}
+		
+		public static Color getColor(ItemColor color) {
+			if (color != null) {
+				return JFaceResources.getColorRegistry().get(color.colorKey);
+			}
+			
+			return null;		
+		}
 	}
-
-	public Object getParent() {
+	
+	public enum ItemFont {
+		DEFAULT_FONT(),
+		BOLD_FONT(),
+		ITALIC_FONT();
+		
+		public static Font getFont(ItemFont itemFont) {
+			Font font = JFaceResources.getFontRegistry().get(JFaceResources.DEFAULT_FONT);
+			
+			if (itemFont == BOLD_FONT) {
+				font = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
+			}
+			
+			if (itemFont == ITALIC_FONT) {
+				font = JFaceResources.getFontRegistry().getItalic(JFaceResources.DEFAULT_FONT);
+			}
+			
+			return font;
+		}
+	}
+	
+	protected static final int FIRST_COLUMN = 0;
+	protected static final int SECOND_COLUMN = 1;
+	protected static final int THIRD_COLUMN = 2;
+	protected static final int FOURTH_COLUMN = 3;
+	protected static final int FIFTH_COLUMN = 4;
+	
+	private ViewerItem parent;
+	private List<ViewerItem> children;
+	
+	public ViewerItem(ViewerItem parent) {
+		this.parent = parent;
+		children = new ArrayList<>(0);
+	}
+	
+	protected ViewerItem getParent() {
 		return parent;
 	}
-
-	public String getColumnText(int index) {
-		if (index < columns.length) {
-			return columns[index];
-		}
-
-		return "";
-	}
-
-	public Color getForeground() {
-		return foreground;
-	}
-
-	public void setForeground(ItemColor foreground) {
-		this.foreground = ItemColor.getColor(foreground);
+	
+	protected void setParent(ViewerItem parent) {
+		this.parent = parent;		
 	}
 	
-	protected Font getFont() {
-		return font;
+	protected abstract String getColumnText(int columnIndex);	
+	
+	protected final Color getColor() {
+		return ItemColor.getColor(getItemColor());
+	}
+
+	protected ItemColor getItemColor() {
+		return null;
 	}
 	
-	public void setFont(ItemFont font) {
-		this.font = ItemFont.getFont(font);
+	protected final Font getFont() {
+		return ItemFont.getFont(getItemFont());
 	}
 
-	public void setModelElement(ModelElement<?> modelElement) {
-		this.modelElement = modelElement;
+	protected ItemFont getItemFont() {
+		return null;
+	}
+	
+	protected void clear() {
+		children.clear();
+	}
+	
+	protected void add(ViewerItem item) {
+		children.add(item);
+	}
+	
+	protected void addAll(List<ViewerItem> newData) {
+		children.addAll(newData);
+	}
+	
+	protected List<ViewerItem> getChildren() {
+		return children;
 	}
 
-	public ModelElement<?> getModelElement() {
-		return modelElement;
-	}			
+	public boolean isEmpty() {
+		return children.isEmpty();
+	}
+
+	
 }

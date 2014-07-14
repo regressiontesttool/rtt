@@ -28,7 +28,7 @@ public class ViewerItemLabelProvider extends ColumnLabelProvider {
 	@Override
 	public Color getForeground(Object element) {
 		if (element instanceof ViewerItem) {
-			return ((ViewerItem) element).getForeground();
+			return ((ViewerItem) element).getColor();
 		}
 		
 		return super.getForeground(element);

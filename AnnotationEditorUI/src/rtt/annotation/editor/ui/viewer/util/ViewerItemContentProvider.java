@@ -5,14 +5,12 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider.ViewerTree;
-
 public class ViewerItemContentProvider implements ITreeContentProvider {
 	
 	private ViewerItemProvider provider;
 	
 	private static final Object[] EMPTY_ARRAY = new Object[0];
-	private ViewerTree mainItem = new ViewerTree(this);
+	private ViewerItem mainItem = new TextViewerItem(null);
 		
 	protected ViewerItemContentProvider(ViewerItemProvider provider) {
 		this.provider = provider;
@@ -24,10 +22,10 @@ public class ViewerItemContentProvider implements ITreeContentProvider {
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (newInput == null) {
-			mainItem.items.clear();
+			mainItem.clear();
 		} else {
 			if (!newInput.equals(oldInput)) {
-				mainItem.items.clear();
+				mainItem.clear();
 				createItems(newInput);
 			}
 		}		
@@ -35,9 +33,9 @@ public class ViewerItemContentProvider implements ITreeContentProvider {
 
 	private void createItems(Object newInput) {
 		if (provider.hasRoot(newInput)) {
-			List<ViewerItem> newData = provider.setInput(newInput);
+			List<ViewerItem> newData = provider.setInput(newInput, mainItem);
 			if (newData != null && !newData.isEmpty()) {
-				mainItem.items.addAll(newData);
+				mainItem.addAll(newData);
 			}
 		}		
 	}
@@ -49,12 +47,12 @@ public class ViewerItemContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {		
-		if (parentElement instanceof ViewerTree) {
-			return ((ViewerTree) parentElement).items.toArray();
+		if (parentElement instanceof ViewerItem) {
+			return ((ViewerItem) parentElement).getChildren().toArray();
 		}
 		
 		if (provider.hasRoot(parentElement)) {
-			return mainItem.items.toArray();
+			return mainItem.getChildren().toArray();
 		}
 		
 		return EMPTY_ARRAY;

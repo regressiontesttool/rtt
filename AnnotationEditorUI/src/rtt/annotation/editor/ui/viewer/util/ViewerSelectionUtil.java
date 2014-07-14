@@ -22,8 +22,8 @@ public class ViewerSelectionUtil {
 			return (ModelElement<?>) selectedObject;
 		}
 		
-		if (selectedObject instanceof ViewerItem) {
-			return ((ViewerItem) selectedObject).getModelElement();
+		if (selectedObject instanceof ModelElementViewerItem) {
+			return ((ModelElementViewerItem) selectedObject).getModelElement();
 		}
 		
 		return null;
