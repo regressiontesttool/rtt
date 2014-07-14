@@ -43,11 +43,10 @@ import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
 import rtt.annotation.editor.ui.viewer.util.ElementViewerItemProvider;
-import rtt.annotation.editor.ui.viewer.util.NodeViewerItemProvider;
-import rtt.annotation.editor.ui.viewer.util.PropertyColumnLabelProvider;
-import rtt.annotation.editor.ui.viewer.util.PropertyContentProvider;
-import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementViewerItem;
+import rtt.annotation.editor.ui.viewer.util.NodeViewerItemProvider;
+import rtt.annotation.editor.ui.viewer.util.PropertyViewerItemProvider;
+import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
 import rtt.annotation.editor.util.StatusFactory;
 
@@ -287,7 +286,7 @@ public class AnnotationEditor extends EditorPart {
 		viewerComposite.setLayout(columnLayout);
 		
 		TreeViewerColumn nodeViewerColumn = new TreeViewerColumn(nodeViewer, SWT.NONE);
-		nodeViewerColumn.setLabelProvider(nodeProvider.getLabelProvider(0));
+		nodeViewerColumn.setLabelProvider(nodeProvider.getLabelProvider(ViewerItemProvider.FIRST_COLUMN));
 		
 		TreeColumn nodesColumn = nodeViewerColumn.getColumn();
 		columnLayout.setColumnData(nodesColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
@@ -371,13 +370,13 @@ public class AnnotationEditor extends EditorPart {
 		viewerComposite.setLayout(tcl_elementViewerComposite);
 		
 		TreeViewerColumn nameViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		nameViewerColumn.setLabelProvider(elementProvider.getLabelProvider(0));
+		nameViewerColumn.setLabelProvider(elementProvider.getLabelProvider(ViewerItemProvider.FIRST_COLUMN));
 		TreeColumn nameColumn = nameViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(nameColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		nameColumn.setText("Name");
 		
 		TreeViewerColumn typeViewerColumn = new TreeViewerColumn(elementViewer, SWT.NONE);
-		typeViewerColumn.setLabelProvider(elementProvider.getLabelProvider(1));
+		typeViewerColumn.setLabelProvider(elementProvider.getLabelProvider(ViewerItemProvider.SECOND_COLUMN));
 		TreeColumn typeColumn = typeViewerColumn.getColumn();
 		tcl_elementViewerComposite.setColumnData(typeColumn, new ColumnWeightData(1, MIN_COLUMN_WIDTH, true));
 		typeColumn.setText("Type");
@@ -415,8 +414,10 @@ public class AnnotationEditor extends EditorPart {
 	}	
 	
 	private void createPropertyViewer(Composite propertyViewerComposite) {
+		propertyProvider = new PropertyViewerItemProvider();
+		
 		propertyViewer = new TreeViewer(propertyViewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		propertyViewer.setContentProvider(new PropertyContentProvider());
+		propertyViewer.setContentProvider(propertyProvider.getContentProvider());
 		
 		Tree propertyTree = propertyViewer.getTree();
 		propertyTree.setHeaderVisible(true);
@@ -427,13 +428,13 @@ public class AnnotationEditor extends EditorPart {
 		propertyViewerComposite.setLayout(tcl_propertyViewerComposite);
 		
 		TreeViewerColumn descriptionViewerColumn = new TreeViewerColumn(propertyViewer, SWT.NONE);
-		descriptionViewerColumn.setLabelProvider(new PropertyColumnLabelProvider(PropertyColumnLabelProvider.DESCRIPTION_COLUMN));
+		descriptionViewerColumn.setLabelProvider(propertyProvider.getLabelProvider(ViewerItemProvider.FIRST_COLUMN));
 		TreeColumn descriptionColumn = descriptionViewerColumn.getColumn();
 		tcl_propertyViewerComposite.setColumnData(descriptionColumn, new ColumnPixelData(150, true, true));
 		descriptionColumn.setText("Description");
 		
 		TreeViewerColumn valueViewerColumn = new TreeViewerColumn(propertyViewer, SWT.NONE);
-		valueViewerColumn.setLabelProvider(new PropertyColumnLabelProvider(PropertyColumnLabelProvider.VALUE_COLUMN));
+		valueViewerColumn.setLabelProvider(propertyProvider.getLabelProvider(ViewerItemProvider.SECOND_COLUMN));
 		TreeColumn valueColumn = valueViewerColumn.getColumn();
 		tcl_propertyViewerComposite.setColumnData(valueColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
 		valueColumn.setText("Value");

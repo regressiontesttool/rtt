@@ -72,7 +72,7 @@ public final class NodeViewerItemProvider extends ViewerItemProvider {
 	}
 
 	@Override
-	boolean hasRoot(Object parentElement) {
-		return parentElement.getClass().equals(ClassModel.class);
+	boolean hasElements(Object parentElement) {
+		return parentElement instanceof ClassModel;
 	}
 }

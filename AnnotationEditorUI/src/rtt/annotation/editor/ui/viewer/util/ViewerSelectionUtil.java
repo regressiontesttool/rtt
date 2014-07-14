@@ -23,7 +23,7 @@ public class ViewerSelectionUtil {
 		}
 		
 		if (selectedObject instanceof ModelElementViewerItem) {
-			return ((ModelElementViewerItem) selectedObject).getModelElement();
+			return ((ModelElementViewerItem<?>) selectedObject).getModelElement();
 		}
 		
 		return null;

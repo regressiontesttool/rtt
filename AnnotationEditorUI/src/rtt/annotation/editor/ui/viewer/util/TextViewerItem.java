@@ -11,7 +11,7 @@ public class TextViewerItem extends ViewerItem {
 	
 	@Override
 	protected String getColumnText(int columnIndex) {
-		if (columnIndex < columns.length) {
+		if (columnIndex >= 0 && columnIndex < columns.length) {
 			return columns[columnIndex];
 		}
 		

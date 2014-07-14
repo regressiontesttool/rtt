@@ -147,7 +147,7 @@ public class ElementViewerItemProvider extends ViewerItemProvider {
 	}
 
 	@Override
-	boolean hasRoot(Object parentElement) {
-		return parentElement.getClass().equals(ClassElement.class);
+	boolean hasElements(Object parentElement) {
+		return parentElement instanceof ClassElement;
 	}
 }

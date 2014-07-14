@@ -55,12 +55,6 @@ public abstract class ViewerItem {
 		}
 	}
 	
-	protected static final int FIRST_COLUMN = 0;
-	protected static final int SECOND_COLUMN = 1;
-	protected static final int THIRD_COLUMN = 2;
-	protected static final int FOURTH_COLUMN = 3;
-	protected static final int FIFTH_COLUMN = 4;
-	
 	private ViewerItem parent;
 	private List<ViewerItem> children;
 	
