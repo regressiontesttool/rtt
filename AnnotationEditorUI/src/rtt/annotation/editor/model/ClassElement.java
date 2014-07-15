@@ -115,7 +115,7 @@ public class ClassElement extends Annotatable<ClassModel> {
 			}
 		}
 		
-		if (methods != null && !fields.isEmpty()) {
+		if (methods != null && !methods.isEmpty()) {
 			for (MethodElement element : methods) {
 				if (element.hasAnnotation()) {
 					return true;
