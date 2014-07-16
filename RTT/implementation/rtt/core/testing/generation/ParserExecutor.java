@@ -12,8 +12,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -64,41 +62,49 @@ public class ParserExecutor extends Executor {
 
 	public List<Node> getAst() throws Throwable {
 		List<Node> result = new LinkedList<Node>();
+		
 		Method astMethod = processor.getMethodWithAnnotation(Parser.AST.class);
-		Object o = astMethod.invoke(parser);
-		if (o == null)
+		astMethod.setAccessible(true);
+		
+		Object methodResult = astMethod.invoke(parser);
+		if (methodResult == null) {
 			return null;
-		// can be an iterable or a normal AST
-
-		if (Iterable.class.isAssignableFrom(o.getClass())
-				&& !o.getClass().isAnnotationPresent(Parser.Node.class)) {
-			Iterable<?> io = (Iterable<?>) o;
-			for (Object tree : io) {
-				result.add(createNode(tree, astMethod.getName()));
-			}
-		} else {
-			result.add(createNode(o, astMethod.getName()));
 		}
-			
+		
+		if (methodResult.getClass().isAnnotationPresent(Parser.Node.class)) {
+			result.add(createNode(null, methodResult, astMethod.getName()));
+		} else if (methodResult instanceof Object[]) {
+			Object[] items = (Object[]) methodResult;
+			for (Object item : items) {
+				result.add(createNode(null, item, astMethod.getName()));
+			}
+		} else if (methodResult instanceof Iterable<?>) {
+			Iterable<?> iterable = (Iterable<?>) methodResult;
+			for (Object item : iterable) {
+				result.add(createNode(null, 
+						item, astMethod.getName()));
+			}
+		}		
 
 		return result;
 
 	}
 
-	private void sortNodeAttribs(List<Attribute> l) {
-		Comparator<Attribute> c = new Comparator<Attribute>() {
+//	private void sortNodeAttribs(List<Attribute> l) {
+//		Comparator<Attribute> c = new Comparator<Attribute>() {
+//
+//			@Override
+//			public int compare(Attribute o1, Attribute o2) {
+//				return o1.getName().compareTo(o2.getName());
+//			}
+//		};
+//
+//		Collections.sort(l, c);
+//	}
 
-			@Override
-			public int compare(Attribute o1, Attribute o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		};
-
-		Collections.sort(l, c);
-	}
-
-	private Node createNode(Object curObj, String methodName) throws Throwable {
-
+	private Node createNode(Node parentNode, Object curObj, String methodName) 
+			throws Throwable {
+		
 		Node node = new Node();
 		node.setMethod(methodName);
 		
@@ -107,74 +113,94 @@ public class ParserExecutor extends Executor {
 			return node;
 		}
 		
-		node.setSimpleName(curObj.getClass().getSimpleName());
-		node.setFullName(curObj.getClass().getName());
+		// TODO what if curObj is primitive type or iteratable ?
 		
 		AnnotationProcessor nodeProc = new AnnotationProcessor(curObj
 				.getClass());
 		// test, if node-annotation is present
 		try {
 			nodeProc.getAnnotation(Parser.Node.class);
-		} catch (Exception e) {
-			System.err.println("Warning:" + Parser.Node.class.toString()
+		} catch (Exception e) {			
+			RTTLogging.error("Warning:" + Parser.Node.class.toString()
 					+ " not present at " + curObj.getClass());
-			return node;
-		}	
-		
-		List<Attribute> l = node.getAttributes();
-
-		addMethods(curObj, nodeProc, l, Parser.Node.Compare.class, false);
-		addMethods(curObj, nodeProc, l, Parser.Node.Informational.class, true);
-		addFields(curObj, nodeProc, l, Parser.Node.Compare.class, false);
-		addFields(curObj, nodeProc, l, Parser.Node.Informational.class, true);
-		sortNodeAttribs(l);
-
-		List<Method> methodList = nodeProc.getMethodsWithAnnotation(Parser.Node.Child.class);
-		
-		for (Method method : methodList) {
-			try {
-				Object value = method.invoke(curObj);
-				addNode(node, value, method.getName());
-			} catch (Throwable throwable) {
-				if (throwable instanceof InvocationTargetException) {
-					throwable = throwable.getCause();
-				}
+			
+			if (parentNode != null) {
+				Attribute attribute = new Attribute();
+				attribute.setName(methodName);
+				attribute.setValue(curObj.toString());
+				attribute.setInformational(false);
 				
-				if (!isAcceptedException(throwable)) {
-					throw throwable;
-				}
-				
-				String throwableName = throwable.getClass().getName();
-				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
-			}							
+				parentNode.getAttributes().add(attribute);
+			}		
+			
+			return null;
 		}
-
-		List<Field> fieldList = nodeProc
-				.getFieldsWithAnnotation(Parser.Node.Child.class);
 		
-		for (Field field : fieldList) {
-			Object value = field.get(curObj);
-			addNode(node, value, field.getName());
-		}
+		node.setSimpleName(curObj.getClass().getSimpleName());
+		node.setFullName(curObj.getClass().getName());
+
+		addMethods(curObj, nodeProc, node, Parser.Node.Compare.class, false);
+		addMethods(curObj, nodeProc, node, Parser.Node.Informational.class, true);
+		addFields(curObj, nodeProc, node, Parser.Node.Compare.class, false);
+		addFields(curObj, nodeProc, node, Parser.Node.Informational.class, true);
+//		sortNodeAttribs(l);
+
+//		List<Method> methodList = nodeProc.getMethodsWithAnnotation(Parser.Node.Child.class);
+		
+//		for (Method method : methodList) {
+//			try {
+//				Object value = method.invoke(curObj);
+//				addNode(node, value, method.getName());
+//			} catch (Throwable throwable) {
+//				if (throwable instanceof InvocationTargetException) {
+//					throwable = throwable.getCause();
+//				}
+//				
+//				if (!isAcceptedException(throwable)) {
+//					throw throwable;
+//				}
+//				
+//				String throwableName = throwable.getClass().getName();
+//				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+//			}							
+//		}
+
+//		List<Field> fieldList = nodeProc
+//				.getFieldsWithAnnotation(Parser.Node.Child.class);
+//		
+//		for (Field field : fieldList) {
+//			Object value = field.get(curObj);
+//			addNode(node, value, field.getName());
+//		}
 
 		return node;
 
 	}
 
 	private void addNode(Node parentNode, Node childNode) {
-		if (parentNode.getNodes() != null) {
+		if (parentNode != null && childNode != null && parentNode.getNodes() != null) {
 			parentNode.getNodes().add(childNode);
 		}
 	}
 	
 	private void addNode(Node parentNode, Object object, String operationName) throws Throwable {
 		
-		if (object instanceof Iterable) {
+		if (object instanceof Object[]) {
+			Object[] tmp = (Object[]) object;
+			
+			int i = 0;
+			for (Object arrayItem : tmp) {
+				Node newNode = createNode(parentNode, arrayItem, operationName + "[" + i + "]");
+				addNode(parentNode, newNode);
+				
+				i++;
+			}
+		} else if (object instanceof Iterable<?>) {
 			Iterable<?> tmp = (Iterable<?>) object;
 			
 			int i = 0;
-			for (Object o : tmp) {
-				Node newNode = createNode(o, operationName + "[" + i + "]");
+			for (Object item : tmp) {
+				Node newNode = createNode(parentNode, item, operationName + "[" + i + "]");
 				addNode(parentNode, newNode);
 				
 				i++;
@@ -184,39 +210,41 @@ public class ParserExecutor extends Executor {
 			
 			int i = 0;
 			for (Entry<?, ?> entry : tmp.entrySet()) {
-				Node keyNode = createNode(entry.getKey(), operationName + "<" + i++ + ", ?>");
+				Node keyNode = createNode(parentNode, entry.getKey(), operationName + "<" + i++ + ", ?>");
 				addNode(keyNode, entry.getValue(), "mapValue");
 				addNode(parentNode, keyNode);
 			}			
 		} else {
-			Node newNode = createNode(object, operationName);
+			Node newNode = createNode(parentNode, object, operationName);
 			addNode(parentNode, newNode);
 		}
 	}
 
-	private <A extends Annotation>void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
-			List<Attribute> l, Class<A> clazz, boolean informational)
+	private <A extends Annotation> void addMethods(Object tokenObj, AnnotationProcessor tokenProc,
+			Node node, Class<A> annotationClass, boolean informational)
 			throws Throwable {
+		
+		List<Method> methods = tokenProc.getMethodsWithAnnotation(annotationClass);
 
-		for (Method method : tokenProc.getMethodsWithAnnotation(clazz)) {
-			Attribute attribute = new Attribute();
+		for (Method method : methods) {		
 
-			String name = "";
-			Annotation annotation = method.getAnnotation(clazz);
+			String methodName = "";
+			Annotation annotation = method.getAnnotation(annotationClass);
 			if (annotation != null) {
 				if (informational)
-					name = ((Parser.Node.Informational) annotation).value();
+					methodName = ((Parser.Node.Informational) annotation).value();
 				else
-					name = ((Parser.Node.Compare) annotation).value();
+					methodName = ((Parser.Node.Compare) annotation).value();
 			}
 			
-			if (name.trim().isEmpty()) {
-				name = method.getName().replace("get", "");
+			if (methodName.trim().isEmpty()) {
+				methodName = method.getName().replace("get", "");
 			}
 			
-			Object returnValue = null;
 			try {
-				returnValue = method.invoke(tokenObj);
+				method.setAccessible(true);
+				Object value = method.invoke(tokenObj);
+				addNode(node, value, methodName);
 			} catch (Throwable throwable) {
 				if (throwable instanceof InvocationTargetException) {
 					throwable = throwable.getCause();
@@ -226,47 +254,96 @@ public class ParserExecutor extends Executor {
 					throw throwable;
 				}
 				
-				// TODO was tun wenn exception ?
 				String throwableName = throwable.getClass().getName();
 				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
-				returnValue = "EXCEPTION: " + throwableName;
 			}
 			
-			String value = "";
-			if (returnValue != null) {
-				value = returnValue.toString();
-			}
-
-			attribute.setName(name);
-			attribute.setValue(value);
-			attribute.setInformational(informational);
-
-			l.add(attribute);
+//			attribute.setName(methodName);
+//			attribute.setInformational(informational);
+//			
+//			Object methodResult = null;
+//			try {
+//				method.setAccessible(true);
+//				methodResult = method.invoke(tokenObj);
+//			} catch (Throwable throwable) {
+//				if (throwable instanceof InvocationTargetException) {
+//					throwable = throwable.getCause();
+//				}
+//				
+//				if (!isAcceptedException(throwable)) {
+//					throw throwable;
+//				}
+//				
+//				// TODO was tun wenn exception ?
+//				String throwableName = throwable.getClass().getName();
+//				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+//				methodResult = "EXCEPTION: " + throwableName;
+//			}
+//			
+//			if (methodResult.getClass().isAnnotationPresent(Parser.Node.class)) {
+//				result.add(createNode(methodResult, astMethod.getName()));
+//			} else if (methodResult instanceof Object[]) {
+//				Object[] items = (Object[]) methodResult;
+//				for (Object item : items) {
+//					result.add(createNode(item, astMethod.getName()));
+//				}
+//			} else if (methodResult instanceof Iterable<?>) {
+//				Iterable<?> iterable = (Iterable<?>) methodResult;
+//				for (Object item : iterable) {
+//					result.add(createNode(item, astMethod.getName()));
+//				}
+//			}
+			
+			
+			
+			
+//			String value = "";
+//			if (methodResult != null) {
+//				value = methodResult.toString();
+//			}
+//
+//			
+//			attribute.setValue(value);
+//			
+//
+//			node.add(attribute);
 		}
 	}
 
 	private <A extends Annotation> void addFields(Object tokenObj, AnnotationProcessor tokenProc,
-			List<Attribute> l, Class<A> clazz, boolean informational)
-			throws Exception {
-		List<Field> compareFields = tokenProc.getFieldsWithAnnotation(clazz);
-		for (Field f : compareFields) {
-			Attribute ta = new Attribute();
-
-			String name = "";
-			Annotation a = f.getAnnotation(clazz);
-			if (informational)
-				name = ((Parser.Node.Informational) a).value();
-			else
-				name = ((Parser.Node.Compare) a).value();
-
-			ta.setName(name.equals("") ? f.getName().replace("get", "") : name);
-
-			String value = f.get(tokenObj).toString();
-			ta.setValue(value);
-
-			ta.setInformational(informational);
-
-			l.add(ta);
+			Node node, Class<A> annotationClass, boolean informational)
+			throws Throwable {
+		List<Field> compareFields = tokenProc.getFieldsWithAnnotation(annotationClass);
+		
+		for (Field field : compareFields) {
+			String fieldname = "";
+			
+			Annotation a = field.getAnnotation(annotationClass);
+			if (informational) {
+				fieldname = ((Parser.Node.Informational) a).value();
+			} else {
+				fieldname = ((Parser.Node.Compare) a).value();
+			}
+			
+			if (fieldname.trim().isEmpty()) {
+				fieldname = field.getName().replace("get", "");
+			}
+			
+			try {
+				Object value = field.get(tokenObj);
+				addNode(node, value, fieldname);
+			} catch (Throwable throwable) {
+				if (throwable instanceof InvocationTargetException) {
+					throwable = throwable.getCause();
+				}
+				
+				if (!isAcceptedException(throwable)) {
+					throw throwable;
+				}
+				
+				String throwableName = throwable.getClass().getName();
+				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+			}
 		}
 	}
 

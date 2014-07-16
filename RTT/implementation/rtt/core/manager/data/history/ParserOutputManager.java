@@ -63,7 +63,6 @@ public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
 			return true;
 		}
 
-		// CHRISTIAN todo
 		List<ParserTestFailure> failures = ParserOutputCompare
 				.compareParserOuput(oldData, newData, false, false);
 		if (failures != null && failures.isEmpty() == false) {
