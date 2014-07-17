@@ -3,9 +3,11 @@ package rtt.core.testing.compare.results;
 import rtt.core.archive.output.Token;
 import rtt.core.manager.Printer;
 
+@Deprecated
 public class LexerTestFailure implements ITestFailure {
 	Token was, expected;
 
+	@Deprecated
 	public LexerTestFailure(Token was, Token expected) {
 		this.was = was;
 		this.expected = expected;

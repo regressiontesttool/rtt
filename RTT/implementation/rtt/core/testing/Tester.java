@@ -132,6 +132,7 @@ public class Tester {
 		return result;
 	}
 
+	@Deprecated
 	private LexerTestFailure testLexer(LexerOutput testData, LexerOutput refData)
 			throws RTTException {
 		

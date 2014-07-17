@@ -48,6 +48,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated
 public @interface Lexer {
 	
 	boolean withParams() default false;
@@ -65,6 +66,7 @@ public @interface Lexer {
 	@Target(ElementType.METHOD)
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
+	@Deprecated
 	public @interface NextToken {
 
 	}
@@ -78,6 +80,7 @@ public @interface Lexer {
 	@Target( { ElementType.METHOD, ElementType.CONSTRUCTOR })
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
+	@Deprecated
 	public @interface Initialize {
 		
 	}
@@ -114,6 +117,7 @@ public @interface Lexer {
 	@Target(ElementType.TYPE)
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
+	@Deprecated
 	public @interface Token {
 		/**
 		 * the xml-name of the specified token defaut: className

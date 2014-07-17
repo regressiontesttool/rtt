@@ -28,6 +28,7 @@ import rtt.core.archive.output.Token;
  * @author Peter Mucha
  * 
  */
+@Deprecated
 public class LexerExecutor extends Executor {
 
 	Object lexer;

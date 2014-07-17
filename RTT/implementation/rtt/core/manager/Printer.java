@@ -20,6 +20,7 @@ import rtt.core.archive.output.Token;
  */
 public class Printer {
 
+	@Deprecated
 	static public String PrintToken(Token t) {
 		if (t == null || t.getAttributes() == null)
 			return "Token: <null>";

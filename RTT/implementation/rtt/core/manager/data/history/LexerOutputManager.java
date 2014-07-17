@@ -10,10 +10,12 @@ import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.compare.LexerOutputCompare;
 import rtt.core.testing.compare.results.LexerTestFailure;
 
+@Deprecated
 public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
 
 	OutputDataFetching fetching;
 
+	@Deprecated
 	public LexerOutputManager(ArchiveLoader loader, String path) {
 		super(loader);
 		
@@ -62,7 +64,6 @@ public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
 			return true;
 		}
 		
-		// CHRISTIAN todo
 		LexerTestFailure failure = LexerOutputCompare.compareLexerOutput(
 				newData, oldData, false);
 		if (failure != null) {
@@ -73,6 +74,7 @@ public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
 	}
 
 	@Override
+	@Deprecated
 	protected LexerOutput getEmptyData() {
 		return new LexerOutput();
 	}

@@ -8,8 +8,10 @@ import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.Token;
 import rtt.core.testing.compare.results.LexerTestFailure;
 
+@Deprecated
 public class LexerOutputCompare {
 	
+	@Deprecated
 	public static LexerTestFailure compareLexerOutput(LexerOutput was, LexerOutput expected, 
 			boolean testInformational) {
 		Iterator<Token> wasIterator = was.getToken().iterator();
