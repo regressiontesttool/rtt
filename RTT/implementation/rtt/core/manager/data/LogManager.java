@@ -32,8 +32,6 @@ import rtt.core.archive.logging.Testrun;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.testing.compare.results.ITestFailure;
-import rtt.core.testing.compare.results.LexerTestFailure;
-import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.utils.RTTLogging;
 
@@ -243,13 +241,9 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 					Failure failureEntry = new Failure();
 					failureEntry.setMsg(failure.getShortMessage());
 					failureEntry.setPath(failure.getPath());
-
-					if (failure instanceof LexerTestFailure) {
-						failureEntry.setType(FailureType.LEXER);
-					} else if (failure instanceof ParserTestFailure) {
-						failureEntry.setType(FailureType.PARSER);
-					}
-
+					
+					failureEntry.setType(FailureType.PARSER);
+					
 					resultEntry.getFailure().add(failureEntry);
 				}
 				resultEntry.setType(ResultType.FAILED);

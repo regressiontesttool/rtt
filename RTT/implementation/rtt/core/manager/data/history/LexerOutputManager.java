@@ -7,8 +7,6 @@ import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.OutputDataFetching;
 import rtt.core.loader.fetching.OutputDataFetching.OutputType;
 import rtt.core.manager.data.AbstractDataManager;
-import rtt.core.testing.compare.LexerOutputCompare;
-import rtt.core.testing.compare.results.LexerTestFailure;
 
 @Deprecated
 public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
@@ -62,12 +60,6 @@ public class LexerOutputManager extends AbstractDataManager<LexerOutput> {
 		
 		if (oldData.getToken() == newData.getToken()) {
 			return true;
-		}
-		
-		LexerTestFailure failure = LexerOutputCompare.compareLexerOutput(
-				newData, oldData, false);
-		if (failure != null) {
-			return false;
 		}
 
 		return true;

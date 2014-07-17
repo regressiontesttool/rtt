@@ -4,10 +4,8 @@ import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ParserOutput;
-import rtt.core.archive.output.Token;
 import rtt.core.archive.output.Tree;
 import rtt.core.utils.RTTLogging;
 
