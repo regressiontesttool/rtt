@@ -41,11 +41,6 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		SKIPPED;
 		
 		/**
-		 * true, if a new lexer class is set.
-		 */
-		public boolean lexerSet = false;
-		
-		/**
 		 * true, if a new parser class is set.
 		 */
 		public boolean parserSet = false;
@@ -113,8 +108,6 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 			
 			state = ConfigStatus.ADDED;
 			
-			state.lexerSet = false;
-			
 			String parserClass = newConfig.getParserClass();
 			state.parserSet = parserClass != null && !parserClass.trim().isEmpty();
 			
@@ -129,14 +122,13 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		} else {
 			state = ConfigStatus.UPDATED;
 			
-			state.lexerSet = false;
 			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());		
 			
 			state.newEntries = addClasspathEntries(oldConfig, newConfig);
 			state.deletedEntries = removeClasspathEntries(oldConfig, newConfig);
 			
 			// if nothing done, return skipped 
-			if (!state.lexerSet && !state.parserSet 
+			if (!state.parserSet 
 					&& state.newEntries.isEmpty() && state.deletedEntries.isEmpty()) {
 				
 				state = ConfigStatus.SKIPPED;

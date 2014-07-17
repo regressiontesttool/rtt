@@ -93,8 +93,8 @@ public class RegressionTestTool {
 					cpEntries.add(cpe);
 			}			
 			
-			m.setConfiguration(options.getNewConfiguration(), options.getLexer(),
-					options.getParser(), cpEntries, true, options.isOverwrite());
+			m.setConfiguration(options.getNewConfiguration(), options.getParser(), 
+					cpEntries, true, options.isOverwrite());
 			
 		}
 

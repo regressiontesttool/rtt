@@ -199,7 +199,6 @@ public class Manager {
 	 * A {@link ConfigStatus} object will be returned to indicate which actions are taken by this function. See {@link ConfigStatus#ADDED}, {@link ConfigStatus#UPDATED} and {@link ConfigStatus#SKIPPED}.
 	 * 
 	 * @param configName the name of the configuration
-	 * @param lexerName the name of lexer class
 	 * @param parserName the name of parser class
 	 * @param cpEntries a list of entries, which should be added to the class path.
 	 * @param defaultConfig indicates, if new configuration should be the default configuration of this archive
@@ -209,9 +208,8 @@ public class Manager {
 	 * @see ConfigStatus#UPDATED
 	 * @see ConfigStatus#SKIPPED
 	 */
-	public ConfigStatus setConfiguration(String configName, String lexerName,
-			String parserName, List<String> cpEntries, boolean defaultConfig,
-			boolean overwrite) {
+	public ConfigStatus setConfiguration(String configName, String parserName, 
+			List<String> cpEntries, boolean defaultConfig, boolean overwrite) {
 		
 		List<Detail> infos = new LinkedList<Detail>();
 		
@@ -239,20 +237,7 @@ public class Manager {
 			message = "Configuration not changed: ";
 			break;
 		}
-		
-		if (state.lexerSet) {
-			Detail detail = new Detail();
-			detail.setMsg("Lexer class:");
-			if (lexerName == null || lexerName.trim().isEmpty()) {
-				detail.setSuffix("<None>");
-			} else {
-				detail.setSuffix(lexerName);
-			}			
-			detail.setPriority(0);
-			
-			infos.add(detail);
-		}
-		
+
 		if (state.parserSet) {
 			Detail detail = new Detail();
 			detail.setMsg("Parser class:");

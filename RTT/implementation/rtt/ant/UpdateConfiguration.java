@@ -96,7 +96,6 @@ public class UpdateConfiguration extends Task {
 				
 				m.setConfiguration(
 						c.getName(),
-						c.getLexer(),
 						c.getParser(),
 						cpEntries,
 						false,
