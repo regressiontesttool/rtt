@@ -96,7 +96,7 @@
 			</fileset>
 			<fileset dir="${rtt.bin}">
 				<include name="**/*.class" />
-				<exclude name="rtt/core/tests/**/*" />
+				<exclude name="rtt/tests/**/*" />
 			</fileset>
 		</jar>
 	</target>

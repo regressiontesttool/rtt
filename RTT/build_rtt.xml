@@ -22,13 +22,11 @@
 	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
-	<property name="tasks.dir" location="${rtt.base}/ant-tasks" />
 
 	<!-- Name of the jar and source file-->
 	<property name="distr.jar.name" value="rtt" />
 	<property name="distr.jar.path" location="${distr.dir}/${distr.jar.name}.jar" />
 	<property name="distr.src.name" value="rtt_src" />
-	<property name="tasks.jar" location="${tasks.dir}/ant-tasks.jar" />
 
 	<!-- Refresh all classes and create jar -->
 	<target name="RefreshAll">
@@ -76,14 +74,9 @@
 			</fileset>
 			<fileset dir="${bin.dir}">
 				<include name="**/*.class" />
-				<exclude name="rtt/core/tests/**/*" />
+				<exclude name="rtt/tests/**/*" />
 			</fileset>
 		</jar>
-	</target>
-
-	<target name="CreateAntTaskJar" depends="Jar">
-		<mkdir dir="${tasks.dir}" />
-		<copy file="${distr.jar.path}" tofile="${tasks.jar}" />
 	</target>
 
 	<!-- Create source code distribution -->
@@ -95,21 +88,23 @@
 				<exclude name="binary/**/*" />
 				<exclude name="distribution" />
 				<exclude name="distribution/**/*" />
-				<exclude name="sources/applications" />
-				<exclude name="sources/applications/**/*" />
 			</fileset>
 		</zip>
 	</target>
 
 	<!-- Creates Javadoc (todo) -->
 	<target name="Javadoc">
-		<javadoc access="public" author="true" destdir="${distr.dir}/javadoc" doctitle="RTT" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.6" sourcepath="${src.dir}" splitindex="true" use="true" version="true" overview="${src.dir}/overview.html">
-			<package name="rtt.core" />
-			<package name="rtt.core.utils" />
-			<package name="rtt.ant" />
-			<package name="rtt.annotations" />
-			<package name="rtt.core.cli" />
-			<package name="rtt.core.exceptions" />
+		<javadoc access="public" author="true" destdir="${distr.dir}/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.6" splitindex="true" use="true" version="true" overview="${src.dir}/overview.html">
+			<sourcepath>
+				<pathelement path="${src.dir}"/>
+				<pathelement path="${rtt.src-gen}"/>
+			</sourcepath>
+			
+			<package name="rtt.*"/>
+			<excludepackage name="rtt.core.classpath" />
+			
+			<doctitle>Regression Test Tool (RTT) - API</doctitle>
+			
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="*.jar" />

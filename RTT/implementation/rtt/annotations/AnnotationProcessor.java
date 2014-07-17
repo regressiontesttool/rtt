@@ -65,7 +65,6 @@ public class AnnotationProcessor {
 	/**
 	 * <p>Returns *all* {@link Method}s which contain the given {@link Annotation}.</p>
 	 * @param annotation
-	 * @return
 	 */
 	public List<Method> getMethodsWithAnnotation(Class<? extends Annotation> annotation) {		
 		return MethodAnnotationProcessor.INSTANCE.findMethods(objectClass, annotation);
@@ -75,7 +74,7 @@ public class AnnotationProcessor {
 	 * <p>Returns a *single* {@link Method} which contains the given {@link Annotation}.<br />
 	 * Note: if more than one {@link Method} was found, then an {@link Exception} will be thrown.</p>
 	 * @param annotationClass
-	 * @return
+	 * 
 	 * @throws Exception
 	 */
 	public Method getMethodWithAnnotation(Class<? extends Annotation> annotationClass) throws Exception {
@@ -91,7 +90,7 @@ public class AnnotationProcessor {
 	/**
 	 * Returns *all* {@link Constructor}s which contain the given {@link Annotation}.
 	 * @param annotationClass
-	 * @return
+	 * 
 	 */
 	public List<Constructor<?>> getConstructorsWithAnnotation(Class<? extends Annotation> annotationClass) {
 		Constructor<?>[] cs = objectClass.getConstructors();
@@ -106,7 +105,7 @@ public class AnnotationProcessor {
 	/**
 	 * Returns *all* {@link Field} which contain the given {@link Annotation}.
 	 * @param annotationClass
-	 * @return
+	 * 
 	 */
 	public List<Field> getFieldsWithAnnotation(Class<? extends Annotation> annotationClass) {
 		Field[] fs = objectClass.getFields();

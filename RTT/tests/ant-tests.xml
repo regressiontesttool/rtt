@@ -15,6 +15,21 @@
 		<classpath path="${_basedir}/distribution/rtt.jar"/>
 	</taskdef>
 	
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: TestBatch          
+         = = = = = = = = = = = = = = = = = -->
+    <macrodef name="TestBatch">
+        <attribute name="name"/>
+    	<element name="steps" implicit="yes" optional="no" />
+        <sequential>
+        	<property name="folder" location="${_basedir}/tests/testresults/@{name}" />
+        	<property name="archive" location="${folder}/archive.zip" />        	
+        	<mkdir dir="${folder}"/>        	
+            <steps />
+        </sequential>
+    </macrodef>
+
+	
 	<!-- Delete all generated testsuites and their logs -->
 	<target name="Clean">
 		<delete includeemptydirs="false">
@@ -46,14 +61,13 @@
 	
 	<!-- Testing a correct tool -->
 	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c">
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -62,8 +76,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -71,23 +84,21 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip"
-			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c"
+		<exportLog archive="${archive}"
+			destination="${folder}"
 		/>
+		</TestBatch>
 	</target>
 
 	<!--
@@ -97,14 +108,13 @@
 			case 3 failed.
 	-->
 	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c">
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -113,8 +123,7 @@
 			</configuration>
 		</updateConfigurations>		
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/cfc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -122,37 +131,32 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
-		<runTests
-			fail_with_exception="false">
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
+		<runTests fail_with_exception="false">
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 				log="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/log.xml"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip"
-			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c"
-		/>
+		<exportLog archive="${archive}"
+			destination="${folder}" />
+		</TestBatch>
 	</target>
 	
 	<!-- Testing an erroneous tool implementation -->
 	<target name="ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3" >
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -161,8 +165,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/cec" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -170,23 +173,21 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip"
+		<exportLog archive="${archive}"
 			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3"
 		/>
+		</TestBatch>
 	</target>
 	
 	<!--
@@ -202,14 +203,14 @@
 	
 	<!-- Replacing configurations -->
 	<target name="ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip"
+		<TestBatch name="ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2">
+		
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
-		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+			
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -218,8 +219,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				overwrite="true"
 				name="c1"
@@ -229,8 +229,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				overwrite="true"
 				name="c1"
@@ -240,8 +239,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				overwrite="true"
 				name="c1"
@@ -251,8 +249,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				overwrite="true"
 				name="c1"
@@ -262,8 +259,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c2"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -272,8 +268,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c2"
 				lexer="lexer"
@@ -282,8 +277,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				overwrite="true"
 				name="c2"
@@ -293,22 +287,19 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip"
-			destination="${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2"
-		/>
+		<exportLog archive="${archive}" destination="${folder}"/>
+		</TestBatch>
 	</target>
 	
 	<!-- Changing the default configuration -->
 	<target name="ga_1-ua_ccc_s1_123-ga_2">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip"
+		<TestBatch name="ga_1-ua_ccc_s1_123-ga_2" >
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -316,16 +307,13 @@
 			</testsuite>
 		</updateArchive>
 		
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip"
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c2">
 		</createArchive>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2/Archive.zip"
-			destination="${_basedir}/tests/testresults/ga_1-ua_ccc_s1_123-ga_2"
-		/>
+		<exportLog archive="${archive}" destination="${folder}" />
+		</TestBatch>
 	</target>
 	
 	<!--
@@ -343,14 +331,13 @@
 	
 	<!-- Replacing a testcase with a new version -->
 	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -359,8 +346,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/cfc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -368,13 +354,11 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="true">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -383,42 +367,38 @@
 		</updateArchive>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<exportLog archive="${archive}"
 			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"
 		/>
+		</TestBatch>
 	</target>
 	
 	<!-- Temporary removing a testcase and adding it later again -->
 	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c">
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -427,8 +407,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -436,26 +415,22 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<removeTest testsuit="s1" testcase="1"/>
 		</updateArchive>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -463,35 +438,32 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip"
+		<exportLog archive="${archive}"
 			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c"
 		/>
+		</TestBatch>
 	</target>
 	
 	<!-- Testing empty test suites -->
 	<target name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1">
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -500,8 +472,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -509,55 +480,49 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip">
+		<updateArchive archive="${archive}">
 			<removeTest testsuit="s1" testcase="1"/>
 			<removeTest testsuit="s1" testcase="2"/>
 			<removeTest testsuit="s1" testcase="3"/>
 		</updateArchive>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip"
+		<exportLog archive="${archive}"
 			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1"
 		/>
+		</TestBatch>
 	</target>
 	
 	<!-- Removing and later replacing a testcase with a new version -->
 	<target name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
-		<createArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<TestBatch name="ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c">
+		<createArchive archive="${archive}"
 			overwrite="false"
 			defaultConfiguration="c1">
 		</createArchive>
 		
-		<updateConfigurations
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
 				lexer="rtt.tests.RepositoryGenerator"
@@ -566,8 +531,7 @@
 			</configuration>
 		</updateConfigurations>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/cfc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -575,31 +539,26 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<removeTest testsuit="s1" testcase="2"/>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<updateArchive
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip">
+		<updateArchive archive="${archive}">
 			<testsuite name="s1" overwrite="false">
 				<fileset dir="${_basedir}/tests/testsets/ccc" casesensitive="yes">
 					<include name="*.testcase"/>
@@ -607,22 +566,20 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<updateTests archive="${archive}"
 			configuration="c1"
 		/>
 		
 		<runTests>
-			<test
-				archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+			<test archive="${archive}"
 				configuration="c1"
 				matching="false"
 			/>
 		</runTests>
 		
-		<exportLog
-			archive="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip"
+		<exportLog archive="${archive}"
 			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c"
 		/>
+		</TestBatch>
 	</target>
 </project>
