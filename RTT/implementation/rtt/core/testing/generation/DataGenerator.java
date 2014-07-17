@@ -74,6 +74,7 @@ public class DataGenerator {
 	 * @throws Exception
 	 *             mainly exceptions during class loading
 	 */
+	@Deprecated
 	public static LexerExecutor locateLexerExecutor(Configuration config,
 			String baseDir) throws Exception {
 		

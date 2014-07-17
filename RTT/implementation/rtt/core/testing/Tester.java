@@ -3,7 +3,6 @@ package rtt.core.testing;
 import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;
@@ -12,9 +11,7 @@ import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
-import rtt.core.testing.compare.LexerOutputCompare;
 import rtt.core.testing.compare.ParserOutputCompare;
-import rtt.core.testing.compare.results.LexerTestFailure;
 import rtt.core.testing.compare.results.ParserTestFailure;
 import rtt.core.testing.compare.results.TestExecutionFailure;
 import rtt.core.testing.compare.results.TestResult;
@@ -76,28 +73,6 @@ public class Tester {
 		boolean testSuccess = true;
 		boolean somethingTested = false;
 		
-		if (!config.getLexerClass().equals("")) {
-			// test lexer
-			try {
-				
-				LexerOutput testData = testManager.getLexerOutput(versionData.getTestID()); 
-				LexerOutput refData = refManager.getLexerOutput(versionData.getReferenceID()); 
-				
-				LexerTestFailure lexerFailure = testLexer(testData, refData);
-				
-				if (lexerFailure != null) {
-					result.addFailure(lexerFailure);
-					testSuccess = false;
-				}
-
-				somethingTested = true;
-			} catch (RTTException e) {
-				RTTLogging.debug(e.getMessage(), e);
-				result.addFailure(new TestExecutionFailure(e));
-				testSuccess = false;
-			}
-		}
-		
 		if (!config.getParserClass().equals("")) {
 			// test parser
 			try {
@@ -130,15 +105,6 @@ public class Tester {
 		}
 
 		return result;
-	}
-
-	@Deprecated
-	private LexerTestFailure testLexer(LexerOutput testData, LexerOutput refData)
-			throws RTTException {
-		
-		checkData(testData, refData);
-		RTTLogging.info("Testing Lexic Results");
-		return LexerOutputCompare.compareLexerOutput(testData, refData, false);
 	}
 
 	private List<ParserTestFailure> testParser(ParserOutput testData,

@@ -3,6 +3,7 @@ package rtt.core.loader.fetching;
 public class OutputDataFetching implements IFileFetching {
 	
 	public enum OutputType {
+		@Deprecated
 		LEXER ("lexer"),
 		PARSER ("parser");
 		

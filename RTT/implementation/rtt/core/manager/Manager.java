@@ -507,7 +507,7 @@ public class Manager {
 					config, OutputDataType.REFERENCE);
 
 			// create new reference data
-			GenerationResult result = refManager.createData(lexer, parser,
+			GenerationResult result = refManager.createData(parser,
 					tcase.getInputID(), tcase.getParameter());
 			
 			StringBuilder infoMessage = new StringBuilder();
@@ -605,7 +605,7 @@ public class Manager {
 					tcase.getName(), config, OutputDataType.TEST);
 			
 			// Create new test data ...
-			GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID(), tcase.getParameter());
+			GenerationResult genResult = testManager.createData(parser, tcase.getInputID(), tcase.getParameter());
 			genInfos.addResult(genResult);
 			
 			StringBuilder infoMessage = new StringBuilder();

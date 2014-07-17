@@ -9,14 +9,12 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.history.History;
 import rtt.core.archive.history.Version;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.LexerOutput;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.generation.DataGenerator;
-import rtt.core.testing.generation.LexerExecutor;
 import rtt.core.testing.generation.ParserExecutor;
 import rtt.core.utils.GenerationInformation.GenerationResult;
 import rtt.core.utils.RTTLogging;
@@ -45,7 +43,6 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		}
 	}
 
-	protected LexerOutputManager lexManager;
 	protected ParserOutputManager parManager;
 	
 	protected String path;
@@ -67,9 +64,6 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		setFetchingStrategy(new SimpleFileFetching("history.xml", path));
 
 		inputManager = new InputManager(loader, suiteName, caseName);
-		
-		lexManager = new LexerOutputManager(loader, LoaderUtils.getPath(path,
-				"lexer"));
 		parManager = new ParserOutputManager(loader, LoaderUtils.getPath(path,
 				"parser"));
 
@@ -110,17 +104,9 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	public OutputDataType getType() {
 		return type;
 	}
-
-	public LexerOutput getLexerOutput(Integer version) {
-		return lexManager.getData(version);
-	}
 	
 	public ParserOutput getParserOutput(Integer version) {
 		return parManager.getData(version);
-	}
-	
-	public InputStream getLexerInputStream(Integer version) {
-		return lexManager.getStreamData(version);
 	}
 	
 	public InputStream getParserInputStream(Integer version) {
@@ -147,16 +133,14 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return true;		
 	}
 
-	public GenerationResult createData(LexerExecutor lexer, ParserExecutor parser, Integer inputVersion, List<String> params) {
+	public GenerationResult createData(ParserExecutor parser, Integer inputVersion, List<String> params) {
 		GenerationResult result = new GenerationResult(suiteName, caseName);
 
-		LexerOutput newLexOut = null;
 		ParserOutput newParOut = null;
 		
 		try {
 			Input input = inputManager.getInput(inputVersion);
 			
-			newLexOut = DataGenerator.generateOutput(input, params, lexer);
 			newParOut = DataGenerator.generateOutput(input, params, parser);
 		} catch (Throwable t) {
 			RTTLogging.trace("Could not create output data", t);
@@ -180,7 +164,6 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 			// previous data is available, load and check if data has changed
 			lastVersion = data.getVersion().size();
 			
-			LexerOutput oldLexOut = lexManager.getData(lastVersion);
 			ParserOutput oldParOut = parManager.getData(lastVersion);			
 			
 			if (isOutDated(inputVersion)) {
@@ -188,10 +171,9 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 				replace = true;
 			} else {
 				
-				boolean lexerChanged = !LexerOutputManager.dataEqual(oldLexOut, newLexOut);
 				boolean parserChanged = !ParserOutputManager.dataEqual(oldParOut, newParOut); 
 
-				if (lexerChanged || parserChanged) {				
+				if (parserChanged) {				
 					// data has really changed -> replace
 					replace = true;
 				}
@@ -209,7 +191,6 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 
 			data.getVersion().add(newVersion);
 
-			lexManager.setData(newLexOut, lastVersion);
 			parManager.setData(newParOut, lastVersion);
 			
 			result.hasReplaced = true;
