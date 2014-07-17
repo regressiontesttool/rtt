@@ -221,7 +221,6 @@ public class Manager {
 		cPath.getPath().addAll(cpEntries);
 		config.setClasspath(cPath);
 		
-		config.setLexerClass(lexerName);
 		config.setParserClass(parserName);
 		
 		ConfigStatus state = currentArchive.setConfiguration(config, overwrite);

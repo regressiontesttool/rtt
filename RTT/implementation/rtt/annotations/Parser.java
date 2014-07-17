@@ -15,10 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotation type for the lexer-adapter the loaded lexerclass has to be
- * annotated by this Annotation.
- * 
- * There are several other Annotations that are needed when providing an lexer
+ * There are several other Annotations that are needed when providing an parser
  * adapter:
  * 
  * <table>

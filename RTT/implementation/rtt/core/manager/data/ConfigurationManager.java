@@ -113,8 +113,7 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 			
 			state = ConfigStatus.ADDED;
 			
-			String lexerClass = newConfig.getLexerClass();
-			state.lexerSet = lexerClass != null && !lexerClass.trim().isEmpty();
+			state.lexerSet = false;
 			
 			String parserClass = newConfig.getParserClass();
 			state.parserSet = parserClass != null && !parserClass.trim().isEmpty();
@@ -130,7 +129,7 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		} else {
 			state = ConfigStatus.UPDATED;
 			
-			state.lexerSet = setLexerName(oldConfig, newConfig.getLexerClass());
+			state.lexerSet = false;
 			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());		
 			
 			state.newEntries = addClasspathEntries(oldConfig, newConfig);
@@ -145,20 +144,6 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		}
 		
 		return state;
-	}
-
-	private boolean setLexerName(Configuration config, String lexerName) {
-		if (config != null && lexerName != null) {
-			String oldClass = config.getLexerClass();
-
-			if (oldClass == null || oldClass.equals("")
-					|| !oldClass.equals(lexerName)) {
-				config.setLexerClass(lexerName);
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	private boolean setParserName(Configuration config, String parserName) {
@@ -342,10 +327,6 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		for (Configuration c : data.getConfiguration()) {
 
 			RTTLogging.info("Config: " + c.getName());
-
-			if (c.getLexerClass() != null) {
-				RTTLogging.info("\tLexer: " + c.getLexerClass());
-			}
 
 			if (c.getParserClass() != null) {
 				RTTLogging.info("\tParser: " + c.getParserClass());

@@ -18,7 +18,6 @@
 	
 	<xs:complexType name="configuration">
 		<xs:sequence>
-			<xs:element name="lexerClass" type="xs:string" minOccurs="0" />
 			<xs:element name="parserClass" type="xs:string" minOccurs="0" />
 			<xs:element name="classpath" type="rtt:classpath" minOccurs="0"/>
 		</xs:sequence>
