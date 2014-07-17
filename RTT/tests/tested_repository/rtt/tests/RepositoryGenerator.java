@@ -21,7 +21,7 @@ import rtt.annotations.*;
  * repository}.
  * @author C. Bürger
  */
-@Lexer @Parser public final class RepositoryGenerator {
+@Parser public final class RepositoryGenerator {
 	private InputStream is;
 	
 	/**
@@ -37,7 +37,7 @@ import rtt.annotations.*;
 	 * @return The next word of the input.
 	 * @throws IOException Thrown, iff the input cannot be read.
 	 */
-	@Lexer.NextToken public Value nextChunk() throws IOException {
+	public Value nextChunk() throws IOException {
 		Value result = new Value();
 		int read;
 		for (read = is.read();
@@ -115,9 +115,9 @@ import rtt.annotations.*;
 		return repository;
 	}
 	
-	@Lexer.Token public static final class Value {
-		@Lexer.Token.Compare public String value = "";
-		@Lexer.Token.EOF public boolean isEOF() {return value.length() == 0;}
+	public static final class Value {
+		public String value = "";
+		public boolean isEOF() {return value.length() == 0;}
 	}
 	
 	@Parser.Node public static final class Repository {

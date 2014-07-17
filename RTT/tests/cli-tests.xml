@@ -52,7 +52,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2c3c/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -119,7 +118,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-rt_c1_s1_1c2f3c/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -181,7 +179,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -254,7 +251,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -265,7 +261,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -276,7 +271,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c1
-				--lexer RepositoryGenerator
 				--parser RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -287,7 +281,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c1
-				--lexer RepositoryGenerator
 				--parser RepositoryGenerator
 				--classpath ."/>
 		</java>
@@ -298,7 +291,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c1
-				--lexer RepositoryGenerator
 				--parser RepositoryGenerator
 				--classpath ."/>
 		</java>
@@ -309,7 +301,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c2
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -320,7 +311,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c2
-				--lexer lexer
 				--parser parser
 				--classpath ."/>
 		</java>
@@ -331,7 +321,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-uc_o_1-uc_o_1-uc_o_1-uc_o_1s-uc_2-uc_2s-uc_o_2/Archive.zip
 				--newConfiguration c2
-				--lexer lexer
 				--parser parser
 				--classpath ."/>
 		</java>
@@ -416,7 +405,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_o_ccc_s1_1s23s-rt_c1_s1_1c2s3c-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -519,7 +507,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r-rt_c1_s1_2c3c-ua_ccc_s1_12s3s-ur_c1_s1_12s3s-rt_c1_s1_1c2c3c/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -631,7 +618,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_ccc_s1_123-ur_c1_s1_123-ua_ccc_s1_1r2r3r-rt_c1_s1-ur_c1_s1-rt_c1_s1/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
@@ -734,7 +720,6 @@
 			<arg line="--archive ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
 				--output ${_basedir}/tests/testresults/ga_1-uc_1-ua_cfc_s1_123-ur_c1_s1_123-ua_ccc_s1_2r-ur_c1_s1_1s3s-rt_c1_s1_1c3c_ua_o_ccc_s1_1s23s-ur_c1_s1_1s23s-rt_c1_s1_1c2c3c/Archive.zip
 				--newConfiguration c1
-				--lexer rtt.tests.RepositoryGenerator
 				--parser rtt.tests.RepositoryGenerator
 				--classpath ./../../../binary"/>
 		</java>
