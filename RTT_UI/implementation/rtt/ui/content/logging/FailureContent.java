@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import rtt.core.archive.Archive;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.logging.Failure;
-import rtt.core.archive.logging.FailureType;
 import rtt.core.archive.logging.Result;
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
@@ -43,13 +42,11 @@ public class FailureContent extends AbstractLogContent {
 	private Integer refVersion;
 	
 	private Failure failure;
-	private FailureType type;
 	
 	public FailureContent(TestResultContent parent, Failure failure) {
 		super(parent);
 		
 		this.failure = failure;
-		this.type = failure.getType();
 		
 		Result result = parent.getTestresult();
 		
@@ -61,15 +58,7 @@ public class FailureContent extends AbstractLogContent {
 
 	@Override
 	public String getText() {
-		if (type == FailureType.LEXER) {
-			return "Lexer results";
-		}
-		
-		if (type == FailureType.PARSER) {
-			return "Parser results";
-		}
-		
-		return "Unknown error";
+		return "Parser Results";
 	}
 
 	@Override
@@ -78,15 +67,7 @@ public class FailureContent extends AbstractLogContent {
 	}
 	
 	private InputStream getInputStream(OutputDataManager manager, Integer version) {
-		switch (type) {
-		case LEXER:
-			return manager.getLexerInputStream(version);
-			
-		case PARSER:
-			return manager.getParserInputStream(version);
-		}
-
-		throw new RuntimeException("Failure type of test run unknown: " + failure.getType().toString());
+		return manager.getParserInputStream(version);
 	}
 
 	@Override
@@ -135,11 +116,6 @@ public class FailureContent extends AbstractLogContent {
 			return -1;
 		}
 		
-		if (o instanceof FailureContent) {
-			FailureContent failure = (FailureContent) o;
-			return type.compareTo(failure.type);
-		}
-		
 		return 0;
 	}
 
@@ -150,7 +126,7 @@ public class FailureContent extends AbstractLogContent {
 
 	@Override
 	public String getTitle() {
-		return failure.getType().toString();
+		return "Parser Failure";
 	}
 
 }

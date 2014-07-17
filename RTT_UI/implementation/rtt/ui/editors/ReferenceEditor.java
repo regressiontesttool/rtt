@@ -37,18 +37,12 @@ public class ReferenceEditor extends FormEditor {
 		contentProvider = new AdapterFactoryContentProvider(adapterFactory);
 		labelProvider = new AdapterFactoryLabelProvider(adapterFactory);
 
-		ReferenceEditorPage lexPage = new ReferenceEditorPage(this, outputData.getType(), LEXER_PAGE_ID, "Lexer");
-		lexPage.setResource(outputData.getResource(OutputDataEditorInput.LEXER_URI));
-		lexPage.setContentProvider(contentProvider);
-		lexPage.setLabelProvider(labelProvider);
-		
 		ReferenceEditorPage parPage = new ReferenceEditorPage(this, outputData.getType(), PARSER_PAGE_ID, "Parser");
 		parPage.setResource(outputData.getResource(OutputDataEditorInput.PARSER_URI));
 		parPage.setContentProvider(contentProvider);
 		parPage.setLabelProvider(labelProvider);		
 		
 		try {			
-			addPage(lexPage);
 			addPage(parPage);
 			
 			setActivePage(PARSER_PAGE_ID);

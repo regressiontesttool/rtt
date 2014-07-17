@@ -41,14 +41,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private String message;
 	
 	private Text nameText;
-	private Text lexerText;
 	private Text parserText;
 	private Button defaultButton;
 	private ListViewer listViewer;
 	private boolean nameEditable = true;
 	
 	private String configName = "";
-	private String lexerName  = "";
 	private String parserName = "";
 	private List<String> cpEntries;
 	private boolean isDefault = false;
@@ -70,7 +68,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		this.project = project;
 		
 		configName = config.getName();
-		lexerName = config.getLexerClass();
 		parserName = config.getParserClass();
 		cpEntries = new ArrayList<String>();
 		
@@ -124,20 +121,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 				setOkButtonEnabled(true);
 			}
 		});
-		
-		Label lexerLabel = new Label(container, SWT.NONE);
-		lexerLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lexerLabel.setText("Lexer class:");
-		
-		lexerText = new Text(container, SWT.BORDER);
-		lexerText.setText(lexerName);
-		lexerText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lexerText.addModifyListener(getModifyListener());
-		
-		Button lexerButton = new Button(container, SWT.NONE);
-		lexerButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		lexerButton.setText("Find ...");
-		lexerButton.addSelectionListener(new ClassSelectionAdapter(getParentShell(), lexerText, project.getSearchScope()));
 		
 		Label parserLabel = new Label(container, SWT.NONE);
 		parserLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -265,16 +248,15 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	
 	private boolean hasContent() {
 		boolean nameHasContent = hasContent(nameText);
-		boolean lexerHasContent = hasContent(lexerText);
 		boolean parserHasContent = hasContent(parserText);
 		
-		if (nameHasContent && lexerHasContent && parserHasContent) {
+		if (nameHasContent && parserHasContent) {
 			setErrorMessage(null);
 		} else {
 			setErrorMessage("Please check marked text box(es)");
 		}
 		
-		return nameHasContent && (lexerHasContent || parserHasContent);			
+		return nameHasContent && (parserHasContent);			
 	}
 	
 	private boolean hasContent(Text text) {
@@ -293,7 +275,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		configName = nameText.getText().trim();
-		lexerName = lexerText.getText().trim();
 		parserName = parserText.getText().trim();
 		isDefault = defaultButton.getSelection();	
 		
@@ -316,10 +297,6 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	
 	public String getConfigName() {
 		return configName;
-	}
-	
-	public String getLexerName() {
-		return lexerName;
 	}
 	
 	public String getParserName() {

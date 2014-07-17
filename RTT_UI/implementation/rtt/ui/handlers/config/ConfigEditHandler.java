@@ -46,11 +46,10 @@ public class ConfigEditHandler extends AbstractSelectionHandler implements
 			try {
 
 				String configName = configDialog.getConfigName();
-				String lexerClass = configDialog.getLexerName();
 				String parserClass = configDialog.getParserName();
 				List<String> cpEntries = configDialog.getClasspathEntries();
 				
-				project.setConfiguration(configName, lexerClass, parserClass, cpEntries, configDialog.isDefault());
+				project.setConfiguration(configName, parserClass, cpEntries, configDialog.isDefault());
 				
 				projectContent.reload(new ReloadInfo(Content.CONFIGURATION));				
 			} catch (Exception exception) {
