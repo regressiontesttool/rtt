@@ -13,29 +13,6 @@ import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
 
-	public static LexerOutput generateOutput(Input input, List<String> params,
-			LexerExecutor lexer) throws Throwable {
-
-		LexerOutput lexOut = new LexerOutput();
-
-		if (lexer != null) {
-			lexOut = new LexerOutput();
-
-			RTTLogging.debug("Initializing lexer");
-			lexer.initialize(input, params);
-
-			RTTLogging.debug("Generating lexer output data");
-			while (true) {
-				Token t = lexer.getToken();
-				lexOut.getToken().add(t);
-				if (t.isIsEof())
-					break;
-			}
-		}
-
-		return lexOut;
-	}
-
 	public static ParserOutput generateOutput(Input input, List<String> params,
 			ParserExecutor parser) throws Throwable {
 
@@ -60,33 +37,6 @@ public class DataGenerator {
 		}
 
 		return parOut;
-	}
-
-	/**
-	 * <p>Tries to locate the {@link LexerExecutor} via the class loader. </p>
-	 * 
-	 * <p>Instantiate the lexer through
-	 * {@link Executor#initialize(Input, List)} before use!</p>
-	 * 
-	 * @param config the {@link Configuration}
-	 * @param baseDir the base directory for searching
-	 * @return a {@link LexerExecutor} or null (if config is empty)
-	 * @throws Exception
-	 *             mainly exceptions during class loading
-	 */
-	@Deprecated
-	public static LexerExecutor locateLexerExecutor(Configuration config,
-			String baseDir) throws Exception {
-		
-		String lexerClass = config.getLexerClass();
-		if (lexerClass != null && !lexerClass.trim().isEmpty()) {
-			RTTLogging.info("Lexer: " + lexerClass);
-			return new LexerExecutor(lexerClass, config.getClasspath(), baseDir);
-		} 
-		
-		RTTLogging.info("Lexer: <none>");
-
-		return null;
 	}
 
 	/**
