@@ -28,7 +28,6 @@ import uk.co.flamingpenguin.jewel.cli.Option;
  *         [--generate -g] : Generates input for new testCases
  *         [--help -h] : Shows this help
  *         [--information -i] : Shows Information about the archive
- *         [--lexer -l value] : defines the lexer class (only for new configuration)
  *         [--newConfiguration -n value] : adds a new configuration
  *         [--output -o value] : output (for merging/saving/etc)
  *         [--overwrite -y] : in case of adding a new file, config or archive, already existing ones will be overwriten
@@ -121,11 +120,6 @@ public interface CommandlineOptions {
 	String getNewConfiguration();
 
 	boolean isNewConfiguration();
-
-	@Option(shortName = "l", description = "defines the lexer class (only for new configuration)")
-	String getLexer();
-
-	boolean isLexer();
 
 	@Option(shortName = "p", description = "defines the parser class (only for new configuration)")
 	String getParser();

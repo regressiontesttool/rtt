@@ -29,7 +29,6 @@ import rtt.core.manager.Manager;
  * 	archive="path-to-archive"&gt;
  * 	&lt;configuration
  * 		name="configuration-name"
- * 		lexer="lexer-class"
  * 		parser="parser-class"&gt;
  * 		&lt;classpathElement path="classpath-directory"/&gt;
  * 	&lt;/configuration&gt;
@@ -44,7 +43,6 @@ import rtt.core.manager.Manager;
 public class UpdateConfiguration extends Task {
 	public static class Configuration extends Task {
 		private String name = null;
-		private String lexer = null;
 		private String parser = null;
 		private boolean owrite = false;
 		private List<ClassPathElement> cpes =
@@ -56,8 +54,6 @@ public class UpdateConfiguration extends Task {
 		public void setOverwrite(boolean owrite) {this.owrite = owrite;}
 		public String getName() {return name;}
 		public void setName(String name) {this.name = name;}
-		public String getLexer() {return lexer;}
-		public void setLexer(String lexer) {this.lexer = lexer;}
 		public String getParser() {return parser;}
 		public void setParser(String parser) {this.parser = parser;}
 		public List<ClassPathElement> getClassPathElements() {return cpes;}
