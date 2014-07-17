@@ -121,7 +121,7 @@ public class ParserExecutor extends Executor {
 		try {
 			nodeProc.getAnnotation(Parser.Node.class);
 		} catch (Exception e) {			
-			RTTLogging.error("Warning:" + Parser.Node.class.toString()
+			RTTLogging.debug("Warning:" + Parser.Node.class.toString()
 					+ " not present at " + curObj.getClass());
 			
 			if (parentNode != null) {
