@@ -17,29 +17,6 @@
 		<xs:attribute name="informational" type="xs:boolean" />
 	</xs:complexType>
 
-	<!-- LexerOutput Definitions -->
-	<xs:element name="lexerOutput">
-		<xs:complexType>
-			<xs:annotation>
-				<xs:documentation>type of lexer output</xs:documentation>
-			</xs:annotation>
-			<xs:sequence>
-				<xs:element name="token" type="rtt:token" maxOccurs="unbounded" minOccurs="0"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:complexType name="token">
-		<xs:complexContent>
-			<xs:extension base="rtt:classable">
-				<xs:sequence>
-					<xs:element name="attribute" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:sequence>
-				<xs:attribute default="false" name="isEof" type="xs:boolean" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-
 	<!-- ParserOutput Definitions -->
 	<xs:element name="parserOutput">
 		<xs:complexType>

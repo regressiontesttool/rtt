@@ -4,14 +4,7 @@
 	terms of the MIT license (X11 license) which accompanies this distribution.
 -->
 <jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
-	<jaxb:bindings schemaLocation="Output.xsd" node="/xsd:schema">
-		<!-- Lexer Output -->
-		
-		<!-- adding plural s to "attribute" for better accessing (hint for List) -->
-		<jaxb:bindings node="//xsd:complexType[@name='token']//xsd:element[@name='attribute']">
-			<jaxb:property name="attributes" />
-		</jaxb:bindings>
-	
+	<jaxb:bindings schemaLocation="Output.xsd" node="/xsd:schema">	
 		<!-- Parser Output -->
 		
 		<!-- adding plural s to "node" for better accessing (hint for List) -->

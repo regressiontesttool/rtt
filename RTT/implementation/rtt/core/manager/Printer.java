@@ -10,7 +10,6 @@ package rtt.core.manager;
 
 import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.Node;
-import rtt.core.archive.output.Token;
 
 
 /**
@@ -19,44 +18,6 @@ import rtt.core.archive.output.Token;
  * 
  */
 public class Printer {
-
-	@Deprecated
-	static public String PrintToken(Token t) {
-		if (t == null || t.getAttributes() == null)
-			return "Token: <null>";
-
-		String result = "Token: [";
-		boolean first = true;
-		for (Attribute ta : t.getAttributes()) {
-			if (ta.isInformational() == true)
-				continue;
-
-			if (first)
-				first = false;
-			else
-				result += "|";
-
-			result += ta.getName() + ":" + ta.getValue();
-		}
-
-		result += "(";
-		first = true;
-		for (Attribute ta : t.getAttributes()) {
-			if (ta.isInformational() == false)
-				continue;
-
-			if (first)
-				first = false;
-			else
-				result += "|";
-
-			result += ta.getName() + ":" + ta.getValue();
-		}
-
-		result += ")]";
-
-		return result;
-	}
 
 	static public String PrintNode(Node n) {
 		if (n == null || n.getAttributes() == null)
