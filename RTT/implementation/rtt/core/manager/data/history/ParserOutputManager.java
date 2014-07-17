@@ -6,7 +6,6 @@ import java.util.List;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.OutputDataFetching;
-import rtt.core.loader.fetching.OutputDataFetching.OutputType;
 import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.compare.ParserOutputCompare;
 import rtt.core.testing.compare.results.ParserTestFailure;
@@ -17,8 +16,9 @@ public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
 
 	public ParserOutputManager(ArchiveLoader loader, String path) {
 		super(loader);
-
-		fetching = new OutputDataFetching(path, OutputType.PARSER);
+		
+		fetching = new OutputDataFetching(path);
+		
 		setFetchingStrategy(fetching);
 	}
 
@@ -78,22 +78,3 @@ public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
 	}
 
 }
-
-
-// Tree oldT = oldData.getTree().get(0);
-// Tree newT = newData.getTree().get(0);
-//
-// int oldNodeSize = oldT.getNode().size();
-// int newNodeSize = newT.getNode().size();
-//
-// int size = oldNodeSize > newNodeSize ? oldNodeSize : newNodeSize;
-//
-// for(int i = 0; i < size; i++) {
-// Node oldNode = oldT.getNode().get(i);
-// Node newNode = newT.getNode().get(i);
-//
-// if (oldNode.getClassName().equals(newNode.getClassName()) == false) {
-// return false;
-// }
-// }
-
