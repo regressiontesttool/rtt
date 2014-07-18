@@ -53,34 +53,39 @@ public class CreateArchive extends Task {
 	public void setLog(String log) {this.log = log;}
 	
 	public void execute() throws BuildException {
-		Manager m = new Manager(new File(archive), true);
+		Manager manager = null;
+		File archiveFile = new File(archive);
 		try {
+			manager = new Manager(archiveFile, true);
+			
 			boolean loaded = false;
 			try {
 				if (!owrite) {
-					m.loadArchive();
+					manager.loadArchive(archiveFile);
 					System.out.println("Archive loaded");
 					loaded = true;
 				}
 			} catch (Exception e) { /* no archive exists */}
 			if (!loaded) {
 				System.out.println("Create Archive");
-				m.createArchive();
+				manager.createArchive(archiveFile);
 			}
 			
 			// Make appropriate log entry if it changed!
-			m.setDefaultConfiguration(dconfig);
+			manager.setDefaultConfiguration(dconfig);
 			
 			
 			System.out.println("Save archive to: "+ archive);
-			m.saveArchive(new File(archive));
+			manager.saveArchive(new File(archive));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException(e);
 		} finally {
 			if (log != null) {
 				try {
-					m.exportLog(new File(log));
+					if (manager != null) {
+						manager.exportLog(new File(log));
+					}					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

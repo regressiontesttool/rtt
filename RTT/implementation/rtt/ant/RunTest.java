@@ -59,17 +59,20 @@ public class RunTest extends Task {
 		log("Testing Path: <" + archive + ">");
 		
 		boolean noErrors = false;
-		File archivePath = new File(archive);
-		Manager m = new Manager(archivePath, true);
+		File archiveFile = new File(archive);
+		Manager m = null;
+		
 		try {
+			m = new Manager(archiveFile, true);
+			
 			if (config != null && config.length() > 0)
-				m.loadArchive(config);
+				m.loadArchive(archiveFile, config);
 			else
-				m.loadArchive();
+				m.loadArchive(archiveFile);
 			log("Archive loaded");			
 			GenerationInformation info = m.runTests(getTestSuite(), matching);			
 			noErrors = !info.hasErrors();
-			m.saveArchive(archivePath);
+			m.saveArchive(archiveFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException(e.toString());

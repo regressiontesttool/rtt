@@ -4,14 +4,45 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import rtt.core.exceptions.RTTException;
+import rtt.core.exceptions.RTTException.Type;
 import rtt.core.utils.RTTLogging;
 
 public abstract class ArchiveLoader {
+	
+	public static class NotSupportedArchiveType extends RTTException {
+
+		private static final long serialVersionUID = -8229231611431198987L;
+
+		private NotSupportedArchiveType(String message) {
+			super(Type.OPERATION_FAILED, message);
+		}
+		
+		public static NotSupportedArchiveType create(File path) {
+			String message = "Not supported archive type: " + path;
+			return new NotSupportedArchiveType(message);
+		}
+		
+	}
 
 	private String baseDir = null;
 	private File baseFile;
 
-	public ArchiveLoader() {
+	protected ArchiveLoader() {}
+	
+	public static ArchiveLoader create(File path) throws RTTException {
+		boolean supportedArchiveType = path.isDirectory() || path.getPath().endsWith("zip");
+		if (!supportedArchiveType) {
+			throw NotSupportedArchiveType.create(path);
+		}			
+		
+		File aPath = path.getAbsoluteFile();
+		if (aPath == null) {
+			throw new RTTException(Type.NO_ARCHIVE, "Absolute file of '"
+					+ path.getAbsolutePath() + "' returned null.");
+		}
+		
+		return new ZipArchiveLoader();
 	}
 
 	

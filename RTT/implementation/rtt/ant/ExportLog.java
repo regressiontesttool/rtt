@@ -44,11 +44,14 @@ public class ExportLog extends Task {
 		if (dest == null)
 			dest = ".";
 		log("Loading Archive: <" + archive + ">");
-		Manager m = new Manager(new File(archive), true);
+		
+		File archiveFile = new File(archive);
+		
 		try {
-			m.loadArchive();
+			Manager manager = new Manager(archiveFile, true);
+			manager.loadArchive(archiveFile);
 			log("Archive loaded");
-			m.exportLog(new File(dest));
+			manager.exportLog(new File(dest));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException(e.toString());

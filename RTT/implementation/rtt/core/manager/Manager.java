@@ -24,7 +24,6 @@ import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.loader.ZipArchiveLoader;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.LogManager;
 import rtt.core.manager.data.TestsuiteManager;
@@ -84,12 +83,14 @@ public class Manager {
 	Archive currentArchive;
 	LogManager currentLog;
 	private String baseDir;
+	
+	private ArchiveLoader loader;
 
 	public static boolean verbose = true;
 
-	public Manager(File archivePath, boolean verbose) {
-
+	public Manager(File archivePath, boolean verbose) throws RTTException {
 		this.archivePath = archivePath;
+		this.loader = ArchiveLoader.create(archivePath);
 
 		// because sometimes, it is not the same
 		Thread.currentThread().setContextClassLoader(
@@ -98,22 +99,35 @@ public class Manager {
 		Manager.verbose = verbose;
 	}
 	
-	public Manager(File archive, boolean verbose, ClassLoader classLoader) {
+	public Manager(File archive, boolean verbose, ClassLoader classLoader) throws RTTException {
 		this(archive, verbose);
 		Thread.currentThread().setContextClassLoader(classLoader);
 	}
-
-	public void createArchive() throws Exception {
-		currentArchive = new Archive(getArchiveLoader(archivePath));
+	
+	private void initArchive(File archive) {
+		loader.setBasePath(archive);
+		baseDir = loader.getBasePath();
+		
+		currentArchive = new Archive(loader);
 		currentLog = currentArchive.getLogManager();
-
-		currentLog.addEntry(EntryType.ARCHIVE, "Archive created.", "");
-
-		currentArchive.save();
 	}
+	
+	public void loadArchive(File archive) throws RTTException {
+		if (!archive.exists()) {
+			throw new RTTException(Type.NO_ARCHIVE, archive + " not found.");
+		}
+		
+		initArchive(archive);
 
-	public void loadArchive(String config) throws RTTException {
-		loadArchive();
+		try {
+			currentArchive.load();
+		} catch (Exception e) {
+			throw new RTTException(Type.NO_ARCHIVE, "Could not load archive.", e);
+		}
+	}
+	
+	public void loadArchive(File archive, String config) throws RTTException {
+		loadArchive(archive);
 		boolean hasChanged = currentArchive.setActiveConfiguration(config);
 
 		if (hasChanged) {
@@ -121,41 +135,18 @@ public class Manager {
 		}
 	}
 
-	public void loadArchive() throws RTTException {
-		currentArchive = new Archive(getArchiveLoader(archivePath));
-		currentLog = currentArchive.getLogManager();
-
-		try {
-			currentArchive.load();
-		} catch (Exception e) {
-			throw new RTTException(Type.NO_ARCHIVE, "Could not load archive.", e);
+	public void createArchive(File archive) throws Exception {
+		File parentFolder = archive.getParentFile();
+		if (!parentFolder.exists()) {
+			parentFolder.mkdirs();
 		}
+		
+		initArchive(archive);
 
-	}
+		currentLog.addEntry(EntryType.ARCHIVE, "Archive created.", "");
 
-	private ArchiveLoader getArchiveLoader(File path) throws RTTException {
-		if (!(path.isDirectory() || path.getPath().endsWith("zip")))
-			throw new RTTException(Type.NO_ARCHIVE, path.getAbsolutePath()
-					+ " is no supported Archive");
-
-		File aPath = path.getAbsoluteFile();
-		if (aPath == null) {
-			throw new RTTException(Type.NO_ARCHIVE, "Absolute file of '"
-					+ path.getAbsolutePath() + "' returned null.");
-		}
-
-		try {
-			ArchiveLoader loader = new ZipArchiveLoader(aPath.getParent(),
-					aPath.getName());
-			this.baseDir = loader.getBasePath();
-
-			return loader;
-		} catch (Exception e) {
-			throw new RTTException(Type.NO_ARCHIVE,
-					"Could not start archive loader", e);
-		}
-
-	}
+		currentArchive.save();
+	}	
 
 	private boolean isInitialized() {
 		return (currentArchive != null);

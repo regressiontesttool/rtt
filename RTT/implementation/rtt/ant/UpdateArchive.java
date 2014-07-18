@@ -105,10 +105,13 @@ public class UpdateArchive extends Task {
 	public String getLog() {return log;}
 	public void setLog(String log) {this.log = log;}
 	
-	public void execute() throws BuildException { 
-		Manager m = new Manager(new File(archive), true);
+	public void execute() throws BuildException {
+		Manager m = null;
+		File archiveFile = new File(archive);
 		try {
-			m.loadArchive();
+			m = new Manager(archiveFile, true);
+		
+			m.loadArchive(archiveFile);
 			System.out.println("Archive loaded");
 
 			for (Testsuite t : toUpdate) {

@@ -37,8 +37,8 @@ public class RegressionTestTool {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Throwable {
-		Cli<CommandlineOptions> optionParser = CliFactory
-				.createCli(CommandlineOptions.class);
+		Cli<CommandlineOptions> optionParser = CliFactory.createCli(CommandlineOptions.class);
+		
 		CommandlineOptions options = null;
 		try {
 			options = optionParser.parseArguments(args);
@@ -52,16 +52,17 @@ public class RegressionTestTool {
 			return;
 		}
 
-		Manager m = new Manager(options.getArchive(), true);
+		File archive = options.getArchive();
+		Manager m = new Manager(archive, true);
 
 		if (options.getArchive().exists() && !options.isOverwrite()) {
 			if (options.isConfiguration()) {
-				m.loadArchive(options.getConfiguration());
+				m.loadArchive(archive, options.getConfiguration());
 			} else {
-				m.loadArchive();
+				m.loadArchive(archive);
 			}
 		} else {
-			m.createArchive();
+			m.createArchive(archive);
 		}
 			
 

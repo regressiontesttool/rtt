@@ -50,12 +50,15 @@ public class UpdateTests extends Task {
 			throw new BuildException("Parameter <path> is required!");
 
 		log("regenerating Archive: <" + archive + ">");
-		Manager m = new Manager(new File(archive), true);
+		Manager m = null;
+		File archiveFile = new File(archive);
+		
 		try {
+			m = new Manager(archiveFile, true);
 			if (config != null && config.length() > 0)
-				m.loadArchive(config);
+				m.loadArchive(archiveFile, config);
 			else
-				m.loadArchive();
+				m.loadArchive(archiveFile);
 			log("Archive loaded (Configuration: " + config + ")");
 			log("Generating Testresults for Testcases");
 			m.generateTests(getTestSuite());
