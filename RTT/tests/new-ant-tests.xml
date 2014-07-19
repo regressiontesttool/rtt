@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf8"?>
+<project name="New-Ant-Tests" basedir=".." default="test">
+	<property name="archive.nonexists" location="${basedir}/archives/nonExisting.zip"/>
+	<property name="archive.exists" location="${basedir}/archives/archive.zip"/>
+	
+	<taskdef name="newAnt" classname="rtt.ant.AbstractAntTask" />
+	
+	<target name="test">
+		
+		<echo>Running tests ...</echo>
+		<newAnt archive="${archive.nonexists}"/>
+		<newAnt archive="${archive.exists}" />
+	</target>
+</project>
