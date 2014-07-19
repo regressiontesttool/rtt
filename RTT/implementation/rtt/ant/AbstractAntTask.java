@@ -6,6 +6,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
+import rtt.core.exceptions.RTTException;
+import rtt.core.manager.Manager;
+
 public class AbstractAntTask extends Task {
 	
 	private static final String NO_ARCHIVE_ATTRIBUTE =			
@@ -37,6 +40,7 @@ public class AbstractAntTask extends Task {
 		
 		File archiveFile = getArchiveFile(inputArchive, NO_INPUT_ARCHIVE);
 		info("Using archive: " + archiveFile);
+		Manager manager = createManager(archiveFile);
 		
 		if (outputArchive != null) {
 			File outputFile = getArchiveFile(outputArchive, NO_OUTPUT_ARCHIVE);
@@ -58,6 +62,15 @@ public class AbstractAntTask extends Task {
 		}
 		
 		return new File(archivePath);
+	}
+	
+	private Manager createManager(File archiveFile) {
+		try {
+			return new Manager(archiveFile, true);
+		} catch (RTTException e) {
+			log("Could not create archive manager", e, Project.MSG_ERR);
+			throw new BuildException(e);
+		}
 	}
 	
 	protected void info(String message) {

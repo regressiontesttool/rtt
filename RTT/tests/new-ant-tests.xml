@@ -10,5 +10,6 @@
 		<echo>Running tests ...</echo>
 		<newAnt archive="${archive.nonexists}"/>
 		<newAnt archive="${archive.exists}" />
+		<newAnt archive="test.txt" />					
 	</target>
 </project>
