@@ -11,5 +11,6 @@
 	<classpathentry kind="src" path="implementation"/>
 	<classpathentry kind="src" path="tests/tested_repository"/>
 	<classpathentry kind="src" path="src-gen"/>
+	<classpathentry kind="src" path="tests/junit"/>
 	<classpathentry kind="output" path="binary"/>
 </classpath>
