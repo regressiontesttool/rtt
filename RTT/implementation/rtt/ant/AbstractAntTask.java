@@ -6,57 +6,65 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
 
 import rtt.ant.newTasks.RTTAntTask;
+import rtt.ant.newTasks.ArchiveChangeAntTask;
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
 
-public class AbstractAntTask extends Task {
+public class AbstractAntTask extends RTTAntTask {
 	
-	private static final String NO_ARCHIVE_ATTRIBUTE =			
-			"Archive attribute must be set.";	
-	private static final String NO_INPUT_ARCHIVE =
-			"No archive file was set.";
 	private static final String NO_OUTPUT_ARCHIVE =
 			"The output attribute is used, but no file was given.";
 	private static final String NO_OVERWRITE = 
 			"Overwrite flag was false. Discard any archive changes.";
 	private static final String NO_ARCHIVE_CHANGES = 
 			"No archive changes detected. Save is omitted.";
-	private static final String ARCHIVE_NONEXISTS = 
+	private static final String ARCHIVE_NOT_EXISTS = 
 			"The given archive does not exists.";
+	private static final String COULD_NOT_LOAD = 
+			"Could not load archive.";
 	
-	private String inputArchive = null;
 	private String outputArchive = null;
+	private String config = "";
 	private boolean overwrite = true;
 	
-	private List<RTTAntTask> tasks = new ArrayList<RTTAntTask>();
-	
-	public void setArchive(String archive) {
-		this.inputArchive = archive;
-	}
+	private List<ArchiveChangeAntTask> tasks = new ArrayList<ArchiveChangeAntTask>();
 	
 	public void setOutput(String output) {
 		this.outputArchive = output;
+	}
+	
+	public void setConfig(String config) {
+		this.config = config;
 	}
 	
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}	
 	
-	public void addConfigured(RTTAntTask task) {
+	public void addConfigured(ArchiveChangeAntTask task) {
 		tasks.add(task);
+	}
+	
+	@Override
+	public void checkIntegrity(File archiveFile, Manager manager)
+			throws BuildException {
+		
+		if (!archiveFile.exists()) {
+			error(ARCHIVE_NOT_EXISTS);
+			throw new BuildException(ARCHIVE_NOT_EXISTS);
+		}
+		
+		for (ArchiveChangeAntTask task : tasks) {
+			task.checkIntegrity();
+		}
 	}
 
 	@Override
-	public void execute() throws BuildException {
-		checkTasks();
-		
-		File archiveFile = getInputArchive();
-		Manager manager = createManager(archiveFile);
-		
-		boolean hasArchiveChanged = executeTasks(manager);		
+	public void execute(File archiveFile, Manager manager) {
+		loadArchive(archiveFile, manager);
+		boolean hasArchiveChanged = executeTasks(manager);
 		if (hasArchiveChanged) {
 			if (outputArchive != null) {
 				File outputFile = getFile(outputArchive, NO_OUTPUT_ARCHIVE);
@@ -69,49 +77,18 @@ public class AbstractAntTask extends Task {
 		}
 	}
 
-	private void checkTasks() throws BuildException {
-		for (RTTAntTask task : tasks) {
-			task.checkIntegrity();
-		}
-	}
-
-	private File getInputArchive() {
-		if (inputArchive == null) {
-			error(NO_ARCHIVE_ATTRIBUTE);
-			throw new BuildException(NO_ARCHIVE_ATTRIBUTE);
-		}
-		
-		File archiveFile = getFile(inputArchive, NO_INPUT_ARCHIVE);
-		info("Using archive: " + archiveFile);
-		
-		if (!archiveFile.exists()) {
-			warn(ARCHIVE_NONEXISTS);
-		}
-		
-		return archiveFile;
-	}
-
-	private File getFile(String filePath, String errorMessage) {
-		if (filePath == null || filePath.equals("")) {
-			error(errorMessage);
-			throw new BuildException(errorMessage);
-		}
-		
-		return new File(filePath);
-	}
-	
-	private Manager createManager(File archiveFile) {
+	private void loadArchive(File archiveFile, Manager manager) {
 		try {
-			return new Manager(archiveFile, true);
+			manager.loadArchive(archiveFile, config);
 		} catch (RTTException e) {
-			log("Could not create archive manager.", e, Project.MSG_ERR);
+			log(COULD_NOT_LOAD, e, Project.MSG_ERR);
 			throw new BuildException(e);
 		}
 	}
 	
 	private boolean executeTasks(Manager manager) {
 		boolean archiveChanged = false;
-		for (RTTAntTask task : tasks) {
+		for (ArchiveChangeAntTask task : tasks) {
 			task.execute(manager);
 			if (task.hasArchiveChanged() && !archiveChanged) {
 				archiveChanged = true;
@@ -122,10 +99,9 @@ public class AbstractAntTask extends Task {
 	}
 	
 	private void saveArchive(Manager manager, File filePath) {
-		info("Save to: " + filePath);
-		
 		if (!filePath.exists() || overwrite) {
 			try {
+				info("Save to: " + filePath);
 				manager.saveArchive(filePath);
 			} catch (RTTException e) {
 				log("Could not save archive.", e, Project.MSG_ERR);
@@ -134,17 +110,5 @@ public class AbstractAntTask extends Task {
 		} else {
 			info(NO_OVERWRITE);
 		}			
-	}	
-	
-	protected void info(String message) {
-		log(message, Project.MSG_INFO);
-	}
-	
-	protected void warn(String message) {
-		log(message, Project.MSG_WARN);
-	}
-	
-	protected void error(String message) {
-		log(message, Project.MSG_ERR);
 	}
 }
