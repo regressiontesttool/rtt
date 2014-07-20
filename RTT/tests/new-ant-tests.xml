@@ -5,9 +5,9 @@
 	
 	<property name="lib" location="${basedir}/../libraries/plugin/ant-lib.jar" />
 	
-	<taskdef name="create" classname="rtt.ant.newTasks.CreateAntTask" classpath="${lib}" loaderref="${lib}"/>
-	<taskdef name="update" classname="rtt.ant.AbstractAntTask" classpath="${lib}" loaderref="${lib}"/>
-	<taskdef name="config" classname="rtt.ant.newTasks.ConfigAntTask" classpath="${lib}" loaderref="${lib}"/>
+	<taskdef name="create" classname="rtt.ant.newTasks.CreateArchiveTask" classpath="${lib}" loaderref="${lib}"/>
+	<taskdef name="update" classname="rtt.ant.newTasks.ChangeArchiveTask" classpath="${lib}" loaderref="${lib}"/>
+	<taskdef name="config" classname="rtt.ant.newTasks.ChangeConfigTask" classpath="${lib}" loaderref="${lib}"/>
 	
 	<target name="test">
 		

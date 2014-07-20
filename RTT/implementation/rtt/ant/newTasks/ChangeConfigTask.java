@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import rtt.ant.ChangeArchiveTask.ChangeTask;
+import rtt.ant.newTasks.ChangeArchiveTask.ChangeTask;
 import rtt.core.manager.Manager;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 

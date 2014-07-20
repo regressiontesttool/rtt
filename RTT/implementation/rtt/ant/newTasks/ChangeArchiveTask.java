@@ -1,4 +1,4 @@
-package rtt.ant;
+package rtt.ant.newTasks;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
-import rtt.ant.newTasks.AbstractAntTask;
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
 
