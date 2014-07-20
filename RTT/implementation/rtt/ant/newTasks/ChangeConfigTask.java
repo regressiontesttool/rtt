@@ -6,10 +6,11 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
+import rtt.ant.ChangeArchiveTask.ChangeTask;
 import rtt.core.manager.Manager;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 
-public class ConfigAntTask extends ArchiveChangeAntTask {
+public class ChangeConfigTask extends ChangeTask {
 	
 	public static class ClassPathElement extends Task {
 		private String path = "";
@@ -27,8 +28,8 @@ public class ConfigAntTask extends ArchiveChangeAntTask {
 	private boolean defaultConfig = false;
 	private boolean overwrite = false;
 	
-	public ConfigAntTask() {
-		classpath = new ArrayList<ConfigAntTask.ClassPathElement>();
+	public ChangeConfigTask() {
+		classpath = new ArrayList<ChangeConfigTask.ClassPathElement>();
 	}
 	
 	public void setName(String name) {

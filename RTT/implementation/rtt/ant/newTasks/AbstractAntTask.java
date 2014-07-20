@@ -9,7 +9,7 @@ import org.apache.tools.ant.Task;
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
 
-public abstract class RTTAntTask extends Task {
+public abstract class AbstractAntTask extends Task {
 	
 	private static final String NO_ARCHIVE_ATTRIBUTE =			
 			"Archive attribute must be set.";	

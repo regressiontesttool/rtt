@@ -6,13 +6,47 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 
-import rtt.ant.newTasks.RTTAntTask;
-import rtt.ant.newTasks.ArchiveChangeAntTask;
+import rtt.ant.newTasks.AbstractAntTask;
 import rtt.core.exceptions.RTTException;
 import rtt.core.manager.Manager;
 
-public class AbstractAntTask extends RTTAntTask {
+public class ChangeArchiveTask extends AbstractAntTask {
+	
+	public static abstract class ChangeTask extends Task {	
+		
+		private boolean archiveChanged = false;
+
+		public abstract void checkIntegrity() throws BuildException;
+		public abstract void execute(Manager manager);
+		
+		public final boolean hasArchiveChanged() {
+			return archiveChanged;
+		}
+		
+		protected final void setChanged() {
+			this.archiveChanged = true;
+		}
+		
+		@Override
+		public final void execute() throws BuildException {
+			throw new BuildException("The '" + this.getClass().getName() 
+					+ "' Task cannot be executed standalone.");
+		}
+		
+		protected void info(String message) {
+			log(message, Project.MSG_INFO);
+		}
+		
+		protected void warn(String message) {
+			log(message, Project.MSG_WARN);
+		}
+		
+		protected void error(String message) {
+			log(message, Project.MSG_ERR);
+		}
+	}
 	
 	private static final String NO_OUTPUT_ARCHIVE =
 			"The output attribute is used, but no file was given.";
@@ -29,7 +63,7 @@ public class AbstractAntTask extends RTTAntTask {
 	private String config = "";
 	private boolean overwrite = true;
 	
-	private List<ArchiveChangeAntTask> tasks = new ArrayList<ArchiveChangeAntTask>();
+	private List<ChangeTask> tasks = new ArrayList<ChangeTask>();
 	
 	public void setOutput(String output) {
 		this.outputArchive = output;
@@ -43,7 +77,7 @@ public class AbstractAntTask extends RTTAntTask {
 		this.overwrite = overwrite;
 	}	
 	
-	public void addConfigured(ArchiveChangeAntTask task) {
+	public void addConfigured(ChangeTask task) {
 		tasks.add(task);
 	}
 	
@@ -56,7 +90,7 @@ public class AbstractAntTask extends RTTAntTask {
 			throw new BuildException(ARCHIVE_NOT_EXISTS);
 		}
 		
-		for (ArchiveChangeAntTask task : tasks) {
+		for (ChangeTask task : tasks) {
 			task.checkIntegrity();
 		}
 	}
@@ -88,7 +122,7 @@ public class AbstractAntTask extends RTTAntTask {
 	
 	private boolean executeTasks(Manager manager) {
 		boolean archiveChanged = false;
-		for (ArchiveChangeAntTask task : tasks) {
+		for (ChangeTask task : tasks) {
 			task.execute(manager);
 			if (task.hasArchiveChanged() && !archiveChanged) {
 				archiveChanged = true;

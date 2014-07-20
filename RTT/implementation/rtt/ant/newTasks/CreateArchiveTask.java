@@ -7,7 +7,7 @@ import org.apache.tools.ant.Project;
 
 import rtt.core.manager.Manager;
 
-public class CreateAntTask extends RTTAntTask {
+public class CreateArchiveTask extends AbstractAntTask {
 
 	private static final String ARCHIVE_EXISTS = 
 			"The archive already exists.";
