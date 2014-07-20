@@ -11,7 +11,7 @@ import rtt.core.manager.Manager;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 
 public class ChangeConfigTask extends ChangeTask {
-	
+
 	public static class ClassPathElement extends Task {
 		private String path = "";
 		public ClassPathElement() {}
@@ -21,12 +21,12 @@ public class ChangeConfigTask extends ChangeTask {
 
 	private static final String NO_CONFIG_NAME = 
 			"The name attribute must be used to specify a configuration.";
-
+	
 	private String name;
 	private String parser = "";
 	private List<ClassPathElement> classpath;
 	private boolean defaultConfig = false;
-	private boolean overwrite = false;
+	private boolean overwrite = true;
 	
 	public ChangeConfigTask() {
 		classpath = new ArrayList<ChangeConfigTask.ClassPathElement>();
@@ -40,6 +40,10 @@ public class ChangeConfigTask extends ChangeTask {
 		this.parser = parser;
 	}
 	
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
+	}
+	
 	public void setMakeDefault(boolean defaultConfig) {
 		this.defaultConfig = defaultConfig;
 	}
@@ -49,12 +53,20 @@ public class ChangeConfigTask extends ChangeTask {
 	}
 	
 	@Override
+	public void checkIntegrity(Manager manager) throws BuildException {
+		if (name == null || name.equals("")) {
+			error(NO_CONFIG_NAME);
+			throw new BuildException(NO_CONFIG_NAME);
+		}
+	}
+	
+	@Override
 	public void execute(Manager manager) {
 		List<String> cpEntries = new ArrayList<String>();
 		for (ClassPathElement element : classpath) {
 			cpEntries.add(element.getPath());
 		}
-		
+
 		ConfigStatus status = manager.setConfiguration(name, parser, 
 				cpEntries, defaultConfig, overwrite);
 		
@@ -75,13 +87,6 @@ public class ChangeConfigTask extends ChangeTask {
 			setChanged();
 			break;		
 		}
-	}
+	}	
 	
-	@Override
-	public void checkIntegrity() throws BuildException {
-		if (name == null || name.equals("")) {
-			error(NO_CONFIG_NAME);
-			throw new BuildException(NO_CONFIG_NAME);
-		}
-	}
 }

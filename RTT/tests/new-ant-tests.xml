@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf8"?>
 <project name="New-Ant-Tests" basedir="." default="test">
-	<property name="archive.nonexists" location="${basedir}/archives/nonExisting.zip"/>
-	<property name="archive.exists" location="${basedir}/archives/archive.zip"/>
+	<property name="archive.dir" location="${basedir}/archives" />
+	<property name="archive.nonexists" location="${archive.dir}/nonExisting.zip"/>
+	<property name="archive.exists" location="${archive.dir}/archive.zip"/>
 	
 	<property name="lib" location="${basedir}/../libraries/plugin/ant-lib.jar" />
 	
 	<taskdef name="create" classname="rtt.ant.newTasks.CreateArchiveTask" classpath="${lib}" loaderref="${lib}"/>
 	<taskdef name="update" classname="rtt.ant.newTasks.ChangeArchiveTask" classpath="${lib}" loaderref="${lib}"/>
 	<taskdef name="config" classname="rtt.ant.newTasks.ChangeConfigTask" classpath="${lib}" loaderref="${lib}"/>
+	<taskdef name="exportLog" classname="rtt.ant.newTasks.ExportLogTask" classpath="${lib}" loaderref="${lib}"/>
 	
 	<target name="test">
 		
@@ -18,33 +20,32 @@
 			<config name="ParserConfig" parser="parser" />
 			<config name="CPConfig">
 				<classpath path="./../../../binary" />
-			</config>	
-		</update>
-		<update archive="${archive.nonexists}" overwrite="true">
-			<config name="EmptyConfig"/>
-			<config name="ParserConfig" parser="parser" />
-			<config name="CPConfig">
+			</config>
+			<config name="EmptyConfig" overwrite="no" />
+			<config name="ParserConfig" parser="parser" overwrite="no"/>
+			<config name="CPConfig" overwrite="no">
 				<classpath path="./../../../binary" />
-			</config>	
+			</config>
 		</update>
-		<update archive="${archive.nonexists}" overwrite="true">
+		<update archive="${archive.nonexists}">
 			<config name="EmptyConfig" makedefault="true"/>
 			<config name="ParserConfig" parser="parser" />
 			<config name="CPConfig">
 				<classpath path="./../../../binary" />
 			</config>	
 		</update>
-		<update archive="${archive.nonexists}" overwrite="true">
+		<update archive="${archive.nonexists}">
 			<config name="EmptyConfig" />
-			<config name="ParserConfig" parser="parser2" />
-			<config name="CPConfig" parser="parser">
+			<config name="ParserConfig" parser="parser2" overwrite="no"/>
+			<config name="CPConfig" parser="parser" overwrite="no">
 				<classpath path="./../../../binary" />
 			</config>	
 		</update>
+		<exportLog archive="${archive.nonexists}" dest="${archive.dir}" />
 		
-		<available file="${archive.nonexists}" property="archive.created" />
+<!--		<available file="${archive.nonexists}" property="archive.created" />
 		<fail unless="${archive.created}" />    	
-		<delete file="${archive.nonexists}" failonerror="true"/>
+		<delete file="${archive.nonexists}" failonerror="true"/>-->
 	</target>
 	
 </project>

@@ -63,8 +63,8 @@ public abstract class AbstractAntTask extends Task {
 		return new File(filePath);
 	}
 	
-	public abstract void checkIntegrity(File archiveFile, Manager manager) throws BuildException;
-	public abstract void execute(File archiveFile, Manager manager);
+	protected abstract void checkIntegrity(File archiveFile, Manager manager) throws BuildException;
+	protected abstract void execute(File archiveFile, Manager manager);
 	
 	protected void info(String message) {
 		log(message, Project.MSG_INFO);
