@@ -78,9 +78,9 @@ public class RttProject {
 		
 		// create archive
 		File archive = archiveFile.getLocation().toFile();				
-		Manager m = new Manager(archive, true);
 		try {
-			m.createArchive();
+			Manager m = new Manager(archive, true);
+			m.createArchive(archive);
 			m.saveArchive(archive);
 		} catch (Exception e) {
 			throw new CoreException(new Status(IStatus.ERROR,

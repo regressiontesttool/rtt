@@ -1,5 +1,6 @@
 package rtt.ui.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -30,11 +31,12 @@ public class RttPluginUtil {
 	public static Manager getArchiveManager(IFile file, Configuration config)
 			throws RTTException {
 		if (file != null && file.exists()) {
-			Manager manager = new Manager(file.getLocation().toFile(), true);
+			File archiveFile = file.getLocation().toFile();
+			Manager manager = new Manager(archiveFile, true);
 			if (config != null) {
-				manager.loadArchive(config.getName());
+				manager.loadArchive(archiveFile, config.getName());
 			} else {
-				manager.loadArchive();
+				manager.loadArchive(archiveFile);
 			}
 
 			return manager;
