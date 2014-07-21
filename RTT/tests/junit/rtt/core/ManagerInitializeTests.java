@@ -14,7 +14,7 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.loader.ArchiveLoader.NotSupportedArchiveType;
 import rtt.core.manager.Manager;
 
-public class ManagerTests {
+public class ManagerInitializeTests {
 
 	private Path dirExisting;
 	private Path dirNonExisting;
