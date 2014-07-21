@@ -15,7 +15,7 @@ public class OutputDataFetching implements IFileFetching {
 	
 	@Override
 	public String getFileName() {
-		return "parser." + version + ".xml";
+		return "output." + version + ".xml";
 	}
 
 	@Override

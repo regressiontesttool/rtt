@@ -43,7 +43,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		}
 	}
 
-	protected ParserOutputManager parManager;
+	protected OutputManager outputManager;
 	
 	protected String path;
 	protected String suiteName;
@@ -64,8 +64,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		setFetchingStrategy(new SimpleFileFetching("history.xml", path));
 
 		inputManager = new InputManager(loader, suiteName, caseName);
-		parManager = new ParserOutputManager(loader, LoaderUtils.getPath(path,
-				"parser"));
+		outputManager = new OutputManager(loader, path);
 
 		try {
 			this.load();
@@ -105,12 +104,12 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return type;
 	}
 	
-	public ParserOutput getParserOutput(Integer version) {
-		return parManager.getData(version);
+	public ParserOutput getOutputData(Integer version) {
+		return outputManager.getData(version);
 	}
 	
-	public InputStream getParserInputStream(Integer version) {
-		return parManager.getStreamData(version);
+	public InputStream getOutputDataInputStream(Integer version) {
+		return outputManager.getStreamData(version);
 	}
 	
 	@Override
@@ -136,12 +135,12 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	public GenerationResult createData(ParserExecutor parser, Integer inputVersion, List<String> params) {
 		GenerationResult result = new GenerationResult(suiteName, caseName);
 
-		ParserOutput newParOut = null;
+		ParserOutput newOutput = null;
 		
 		try {
 			Input input = inputManager.getInput(inputVersion);
 			
-			newParOut = DataGenerator.generateOutput(input, params, parser);
+			newOutput = DataGenerator.generateOutput(input, params, parser);
 		} catch (Throwable t) {
 			RTTLogging.trace("Could not create output data", t);
 			if (t instanceof InvocationTargetException) {
@@ -164,16 +163,16 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 			// previous data is available, load and check if data has changed
 			lastVersion = data.getVersion().size();
 			
-			ParserOutput oldParOut = parManager.getData(lastVersion);			
+			ParserOutput oldOutput = outputManager.getData(lastVersion);			
 			
 			if (isOutDated(inputVersion)) {
 				// input is newer, than reference data -> replace reference
 				replace = true;
 			} else {
 				
-				boolean parserChanged = !ParserOutputManager.dataEqual(oldParOut, newParOut); 
+				boolean dataChanged = !OutputManager.dataEqual(oldOutput, newOutput); 
 
-				if (parserChanged) {				
+				if (dataChanged) {				
 					// data has really changed -> replace
 					replace = true;
 				}
@@ -191,7 +190,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 
 			data.getVersion().add(newVersion);
 
-			parManager.setData(newParOut, lastVersion);
+			outputManager.setData(newOutput, lastVersion);
 			
 			result.hasReplaced = true;
 		}

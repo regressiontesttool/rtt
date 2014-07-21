@@ -45,10 +45,8 @@ public abstract class Executor {
 
 	public Class<?> loadClass(String className, Classpath cp, String baseDir)
 			throws Exception {
-		
-		try (ExecutorLoader loader = new ExecutorLoader(cp)){
-			return loader.resolveClass(className);
-		}
+		ExecutorLoader loader = new ExecutorLoader(cp);
+		return loader.resolveClass(className);
 	}
 	
 	public void setParams(List<String> params) {

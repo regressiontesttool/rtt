@@ -14,6 +14,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
+import rtt.core.utils.GenerationInformation;
 
 /**
  * Task for regenerating the results.<br>
@@ -61,7 +62,10 @@ public class UpdateTests extends Task {
 				m.loadArchive(archiveFile);
 			log("Archive loaded (Configuration: " + config + ")");
 			log("Generating Testresults for Testcases");
-			m.generateTests(getTestSuite());
+			GenerationInformation infos = m.generateTests(getTestSuite());
+			if (infos.hasErrors()) {
+				throw new BuildException("Error during data generation");
+			}
 			m.saveArchive(new File(archive));
 		} catch (Throwable e) {
 			e.printStackTrace();

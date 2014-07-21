@@ -76,8 +76,8 @@ public class Tester {
 		if (!config.getParserClass().equals("")) {
 			// test parser
 			try {
-				ParserOutput testData = testManager.getParserOutput(versionData.getTestID());
-				ParserOutput refData = refManager.getParserOutput(versionData.getReferenceID()); 
+				ParserOutput testData = testManager.getOutputData(versionData.getTestID());
+				ParserOutput refData = refManager.getOutputData(versionData.getReferenceID()); 
 				
 				List<ParserTestFailure> parserFailure = testParser(testData, refData);
 				

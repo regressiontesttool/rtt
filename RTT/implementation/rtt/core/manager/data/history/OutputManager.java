@@ -10,11 +10,11 @@ import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.compare.ParserOutputCompare;
 import rtt.core.testing.compare.results.ParserTestFailure;
 
-public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
+public class OutputManager extends AbstractDataManager<ParserOutput> {
 
 	OutputDataFetching fetching;
 
-	public ParserOutputManager(ArchiveLoader loader, String path) {
+	public OutputManager(ArchiveLoader loader, String path) {
 		super(loader);
 		
 		fetching = new OutputDataFetching(path);
@@ -45,13 +45,13 @@ public class ParserOutputManager extends AbstractDataManager<ParserOutput> {
 	@Override
 	protected ParserOutput doLoad() {
 		throw new RuntimeException(
-				"Use getData(Version) for loading ParserOutput");
+				"Use getData(Version) for loading output");
 	}
 
 	@Override
 	protected void doSave(ParserOutput data) {
 		throw new RuntimeException(
-				"Use setData(Version) for loading ParserOutput");
+				"Use setData(Version) for loading output");
 	}
 
 	public static boolean dataEqual(ParserOutput oldData, ParserOutput newData) {
