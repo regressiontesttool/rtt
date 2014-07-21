@@ -122,7 +122,7 @@ import rtt.annotations.*;
 	
 	@Parser.Node public static final class Repository {
 		public Repository[] children = new Repository[0];
-		@Parser.Node.Child public List<Repository> children() {
+		@Parser.Node.Compare public List<Repository> children() {
 			return Arrays.asList(children);
 		}
 		@Parser.Node.Compare public String value = "";

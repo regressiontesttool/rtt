@@ -53,14 +53,12 @@ public class DataGenerator {
 			String baseDir) throws Exception {
 		
 		String parserClass = config.getParserClass();
-		if (parserClass != null && !parserClass.trim().isEmpty()) {
-			RTTLogging.info("Parser: " + parserClass);
-			return new ParserExecutor(parserClass, config.getClasspath(), baseDir);
+		if (parserClass == null || parserClass.trim().isEmpty()) {
+			throw new IllegalStateException("The given configuration contains no parser.");
 		}
-		
-		RTTLogging.info("Parser: <none>");
-
-		return null;
+			
+		RTTLogging.info("Parser: " + parserClass);
+		return new ParserExecutor(parserClass, config.getClasspath(), baseDir);
 	}
 
 }

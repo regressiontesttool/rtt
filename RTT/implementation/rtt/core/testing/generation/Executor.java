@@ -9,20 +9,17 @@
 package rtt.core.testing.generation;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotations.AnnotationProcessor;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
-import rtt.core.utils.RTTLogging;
+import rtt.core.utils.ExecutorLoader;
 
 
 /**
@@ -48,36 +45,10 @@ public abstract class Executor {
 
 	public Class<?> loadClass(String className, Classpath cp, String baseDir)
 			throws Exception {
-		String path = baseDir.substring(0, baseDir.lastIndexOf(File.separator));
-		if (!(cp == null || cp.getPath().size() == 0)) {
-			URL[] urls = new URL[cp.getPath().size()];
-			int idx = 0;
-			for (String pathEntry : cp.getPath()) {
-				File f = new File(pathEntry); // test, if absolut
-				if (!f.exists()) {
-					f = new File(path + File.separator + pathEntry);					
-					if (!f.exists()) {
-						RTTLogging.warn("Classpath does not exist: "
-								+ pathEntry);
-						continue;
-					}
-				}
-				urls[idx++] = (f.toURI().toURL());
-			}
-			
-//			System.out.println(Thread.currentThread().getContextClassLoader());
-
-			URLClassLoader ucl = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
-			try {
-				return ucl.loadClass(className);
-			} catch (ClassNotFoundException exception) {
-				RTTLogging.error("Executing class not found.", exception);
-			}
-			
-
+		
+		try (ExecutorLoader loader = new ExecutorLoader(cp)){
+			return loader.resolveClass(className);
 		}
-
-		return Class.forName(className);
 	}
 	
 	public void setParams(List<String> params) {
