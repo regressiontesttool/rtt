@@ -154,48 +154,39 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		result.noError = true;
 
 		boolean replace = false;
-		int lastVersion = 0;
-
-		if (data.getVersion() == null || data.getVersion().isEmpty()) {
+		int lastVersion = data.getVersion().size();
+		
+		if (lastVersion == 0) {
 			// previous history data are not available, write new one
 			replace = true;
 		} else {
 			// previous data is available, load and check if data has changed
-			lastVersion = data.getVersion().size();
-			
-			ParserOutput oldOutput = outputManager.getData(lastVersion);			
-			
-			if (isOutDated(inputVersion)) {
-				// input is newer, than reference data -> replace reference
-				replace = true;
-			} else {
-				
-				boolean dataChanged = !OutputManager.dataEqual(oldOutput, newOutput); 
-
-				if (dataChanged) {				
-					// data has really changed -> replace
-					replace = true;
-				}
-			}			
+			ParserOutput oldOutput = outputManager.getData(lastVersion);
+			replace = isOutDated(inputVersion) || !OutputManager.dataEqual(oldOutput, newOutput);
 		}
 
 		if (replace) {
-			Version newVersion = new Version();
-			newVersion.setDate(Calendar.getInstance());
-
-			lastVersion++;
-
-			newVersion.setNr(lastVersion);
-			newVersion.setInputBase(inputVersion);
-
-			data.getVersion().add(newVersion);
-
-			outputManager.setData(newOutput, lastVersion);
-			
+			addVersion(newOutput, inputVersion, lastVersion);			
 			result.hasReplaced = true;
 		}
 
 		return result;
+	}
+
+	private void addVersion(ParserOutput newOutput, int inputVersion,
+			int lastVersion) {
+		
+		Version newVersion = new Version();
+		newVersion.setDate(Calendar.getInstance());
+
+		int versionNr = lastVersion + 1;
+		
+		newVersion.setNr(versionNr);
+		newVersion.setInputBase(inputVersion);
+
+		data.getVersion().add(newVersion);
+
+		outputManager.setData(newOutput, versionNr);
 	}
 	
 	@Override
