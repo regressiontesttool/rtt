@@ -7,8 +7,8 @@ import rtt.core.archive.output.ParserOutput;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.OutputDataFetching;
 import rtt.core.manager.data.AbstractDataManager;
-import rtt.core.testing.compare.ParserOutputCompare;
-import rtt.core.testing.compare.results.ParserTestFailure;
+import rtt.core.testing.compare.OutputCompare;
+import rtt.core.testing.compare.results.TestFailure;
 
 public class OutputManager extends AbstractDataManager<ParserOutput> {
 
@@ -63,8 +63,8 @@ public class OutputManager extends AbstractDataManager<ParserOutput> {
 			return true;
 		}
 
-		List<ParserTestFailure> failures = ParserOutputCompare
-				.compareParserOuput(oldData, newData, false, false);
+		List<TestFailure> failures = OutputCompare
+				.compareOutput(oldData, newData, false, false);
 		if (failures != null && failures.isEmpty() == false) {
 			return false;
 		}

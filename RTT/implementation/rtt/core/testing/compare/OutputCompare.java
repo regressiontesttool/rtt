@@ -15,17 +15,17 @@ import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ParserOutput;
 import rtt.core.archive.output.Tree;
-import rtt.core.testing.compare.results.ParserTestFailure;
+import rtt.core.testing.compare.results.TestFailure;
 import rtt.core.utils.RTTLogging;
 
 
 
-public class ParserOutputCompare {
+public class OutputCompare {
 	
-	public static List<ParserTestFailure> compareParserOuput(ParserOutput was, ParserOutput expected,
+	public static List<TestFailure> compareOutput(ParserOutput was, ParserOutput expected,
 			boolean testInformational, boolean matching) {
 		
-		ParserOutputCompare c = new ParserOutputCompare();
+		OutputCompare c = new OutputCompare();
 		if (matching == true) {
 			
 			return c.compareMatching(was, expected, testInformational);
@@ -34,14 +34,14 @@ public class ParserOutputCompare {
 		}		
 	}
 	
-	private List<ParserTestFailure> compareStrict(ParserOutput was,
+	private List<TestFailure> compareStrict(ParserOutput was,
 			ParserOutput expected, boolean testInformational) {
 		int max = Math.min(was.getTree().size(), expected.getTree().size());
-		List<ParserTestFailure> result = new LinkedList<ParserTestFailure>();
+		List<TestFailure> result = new LinkedList<TestFailure>();
 
 		// nur einen baum mit dem andren vergleichen
 		for (int i = 0; i < max; ++i) {
-			ParserTestFailure tmp = compareTree(was.getTree().get(i), expected
+			TestFailure tmp = compareTree(was.getTree().get(i), expected
 					.getTree().get(i), testInformational);
 			if (tmp != null)
 				result.add(tmp);
@@ -49,29 +49,29 @@ public class ParserOutputCompare {
 		}
 
 		if (was.getTree().size() != expected.getTree().size())
-			result.add(new ParserTestFailure("Expected Trees: "
+			result.add(new TestFailure("Expected Trees: "
 					+ expected.getTree().size() + ", but found trees: "
 					+ was.getTree().size()));
 
 		return result;
 	}
 
-	private List<ParserTestFailure> compareMatching(ParserOutput was,
+	private List<TestFailure> compareMatching(ParserOutput was,
 			ParserOutput expected, boolean testInformational) {
-		LinkedList<ParserTestFailure> result = new LinkedList<ParserTestFailure>();
+		LinkedList<TestFailure> result = new LinkedList<TestFailure>();
 
 		List<Tree> wasTrees = new LinkedList<Tree>(was.getTree());
 		List<Tree> expTrees = new LinkedList<Tree>(expected.getTree());
 		Map<Tree, Tree> tests = new HashMap<Tree, Tree>();
 
-		// testen, ob gleichviele b�ume zur�ckgegeben wurden
+		// testen, ob gleichviele bäume zurückgegeben wurden
 
 		if (wasTrees.size() > expTrees.size())
-			result.add(new ParserTestFailure(wasTrees.size() - expTrees.size()
+			result.add(new TestFailure(wasTrees.size() - expTrees.size()
 					+ " more trees than expected."));
 
 		if (wasTrees.size() < expTrees.size())
-			result.add(new ParserTestFailure(expTrees.size() - wasTrees.size()
+			result.add(new TestFailure(expTrees.size() - wasTrees.size()
 					+ " more trees expected."));
 
 		RTTLogging.info("Searching for matches");
@@ -96,7 +96,7 @@ public class ParserOutputCompare {
 		}
 
 		for (Map.Entry<Tree, Tree> entry : tests.entrySet()) {
-			ParserTestFailure failure = compareTree(entry.getKey(), entry
+			TestFailure failure = compareTree(entry.getKey(), entry
 					.getValue(), testInformational);
 			if (failure != null)
 				result.add(failure);
@@ -115,7 +115,7 @@ public class ParserOutputCompare {
 		return transform.getCost();
 	}
 
-	private ParserTestFailure compareTree(Tree was, Tree expected,
+	private TestFailure compareTree(Tree was, Tree expected,
 			boolean testInformational) {
 		Iterator<Node> wasIterator = was.getNode().iterator();
 		Iterator<Node> expIterator = expected.getNode().iterator();
@@ -124,12 +124,12 @@ public class ParserOutputCompare {
 			Node wasNode = wasIterator.next();
 			NodePath curPath = new NodePath(wasNode);
 			if (!expIterator.hasNext()) {
-				return new ParserTestFailure(wasNode, null, curPath,
+				return new TestFailure(wasNode, null, curPath,
 						null);
 			}
 
 			Node expNode = expIterator.next();
-			ParserTestFailure failure = compareNode(wasNode, expNode, 
+			TestFailure failure = compareNode(wasNode, expNode, 
 					curPath, testInformational);
 			if (failure != null)
 				return failure;
@@ -137,18 +137,18 @@ public class ParserOutputCompare {
 		}
 
 		if (expIterator.hasNext()) {
-			return new ParserTestFailure(null, expIterator.next(), 
+			return new TestFailure(null, expIterator.next(), 
 					null, null);
 		}
 
 		return null;
 	}
 
-	private ParserTestFailure compareNode(Node was, Node expected, 
+	private TestFailure compareNode(Node was, Node expected, 
 			NodePath curPath, boolean testInformational) {
 
 		if (was == null || expected == null) {
-			return new ParserTestFailure("Generated node, expected node or both nodes were null.");
+			return new TestFailure("Generated node, expected node or both nodes were null.");
 		}
 		
 		if (expected.getAttributes() == null && was.getAttributes() == null) {
@@ -159,7 +159,7 @@ public class ParserOutputCompare {
 		List<Attribute> wasAttributes = was.getAttributes();
 		
 		if (wasAttributes.size() != expectedAttributes.size())
-			return new ParserTestFailure(was, expected, curPath, null);
+			return new TestFailure(was, expected, curPath, null);
 
 		for (int i = 0; i < wasAttributes.size(); ++i) {
 			Attribute wasAttrib = wasAttributes.get(i);
@@ -169,15 +169,15 @@ public class ParserOutputCompare {
 				continue;
 
 			if (!wasAttrib.getName().equals(expAttrib.getName()))
-				return new ParserTestFailure(was, expected, curPath,
+				return new TestFailure(was, expected, curPath,
 						i);
 			if (!wasAttrib.getValue().equals(expAttrib.getValue()))
-				return new ParserTestFailure(was, expected, curPath,
+				return new TestFailure(was, expected, curPath,
 						i);
 
 		}
 		if ((was.getNodes() == null) != (expected.getNodes() == null))
-			return new ParserTestFailure(was, expected, curPath, null);
+			return new TestFailure(was, expected, curPath, null);
 
 		int maxChildren = (was.getNodes() == null) ? 0 : Math.max(was
 				.getNodes().size(), expected.getNodes().size());
@@ -196,9 +196,9 @@ public class ParserOutputCompare {
 			}
 
 			if (wasChild == null || expChild == null)
-				return new ParserTestFailure(wasChild, expChild, curPath, null);
+				return new TestFailure(wasChild, expChild, curPath, null);
 
-			ParserTestFailure failure = compareNode(wasChild, expChild, 
+			TestFailure failure = compareNode(wasChild, expChild, 
 					curPath.concat(wasChild), testInformational);
 
 			if (failure != null)

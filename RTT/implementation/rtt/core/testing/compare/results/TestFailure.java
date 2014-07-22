@@ -4,13 +4,13 @@ import rtt.core.archive.output.Node;
 import rtt.core.manager.Printer;
 import rtt.core.testing.compare.NodePath;
 
-public class ParserTestFailure implements ITestFailure {
+public class TestFailure implements ITestFailure {
 	Node was, expected;
 	Integer attrPos;
 	NodePath path;
 	String m = null;
 
-	public ParserTestFailure(Node was, Node expected, 
+	public TestFailure(Node was, Node expected, 
 			NodePath path, Integer attribPos) {
 		super();
 		this.was = was;
@@ -19,7 +19,7 @@ public class ParserTestFailure implements ITestFailure {
 		this.attrPos = attribPos;
 	}
 
-	public ParserTestFailure(String message) {
+	public TestFailure(String message) {
 		super();
 		m = message;
 	}

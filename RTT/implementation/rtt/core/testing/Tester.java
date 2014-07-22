@@ -11,9 +11,9 @@ import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
-import rtt.core.testing.compare.ParserOutputCompare;
-import rtt.core.testing.compare.results.ParserTestFailure;
+import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestExecutionFailure;
+import rtt.core.testing.compare.results.TestFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
 import rtt.core.utils.RTTLogging;
@@ -71,48 +71,40 @@ public class Tester {
 		}
 		
 		boolean testSuccess = true;
-		boolean somethingTested = false;
 		
-		if (!config.getParserClass().equals("")) {
-			// test parser
-			try {
-				ParserOutput testData = testManager.getOutputData(versionData.getTestID());
-				ParserOutput refData = refManager.getOutputData(versionData.getReferenceID()); 
-				
-				List<ParserTestFailure> parserFailure = testParser(testData, refData);
-				
-				if (parserFailure != null && parserFailure.size() > 0) {
-					for (ParserTestFailure parserTestFailure : parserFailure) {
-						result.addFailure(parserTestFailure);
-					}
-					testSuccess = false;
+		try {
+			ParserOutput testData = testManager.getOutputData(versionData.getTestID());
+			ParserOutput refData = refManager.getOutputData(versionData.getReferenceID()); 
+			
+			List<TestFailure> failures = testParser(testData, refData);
+			
+			if (failures != null && !failures.isEmpty()) {
+				for (TestFailure testFailure : failures) {
+					result.addFailure(testFailure);
 				}
-
-				somethingTested = true;
-			} catch (RTTException e) {
-				RTTLogging.debug(e.getMessage(), e);
-				result.addFailure(new TestExecutionFailure(e));
 				testSuccess = false;
 			}
-		}		
-		
-		if (somethingTested) {
-			if (testSuccess) {
-				result.setType(ResultType.SUCCESS);
-			} else {
-				result.setType(ResultType.FAILURE);
-			}
+		} catch (RTTException e) {
+			RTTLogging.debug(e.getMessage(), e);
+			result.addFailure(new TestExecutionFailure(e));
+			testSuccess = false;
+		}
+
+		if (testSuccess) {
+			result.setType(ResultType.SUCCESS);
+		} else {
+			result.setType(ResultType.FAILURE);
 		}
 
 		return result;
 	}
 
-	private List<ParserTestFailure> testParser(ParserOutput testData,
+	private List<TestFailure> testParser(ParserOutput testData,
 			ParserOutput refData) throws RTTException {
 		
 		checkData(testData, refData);
 		RTTLogging.info("Testing Syntactic Results");
-		return ParserOutputCompare.compareParserOuput(testData, refData, false,
+		return OutputCompare.compareOutput(testData, refData, false,
 				matching);
 	}
 
