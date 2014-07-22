@@ -5,7 +5,45 @@
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
 
-	<!-- Definitions used by ParserOutput -->
+	<xs:complexType name="node">
+		<xs:attribute name="informational" type="xs:boolean" default="false"/>
+		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
+		<xs:attribute name="method" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="valueNode">
+		<xs:complexContent>
+			<xs:extension base="rtt:node">
+				<xs:attribute name="value" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="classNode">
+		<xs:complexContent>
+			<xs:extension base="rtt:node">
+				<xs:sequence>
+					<xs:element name="simpleName" type="xs:string" />
+					<xs:element name="fullName" type="xs:string" />
+					<xs:element name="node" type="rtt:node" 
+						minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+			</xs:extension>		
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="output">
+		<xs:sequence>
+			<xs:element name="node" type="rtt:node" 
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="output" type="rtt:output" />
+</xs:schema>
+
+
+<!-- 
 	<xs:complexType name="classable">
 		<xs:attribute name="simpleName" type="xs:string" />
 		<xs:attribute name="fullName" type="xs:string" />
@@ -17,7 +55,6 @@
 		<xs:attribute name="informational" type="xs:boolean" />
 	</xs:complexType>
 
-	<!-- ParserOutput Definitions -->
 	<xs:element name="parserOutput">
 		<xs:complexType>
 			<xs:annotation>
@@ -50,6 +87,4 @@
 				<xs:attribute name="method" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>
-
-</xs:schema>
+	</xs:complexType> -->

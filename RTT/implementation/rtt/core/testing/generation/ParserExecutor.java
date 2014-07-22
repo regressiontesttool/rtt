@@ -60,7 +60,7 @@ public class ParserExecutor extends Executor {
 		}
 	}
 
-	public List<Node> getAst() throws Throwable {
+	public List<Node> getNodes() throws Throwable {
 		List<Node> result = new LinkedList<Node>();
 		
 		Method astMethod = processor.getMethodWithAnnotation(Parser.AST.class);

@@ -22,9 +22,10 @@ public class DataGenerator {
 			RTTLogging.debug("Initialize parser ...");
 			parser.initialize(input, params);
 			
-			RTTLogging.debug("Generating parser output data ...");
-			List<Node> treeNodes = parser.getAst();
-			for (Node astTree : treeNodes) {
+			RTTLogging.debug("Generating parser output data ...");			
+			
+			List<Node> nodes = parser.getNodes();
+			for (Node node : nodes) {
 				Tree tree = new Tree();
 				tree.setSimpleName(parser.getSimpleName());
 				tree.setFullName(parser.getFullName());
