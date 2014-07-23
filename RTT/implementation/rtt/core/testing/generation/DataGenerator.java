@@ -4,38 +4,38 @@ import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.Node;
-import rtt.core.archive.output.ParserOutput;
-import rtt.core.archive.output.Tree;
+import rtt.core.archive.output.Output;
 import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
 
-	public static ParserOutput generateOutput(Input input, List<String> params,
+	public static Output generateOutput(Input input, List<String> params,
 			ParserExecutor parser) throws Throwable {
 
-		ParserOutput parOut = new ParserOutput();
-
-		if (parser != null) {
-			parOut = new ParserOutput();
-
-			RTTLogging.debug("Initialize parser ...");
-			parser.initialize(input, params);
-			
-			RTTLogging.debug("Generating parser output data ...");			
-			
-			List<Node> nodes = parser.getNodes();
-			for (Node node : nodes) {
-				Tree tree = new Tree();
-				tree.setSimpleName(parser.getSimpleName());
-				tree.setFullName(parser.getFullName());
-				tree.getNode().add(astTree);
-				parOut.getTree().add(tree);
-			}
-
-		}
-
-		return parOut;
+//		ParserOutput parOut = new ParserOutput();
+//
+//		if (parser != null) {
+//			parOut = new ParserOutput();
+//
+//			RTTLogging.debug("Initialize parser ...");
+//			parser.initialize(input, params);
+//			
+//			RTTLogging.debug("Generating parser output data ...");			
+//			
+//			List<Node> nodes = parser.getNodes();
+//			for (Node node : nodes) {
+//				Tree tree = new Tree();
+//				tree.setSimpleName(parser.getSimpleName());
+//				tree.setFullName(parser.getFullName());
+//				tree.getNode().add(astTree);
+//				parOut.getTree().add(tree);
+//			}
+//
+//		}
+//
+//		return parOut;
+		
+		return null;
 	}
 
 	/**
