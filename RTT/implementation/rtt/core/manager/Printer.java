@@ -1,6 +1,5 @@
 package rtt.core.manager;
 
-import rtt.core.archive.output.Generator;
 import rtt.core.archive.output.Node;
 
 public class Printer {
@@ -14,10 +13,9 @@ public class Printer {
 			return builder.toString();
 		}		
 		
-		Generator generator = node.getGeneratedBy();
-		builder.append(generator.getName());
+		builder.append(node.getGeneratorName());
 		builder.append(" - ");
-		builder.append(generator.getType().name());
+		builder.append(node.getGeneratorType().name());
 		
 		if (node.isIsNull()) {
 			builder.append(" returned null.");

@@ -3,7 +3,6 @@ package rtt.core.testing.compare;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.core.archive.output.Generator;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.testing.compare.results.TestFailure;
@@ -15,85 +14,85 @@ public class OutputCompare {
 	private static final String ISINFORMATIONAL_UNEQUAL = "One node is informational, other not.";
 	private static final String ISNULL_UNEQUAL = "One node was null, but other node not.";
 	private static final String NODE_NULL = "One given node or both were null.";
-	private static final String SIZE_UNEQUAL = "Size of current and reference nodes are unequal.";
+	private static final String SIZE_UNEQUAL = "Size of actual and reference nodes are unequal.";
 
-	public static List<TestFailure> compareOutput(Output was, Output expected,
-			boolean testInformational) {
+	public static List<TestFailure> compareOutput(
+			Output referenceOutput, Output actualOutput, boolean testInformational) {
+		
+		if (referenceOutput == null || actualOutput == null) {
+			throw new IllegalArgumentException("Reference or actual output was null.");
+		}
 		
 		OutputCompare compare = new OutputCompare();
 		
 		List<TestFailure> failures = new ArrayList<>();
 		
 		failures.addAll(compare.compareNodes(
-				was.getNodes(), was.getNodes(), testInformational));
+				referenceOutput.getNodes(), actualOutput.getNodes(), testInformational));
 		
 		return failures;
 	}
 	
 	private List<TestFailure> compareNodes(List<Node> referenceNodes, 
-			List<Node> currentNodes, boolean testInformational) {
+			List<Node> actualNodes, boolean testInformational) {
 		
 		List<TestFailure> failures = new ArrayList<>();
 		
-		if (referenceNodes.size() != currentNodes.size()) {
+		if (referenceNodes.size() != actualNodes.size()) {
 			failures.add(new TestFailure(SIZE_UNEQUAL));
 			return failures;
 		}
 		
 		for(int index = 0; index < referenceNodes.size(); index++) {
 			Node referenceNode = referenceNodes.get(index);
-			Node currentNode = currentNodes.get(index);
+			Node actualNode = actualNodes.get(index);
 			
-			TestFailure failure = compareNode(referenceNode, currentNode, testInformational);
-			if (failure != null) {
-				failures.add(failure);
-			}
+			failures.addAll(compareNode(referenceNode, actualNode, testInformational));
 		}
 		
 		return failures;
 	}
 
-	private TestFailure compareNode(Node referenceNode, Node currentNode,
+	public List<TestFailure> compareNode(Node referenceNode, Node actualNode,
 			boolean testInformational) {
 		
-		if (referenceNode == null || currentNode == null) {
+		List<TestFailure> failures = new ArrayList<>();
+		
+		if (referenceNode == null || actualNode == null) {
 			throw new IllegalStateException(NODE_NULL);
 		}
 		
-		if (referenceNode.isInformational() != currentNode.isInformational()) {
+		TestFailure failure = compareSimpleNode(referenceNode, actualNode, testInformational);
+		if (failure != null) {
+			failures.add(failure);
+		}
+
+		return failures;
+	}
+
+	public TestFailure compareSimpleNode(Node referenceNode, Node actualNode, boolean testInformational) {
+		if (referenceNode.isInformational() != actualNode.isInformational()) {
 			return new TestFailure(ISINFORMATIONAL_UNEQUAL);
 		}
 		
 		if (!referenceNode.isInformational() || testInformational) {
-			if (referenceNode.isIsNull() != currentNode.isIsNull()) {
+			if (!referenceNode.getGeneratorType().equals(actualNode.getGeneratorType())) {
+				return new TestFailure(GEN_TYPE_UNEQUAL);
+			}
+			
+			if (!referenceNode.getGeneratorName().equals(actualNode.getGeneratorName())) {
+				return new TestFailure(GEN_NAME_UNEQUAL);
+			}			
+			
+			if (referenceNode.isIsNull() != actualNode.isIsNull()) {
 				return new TestFailure(ISNULL_UNEQUAL);
 			}
-			
-			Generator referenceGenerator = referenceNode.getGeneratedBy();
-			Generator currentGenerator = currentNode.getGeneratedBy();
-			
-			TestFailure generatorFailure = compareGenerator(referenceGenerator, currentGenerator);
-			if (generatorFailure != null) {
-				return generatorFailure;
-			}
 		}
-
-		return null;
-	}
-
-	private TestFailure compareGenerator(Generator referenceGenerator,
-			Generator currentGenerator) {
-		
-		if (!referenceGenerator.getName().equals(currentGenerator.getName())) {
-			return new TestFailure(GEN_NAME_UNEQUAL);
-		}
-		
-		if (!referenceGenerator.getType().equals(currentGenerator.getType())) {
-			return new TestFailure(GEN_TYPE_UNEQUAL);
-		}		
 		
 		return null;
 	}
+	
+	
 
 //	private List<TestFailure> compareMatching(Output was,
 //			Output expected, boolean testInformational) {
