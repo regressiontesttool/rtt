@@ -3,7 +3,7 @@ package rtt.core.testing;
 import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.output.ParserOutput;
+import rtt.core.archive.output.Output;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
@@ -73,10 +73,10 @@ public class Tester {
 		boolean testSuccess = true;
 		
 		try {
-			ParserOutput testData = testManager.getOutputData(versionData.getTestID());
-			ParserOutput refData = refManager.getOutputData(versionData.getReferenceID()); 
+			Output testData = testManager.getOutputData(versionData.getTestID());
+			Output refData = refManager.getOutputData(versionData.getReferenceID()); 
 			
-			List<TestFailure> failures = testParser(testData, refData);
+			List<TestFailure> failures = compareOutput(testData, refData);
 			
 			if (failures != null && !failures.isEmpty()) {
 				for (TestFailure testFailure : failures) {
@@ -99,8 +99,7 @@ public class Tester {
 		return result;
 	}
 
-	private List<TestFailure> testParser(ParserOutput testData,
-			ParserOutput refData) throws RTTException {
+	private List<TestFailure> compareOutput(Output testData, Output refData) throws RTTException {
 		
 		checkData(testData, refData);
 		RTTLogging.info("Testing Syntactic Results");
