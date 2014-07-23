@@ -1,20 +1,13 @@
 package rtt.core.testing.compare;
 
-import headliner.treedistance.BasicTree;
-import headliner.treedistance.ComparisonZhangShasha;
-import headliner.treedistance.OpsZhangShasha;
-import headliner.treedistance.Transformation;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import rtt.core.archive.output.Attribute;
 import rtt.core.archive.output.Node;
-import rtt.core.archive.output.ParserOutput;
-import rtt.core.archive.output.Tree;
+import rtt.core.archive.output.Output;
 import rtt.core.testing.compare.results.TestFailure;
 import rtt.core.utils.RTTLogging;
 
@@ -22,7 +15,7 @@ import rtt.core.utils.RTTLogging;
 
 public class OutputCompare {
 	
-	public static List<TestFailure> compareOutput(ParserOutput was, ParserOutput expected,
+	public static List<TestFailure> compareOutput(Output was, Output expected,
 			boolean testInformational, boolean matching) {
 		
 		OutputCompare c = new OutputCompare();
@@ -34,8 +27,8 @@ public class OutputCompare {
 		}		
 	}
 	
-	private List<TestFailure> compareStrict(ParserOutput was,
-			ParserOutput expected, boolean testInformational) {
+	private List<TestFailure> compareStrict(Output was,
+			Output expected, boolean testInformational) {
 		int max = Math.min(was.getTree().size(), expected.getTree().size());
 		List<TestFailure> result = new LinkedList<TestFailure>();
 
@@ -56,8 +49,8 @@ public class OutputCompare {
 		return result;
 	}
 
-	private List<TestFailure> compareMatching(ParserOutput was,
-			ParserOutput expected, boolean testInformational) {
+	private List<TestFailure> compareMatching(Output was,
+			Output expected, boolean testInformational) {
 		LinkedList<TestFailure> result = new LinkedList<TestFailure>();
 
 		List<Tree> wasTrees = new LinkedList<Tree>(was.getTree());
@@ -103,16 +96,6 @@ public class OutputCompare {
 		}
 
 		return result;
-	}
-
-	private double calculateEditDistance(Tree was, Tree exp) {
-		ComparisonZhangShasha<Node> comparator = new ComparisonZhangShasha<Node>();
-		OpsZhangShasha costs = new OpsZhangShasha();
-		BasicTree wasTree = new BasicTree(was, was.getNode().get(0), 0);
-		BasicTree expTree = new BasicTree(exp, exp.getNode().get(0), 0);
-		Transformation transform = comparator.findDistance(wasTree, expTree,
-				costs);
-		return transform.getCost();
 	}
 
 	private TestFailure compareTree(Tree was, Tree expected,

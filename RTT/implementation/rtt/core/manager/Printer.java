@@ -1,60 +1,33 @@
-/**
- * <copyright>
- *
- * This program and the accompanying materials are made available under the
- * terms of the MIT license (X11 license) which accompanies this distribution.
- *
- * </copyright>
- */
 package rtt.core.manager;
 
-import rtt.core.archive.output.Attribute;
+import rtt.core.archive.output.Generator;
 import rtt.core.archive.output.Node;
 
-
-/**
- * 
- * @author Peter Mucha
- * 
- */
 public class Printer {
 
-	static public String PrintNode(Node n) {
-		if (n == null || n.getAttributes() == null)
-			return "Node: <null>";
-
-		String result = "Node: [";
-		boolean first = true;
-		for (Attribute na : n.getAttributes()) {
-			if (na.isInformational() == true)
-				continue;
-
-			if (first)
-				first = false;
-			else
-				result += "|";
-
-			result += na.getName() + ":" + na.getValue();
+	static public String PrintNode(Node node) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Node: ");
+		
+		if (node == null) {
+			builder.append("<null>");
+			return builder.toString();
+		}		
+		
+		Generator generator = node.getGeneratedBy();
+		builder.append(generator.getName());
+		builder.append(" - ");
+		builder.append(generator.getType().name());
+		
+		if (node.isIsNull()) {
+			builder.append(" returned null.");
 		}
-		result += "(";
-		first = true;
-		for (Attribute na : n.getAttributes()) {
-			if (na.isInformational() != true)
-				continue;
-
-			if (first)
-				first = false;
-			else
-				result += "|";
-
-			result += na.getName() + ":" + na.getValue();
+		
+		if (node.isInformational()) {
+			builder.append(" [INFORMATIONAL]");
 		}
-
-		int childCount = (n.getNodes() != null) ? n.getNodes().size() : 0;
-
-		result += ")](Children:" + childCount + ")";
-
-		return result;
+	
+		return builder.toString();
 	}
 
 }

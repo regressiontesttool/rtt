@@ -33,18 +33,19 @@ public class NodePath {
 
 			curPos = null;
 
-			if (i < path.size() - 1
-					&& curNode.getNodes().size() > 1)
-				curPos = curNode.getNodes().indexOf(
-						path.get(i + 1));
+			// TODO revise
+//			if (i < path.size() - 1
+//					&& curNode.getNodes().size() > 1)
+//				curPos = curNode.getNodes().indexOf(
+//						path.get(i + 1));
 
 		}
 
-		if (attributePos != null) {
-			xp += "/nodeAttribute";
-			if (curNode.getAttributes().size() > 1)
-				xp += "[" + (attributePos + 1) + "]";
-		}
+//		if (attributePos != null) {
+//			xp += "/nodeAttribute";
+//			if (curNode.getAttributes().size() > 1)
+//				xp += "[" + (attributePos + 1) + "]";
+//		}
 
 		return xp;
 	}

@@ -9,7 +9,7 @@ import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.history.History;
 import rtt.core.archive.history.Version;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.ParserOutput;
+import rtt.core.archive.output.Output;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
@@ -104,7 +104,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return type;
 	}
 	
-	public ParserOutput getOutputData(Integer version) {
+	public Output getOutputData(Integer version) {
 		return outputManager.getData(version);
 	}
 	
@@ -135,7 +135,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 	public GenerationResult createData(ParserExecutor parser, Integer inputVersion, List<String> params) {
 		GenerationResult result = new GenerationResult(suiteName, caseName);
 
-		ParserOutput newOutput = null;
+		Output newOutput = null;
 		
 		try {
 			Input input = inputManager.getInput(inputVersion);
@@ -161,7 +161,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 			replace = true;
 		} else {
 			// previous data is available, load and check if data has changed
-			ParserOutput oldOutput = outputManager.getData(lastVersion);
+			Output oldOutput = outputManager.getData(lastVersion);
 			replace = isOutDated(inputVersion) || !OutputManager.dataEqual(oldOutput, newOutput);
 		}
 
@@ -173,7 +173,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return result;
 	}
 
-	private void addVersion(ParserOutput newOutput, int inputVersion,
+	private void addVersion(Output newOutput, int inputVersion,
 			int lastVersion) {
 		
 		Version newVersion = new Version();

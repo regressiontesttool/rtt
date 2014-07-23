@@ -3,14 +3,14 @@ package rtt.core.manager.data.history;
 import java.io.InputStream;
 import java.util.List;
 
-import rtt.core.archive.output.ParserOutput;
+import rtt.core.archive.output.Output;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.loader.fetching.OutputDataFetching;
 import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestFailure;
 
-public class OutputManager extends AbstractDataManager<ParserOutput> {
+public class OutputManager extends AbstractDataManager<Output> {
 
 	OutputDataFetching fetching;
 
@@ -22,15 +22,15 @@ public class OutputManager extends AbstractDataManager<ParserOutput> {
 		setFetchingStrategy(fetching);
 	}
 
-	public void setData(ParserOutput data, Integer version) {
+	public void setData(Output data, Integer version) {
 		fetching.setVersion(version);
-		marshall(ParserOutput.class, data);
+		marshall(Output.class, data);
 	}
 
-	public ParserOutput getData(Integer version) {
+	public Output getData(Integer version) {
 		fetching.setVersion(version);
 		try {
-			return unmarshall(ParserOutput.class);
+			return unmarshall(Output.class);
 		} catch (Exception e) {
 			return null;
 		}
@@ -43,23 +43,23 @@ public class OutputManager extends AbstractDataManager<ParserOutput> {
 	}
 
 	@Override
-	protected ParserOutput doLoad() {
+	protected Output doLoad() {
 		throw new RuntimeException(
 				"Use getData(Version) for loading output");
 	}
 
 	@Override
-	protected void doSave(ParserOutput data) {
+	protected void doSave(Output data) {
 		throw new RuntimeException(
 				"Use setData(Version) for loading output");
 	}
 
-	public static boolean dataEqual(ParserOutput oldData, ParserOutput newData) {
+	public static boolean dataEqual(Output oldData, Output newData) {
 		if (oldData == newData) {
 			return true;
 		}
 		
-		if (oldData.getTree() == newData.getTree()) {
+		if (oldData.getNodes() == newData.getNodes()) {
 			return true;
 		}
 
@@ -73,8 +73,8 @@ public class OutputManager extends AbstractDataManager<ParserOutput> {
 	}
 
 	@Override
-	protected ParserOutput getEmptyData() {
-		return new ParserOutput();
+	protected Output getEmptyData() {
+		return new Output();
 	}
 
 }

@@ -4,11 +4,25 @@
 <xs:schema xmlns:rtt="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
+	
+	<xs:simpleType name="generatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FIELD" />
+			<xs:enumeration value="METHOD" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="generator">
+		<xs:attribute name="type" type="rtt:generatorType" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
 
 	<xs:complexType name="node">
+		<xs:sequence>
+			<xs:element name="generatedBy" type="rtt:generator" />
+		</xs:sequence>
 		<xs:attribute name="informational" type="xs:boolean" default="false"/>
-		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
-		<xs:attribute name="method" type="xs:string" use="required"/>
+		<xs:attribute name="isNull" type="xs:boolean" default="false"/>		
 	</xs:complexType>
 	
 	<xs:complexType name="valueNode">
