@@ -64,7 +64,7 @@ public class OutputManager extends AbstractDataManager<Output> {
 		}
 
 		List<TestFailure> failures = OutputCompare
-				.compareOutput(oldData, newData, false, false);
+				.compareOutput(oldData, newData, false);
 		if (failures != null && failures.isEmpty() == false) {
 			return false;
 		}
