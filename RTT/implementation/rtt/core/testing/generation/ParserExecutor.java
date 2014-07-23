@@ -8,20 +8,57 @@
  */
 package rtt.core.testing.generation;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotations.Parser;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
+import rtt.core.archive.output.ClassNode;
 import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Output;
+import rtt.core.archive.output.ValueNode;
 
-/**
- * 
- * @author Peter Mucha
- * 
- */
 public class ParserExecutor extends Executor {
+	
+	private static final class CheckAnnotation {
+		
+		private static final Class<? extends Annotation> INFORMATIONAL_ANNOTATION = 
+				rtt.annotations.Parser.Node.Informational.class;
 
+		public static Method getASTMethod(Executor executor) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		public static boolean isNode(Object currentObject) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public static List<Method> getAnnotatedMethods(Class<?> objectType) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public static List<Field> getAnnotatedFields(Class<?> objectType) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public static boolean isInformational(AnnotatedElement element) {
+			return element.isAnnotationPresent(INFORMATIONAL_ANNOTATION);
+		}
+	}	
+
+	private static final String NO_AST_METHOD = "Could not find a method annotated with @Parser.AST";
+	private static final String NODE_NULL = "Resulting node was null.";	
+	
 	Object parser;
 	Parser parserAnnotation;
 
@@ -49,9 +86,23 @@ public class ParserExecutor extends Executor {
 //			throw exception.getCause();
 //		}
 	}
+	
+	public void createOutput(Output outputData, Executor executor) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+		Method astMethod = getASTMethod(executor);
+		if (astMethod == null) {
+			throw new NoSuchMethodException(NO_AST_METHOD);
+		}
+		
+		astMethod.setAccessible(true);
+		String astMethodName = astMethod.getName();
+		Object astMethodResult = astMethod.invoke(executor);
+		if (astMethodResult != null) {
+			outputData.getNodes().addAll(createNodes(astMethodResult, astMethodName, false));
+		}
+	}
 
-	public List<Node> getNodes() throws Throwable {
-		return null;
+//	public List<Node> getNodes() throws Throwable {
+//		return null;
 //		List<Node> result = new LinkedList<Node>();
 //		
 //		Method astMethod = processor.getMethodWithAnnotation(Parser.AST.class);
@@ -78,7 +129,120 @@ public class ParserExecutor extends Executor {
 //		}		
 //
 //		return result;
+		
+		
+	private Method getASTMethod(Executor executor) {
+		return CheckAnnotation.getASTMethod(executor);
+	}
+	
+	private List<Node> createNodes(final Object currentObject, 
+			final String generatedBy, final boolean isInformational) 
+					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		List<Node> resultList = new ArrayList<>();
+		if (currentObject instanceof Object[]) {
+			resultList.addAll(createNodes((Object[]) currentObject, generatedBy, isInformational));
+		} else if (currentObject instanceof Iterable<?>) {
+			resultList.addAll(createNodes((Iterable<?>) currentObject, generatedBy, isInformational));
+		} else {
+			resultList.add(createNode(currentObject, generatedBy, isInformational));
+		}
+		
+		return resultList;
+	}
 
+	private List<Node> createNodes(final Object[] currentObject, final String generatedBy, final boolean isInformational) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		List<Node> resultList = new ArrayList<>();
+		for (Object item : currentObject) {
+			resultList.addAll(createNodes(item, generatedBy, isInformational));
+		}
+		
+		return resultList;
+	}
+	
+	private List<Node> createNodes(final Iterable<?> currentObject, final String generatedBy, final boolean isInformational) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		List<Node> resultList = new ArrayList<>();
+		for (Object item : currentObject) {
+			resultList.addAll(createNodes(item, generatedBy, isInformational));
+		}
+		
+		return resultList;
+	}
+	
+	private Node createNode(final Object currentObject, final String generatedBy, boolean isInformational) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Node resultNode = null;
+		
+		if (currentObject == null) {
+			resultNode = new Node();
+			resultNode.setIsNull(true);
+			resultNode.setGeneratorName(generatedBy);
+		} else {
+			if (hasNodeAnnotation(currentObject)) {
+				resultNode = createClassNode(currentObject, generatedBy, isInformational);
+			} else {
+				resultNode = createValueNode(currentObject, generatedBy, isInformational);
+			}
+		}
+		
+		if (resultNode == null) {
+			throw new IllegalStateException(NODE_NULL);
+		}		
+		
+		return resultNode;
+	}
+
+	private boolean hasNodeAnnotation(Object currentObject) {
+		return CheckAnnotation.isNode(currentObject);
+	}
+
+	private Node createClassNode(final Object currentObject, final String generatedBy, final boolean isInformational) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Class<?> objectType = currentObject.getClass();		
+		ClassNode resultNode = new ClassNode();
+		
+		resultNode.setGeneratorName(generatedBy);
+		resultNode.setFullName(objectType.getName());
+		resultNode.setSimpleName(objectType.getSimpleName());
+		resultNode.setInformational(isInformational);
+		
+		List<Method> annotatedMethods = CheckAnnotation.getAnnotatedMethods(objectType);
+		boolean childIsInformational = isInformational;
+		
+		for (Method method : annotatedMethods) {
+			method.setAccessible(true);
+			childIsInformational = isInformational(method, isInformational);
+			
+			String methodName = method.getName();
+			Object methodResult = method.invoke(currentObject);
+			
+			resultNode.getNodes().addAll(createNodes(methodResult, methodName, childIsInformational));
+		}
+		
+		List<Field> annotatedFields = CheckAnnotation.getAnnotatedFields(objectType);
+		
+		for (Field field : annotatedFields) {
+			field.setAccessible(true);
+			childIsInformational = isInformational(field, isInformational);
+			
+			String fieldName = field.getName();
+			Object fieldResult = field.get(currentObject);
+			
+			resultNode.getNodes().addAll(createNodes(fieldResult, fieldName, childIsInformational));
+		}
+		
+		return resultNode;
+	}
+	
+	private boolean isInformational(AnnotatedElement element, boolean parentIsInformational) {
+		return !parentIsInformational && CheckAnnotation.isInformational(element);	
+	}
+
+	private Node createValueNode(final Object currentObject, final String generatedBy, final boolean isInformational) {
+		ValueNode resultNode = new ValueNode();
+		resultNode.setGeneratorName(generatedBy);
+		resultNode.setValue(currentObject.toString());
+		resultNode.setInformational(isInformational);
+
+		return resultNode;
 	}
 
 //	private void sortNodeAttribs(List<Attribute> l) {
@@ -93,11 +257,11 @@ public class ParserExecutor extends Executor {
 //		Collections.sort(l, c);
 //	}
 
-	private Node createNode(Node parentNode, Object curObj, String methodName) 
-			throws Throwable {
-		
-		return null;
-		
+//	private Node createNode(Node parentNode, Object curObj, String methodName) 
+//			throws Throwable {
+//		
+//		return null;
+//		
 //		Node node = new Node();
 //		node.setMethod(methodName);
 //		
@@ -167,14 +331,57 @@ public class ParserExecutor extends Executor {
 ////		}
 //
 //		return node;
+//
+//	}
+		
+//	private Node createNode(Node parentNode, Object curObj, String methodName) 
+//			throws Throwable {
+//		
+//		Node node = new Node();
+//		node.setMethod(methodName);
+//		
+//		if (curObj == null) {
+//			node.setIsNull(true);
+//			return node;
+//		}
+//		
+//		// TODO what if curObj is primitive type or iteratable ?
+//		
+//		AnnotationProcessor nodeProc = new AnnotationProcessor(curObj
+//				.getClass());
+//		// test, if node-annotation is present
+//		try {
+//			nodeProc.getAnnotation(Parser.Node.class);
+//		} catch (Exception e) {			
+//			RTTLogging.debug("Warning:" + Parser.Node.class.toString()
+//					+ " not present at " + curObj.getClass());
+//			
+//			if (parentNode != null) {
+//				Attribute attribute = new Attribute();
+//				attribute.setName(methodName);
+//				attribute.setValue(curObj.toString());
+//				attribute.setInformational(false);
+//				
+//				parentNode.getAttributes().add(attribute);
+//			}		
+//			
+//			return null;
+//		}
+//		
+//		node.setSimpleName(curObj.getClass().getSimpleName());
+//		node.setFullName(curObj.getClass().getName());
+//
+//		addMethods(curObj, nodeProc, node, Parser.Node.Compare.class, false);
+//		addMethods(curObj, nodeProc, node, Parser.Node.Informational.class, true);
+//		addFields(curObj, nodeProc, node, Parser.Node.Compare.class, false);
+//		addFields(curObj, nodeProc, node, Parser.Node.Informational.class, true);
+//		sortNodeAttribs(l);
 
-	}
-
-	private void addNode(Node parentNode, Node childNode) {
+//	private void addNode(Node parentNode, Node childNode) {
 //		if (parentNode != null && childNode != null && parentNode.getNodes() != null) {
 //			parentNode.getNodes().add(childNode);
 //		}
-	}
+//	}
 	
 //	private void addNode(Node parentNode, Object object, String operationName) throws Throwable {
 //		
@@ -339,13 +546,4 @@ public class ParserExecutor extends Executor {
 //			}
 //		}
 //	}
-
-	public String getSimpleName() {
-		return parser.getClass().getSimpleName();
-	}
-
-	public String getFullName() {
-		return parser.getClass().getName();
-	}
-
 }

@@ -11,31 +11,20 @@ public class DataGenerator {
 
 	public static Output generateOutput(Input input, List<String> params,
 			ParserExecutor parser) throws Throwable {
+			
+		Output outputData = new Output();
 
-//		ParserOutput parOut = new ParserOutput();
-//
-//		if (parser != null) {
-//			parOut = new ParserOutput();
-//
-//			RTTLogging.debug("Initialize parser ...");
-//			parser.initialize(input, params);
-//			
-//			RTTLogging.debug("Generating parser output data ...");			
-//			
-//			List<Node> nodes = parser.getNodes();
-//			for (Node node : nodes) {
-//				Tree tree = new Tree();
-//				tree.setSimpleName(parser.getSimpleName());
-//				tree.setFullName(parser.getFullName());
-//				tree.getNode().add(astTree);
-//				parOut.getTree().add(tree);
-//			}
-//
-//		}
-//
-//		return parOut;
-		
-		return null;
+		if (parser != null) {
+			outputData = new Output();
+
+			RTTLogging.debug("Initialize parser ...");
+			parser.initialize(input, params);
+			
+			RTTLogging.debug("Generating output data ...");
+			parser.createOutput(outputData, parser);
+		}
+
+		return outputData;
 	}
 
 	/**
