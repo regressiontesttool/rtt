@@ -7,18 +7,19 @@ import org.junit.Test;
 
 import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Node;
-import rtt.core.testing.compare.OutputCompare;
+import rtt.core.testing.compare.OutputCompare.CompareResult;
+import rtt.core.testing.compare.OutputCompare.Comparer;
 
 public class CompareNodeTests {
 
 	private static final String NAME = "Node";
 	private static final GeneratorType TYPE = GeneratorType.METHOD;
 	
-	private OutputCompare comparer;
+	private Comparer<Node> comparer;
 
 	@Before
 	public void setUp() throws Exception {
-		comparer = new OutputCompare();
+		comparer = new Comparer<Node>();
 	}
 	
 	private Node createNode(String name, GeneratorType type) {
@@ -42,11 +43,15 @@ public class CompareNodeTests {
 		return result;
 	}
 	
-	private void checkThrowsException(Node refNode, Node actualNode, 
-			boolean informational) {
+	private boolean findDifferences(Node referenceNode, Node actualNode) {
+		CompareResult result = comparer.compareNodes(referenceNode, actualNode);
+		return result.hasDifferences();		
+	}
+	
+	private void checkThrowsException(Node refNode, Node actualNode) {
 		
 		try {
-			comparer.compareSimpleNode(refNode, actualNode, informational);
+			comparer.compareNodes(refNode, actualNode);
 			fail();
 		} catch (Exception e) {
 			// do nothing
@@ -55,37 +60,16 @@ public class CompareNodeTests {
 	
 	@Test
 	public void testNullNodes() throws Exception {
-		checkThrowsException(null, null, true);
-		checkThrowsException(null, null, false);
-		
-		checkThrowsException(createSampleNode(), null, true);
-		checkThrowsException(createSampleNode(), null, false);
-		
-		checkThrowsException(null, createSampleNode(), true);
-		checkThrowsException(null, createSampleNode(), false);
+		checkThrowsException(null, null);		
+		checkThrowsException(createSampleNode(), null);
+		checkThrowsException(null, createSampleNode());
 	}	
 
 	@Test
 	public void testEqualNodes() throws Exception {
-		assertNull(comparer.compareSimpleNode(createSampleNode(), createSampleNode(), true));
-		assertNull(comparer.compareSimpleNode(createSampleNode(), createSampleNode(), false));
-	}
-	
-	@Test
-	public void testInformationalAttribute() throws Exception {
-		Node refNode = createSampleNode();
-		refNode.setInformational(true);
-		
-		Node actualNode = createSampleNode();
-		actualNode.setInformational(false);
-		
-		assertNotNull(comparer.compareSimpleNode(refNode, actualNode, true));
-		assertNotNull(comparer.compareSimpleNode(refNode, actualNode, false));
-		
-		assertNotNull(comparer.compareSimpleNode(actualNode, refNode, true));
-		assertNotNull(comparer.compareSimpleNode(actualNode, refNode, false));
-	}
-	
+		assertFalse(findDifferences(createSampleNode(), createSampleNode()));
+	}	
+
 	@Test
 	public void testTypeAttribute() throws Exception {
 		Node[] nodes = createSampleNodes(2);
@@ -111,21 +95,7 @@ public class CompareNodeTests {
 	}
 	
 	private void testNodeCombinations(Node[] nodes) {
-		assertNotNull(comparer.compareSimpleNode(nodes[0], nodes[1], true));
-		assertNotNull(comparer.compareSimpleNode(nodes[0], nodes[1], false));
-		
-		assertNotNull(comparer.compareSimpleNode(nodes[1], nodes[0], true));
-		assertNotNull(comparer.compareSimpleNode(nodes[1], nodes[0], false));
-		
-		// after setting both nodes as informational the comparator 
-		// shouldn't return any differences
-		nodes[0].setInformational(true);
-		nodes[1].setInformational(true);
-		
-		assertNotNull(comparer.compareSimpleNode(nodes[0], nodes[1], true));
-		assertNull(comparer.compareSimpleNode(nodes[0], nodes[1], false));
-		
-		assertNotNull(comparer.compareSimpleNode(nodes[1], nodes[0], true));
-		assertNull(comparer.compareSimpleNode(nodes[1], nodes[0], false));
+		assertTrue(findDifferences(nodes[0], nodes[1]));		
+		assertTrue(findDifferences(nodes[1], nodes[0]));
 	}
 }

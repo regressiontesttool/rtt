@@ -10,13 +10,14 @@ import org.junit.Test;
 import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
+import rtt.core.archive.output.ValueNode;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestFailure;
 
 public class CompareOutputTests {
 
-	private static final String NO_DIFFS_FOUND = "Compare found no differences where there should be some.";
-	private static final String DIFFS_FOUND = "Compare found differences where none should be.";
+	private static final String NO_DIFFS_ERROR = "Compare found no differences where there should be some.";
+	private static final String DIFFS_FOUND_ERROR = "Compare found differences where none should be.";
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,8 +70,8 @@ public class CompareOutputTests {
 
 	@Test
 	public void testBothEmptyOutputs() throws Exception {
-		assertFalse(DIFFS_FOUND, hasFailures(new Output(), new Output(), true));
-		assertFalse(DIFFS_FOUND, hasFailures(new Output(), new Output(), false));
+		assertFalse(DIFFS_FOUND_ERROR, hasFailures(new Output(), new Output(), true));
+		assertFalse(DIFFS_FOUND_ERROR, hasFailures(new Output(), new Output(), false));
 	}	
 	
 	@Test
@@ -78,11 +79,11 @@ public class CompareOutputTests {
 		Output emptyOutput = new Output();
 		Output nonEmptyOutput = createOutput(2);
 		
-		assertTrue(NO_DIFFS_FOUND, hasFailures(emptyOutput, nonEmptyOutput, true));
-		assertTrue(NO_DIFFS_FOUND, hasFailures(emptyOutput, nonEmptyOutput, false));
+		assertTrue(NO_DIFFS_ERROR, hasFailures(emptyOutput, nonEmptyOutput, true));
+		assertTrue(NO_DIFFS_ERROR, hasFailures(emptyOutput, nonEmptyOutput, false));
 		
-		assertTrue(NO_DIFFS_FOUND, hasFailures(nonEmptyOutput, emptyOutput, true));
-		assertTrue(NO_DIFFS_FOUND, hasFailures(nonEmptyOutput, emptyOutput, false));
+		assertTrue(NO_DIFFS_ERROR, hasFailures(nonEmptyOutput, emptyOutput, true));
+		assertTrue(NO_DIFFS_ERROR, hasFailures(nonEmptyOutput, emptyOutput, false));
 	}
 	
 	@Test
@@ -90,8 +91,33 @@ public class CompareOutputTests {
 		Output refOutput = createOutput(2);
 		Output actualOutput = createOutput(2);
 		
-		assertFalse(DIFFS_FOUND, hasFailures(refOutput, actualOutput, true));
-		assertFalse(DIFFS_FOUND, hasFailures(refOutput, actualOutput, false));
+		assertFalse(DIFFS_FOUND_ERROR, hasFailures(refOutput, actualOutput, true));
+		assertFalse(DIFFS_FOUND_ERROR, hasFailures(refOutput, actualOutput, false));
+	}
+	
+	@Test
+	public void testInformationalNodes() throws Exception {
+		Node refNode = new Node();
+		refNode.setGeneratorName("referenceNode");
+		refNode.setGeneratorType(GeneratorType.METHOD);
+		refNode.setIsNull(false);
+		refNode.setInformational(true);
+		
+		Output refOutput = createOutput(2);
+		refOutput.getNodes().add(refNode);
+		
+		ValueNode actualNode = new ValueNode();
+		actualNode.setGeneratorName("valueNode");
+		actualNode.setGeneratorType(GeneratorType.FIELD);
+		actualNode.setIsNull(true);
+		actualNode.setInformational(true);
+		actualNode.setValue("aValue");
+		
+		Output actualOutput = createOutput(2);		
+		actualOutput.getNodes().add(actualNode);
+		
+		assertFalse(DIFFS_FOUND_ERROR, hasFailures(refOutput, actualOutput, false));
+		assertTrue(NO_DIFFS_ERROR, hasFailures(refOutput, actualOutput, true));
 	}
 
 }
