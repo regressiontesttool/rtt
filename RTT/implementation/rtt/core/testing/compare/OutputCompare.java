@@ -13,38 +13,20 @@ import rtt.core.testing.compare.results.TestFailure;
 
 public class OutputCompare {
 	
-	public static class Comparer<T extends Node> {
+	public static abstract class ExtendedComparator<T extends Node> {
 		
-		private static final String GEN_TYPE_UNEQUAL = "Generator types are not equal.";
-		private static final String GEN_NAME_UNEQUAL = "Generator names are not equal.";
-		private static final String ISNULL_UNEQUAL = "One node is 'isNull', but the other not.";
-		private static final String CLASSES_UNEQUAL = "The node types are not equals";		
+		protected OutputCompare outputCompare;
+		
+		protected ExtendedComparator(OutputCompare outputCompare) {
+			this.outputCompare = outputCompare;
+		}
 
 		@SuppressWarnings("unchecked")
-		public CompareResult compareNodes(Node referenceNode, Node actualNode) {
-			
-			if (referenceNode.getClass() != actualNode.getClass()) {
-				return CompareResult.create(CLASSES_UNEQUAL);
-			}
-			
-			if (!referenceNode.getGeneratorType().equals(actualNode.getGeneratorType())) {
-				return CompareResult.create(GEN_TYPE_UNEQUAL);
-			}
-
-			if (!referenceNode.getGeneratorName().equals(actualNode.getGeneratorName())) {
-				return CompareResult.create(GEN_NAME_UNEQUAL);
-			}			
-
-			if (referenceNode.isIsNull() != actualNode.isIsNull()) {
-				return CompareResult.create(ISNULL_UNEQUAL);
-			}			
-			
-			return compare((T) referenceNode, (T) actualNode); 		
+		public CompareResult compareNodes(Node referenceNode, Node actualNode) {				
+			return compare((T) referenceNode, (T) actualNode);
 		}
 		
-		protected CompareResult compare(T referenceNode, T actualNode) {
-			return null;
-		}
+		protected abstract CompareResult compare(T referenceNode, T actualNode);
 	}
 	
 	public static class CompareResult {
@@ -70,18 +52,26 @@ public class OutputCompare {
 		}
 	}
 	
-	private static final String ISINFORMATIONAL_UNEQUAL = "One node is informational, but the other not.";
+	
 	private static final String NODE_NULL = "One or both given nodes were null.";
+	
+	private static final String INFORMATIONAL_UNEQUAL = "One node is informational, but the other not.";
+	private static final String GEN_TYPE_UNEQUAL = "Generator types are not equal.";
+	private static final String GEN_NAME_UNEQUAL = "Generator names are not equal.";
+	private static final String ISNULL_UNEQUAL = "One node is 'isNull', but the other not.";
+	private static final String CLASSES_UNEQUAL = "The node types are not equals";
+	
 	private static final String SIZE_UNEQUAL = "The sizes of reference and actual output are not equal";
-	private static final String NO_COMPARER = "Could not find a comparer.";
 	
-	private Map<Class<? extends Node>, Comparer<?>> comparer;
+	private Map<Class<? extends Node>, ExtendedComparator<?>> comparerMap;
+	private boolean testInformational;
 	
-	public OutputCompare() {
-		comparer = new HashMap<>();
-		comparer.put(Node.class, new Comparer<Node>());
-		comparer.put(ClassNode.class, new ClassNodeComparer());
-		comparer.put(ValueNode.class, new ValueNodeComparer());
+	public OutputCompare(boolean testInformational) {
+		this.testInformational = testInformational;
+		
+		comparerMap = new HashMap<>();			
+		comparerMap.put(ClassNode.class, new ClassNodeComparer(this));
+		comparerMap.put(ValueNode.class, new ValueNodeComparer(this));
 	}
 
 	public static List<TestFailure> compareOutput(
@@ -91,18 +81,18 @@ public class OutputCompare {
 			throw new IllegalArgumentException("Reference or actual output was null.");
 		}
 		
-		OutputCompare compare = new OutputCompare();
+		OutputCompare compare = new OutputCompare(testInformational);
 		
 		List<TestFailure> failures = new ArrayList<>();
 		
-		failures.addAll(compare.compareNodes(
-				referenceOutput.getNodes(), actualOutput.getNodes(), testInformational));
+		failures.addAll(compare.compareNodeLists(
+				referenceOutput.getNodes(), actualOutput.getNodes()));
 		
 		return failures;
 	}
 	
-	private List<TestFailure> compareNodes(List<Node> referenceNodes, 
-			List<Node> actualNodes, boolean testInformational) {
+	private List<TestFailure> compareNodeLists(List<Node> referenceNodes, 
+			List<Node> actualNodes) {
 		
 		List<TestFailure> failures = new ArrayList<>();
 		
@@ -115,44 +105,55 @@ public class OutputCompare {
 			Node referenceNode = referenceNodes.get(index);
 			Node actualNode = actualNodes.get(index);
 			
-			TestFailure failure = compareNode(referenceNode, actualNode, testInformational);
-			if (failure != null) {
-				failures.add(failure);
+			CompareResult result = compareNodes(referenceNode, actualNode);
+			if (result != null && result.hasDifferences()) {
+				failures.add(new TestFailure(result.getDifference()));
 			}
 		}
 		
 		return failures;
 	}
-
-	private TestFailure compareNode(Node referenceNode, Node actualNode,
-			boolean testInformational) {
+	
+	public CompareResult compareNodes(Node referenceNode, Node actualNode) {
 		
 		if (referenceNode == null || actualNode == null) {
 			throw new IllegalStateException(NODE_NULL);
 		}
 		
 		if (referenceNode.isInformational() != actualNode.isInformational()) {
-			return new TestFailure(ISINFORMATIONAL_UNEQUAL);
+			return CompareResult.create(INFORMATIONAL_UNEQUAL);
 		}
 		
 		if (!referenceNode.isInformational() || testInformational) {
-			Comparer<?> comparer = getComparer(referenceNode.getClass());
-			if (comparer == null) {
-				throw new IllegalStateException(NO_COMPARER);
+			
+			if (referenceNode.getClass() != actualNode.getClass()) {
+				return CompareResult.create(CLASSES_UNEQUAL);
 			}
 			
-			CompareResult result = comparer.compareNodes(referenceNode, actualNode);
-			if (result != null && result.hasDifferences()) {
-				return new TestFailure(result.getDifference());
+			if (!referenceNode.getGeneratorType().equals(actualNode.getGeneratorType())) {
+				return CompareResult.create(GEN_TYPE_UNEQUAL);
 			}
+
+			if (!referenceNode.getGeneratorName().equals(actualNode.getGeneratorName())) {
+				return CompareResult.create(GEN_NAME_UNEQUAL);
+			}			
+
+			if (referenceNode.isIsNull() != actualNode.isIsNull()) {
+				return CompareResult.create(ISNULL_UNEQUAL);
+			}
+			
+			ExtendedComparator<?> comparer = getComparer(referenceNode.getClass());
+			if (comparer != null) {
+				return comparer.compareNodes(referenceNode, actualNode);
+			}			
 		}
 		
 		return null;
 	}
 
-	private Comparer<? extends Node> getComparer(Class<?> nodeClass) {
-		if (comparer.containsKey(nodeClass)) {
-			return comparer.get(nodeClass);
+	private ExtendedComparator<? extends Node> getComparer(Class<?> nodeClass) {
+		if (comparerMap.containsKey(nodeClass)) {
+			return comparerMap.get(nodeClass);
 		}
 		
 		return null;

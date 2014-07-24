@@ -2,12 +2,16 @@ package rtt.core.testing.compare;
 
 import rtt.core.archive.output.ValueNode;
 import rtt.core.testing.compare.OutputCompare.CompareResult;
-import rtt.core.testing.compare.OutputCompare.Comparer;
+import rtt.core.testing.compare.OutputCompare.ExtendedComparator;
 
-public class ValueNodeComparer extends Comparer<ValueNode> {
+public class ValueNodeComparer extends ExtendedComparator<ValueNode> {
 
 	private static final String VALUE_UNEQUAL =
 			"The node values are different.";
+	
+	public ValueNodeComparer(OutputCompare outputCompare) {
+		super(outputCompare);
+	}
 
 	@Override
 	protected CompareResult compare(ValueNode referenceNode,

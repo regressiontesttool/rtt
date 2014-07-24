@@ -5,9 +5,9 @@ import java.util.List;
 import rtt.core.archive.output.ClassNode;
 import rtt.core.archive.output.Node;
 import rtt.core.testing.compare.OutputCompare.CompareResult;
-import rtt.core.testing.compare.OutputCompare.Comparer;
+import rtt.core.testing.compare.OutputCompare.ExtendedComparator;
 
-public class ClassNodeComparer extends Comparer<ClassNode> {
+public class ClassNodeComparer extends ExtendedComparator<ClassNode> {
 
 	private static final String SIMPLENAME_UNEQUAL =
 			"The simple name attributes are different.";
@@ -16,6 +16,10 @@ public class ClassNodeComparer extends Comparer<ClassNode> {
 	private static final String CHILDREN_UNEQUAL =
 			"The children nodes are different.";
 
+	public ClassNodeComparer(OutputCompare outputCompare) {
+		super(outputCompare);
+	}
+	
 	@Override
 	protected CompareResult compare(ClassNode referenceNode, ClassNode actualNode) {
 		if (!referenceNode.getSimpleName().equals(actualNode.getSimpleName())) {
@@ -36,7 +40,7 @@ public class ClassNodeComparer extends Comparer<ClassNode> {
 		
 		int childCount = refChildNodes.size();
 		for (int index = 0; index < childCount; index++) {
-			CompareResult result = compareNodes(refChildNodes.get(index), actualChildNodes.get(0));
+			CompareResult result = outputCompare.compareNodes(refChildNodes.get(index), actualChildNodes.get(0));
 			if (result != null && result.hasDifferences()) {
 				return result;
 			}			
