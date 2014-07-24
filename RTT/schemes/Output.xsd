@@ -11,18 +11,12 @@
 			<xs:enumeration value="METHOD" />
 		</xs:restriction>
 	</xs:simpleType>
-	
-	<xs:complexType name="generator">
-		<xs:attribute name="type" type="rtt:generatorType" use="required"/>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-	</xs:complexType>
 
 	<xs:complexType name="node">
-		<xs:sequence>
-			<xs:element name="generatedBy" type="rtt:generator" />
-		</xs:sequence>
 		<xs:attribute name="informational" type="xs:boolean" default="false"/>
-		<xs:attribute name="isNull" type="xs:boolean" default="false"/>		
+		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
+		<xs:attribute name="generatorName" type="xs:string" use="required"/>
+		<xs:attribute name="generatorType" type="rtt:generatorType" use="required"/>		
 	</xs:complexType>
 	
 	<xs:complexType name="valueNode">

@@ -75,5 +75,4 @@ Export-Package: rtt.annotations,
    rtt.annotations,
    rtt.core.archive.configuration,
    rtt.core.archive.output",
- rtt.core.utils,
- rtt.tests
+ rtt.core.utils

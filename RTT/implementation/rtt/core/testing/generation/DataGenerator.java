@@ -4,7 +4,6 @@ import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.utils.RTTLogging;
 
@@ -12,7 +11,7 @@ public class DataGenerator {
 
 	public static Output generateOutput(Input input, List<String> params,
 			ParserExecutor parser) throws Throwable {
-
+			
 		Output outputData = new Output();
 
 		if (parser != null) {
@@ -22,7 +21,7 @@ public class DataGenerator {
 			parser.initialize(input, params);
 			
 			RTTLogging.debug("Generating output data ...");
-			parser.createOutput(outputData);
+			parser.createOutput(outputData, parser);
 		}
 
 		return outputData;

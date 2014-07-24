@@ -103,8 +103,7 @@ public class Tester {
 		
 		checkData(testData, refData);
 		RTTLogging.info("Testing Syntactic Results");
-		return OutputCompare.compareOutput(testData, refData, false,
-				matching);
+		return OutputCompare.compareOutput(testData, refData, false);
 	}
 
 	private void checkData(Object testData, Object refData) throws RTTException {

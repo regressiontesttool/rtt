@@ -71,20 +71,20 @@ public class ParserExecutor extends Executor {
 
 	@Override
 	public void initialize(Input input, List<String> params) throws Throwable {
-		
-		if (parserAnnotation.withParams()) {
-			setParams(params);
-		}
-		
-		if (parserAnnotation.acceptedExceptions() != null) {
-			setAcceptedExceptions(parserAnnotation.acceptedExceptions());
-		}
-		
-		try {
-			parser = initializeClass(input, Parser.Initialize.class);
-		} catch (InvocationTargetException exception) {
-			throw exception.getCause();
-		}
+//		
+//		if (parserAnnotation.withParams()) {
+//			setParams(params);
+//		}
+//		
+//		if (parserAnnotation.acceptedExceptions() != null) {
+//			setAcceptedExceptions(parserAnnotation.acceptedExceptions());
+//		}
+//		
+//		try {
+//			parser = initializeClass(input, Parser.Initialize.class);
+//		} catch (InvocationTargetException exception) {
+//			throw exception.getCause();
+//		}
 	}
 	
 	public void createOutput(Output outputData, Executor executor) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
@@ -101,6 +101,36 @@ public class ParserExecutor extends Executor {
 		}
 	}
 
+//	public List<Node> getNodes() throws Throwable {
+//		return null;
+//		List<Node> result = new LinkedList<Node>();
+//		
+//		Method astMethod = processor.getMethodWithAnnotation(Parser.AST.class);
+//		astMethod.setAccessible(true);
+//		
+//		Object methodResult = astMethod.invoke(parser);
+//		if (methodResult == null) {
+//			return null;
+//		}
+//		
+//		if (methodResult.getClass().isAnnotationPresent(Parser.Node.class)) {
+//			result.add(createNode(null, methodResult, astMethod.getName()));
+//		} else if (methodResult instanceof Object[]) {
+//			Object[] items = (Object[]) methodResult;
+//			for (Object item : items) {
+//				result.add(createNode(null, item, astMethod.getName()));
+//			}
+//		} else if (methodResult instanceof Iterable<?>) {
+//			Iterable<?> iterable = (Iterable<?>) methodResult;
+//			for (Object item : iterable) {
+//				result.add(createNode(null, 
+//						item, astMethod.getName()));
+//			}
+//		}		
+//
+//		return result;
+		
+		
 	private Method getASTMethod(Executor executor) {
 		return CheckAnnotation.getASTMethod(executor);
 	}
@@ -145,7 +175,7 @@ public class ParserExecutor extends Executor {
 		if (currentObject == null) {
 			resultNode = new Node();
 			resultNode.setIsNull(true);
-			resultNode.setMethod(generatedBy);
+			resultNode.setGeneratorName(generatedBy);
 		} else {
 			if (hasNodeAnnotation(currentObject)) {
 				resultNode = createClassNode(currentObject, generatedBy, isInformational);
@@ -169,7 +199,7 @@ public class ParserExecutor extends Executor {
 		Class<?> objectType = currentObject.getClass();		
 		ClassNode resultNode = new ClassNode();
 		
-		resultNode.setMethod(generatedBy);
+		resultNode.setGeneratorName(generatedBy);
 		resultNode.setFullName(objectType.getName());
 		resultNode.setSimpleName(objectType.getSimpleName());
 		resultNode.setInformational(isInformational);
@@ -208,42 +238,12 @@ public class ParserExecutor extends Executor {
 
 	private Node createValueNode(final Object currentObject, final String generatedBy, final boolean isInformational) {
 		ValueNode resultNode = new ValueNode();
-		resultNode.setMethod(generatedBy);
+		resultNode.setGeneratorName(generatedBy);
 		resultNode.setValue(currentObject.toString());
 		resultNode.setInformational(isInformational);
 
 		return resultNode;
 	}
-
-//	public List<Node> getNodes() throws Throwable {
-//		List<Node> result = new LinkedList<Node>();
-//		
-//		Method astMethod = processor.getMethodWithAnnotation(Parser.AST.class);
-//		astMethod.setAccessible(true);
-//		
-//		Object methodResult = astMethod.invoke(parser);
-//		if (methodResult == null) {
-//			return null;
-//		}
-//		
-//		if (methodResult.getClass().isAnnotationPresent(Parser.Node.class)) {
-//			result.add(createNode(null, methodResult, astMethod.getName()));
-//		} else if (methodResult instanceof Object[]) {
-//			Object[] items = (Object[]) methodResult;
-//			for (Object item : items) {
-//				result.add(createNode(null, item, astMethod.getName()));
-//			}
-//		} else if (methodResult instanceof Iterable<?>) {
-//			Iterable<?> iterable = (Iterable<?>) methodResult;
-//			for (Object item : iterable) {
-//				result.add(createNode(null, 
-//						item, astMethod.getName()));
-//			}
-//		}		
-//
-//		return result;
-//
-//	}
 
 //	private void sortNodeAttribs(List<Attribute> l) {
 //		Comparator<Attribute> c = new Comparator<Attribute>() {
@@ -257,6 +257,83 @@ public class ParserExecutor extends Executor {
 //		Collections.sort(l, c);
 //	}
 
+//	private Node createNode(Node parentNode, Object curObj, String methodName) 
+//			throws Throwable {
+//		
+//		return null;
+//		
+//		Node node = new Node();
+//		node.setMethod(methodName);
+//		
+//		if (curObj == null) {
+//			node.setIsNull(true);
+//			return node;
+//		}
+//		
+//		// TODO what if curObj is primitive type or iteratable ?
+//		
+//		AnnotationProcessor nodeProc = new AnnotationProcessor(curObj
+//				.getClass());
+//		// test, if node-annotation is present
+//		try {
+//			nodeProc.getAnnotation(Parser.Node.class);
+//		} catch (Exception e) {			
+//			RTTLogging.debug("Warning:" + Parser.Node.class.toString()
+//					+ " not present at " + curObj.getClass());
+//			
+//			if (parentNode != null) {
+//				Attribute attribute = new Attribute();
+//				attribute.setName(methodName);
+//				attribute.setValue(curObj.toString());
+//				attribute.setInformational(false);
+//				
+//				parentNode.getAttributes().add(attribute);
+//			}		
+//			
+//			return null;
+//		}
+//		
+//		node.setSimpleName(curObj.getClass().getSimpleName());
+//		node.setFullName(curObj.getClass().getName());
+//
+//		addMethods(curObj, nodeProc, node, Parser.Node.Compare.class, false);
+//		addMethods(curObj, nodeProc, node, Parser.Node.Informational.class, true);
+//		addFields(curObj, nodeProc, node, Parser.Node.Compare.class, false);
+//		addFields(curObj, nodeProc, node, Parser.Node.Informational.class, true);
+////		sortNodeAttribs(l);
+//
+////		List<Method> methodList = nodeProc.getMethodsWithAnnotation(Parser.Node.Child.class);
+//		
+////		for (Method method : methodList) {
+////			try {
+////				Object value = method.invoke(curObj);
+////				addNode(node, value, method.getName());
+////			} catch (Throwable throwable) {
+////				if (throwable instanceof InvocationTargetException) {
+////					throwable = throwable.getCause();
+////				}
+////				
+////				if (!isAcceptedException(throwable)) {
+////					throw throwable;
+////				}
+////				
+////				String throwableName = throwable.getClass().getName();
+////				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+////			}							
+////		}
+//
+////		List<Field> fieldList = nodeProc
+////				.getFieldsWithAnnotation(Parser.Node.Child.class);
+////		
+////		for (Field field : fieldList) {
+////			Object value = field.get(curObj);
+////			addNode(node, value, field.getName());
+////		}
+//
+//		return node;
+//
+//	}
+		
 //	private Node createNode(Node parentNode, Object curObj, String methodName) 
 //			throws Throwable {
 //		
@@ -300,44 +377,12 @@ public class ParserExecutor extends Executor {
 //		addFields(curObj, nodeProc, node, Parser.Node.Informational.class, true);
 //		sortNodeAttribs(l);
 
-//		List<Method> methodList = nodeProc.getMethodsWithAnnotation(Parser.Node.Child.class);
-		
-//		for (Method method : methodList) {
-//			try {
-//				Object value = method.invoke(curObj);
-//				addNode(node, value, method.getName());
-//			} catch (Throwable throwable) {
-//				if (throwable instanceof InvocationTargetException) {
-//					throwable = throwable.getCause();
-//				}
-//				
-//				if (!isAcceptedException(throwable)) {
-//					throw throwable;
-//				}
-//				
-//				String throwableName = throwable.getClass().getName();
-//				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
-//			}							
-//		}
-
-//		List<Field> fieldList = nodeProc
-//				.getFieldsWithAnnotation(Parser.Node.Child.class);
-//		
-//		for (Field field : fieldList) {
-//			Object value = field.get(curObj);
-//			addNode(node, value, field.getName());
-//		}
-//
-//		return node;
-//
-//	}
-
 //	private void addNode(Node parentNode, Node childNode) {
 //		if (parentNode != null && childNode != null && parentNode.getNodes() != null) {
 //			parentNode.getNodes().add(childNode);
 //		}
 //	}
-//	
+	
 //	private void addNode(Node parentNode, Object object, String operationName) throws Throwable {
 //		
 //		if (object instanceof Object[]) {
@@ -413,58 +458,58 @@ public class ParserExecutor extends Executor {
 //				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
 //			}
 //			
-//			attribute.setName(methodName);
-//			attribute.setInformational(informational);
+////			attribute.setName(methodName);
+////			attribute.setInformational(informational);
+////			
+////			Object methodResult = null;
+////			try {
+////				method.setAccessible(true);
+////				methodResult = method.invoke(tokenObj);
+////			} catch (Throwable throwable) {
+////				if (throwable instanceof InvocationTargetException) {
+////					throwable = throwable.getCause();
+////				}
+////				
+////				if (!isAcceptedException(throwable)) {
+////					throw throwable;
+////				}
+////				
+////				// TODO was tun wenn exception ?
+////				String throwableName = throwable.getClass().getName();
+////				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
+////				methodResult = "EXCEPTION: " + throwableName;
+////			}
+////			
+////			if (methodResult.getClass().isAnnotationPresent(Parser.Node.class)) {
+////				result.add(createNode(methodResult, astMethod.getName()));
+////			} else if (methodResult instanceof Object[]) {
+////				Object[] items = (Object[]) methodResult;
+////				for (Object item : items) {
+////					result.add(createNode(item, astMethod.getName()));
+////				}
+////			} else if (methodResult instanceof Iterable<?>) {
+////				Iterable<?> iterable = (Iterable<?>) methodResult;
+////				for (Object item : iterable) {
+////					result.add(createNode(item, astMethod.getName()));
+////				}
+////			}
 //			
-//			Object methodResult = null;
-//			try {
-//				method.setAccessible(true);
-//				methodResult = method.invoke(tokenObj);
-//			} catch (Throwable throwable) {
-//				if (throwable instanceof InvocationTargetException) {
-//					throwable = throwable.getCause();
-//				}
-//				
-//				if (!isAcceptedException(throwable)) {
-//					throw throwable;
-//				}
-//				
-//				// TODO was tun wenn exception ?
-//				String throwableName = throwable.getClass().getName();
-//				RTTLogging.warn("WARNING: accepted " + throwableName + " has been thrown.");
-//				methodResult = "EXCEPTION: " + throwableName;
-//			}
 //			
-//			if (methodResult.getClass().isAnnotationPresent(Parser.Node.class)) {
-//				result.add(createNode(methodResult, astMethod.getName()));
-//			} else if (methodResult instanceof Object[]) {
-//				Object[] items = (Object[]) methodResult;
-//				for (Object item : items) {
-//					result.add(createNode(item, astMethod.getName()));
-//				}
-//			} else if (methodResult instanceof Iterable<?>) {
-//				Iterable<?> iterable = (Iterable<?>) methodResult;
-//				for (Object item : iterable) {
-//					result.add(createNode(item, astMethod.getName()));
-//				}
-//			}
-			
-			
-			
-			
-//			String value = "";
-//			if (methodResult != null) {
-//				value = methodResult.toString();
-//			}
-//
 //			
-//			attribute.setValue(value);
 //			
-//
-//			node.add(attribute);
+////			String value = "";
+////			if (methodResult != null) {
+////				value = methodResult.toString();
+////			}
+////
+////			
+////			attribute.setValue(value);
+////			
+////
+////			node.add(attribute);
 //		}
 //	}
-
+//
 //	private <A extends Annotation> void addFields(Object tokenObj, AnnotationProcessor tokenProc,
 //			Node node, Class<A> annotationClass, boolean informational)
 //			throws Throwable {
@@ -501,15 +546,4 @@ public class ParserExecutor extends Executor {
 //			}
 //		}
 //	}
-//
-//	public String getSimpleName() {
-//		return parser.getClass().getSimpleName();
-//	}
-//
-//	public String getFullName() {
-//		return parser.getClass().getName();
-//	}
-//
-//	
-
 }
