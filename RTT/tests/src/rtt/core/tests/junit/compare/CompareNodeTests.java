@@ -7,19 +7,19 @@ import org.junit.Test;
 
 import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Node;
+import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult;
-import rtt.core.testing.compare.OutputCompare.Comparer;
 
 public class CompareNodeTests {
 
 	private static final String NAME = "Node";
 	private static final GeneratorType TYPE = GeneratorType.METHOD;
 	
-	private Comparer<Node> comparer;
-
+	private OutputCompare comparer;
+	
 	@Before
 	public void setUp() throws Exception {
-		comparer = new Comparer<Node>();
+		comparer = new OutputCompare(true);
 	}
 	
 	private Node createNode(String name, GeneratorType type) {
@@ -34,25 +34,25 @@ public class CompareNodeTests {
 		return createNode(NAME, TYPE);
 	}
 	
-	private Node[] createSampleNodes(int count) {
-		Node[] result = new Node[count];
-		for (int i = 0; i < count; i++) {
-			result[i] = createSampleNode();
+	private void testNoDifferences(Node referenceNode, Node actualNode) {
+		CompareResult result = comparer.compareNodes(referenceNode, actualNode);
+		if (result != null) {
+			fail("Differences found, but there should not: " + result.getDifference());
 		}
-		
-		return result;
 	}
 	
-	private boolean findDifferences(Node referenceNode, Node actualNode) {
+	private void testDifference(Node referenceNode, Node actualNode) {
 		CompareResult result = comparer.compareNodes(referenceNode, actualNode);
-		return result != null && result.hasDifferences();		
+		if (result == null) {
+			fail("Compare found no differences, but there should be some.");
+		}
 	}
 	
 	private void checkThrowsException(Node refNode, Node actualNode) {
 		
 		try {
 			comparer.compareNodes(refNode, actualNode);
-			fail();
+			fail("No exception was thrown.");
 		} catch (Exception e) {
 			// do nothing
 		}
@@ -67,33 +67,53 @@ public class CompareNodeTests {
 
 	@Test
 	public void testEqualNodes() throws Exception {
-		assertFalse(findDifferences(createSampleNode(), createSampleNode()));
+		testNoDifferences(createSampleNode(), createSampleNode());
 	}	
 
 	@Test
 	public void testTypeAttribute() throws Exception {
-		Node[] nodes = createSampleNodes(2);
-		nodes[0].setGeneratorType(GeneratorType.FIELD);
+		Node node = createSampleNode();
+		node.setGeneratorType(GeneratorType.FIELD);
 		
-		assertTrue(findDifferences(nodes[0], nodes[1]));		
-		assertTrue(findDifferences(nodes[1], nodes[0]));
+		testDifference(node, createSampleNode());		
+		testDifference(createSampleNode(), node);
 	}
 	
 	@Test
 	public void testNameAttribute() throws Exception {
-		Node[] nodes = createSampleNodes(2);
-		nodes[0].setGeneratorName("OtherNode");
+		Node node = createSampleNode();
+		node.setGeneratorName("OtherNode");
 		
-		assertTrue(findDifferences(nodes[0], nodes[1]));		
-		assertTrue(findDifferences(nodes[1], nodes[0]));
+		testDifference(node, createSampleNode());		
+		testDifference(createSampleNode(), node);
 	}
 	
 	@Test
 	public void testIsNullAttribute() throws Exception {
-		Node[] nodes = createSampleNodes(2);
-		nodes[0].setIsNull(true);
+		Node node = createSampleNode();
+		node.setIsNull(true);
 		
-		assertTrue(findDifferences(nodes[0], nodes[1]));		
-		assertTrue(findDifferences(nodes[1], nodes[0]));
+		testDifference(node, createSampleNode());		
+		testDifference(createSampleNode(), node);
+	}
+	
+	@Test
+	public void testInformationalNodes() throws Exception {
+		comparer = new OutputCompare(false);
+		
+		Node referenceNode = createSampleNode();
+		Node actualNode = createSampleNode();
+		
+		testNoDifferences(referenceNode, actualNode);
+		
+		actualNode.setGeneratorName("otherName");
+		actualNode.setGeneratorType(GeneratorType.FIELD);
+		actualNode.setIsNull(true);
+		actualNode.setInformational(true);
+		
+		testDifference(referenceNode, actualNode);
+		
+		referenceNode.setInformational(true);
+		testNoDifferences(referenceNode, actualNode);
 	}
 }

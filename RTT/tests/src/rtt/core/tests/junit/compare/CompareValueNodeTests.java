@@ -1,28 +1,27 @@
 package rtt.core.tests.junit.compare;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import rtt.core.archive.output.GeneratorType;
+import rtt.core.archive.output.Node;
 import rtt.core.archive.output.ValueNode;
+import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult;
-import rtt.core.testing.compare.OutputCompare.Comparer;
-import rtt.core.testing.compare.ValueNodeComparer;
 
 public class CompareValueNodeTests {
-
+	
 	private static final String NAME = "ValueNode";
 	private static final GeneratorType TYPE = GeneratorType.METHOD;
 	private static final String VALUE = "SampleValue";
 	
-	private Comparer<ValueNode> comparer;
+	private OutputCompare comparer;
 
 	@Before
 	public void setUp() throws Exception{
-		comparer = new ValueNodeComparer();
+		comparer = new OutputCompare(true);
 	}
 	
 	private ValueNode createSampleNode() {
@@ -38,14 +37,23 @@ public class CompareValueNodeTests {
 		return node;
 	}
 	
-	private boolean areDifferent(ValueNode referenceNode, ValueNode actualNode) {
+	private void testNoDifferences(Node referenceNode, Node actualNode) {
 		CompareResult result = comparer.compareNodes(referenceNode, actualNode);
-		return result != null && result.hasDifferences();
+		if (result != null) {
+			fail("Differences found, but there should not: " + result.getDifference());
+		}
 	}
-
+	
+	private void testDifference(Node referenceNode, Node actualNode) {
+		CompareResult result = comparer.compareNodes(referenceNode, actualNode);
+		if (result == null) {
+			fail("Compare found no differences, but there should be some.");
+		}
+	}
+	
 	@Test
 	public void testEqualValueNodes() throws Exception {
-		assertFalse(areDifferent(createSampleNode(), createSampleNode()));
+		testNoDifferences(createSampleNode(), createSampleNode());
 	}
 	
 	@Test
@@ -54,8 +62,8 @@ public class CompareValueNodeTests {
 		ValueNode actualNode = createSampleNode();
 		actualNode.setValue("OtherValue");		
 		
-		assertTrue(areDifferent(referenceNode, actualNode));		
-		assertTrue(areDifferent(actualNode, referenceNode));		
+		testDifference(referenceNode, actualNode);		
+		testDifference(actualNode, referenceNode);		
 	}	
 
 }
