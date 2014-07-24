@@ -1,4 +1,4 @@
-package rtt.core.tests.junit;
+package rtt.core.tests.junit.compare;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +45,7 @@ public class CompareNodeTests {
 	
 	private boolean findDifferences(Node referenceNode, Node actualNode) {
 		CompareResult result = comparer.compareNodes(referenceNode, actualNode);
-		return result.hasDifferences();		
+		return result != null && result.hasDifferences();		
 	}
 	
 	private void checkThrowsException(Node refNode, Node actualNode) {
@@ -75,7 +75,8 @@ public class CompareNodeTests {
 		Node[] nodes = createSampleNodes(2);
 		nodes[0].setGeneratorType(GeneratorType.FIELD);
 		
-		testNodeCombinations(nodes);
+		assertTrue(findDifferences(nodes[0], nodes[1]));		
+		assertTrue(findDifferences(nodes[1], nodes[0]));
 	}
 	
 	@Test
@@ -83,7 +84,8 @@ public class CompareNodeTests {
 		Node[] nodes = createSampleNodes(2);
 		nodes[0].setGeneratorName("OtherNode");
 		
-		testNodeCombinations(nodes);
+		assertTrue(findDifferences(nodes[0], nodes[1]));		
+		assertTrue(findDifferences(nodes[1], nodes[0]));
 	}
 	
 	@Test
@@ -91,10 +93,6 @@ public class CompareNodeTests {
 		Node[] nodes = createSampleNodes(2);
 		nodes[0].setIsNull(true);
 		
-		testNodeCombinations(nodes);
-	}
-	
-	private void testNodeCombinations(Node[] nodes) {
 		assertTrue(findDifferences(nodes[0], nodes[1]));		
 		assertTrue(findDifferences(nodes[1], nodes[0]));
 	}

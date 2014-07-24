@@ -1,4 +1,4 @@
-package rtt.core.tests.junit;
+package rtt.core.tests.junit.compare;
 
 import static org.junit.Assert.*;
 
