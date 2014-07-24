@@ -39,11 +39,11 @@ public class OutputCompare {
 				return CompareResult.create(ISNULL_UNEQUAL);
 			}			
 			
-			return compare((T) referenceNode, (T) actualNode);		
+			return compare((T) referenceNode, (T) actualNode); 		
 		}
 		
 		protected CompareResult compare(T referenceNode, T actualNode) {
-			return new CompareResult();
+			return null;
 		}
 	}
 	
@@ -142,7 +142,7 @@ public class OutputCompare {
 			}
 			
 			CompareResult result = comparer.compareNodes(referenceNode, actualNode);
-			if (result.hasDifferences()) {
+			if (result != null && result.hasDifferences()) {
 				return new TestFailure(result.getDifference());
 			}
 		}
