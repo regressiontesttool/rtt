@@ -15,6 +15,7 @@ import rtt.core.loader.LoaderUtils;
 import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.generation.DataGenerator;
+import rtt.core.testing.generation.Executor;
 import rtt.core.testing.generation.ParserExecutor;
 import rtt.core.utils.GenerationInformation.GenerationResult;
 import rtt.core.utils.RTTLogging;
@@ -132,7 +133,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return true;		
 	}
 
-	public GenerationResult createData(ParserExecutor parser, Integer inputVersion, List<String> params) {
+	public GenerationResult createData(Executor parser, Integer inputVersion, List<String> params) {
 		GenerationResult result = new GenerationResult(suiteName, caseName);
 
 		Output newOutput = null;

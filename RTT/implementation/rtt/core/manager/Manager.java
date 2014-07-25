@@ -35,6 +35,7 @@ import rtt.core.testing.compare.results.ITestFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
 import rtt.core.testing.generation.DataGenerator;
+import rtt.core.testing.generation.Executor;
 import rtt.core.testing.generation.ParserExecutor;
 import rtt.core.utils.GenerationInformation;
 import rtt.core.utils.GenerationInformation.GenerationResult;
@@ -468,7 +469,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		ParserExecutor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		Executor parser = DataGenerator.locateParserExecutor(config, baseDir);
 		
 		RTTLogging.info("**** Generate reference data ****");
 		
@@ -562,7 +563,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		ParserExecutor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		Executor parser = DataGenerator.locateParserExecutor(config, baseDir);
 		
 		Tester tester = new Tester(currentArchive.getLoader(), matching);
 		List<TestResult> testResults = new ArrayList<TestResult>();
