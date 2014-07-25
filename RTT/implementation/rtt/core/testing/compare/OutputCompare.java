@@ -13,7 +13,7 @@ import rtt.core.testing.compare.results.TestFailure;
 
 public class OutputCompare {
 	
-	public static abstract class ExtendedComparator<T extends Node> {
+	protected static abstract class ExtendedComparator<T extends Node> {
 		
 		protected OutputCompare outputCompare;
 		

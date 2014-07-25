@@ -14,7 +14,7 @@ public class ClassNodeComparer extends ExtendedComparator<ClassNode> {
 	private static final String FULLNAME_UNEQUAL = 
 			"The full name attributes are different.";
 	private static final String CHILDREN_UNEQUAL =
-			"The children nodes are different.";
+			"The sizes of children nodes are different.";
 
 	public ClassNodeComparer(OutputCompare outputCompare) {
 		super(outputCompare);
