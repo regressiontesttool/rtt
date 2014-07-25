@@ -38,7 +38,7 @@ public class DataGenerator {
 		
 		astMethod.setAccessible(true);
 		String astMethodName = astMethod.getName();
-		Object astMethodResult = astMethod.invoke(executor);
+		Object astMethodResult = astMethod.invoke(executor.getExecutor());
 		if (astMethodResult != null) {
 			outputData.getNodes().addAll(createNodes(astMethodResult, astMethodName, false));
 		}

@@ -28,6 +28,7 @@ import rtt.annotations.*;
 	 * stream as source for splicing and repository generation.
 	 * @param is Input consumed while and needed for repository generation.
 	 */
+	@Parser.Initialize
 	public RepositoryGenerator(InputStream is) {this.is = is;}
 	
 	/**

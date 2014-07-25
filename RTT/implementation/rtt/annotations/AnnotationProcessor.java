@@ -12,8 +12,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import rtt.annotations.Parser.Initialize;
 
 /**
  * Helperclass for accessing annotations of an object.
@@ -120,10 +123,66 @@ public class AnnotationProcessor {
 	public Object getObjectInstance() throws Exception {
 		return objectClass.newInstance();
 	}
-
 	
-//	public <T> Object getNewInstance(Class<T> type, T parameter)
-//			throws Exception {
-//		return objectClass.getConstructor(type).newInstance(parameter);
-//	}
+	
+	/// new algorithms
+	
+	public static <A extends Annotation> A getAnnotation(Class<?> objectType, Class<A> annotationType) {
+		if (objectType.isAnnotationPresent(annotationType)) {
+			return objectType.getAnnotation(annotationType);
+		}
+		
+		for (Class<?> interfaceObject : objectType.getInterfaces()) {
+			if (interfaceObject.isAnnotationPresent(annotationType)) {
+				return interfaceObject.getAnnotation(annotationType);
+			}
+		}
+		
+		throw new IllegalArgumentException("Annotation " + objectType.toString()
+				+ " is not present at class " + objectType.toString());
+	}
+	
+
+	public static List<Method> getMethods(Class<?> objectType, Class<? extends Annotation> annotation) {
+		Method[] methods = objectType.getMethods();
+		List<Method> annotatedMethods = new ArrayList<>();
+		
+		for (Method method : methods) {
+			if (method.isAnnotationPresent(annotation)) {
+				annotatedMethods.add(method);
+			}
+		}
+		
+		return annotatedMethods;
+	}
+
+	public static Method getSingleMethod(Class<?> objectType, Class<? extends Annotation> annotation) {
+		List<Method> annotatedMethods = getMethods(objectType, annotation);
+		if (annotatedMethods != null && annotatedMethods.size() == 1) {
+			return annotatedMethods.get(0);
+		}
+		
+		return null;
+	}
+
+	public static List<Constructor<?>> getConstructors(Class<?> objectType, Class<? extends Annotation> annotation) {
+		Constructor<?>[] constructors = objectType.getConstructors();
+		List<Constructor<?>> annotatedConstructors = new ArrayList<>();
+		for (Constructor<?> constructor : constructors) {
+			if (constructor.isAnnotationPresent(annotation)) {
+				annotatedConstructors.add(constructor);
+			}
+		}
+		
+		return annotatedConstructors;
+	}
+	
+	public static Constructor<?> getSingleConstructor(Class<?> objectType, Class<? extends Annotation> annotation) {
+		List<Constructor<?>> annotatedConstructors = getConstructors(objectType, annotation);
+		if (annotatedConstructors != null && annotatedConstructors.size() == 1) {
+			return annotatedConstructors.get(0);
+		}
+		
+		return null;
+	}
 }

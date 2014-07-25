@@ -19,24 +19,101 @@ import rtt.core.utils.ExecutorLoader;
 
 public class Executor {
 	
+	private static final String NO_INIT = 
+			"Could not find a method or constructor annotated with @Parser.Initialize.";
+	private static final String NO_SINGLE_INIT_METHOD = 
+			"Found more than one method annotated with @Parser.Initialize.";
+	private static final String NO_SINGLE_INIT_CONSTRUCTOR = 
+			"Found more than one method annotated with @Parser.Initialize.";
+	private static final String NOT_INPUTSTREAM_PARAMETER = 
+			"The method or constructor annotated with @Parser.Initialize must have only one InputStream parameter";
+	
 	protected Class<?> executorClass = null;
+	private Object executor = null;
+	
 	protected AnnotationProcessor processor = null;
 	protected String[] params = null;
 	protected List<Class<? extends Throwable>> acceptedList;
 	
 	Object parser;
 	Parser parserAnnotation;
+	
 
 	public Executor(String className, Classpath classpath, String baseDir) throws Exception {
 		executorClass = loadClass(className, classpath, baseDir);
+		executor = createInstance(executorClass);
+	}	
+	 
+	private Object createInstance(Class<?> executorClass) {
+		parserAnnotation = AnnotationProcessor.getAnnotation(executorClass, Parser.class);
+		
+		
+		List<Method> annotatedMethods = AnnotationProcessor.getMethods(executorClass, Parser.Initialize.class);
+		if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
+			if (annotatedMethods.size() > 1) {
+				throw new IllegalStateException(NO_SINGLE_INIT_METHOD);
+			}
+			
+			Method initMethod = annotatedMethods.get(0);
+			if (checkInputStreamParameter(initMethod.getParameterTypes(), parserAnnotation.withParams())) {
+				return createInstance(executorClass, annotatedMethods.get(0));
+			} else {
+				throw new RuntimeException(NOT_INPUTSTREAM_PARAMETER);
+			}
+		}
+		
+		List<Constructor<?>> annotatedConstructors = AnnotationProcessor.getConstructors(executorClass, Parser.Initialize.class);
+		if (annotatedConstructors != null && !annotatedConstructors.isEmpty()) {
+			if (annotatedConstructors.size() > 1) {
+				throw new IllegalStateException(NO_SINGLE_INIT_CONSTRUCTOR);
+			}
+			Constructor<?> initConstructor = annotatedConstructors.get(0);
+			if (checkInputStreamParameter(initConstructor.getParameterTypes(), parserAnnotation.withParams())) {
+				return createInstance(executorClass, initConstructor);
+			} else {
+				throw new RuntimeException(NOT_INPUTSTREAM_PARAMETER);
+			}
+			
+		}
+		
+		throw new IllegalArgumentException(NO_INIT);
+	}
+
+	private boolean checkInputStreamParameter(Class<?>[] parameterTypes, boolean withParams) {
+		int paramSize = withParams ? 2 : 1;
+		
+		if (parameterTypes.length != paramSize) {
+			return false;
+		}
+		
+		if (parameterTypes[0] == null || !parameterTypes[0].equals(InputStream.class)) {
+			return false;
+		}
+		
+		if (withParams && (parameterTypes[1] == null || !parameterTypes.equals(String[].class))) {
+			return false;
+		}
+		
+		return true;	
+	}
+
+	private Object createInstance(Class<?> executorClass, Method initMethod) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private Object createInstance(Class<?> executorClass, Constructor<?> constructor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void initialize(Input input, List<String> params) throws Throwable {	
 		processor = new AnnotationProcessor(executorClass);
 		
 		acceptedList = new ArrayList<Class<? extends Throwable>>();		
 
 		parserAnnotation = processor.getAnnotation(Parser.class);
-	}
-	 
-	public void initialize(Input input, List<String> params) throws Throwable {		
+		
 		if (parserAnnotation.withParams()) {
 			setParams(params);
 		}
@@ -136,9 +213,12 @@ public class Executor {
 		}
 	}
 	
+	public Object getExecutor() {
+		return executor;
+	}
+	
 	public Method getASTMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return AnnotationProcessor.getSingleMethod(executorClass, Parser.AST.class);
 	}	
 	
 	public boolean isNode(Object currentObject) {
