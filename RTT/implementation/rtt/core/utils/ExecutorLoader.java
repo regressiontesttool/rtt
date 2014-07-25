@@ -26,10 +26,8 @@ public class ExecutorLoader implements AutoCloseable {
 	public ExecutorLoader(Classpath classpath) throws MalformedURLException {
 		List<URL> urls = new ArrayList<URL>();
 		
-		if (classpath != null && !classpath.getPath().isEmpty()) {			
-			List<String> cpEntries = classpath.getPath();			
-			
-			for (String entry : cpEntries) {
+		if (classpath != null && classpath.getPath() != null) {
+			for (String entry : classpath.getPath()) {
 				Path path = resolveEntry(entry);
 				if (Files.exists(path)) {
 					urls.add(path.toUri().toURL());
