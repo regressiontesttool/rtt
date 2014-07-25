@@ -9,7 +9,6 @@
 package rtt.core.tests;
 
 import java.io.*;
-
 import java.util.*;
 
 import rtt.annotations.*;
@@ -120,12 +119,12 @@ import rtt.annotations.*;
 		public boolean isEOF() {return value.length() == 0;}
 	}
 	
-	@Parser.Node public static final class Repository {
+	@Node public static final class Repository {
 		public Repository[] children = new Repository[0];
-		@Parser.Node.Compare public List<Repository> children() {
+		@Node.Compare public List<Repository> children() {
 			return Arrays.asList(children);
 		}
-		@Parser.Node.Compare public String value = "";
+		@Node.Compare public String value = "";
 		public Repository(String value, Repository ...children) {
 			this.value = value;
 			this.children = children;

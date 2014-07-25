@@ -29,7 +29,7 @@ public class ParserExecutor extends Executor {
 	private static final class CheckAnnotation {
 		
 		private static final Class<? extends Annotation> INFORMATIONAL_ANNOTATION = 
-				rtt.annotations.Parser.Node.Informational.class;
+				rtt.annotations.Node.Informational.class;
 
 		public static Method getASTMethod(Executor executor) {
 			// TODO Auto-generated method stub
