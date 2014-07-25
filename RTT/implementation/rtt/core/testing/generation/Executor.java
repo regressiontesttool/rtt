@@ -1,51 +1,60 @@
-/**
- * <copyright>
- *
- * This program and the accompanying materials are made available under the
- * terms of the MIT license (X11 license) which accompanies this distribution.
- *
- * </copyright>
- */
 package rtt.core.testing.generation;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotations.AnnotationProcessor;
+import rtt.annotations.Parser;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
 import rtt.core.utils.ExecutorLoader;
 
-
-/**
- * 
- * @author Peter Mucha
- * 
- */
-public abstract class Executor {
+public class Executor {
 	
 	protected Class<?> executorClass = null;
 	protected AnnotationProcessor processor = null;
 	protected String[] params = null;
 	protected List<Class<? extends Throwable>> acceptedList;
+	
+	Object parser;
+	Parser parserAnnotation;
 
-	public Executor(String className, Classpath cp, String baseDir) throws Exception {
-		executorClass = loadClass(className, cp, baseDir);
+	public Executor(String className, Classpath classpath, String baseDir) throws Exception {
+		executorClass = loadClass(className, classpath, baseDir);
 		processor = new AnnotationProcessor(executorClass);
 		
-		acceptedList = new ArrayList<Class<? extends Throwable>>();
+		acceptedList = new ArrayList<Class<? extends Throwable>>();		
+
+		parserAnnotation = processor.getAnnotation(Parser.class);
 	}
 	 
-	public abstract void initialize(Input input, List<String> params) throws Throwable;
+	public void initialize(Input input, List<String> params) throws Throwable {		
+		if (parserAnnotation.withParams()) {
+			setParams(params);
+		}
+		
+		if (parserAnnotation.acceptedExceptions() != null) {
+			setAcceptedExceptions(parserAnnotation.acceptedExceptions());
+		}
+		
+		try {
+			parser = initializeClass(input, Parser.Initialize.class);
+		} catch (InvocationTargetException exception) {
+			throw exception.getCause();
+		}
+	}
 
-	public Class<?> loadClass(String className, Classpath cp, String baseDir)
+	public Class<?> loadClass(String className, Classpath classpath, String baseDir)
 			throws Exception {
-		ExecutorLoader loader = new ExecutorLoader(cp);
+		ExecutorLoader loader = new ExecutorLoader(classpath);
 		return loader.resolveClass(className);
 	}
 	
@@ -126,4 +135,29 @@ public abstract class Executor {
 			return constructor.newInstance(inputStream);
 		}
 	}
+	
+	public Method getASTMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
+	
+	public boolean isNode(Object currentObject) {
+		// TODO Auto-generated method stub
+		return false;
+	}	
+
+	public boolean isInformational(AnnotatedElement element) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public List<Method> getAnnotatedMethods(Class<?> objectType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Field> getAnnotatedFields(Class<?> objectType) {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }
