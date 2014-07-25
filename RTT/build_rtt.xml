@@ -66,7 +66,6 @@
 			
 			<fileset dir="${src.dir}">
 				<include name="**/taskdef.properties" />
-				<include name="headliner/treedistance/Makefile" />
 			</fileset>
 			<fileset dir="${rtt.schemes}">
 				<include name="**/*.xsd" />
