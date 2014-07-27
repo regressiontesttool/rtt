@@ -23,7 +23,7 @@ public class Executor {
 	private static final String NO_LOCALCLASS = 
 			"Local classes are currently not supported for output generation.";
 	private static final String NO_NONSTATIC_MEMBERCLASS = 
-			"Nonstatic member classes are currently not supported for output generation.";
+			"Non-static member classes are currently not supported for output generation.";
 	
 	private static final String NO_PARSER_ANNOTATION = 
 			"The given class doesn't have a @Parser annotation.";
