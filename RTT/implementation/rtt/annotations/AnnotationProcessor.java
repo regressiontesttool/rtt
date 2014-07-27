@@ -9,123 +9,17 @@
 package rtt.annotations;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import rtt.annotations.Parser.Initialize;
-
 /**
- * Helperclass for accessing annotations of an object.
- * 
- * @author Peter Mucha
- * 
+ * Helper class for accessing annotations of an object. * 
  */
 public class AnnotationProcessor {
-	
-	private Class<?> objectClass;
-	
-	/**
-	 * <p>Initialize a new {@link AnnotationProcessor}. <br />
-	 * Note: <br />
-	 * - if the object is null, then a {@link NullPointerException} 
-	 * will be thrown. <br/>
-	 * - if the given class is an interface, then an 
-	 * {@link IllegalArgumentException} will be thrown.</p>
-	 * @param objectClass
-	 */
-	public AnnotationProcessor(Class<?> objectClass) {
-		if (objectClass == null) {
-			throw new NullPointerException("The given object was null.");
-		}
-		
-		if (objectClass.isInterface()) {
-			throw new IllegalArgumentException("The given class was an interface.");
-		}
-		
-		this.objectClass = objectClass;
-	}
-
-	public <A extends Annotation> A getAnnotation(Class<A> annotationClass)
-			throws IllegalArgumentException {
-		if (objectClass.isAnnotationPresent(annotationClass)) {
-			return objectClass.getAnnotation(annotationClass);
-		}
-		
-		for (Class<?> interfaceObject : objectClass.getInterfaces()) {
-			if (interfaceObject.isAnnotationPresent(annotationClass)) {
-				return interfaceObject.getAnnotation(annotationClass);
-			}
-		}
-		
-		throw new IllegalArgumentException("Annotation " + annotationClass.toString()
-				+ " is not present at class " + objectClass.toString());
-	}
-
-	/**
-	 * <p>Returns *all* {@link Method}s which contain the given {@link Annotation}.</p>
-	 * @param annotation
-	 */
-	public List<Method> getMethodsWithAnnotation(Class<? extends Annotation> annotation) {		
-		return MethodAnnotationProcessor.INSTANCE.findMethods(objectClass, annotation);
-	}
-	
-	/**
-	 * <p>Returns a *single* {@link Method} which contains the given {@link Annotation}.<br />
-	 * Note: if more than one {@link Method} was found, then an {@link Exception} will be thrown.</p>
-	 * @param annotationClass
-	 * 
-	 * @throws Exception
-	 */
-	public Method getMethodWithAnnotation(Class<? extends Annotation> annotationClass) throws Exception {
-		List<Method> methodList = getMethodsWithAnnotation(annotationClass);
-		if (methodList.size() == 1) {
-			return methodList.get(0);
-		} else {
-			throw new Exception("Can't specify a single method annotated with "
-					+ annotationClass.toString());
-		}
-	}
-
-	/**
-	 * Returns *all* {@link Constructor}s which contain the given {@link Annotation}.
-	 * @param annotationClass
-	 * 
-	 */
-	public List<Constructor<?>> getConstructorsWithAnnotation(Class<? extends Annotation> annotationClass) {
-		Constructor<?>[] cs = objectClass.getConstructors();
-		List<Constructor<?>> result = new LinkedList<Constructor<?>>();
-		for (Constructor<?> c : cs)
-			if (c.isAnnotationPresent(annotationClass))
-				result.add(c);
-
-		return result;
-	}
-
-	/**
-	 * Returns *all* {@link Field} which contain the given {@link Annotation}.
-	 * @param annotationClass
-	 * 
-	 */
-	public List<Field> getFieldsWithAnnotation(Class<? extends Annotation> annotationClass) {
-		Field[] fs = objectClass.getFields();
-		List<Field> result = new LinkedList<Field>();
-		for (Field f : fs)
-			if (f.isAnnotationPresent(annotationClass))
-				result.add(f);
-
-		return result;
-	}
-	
-	public Object getObjectInstance() throws Exception {
-		return objectClass.newInstance();
-	}
-	
-	
-	/// new algorithms
 	
 	public static <A extends Annotation> A getAnnotation(Class<?> objectType, Class<A> annotationType) {
 		if (objectType.isAnnotationPresent(annotationType)) {
@@ -138,49 +32,78 @@ public class AnnotationProcessor {
 			}
 		}
 		
-		throw new IllegalArgumentException("Annotation " + objectType.toString()
-				+ " is not present at class " + objectType.toString());
-	}
-	
-
-	public static List<Method> getMethods(Class<?> objectType, Class<? extends Annotation> annotation) {
-		Method[] methods = objectType.getMethods();
-		List<Method> annotatedMethods = new ArrayList<>();
-		
-		for (Method method : methods) {
-			if (method.isAnnotationPresent(annotation)) {
-				annotatedMethods.add(method);
-			}
-		}
-		
-		return annotatedMethods;
-	}
-
-	public static Method getSingleMethod(Class<?> objectType, Class<? extends Annotation> annotation) {
-		List<Method> annotatedMethods = getMethods(objectType, annotation);
-		if (annotatedMethods != null && annotatedMethods.size() == 1) {
-			return annotatedMethods.get(0);
-		}
-		
 		return null;
 	}
-
-	public static List<Constructor<?>> getConstructors(Class<?> objectType, Class<? extends Annotation> annotation) {
-		Constructor<?>[] constructors = objectType.getConstructors();
-		List<Constructor<?>> annotatedConstructors = new ArrayList<>();
-		for (Constructor<?> constructor : constructors) {
-			if (constructor.isAnnotationPresent(annotation)) {
-				annotatedConstructors.add(constructor);
+	
+	public static boolean hasAnnotation(Class<?> objectType, Class<? extends Annotation> annotationType) {
+		return getAnnotation(objectType, annotationType) != null;
+	}
+	
+	/**
+	 * <p>Returns *all* {@link AnnotatedElement}s of a given object type, 
+	 * which contain the given type of {@link Annotation}.</p>
+	 * @param objectType the type of object 
+	 * @param annotationType the type of annotation
+	 * @return a {@link List} of {@link AnnotatedElement}s
+	 */
+	public static <A extends AnnotatedElement> List<A> getElements(A[] elements, Class<? extends Annotation> annotation) {
+		List<A> annotatedElements = new ArrayList<>();
+		for (A element : elements) {
+			if (element.isAnnotationPresent(annotation)) {
+				annotatedElements.add(element);
 			}
 		}
 		
-		return annotatedConstructors;
+		return annotatedElements;
 	}
 	
-	public static Constructor<?> getSingleConstructor(Class<?> objectType, Class<? extends Annotation> annotation) {
-		List<Constructor<?>> annotatedConstructors = getConstructors(objectType, annotation);
-		if (annotatedConstructors != null && annotatedConstructors.size() == 1) {
-			return annotatedConstructors.get(0);
+	/**
+	 * <p>Returns *all* {@link Constructor}s of a given object type, 
+	 * which contain the given type of {@link Annotation}.</p>
+	 * @param objectType the type of object 
+	 * @param annotationType the type of annotation
+	 * @return a {@link List} of {@link Constructor}s
+	 */
+	public static List<Constructor<?>> getConstructors(Class<?> objectType, Class<? extends Annotation> annotationType) {
+		return getElements(objectType.getConstructors(), annotationType);
+	}
+	
+	/**
+	 * <p>Returns *all* {@link Field}s of a given object type, 
+	 * which contain the given type of {@link Annotation}.</p>
+	 * @param objectType the type of object 
+	 * @param annotationType the type of annotation
+	 * @return a {@link List} of {@link Field}s
+	 */
+	public static List<Field> getFields(Class<?> objectType, Class<? extends Annotation> annotationType) {
+		return getElements(objectType.getFields(), annotationType);
+	}
+
+	/**
+	 * <p>Returns *all* {@link Method}s of a given object type, 
+	 * which contain the given type of {@link Annotation}.</p>
+	 * @param objectType the type of object 
+	 * @param annotationType the type of annotation
+	 * @return a {@link List} of {@link Method}s
+	 */
+	public static List<Method> getMethods(Class<?> objectType, Class<? extends Annotation> annotationType) {
+		// TODO evaluate optimized annotation loading
+//		return MethodAnnotationProcessor.INSTANCE.findMethods(objectClass, annotation);
+		
+		return getElements(objectType.getMethods(), annotationType);
+	}
+
+	/**
+	 * <p>Returns a *single* {@link Method} which contains the given {@link Annotation}.<br />
+	 * <i>Note</i>: if more than one {@link Method} was found, <code>null</code> will be returned.</p>
+	 * @param objectType the type of object
+	 * @param annotationType the type of annotation
+	 * @return a {@link Method} object or <code>null</code>.
+	 */
+	public static Method getSingleMethod(Class<?> objectType, Class<? extends Annotation> annotationType) {
+		List<Method> annotatedMethods = getMethods(objectType, annotationType);
+		if (annotatedMethods != null && annotatedMethods.size() == 1) {
+			return annotatedMethods.get(0);
 		}
 		
 		return null;
