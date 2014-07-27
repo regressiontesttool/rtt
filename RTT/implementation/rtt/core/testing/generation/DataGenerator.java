@@ -1,5 +1,6 @@
 package rtt.core.testing.generation;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -7,6 +8,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import rtt.annotations.AnnotationProcessor;
+import rtt.annotations.Node.Compare;
+import rtt.annotations.Node.Informational;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.ClassNode;
@@ -17,8 +21,12 @@ import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
 	
+	private static final Class<? extends Annotation> NODE_ANNOTATION = rtt.annotations.Node.class;
+	private static final Class<? extends Annotation> COMPARE_ANNOTATION = Compare.class;
+	private static final Class<? extends Annotation> INFORMATIONAL_ANNOTATION = Informational.class;
+	
 	private static final String NO_AST_METHOD = "Could not find a method annotated with @Parser.AST";
-	private static final String NODE_NULL = "Resulting node was null.";
+	private static final String NODE_NULL = "Resulting node was null.";	
 	
 	private Executor executor;	
 
@@ -47,8 +55,7 @@ public class DataGenerator {
 	}
 	
 	private List<Node> createNodes(final Object currentObject, 
-			final String generatedBy, final boolean isInformational) 
-					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
 		
 		List<Node> resultList = new ArrayList<>();
 		if (currentObject instanceof Object[]) {
@@ -63,8 +70,7 @@ public class DataGenerator {
 	}
 	
 	private List<Node> createNodes(final Object[] currentObject, 
-			final String generatedBy, final boolean isInformational) 
-					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
 		
 		List<Node> resultList = new ArrayList<>();
 		for (Object item : currentObject) {
@@ -75,8 +81,7 @@ public class DataGenerator {
 	}
 	
 	private List<Node> createNodes(final Iterable<?> currentObject, 
-			final String generatedBy, final boolean isInformational) 
-					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
 		
 		List<Node> resultList = new ArrayList<>();
 		for (Object item : currentObject) {
@@ -87,8 +92,7 @@ public class DataGenerator {
 	}
 	
 	private Node createNode(final Object currentObject, 
-			final String generatedBy, boolean isInformational) 
-					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			final String generatedBy, boolean isInformational) throws InvocationTargetException {
 		
 		Node resultNode = null;
 		
@@ -97,7 +101,7 @@ public class DataGenerator {
 			resultNode.setIsNull(true);
 			resultNode.setGeneratorName(generatedBy);
 		} else {
-			if (executor.isNode(currentObject)) {
+			if (AnnotationProcessor.hasAnnotation(currentObject.getClass(), NODE_ANNOTATION)) {
 				resultNode = createClassNode(currentObject, generatedBy, isInformational);
 			} else {
 				resultNode = createValueNode(currentObject, generatedBy, isInformational);
@@ -112,8 +116,7 @@ public class DataGenerator {
 	}
 
 	private Node createClassNode(final Object currentObject, 
-			final String generatedBy, final boolean isInformational) 
-					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
 		
 		Class<?> objectType = currentObject.getClass();		
 		ClassNode resultNode = new ClassNode();
@@ -123,36 +126,64 @@ public class DataGenerator {
 		resultNode.setSimpleName(objectType.getSimpleName());
 		resultNode.setInformational(isInformational);
 		
-		List<Method> annotatedMethods = executor.getAnnotatedMethods(objectType);
-		boolean childIsInformational = isInformational;
+		resultNode.getNodes().addAll(processFields(currentObject, COMPARE_ANNOTATION, isInformational));
+		resultNode.getNodes().addAll(processFields(currentObject, INFORMATIONAL_ANNOTATION, isInformational));
 		
-		for (Method method : annotatedMethods) {
-			method.setAccessible(true);
-			childIsInformational = isInformational(method, isInformational);
-			
-			String methodName = method.getName();
-			Object methodResult = method.invoke(currentObject);
-			
-			resultNode.getNodes().addAll(createNodes(methodResult, methodName, childIsInformational));
-		}
-		
-		List<Field> annotatedFields = executor.getAnnotatedFields(objectType);
-		
-		for (Field field : annotatedFields) {
-			field.setAccessible(true);
-			childIsInformational = isInformational(field, isInformational);
-			
-			String fieldName = field.getName();
-			Object fieldResult = field.get(currentObject);
-			
-			resultNode.getNodes().addAll(createNodes(fieldResult, fieldName, childIsInformational));
-		}
+		resultNode.getNodes().addAll(processMethods(currentObject, COMPARE_ANNOTATION, isInformational));
+		resultNode.getNodes().addAll(processMethods(currentObject, INFORMATIONAL_ANNOTATION, isInformational));
 		
 		return resultNode;
 	}
 	
-	private boolean isInformational(AnnotatedElement element, boolean parentIsInformational) {
-		return !parentIsInformational && executor.isInformational(element);	
+	private List<Node> processFields(Object currentObject, Class<? extends Annotation> annotation, boolean isInformational) throws InvocationTargetException {
+		List<Node> resultList = new ArrayList<>();
+		List<Field> annotatedFields = AnnotationProcessor.getFields(currentObject.getClass(), annotation);
+		
+		for (Field field : annotatedFields) {
+			field.setAccessible(true);
+			
+			String fieldName;
+			Object fieldResult;
+			try {
+				fieldName = field.getName();
+				fieldResult = field.get(currentObject);
+			} catch (IllegalAccessException | IllegalArgumentException e) {
+				throw new RuntimeException("Could not access field.", e);
+			}
+			
+			resultList.addAll(createNodes(fieldResult, fieldName, isInformational(isInformational, field, annotation)));
+		}
+		
+		return resultList;
+	}
+	
+	private List<Node> processMethods(final Object currentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) 
+			throws InvocationTargetException {
+		
+		List<Node> resultList = new ArrayList<>();
+		List<Method> annotatedMethods = AnnotationProcessor.getMethods(currentObject.getClass(), annotation);
+		
+		for (Method method : annotatedMethods) {
+			method.setAccessible(true);
+			
+			
+			String methodName;
+			Object methodResult;
+			try {
+				methodName = method.getName();
+				methodResult = method.invoke(currentObject);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException("Could not invoke method.", e);
+			}
+			
+			resultList.addAll(createNodes(methodResult, methodName, isInformational(parentIsInformational, method, annotation)));
+		}
+		
+		return resultList;
+	}
+	
+	private boolean isInformational(boolean parentIsInformational, AnnotatedElement element, Class<? extends Annotation> annotation) {
+		return !parentIsInformational & element.isAnnotationPresent(annotation);
 	}
 
 	private Node createValueNode(final Object currentObject, final String generatedBy, final boolean isInformational) {
