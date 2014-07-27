@@ -119,7 +119,7 @@ public class Executor {
 		return true;	
 	}
 	
-	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) {
+	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws Throwable {
 		try {
 			Object executor = executorClass.newInstance();
 			if (parserAnnotation.withParams()) {
@@ -137,13 +137,13 @@ public class Executor {
 			if (isAcceptedException(exception)) {
 				throw new UnsupportedOperationException("Accepted exception thrown", exception);
 			} else {
-				throw new RuntimeException("Could not invoke method.", exception);
+				throw exception;
 			}
 		}
 
 	}
 
-	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) {
+	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws Throwable {
 		try {
 			if (parserAnnotation.withParams()) {
 				return initConstructor.newInstance(input, params);
@@ -158,7 +158,7 @@ public class Executor {
 			if (isAcceptedException(exception)) {
 				throw new UnsupportedOperationException("Accepted exception thrown", exception);
 			} else {
-				throw new RuntimeException("Could not invoke constructor.", exception);
+				throw exception;
 			}
 		}
 	}
