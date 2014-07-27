@@ -33,8 +33,12 @@ public class Executor {
 			"Found more than one method annotated with @Parser.Initialize.";
 	private static final String NO_SINGLE_INIT_CONSTRUCTOR = 
 			"Found more than one method annotated with @Parser.Initialize.";
-	private static final String PARAMETERS_ERROR = 
-			"The method or constructor which is annotated with @Parser.Initialize does not have the corresponding parameters.";	
+	private static final String PARAMETER_COUNT_ERROR = 
+			"The element which is annotated with @Parser.Initialize must have $$ parameter(s).";
+	private static final String NO_INPUTSTREAM_PARAMETER = 
+			"The first parameter needs to be an InputStream.";
+	private static final String NO_STRINGARRAY_PARAMETER = 
+			"The second parameter needs to be an array of strings.";
 	
 	private Class<?> executorClass = null;
 	private Object executor = null;	
@@ -80,11 +84,13 @@ public class Executor {
 		
 		Method initMethod = getInitializeMethod(executorClass, parserAnnotation.withParams());
 		if (initMethod != null) {
+			initMethod.setAccessible(true);
 			executor = invokeInitMethod(initMethod, inputStream, params);
 		}
 		
 		Constructor<?> initConstructor = getInitializeConstructor(executorClass, parserAnnotation.withParams());
 		if (initConstructor != null) {
+			initConstructor.setAccessible(true);
 			executor = invokeInitConstructor(initConstructor, inputStream, params);
 		}
 		
@@ -101,11 +107,8 @@ public class Executor {
 			}
 			
 			Method initMethod = annotatedMethods.get(0);
-			if (checkParameters(initMethod.getParameterTypes(), withParams)) {
-				return initMethod;
-			} else {
-				RTTLogging.throwException(new RuntimeException(PARAMETERS_ERROR));
-			}
+			checkParameters(initMethod.getParameterTypes(), withParams);
+			return initMethod;
 		}
 		
 		return null;
@@ -117,39 +120,38 @@ public class Executor {
 			if (annotatedConstructors.size() > 1) {
 				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_CONSTRUCTOR));
 			}
+			
 			Constructor<?> initConstructor = annotatedConstructors.get(0);
-			if (checkParameters(initConstructor.getParameterTypes(), withParams)) {
-				return initConstructor;
-			} else {
-				RTTLogging.throwException(new RuntimeException(PARAMETERS_ERROR));
-			}			
+			checkParameters(initConstructor.getParameterTypes(), withParams);
+			return initConstructor;		
 		}
 		
 		return null;
 	}
 
-	private boolean checkParameters(Class<?>[] parameterTypes, boolean withParams) {
+	private void checkParameters(Class<?>[] parameterTypes, boolean withParams) {
 		int paramSize = withParams ? 2 : 1;
 		
 		if (parameterTypes.length != paramSize) {
-			return false;
+			RTTLogging.throwException(new RuntimeException(PARAMETER_COUNT_ERROR.replace("$$", "" + paramSize)));
 		}
 		
 		if (parameterTypes[0] == null || !parameterTypes[0].equals(InputStream.class)) {
-			return false;
+			RTTLogging.throwException(new RuntimeException(NO_INPUTSTREAM_PARAMETER));
 		}
 		
 		if (withParams && (parameterTypes[1] == null || !parameterTypes.equals(String[].class))) {
-			return false;
+			RTTLogging.throwException(new RuntimeException(NO_STRINGARRAY_PARAMETER));
 		}
-		
-		return true;	
 	}
 	
 	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws InvocationTargetException, InstantiationException {
 		try {
+			Constructor<?> constructor = executorClass.getDeclaredConstructor();
 			
-			Object executor = executorClass.newInstance();
+			constructor.setAccessible(true);
+			
+			Object executor = constructor.newInstance();
 			if (parserAnnotation.withParams()) {
 				initMethod.invoke(executor, inputStream, params);
 			} else {
@@ -160,6 +162,8 @@ public class Executor {
 			
 		} catch (IllegalAccessException | IllegalArgumentException methodException) {
 			throw new RuntimeException("Could not access initializing method.", methodException);
+		} catch (NoSuchMethodException constructorException) {
+			throw new RuntimeException("Could not get parameter-less constructor.", constructorException);
 		} catch (InvocationTargetException invocationException) {			
 			if (isAcceptedException(invocationException)) {
 				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
