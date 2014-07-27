@@ -5,17 +5,28 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotations.AnnotationProcessor;
 import rtt.annotations.Parser;
-import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.input.Input;
-import rtt.core.utils.ExecutorLoader;
+import rtt.core.utils.RTTLogging;
 
 public class Executor {
 	
+	private static final String NO_INTERFACES = 
+			"Interfaces are not allowed for output data generation.";
+	private static final String NO_ANONYMOUS = 
+			"Anonymous classes are not allowed for output generation.";
+	private static final String NO_LOCALCLASS = 
+			"Local classes are currently not supported for output generation.";
+	private static final String NO_NONSTATIC_MEMBERCLASS = 
+			"Nonstatic member classes are currently not supported for output generation.";
+	
+	private static final String NO_PARSER_ANNOTATION = 
+			"The given class doesn't have a @Parser annotation.";
 	private static final String NO_INIT = 
 			"Could not find a method or constructor annotated with @Parser.Initialize.";
 	private static final String NO_SINGLE_INIT_METHOD = 
@@ -23,32 +34,48 @@ public class Executor {
 	private static final String NO_SINGLE_INIT_CONSTRUCTOR = 
 			"Found more than one method annotated with @Parser.Initialize.";
 	private static final String PARAMETERS_ERROR = 
-			"The method or constructor which is annotated with @Parser.Initialize does not have the corresponding parameters.";
+			"The method or constructor which is annotated with @Parser.Initialize does not have the corresponding parameters.";	
 	
 	private Class<?> executorClass = null;
 	private Object executor = null;	
 	private List<Class<? extends Throwable>> acceptedExceptions;
 	
-	private Parser parserAnnotation;
-	
+	private Parser parserAnnotation;	
 
-	public Executor(String className, Classpath classpath, String baseDir) throws Exception {
-		executorClass = loadClass(className, classpath, baseDir);
-		parserAnnotation = AnnotationProcessor.getAnnotation(executorClass, Parser.class);
+	public Executor(Class<?> executorClass) {
+		checkClass(executorClass);
 		
+		parserAnnotation = AnnotationProcessor.getAnnotation(executorClass, Parser.class);
+		if (parserAnnotation == null) {
+			RTTLogging.throwException(new RuntimeException(NO_PARSER_ANNOTATION));
+		}
+		
+		this.executorClass = executorClass;
 		acceptedExceptions = new ArrayList<>();
 		for (Class<? extends Throwable> throwable : parserAnnotation.acceptedExceptions()) {
 			acceptedExceptions.add(throwable);
 		}
 	}
-	
-	public Class<?> loadClass(String className, Classpath classpath, String baseDir)
-			throws Exception {
-		ExecutorLoader loader = new ExecutorLoader(classpath);
-		return loader.resolveClass(className);
+
+	private void checkClass(Class<?> executorClass) {
+		if (executorClass.isInterface()) {
+			RTTLogging.throwException(new IllegalArgumentException(NO_INTERFACES));
+		}
+		
+		if (executorClass.isAnonymousClass()) {
+			RTTLogging.throwException(new IllegalArgumentException(NO_ANONYMOUS));
+		}
+		
+		if (executorClass.isLocalClass()) {
+			RTTLogging.throwException(new IllegalArgumentException(NO_LOCALCLASS));
+		}
+		
+		if (executorClass.isMemberClass() && !Modifier.isStatic(executorClass.getModifiers())) {
+			RTTLogging.throwException(new IllegalArgumentException(NO_NONSTATIC_MEMBERCLASS));;
+		}
 	}
 	
-	public void initialize(Input input, List<String> params) throws InvocationTargetException {
+	public void initialize(Input input, List<String> params) throws InvocationTargetException, InstantiationException {
 		InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes());
 		
 		Method initMethod = getInitializeMethod(executorClass, parserAnnotation.withParams());
@@ -70,14 +97,14 @@ public class Executor {
 		List<Method> annotatedMethods = AnnotationProcessor.getMethods(executorClass, Parser.Initialize.class);
 		if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
 			if (annotatedMethods.size() > 1) {
-				throw new IllegalStateException(NO_SINGLE_INIT_METHOD);
+				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_METHOD));
 			}
 			
 			Method initMethod = annotatedMethods.get(0);
 			if (checkParameters(initMethod.getParameterTypes(), withParams)) {
 				return initMethod;
 			} else {
-				throw new RuntimeException(PARAMETERS_ERROR);
+				RTTLogging.throwException(new RuntimeException(PARAMETERS_ERROR));
 			}
 		}
 		
@@ -88,13 +115,13 @@ public class Executor {
 		List<Constructor<?>> annotatedConstructors = AnnotationProcessor.getConstructors(executorClass, Parser.Initialize.class);
 		if (annotatedConstructors != null && !annotatedConstructors.isEmpty()) {
 			if (annotatedConstructors.size() > 1) {
-				throw new IllegalStateException(NO_SINGLE_INIT_CONSTRUCTOR);
+				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_CONSTRUCTOR));
 			}
 			Constructor<?> initConstructor = annotatedConstructors.get(0);
 			if (checkParameters(initConstructor.getParameterTypes(), withParams)) {
 				return initConstructor;
 			} else {
-				throw new RuntimeException(PARAMETERS_ERROR);
+				RTTLogging.throwException(new RuntimeException(PARAMETERS_ERROR));
 			}			
 		}
 		
@@ -119,7 +146,7 @@ public class Executor {
 		return true;	
 	}
 	
-	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws InvocationTargetException {
+	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws InvocationTargetException, InstantiationException {
 		try {
 			
 			Object executor = executorClass.newInstance();
@@ -131,9 +158,8 @@ public class Executor {
 			
 			return executor;
 			
-		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException methodException) {
-			throw new RuntimeException("Could not execute initializing method.", methodException);
-			
+		} catch (IllegalAccessException | IllegalArgumentException methodException) {
+			throw new RuntimeException("Could not access initializing method.", methodException);
 		} catch (InvocationTargetException invocationException) {			
 			if (isAcceptedException(invocationException)) {
 				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
@@ -144,16 +170,15 @@ public class Executor {
 
 	}
 
-	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws InvocationTargetException {
+	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws InvocationTargetException, InstantiationException {
 		try {
 			if (parserAnnotation.withParams()) {
 				return initConstructor.newInstance(input, params);
 			} else {
 				return initConstructor.newInstance(input);
 			}
-		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException constructorException) {
-			throw new RuntimeException("Could not execute initializing constructor.", constructorException);
-			
+		} catch (IllegalAccessException | IllegalArgumentException constructorException) {
+			throw new RuntimeException("Could not access initializing constructor.", constructorException);			
 		} catch (InvocationTargetException invocationException) {			
 			if (isAcceptedException(invocationException)) {
 				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
@@ -166,7 +191,10 @@ public class Executor {
 	public boolean isAcceptedException(InvocationTargetException exception) {
 		return acceptedExceptions.contains(exception.getCause());
 	}
-
+	
+	public Class<?> getExecutorClass() {
+		return executorClass;
+	}
 	
 	public Object getExecutor() {
 		return executor;
@@ -174,6 +202,5 @@ public class Executor {
 	
 	public Method getASTMethod() {
 		return AnnotationProcessor.getSingleMethod(executorClass, Parser.AST.class);
-	}
-	
+	}	
 }
