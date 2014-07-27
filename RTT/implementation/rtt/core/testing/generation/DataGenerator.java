@@ -18,6 +18,7 @@ import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.ValueNode;
+import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
@@ -205,17 +206,20 @@ public class DataGenerator {
 		return resultNode;
 	}
 	
-	public static Output generateOutput(Input input, List<String> params, Executor parser) throws InvocationTargetException {
+	public static Output generateOutput(Input input, List<String> params, 
+			Executor executor) throws InvocationTargetException, InstantiationException {
 			
 		Output outputData = new Output();
 
-		if (parser != null) {
+		if (executor != null) {
 			
-			RTTLogging.debug("Initialize parser ...");
-			parser.initialize(input, params);
+			RTTLogging.debug("Initializing parser: " + 
+					executor.getExecutorClass().getSimpleName());
+			
+			executor.initialize(input, params);
 			
 			RTTLogging.debug("Generating output data ...");
-			DataGenerator generator = new DataGenerator(parser);
+			DataGenerator generator = new DataGenerator(executor);
 			outputData = generator.createOutput();
 		}
 
@@ -241,9 +245,10 @@ public class DataGenerator {
 		if (parserClass == null || parserClass.trim().isEmpty()) {
 			throw new IllegalStateException("The given configuration contains no parser.");
 		}
-			
+		
 		RTTLogging.info("Parser: " + parserClass);
-		return new Executor(parserClass, config.getClasspath(), baseDir);
+		ExecutorLoader loader = new ExecutorLoader(config.getClasspath());		
+		return new Executor(loader.resolveClass(parserClass.trim()));
 	}
 
 }
