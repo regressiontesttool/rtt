@@ -65,7 +65,7 @@ public class AnnotationProcessor {
 	 * @return a {@link List} of {@link Constructor}s
 	 */
 	public static List<Constructor<?>> getConstructors(Class<?> objectType, Class<? extends Annotation> annotationType) {
-		return getElements(objectType.getConstructors(), annotationType);
+		return getElements(objectType.getDeclaredConstructors(), annotationType);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class AnnotationProcessor {
 	 * @return a {@link List} of {@link Field}s
 	 */
 	public static List<Field> getFields(Class<?> objectType, Class<? extends Annotation> annotationType) {
-		return getElements(objectType.getFields(), annotationType);
+		return getElements(objectType.getDeclaredFields(), annotationType);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class AnnotationProcessor {
 		// TODO evaluate optimized annotation loading
 //		return MethodAnnotationProcessor.INSTANCE.findMethods(objectClass, annotation);
 		
-		return getElements(objectType.getMethods(), annotationType);
+		return getElements(objectType.getDeclaredMethods(), annotationType);
 	}
 
 	/**
