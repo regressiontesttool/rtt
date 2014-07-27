@@ -1,6 +1,4 @@
-package rtt.core.tests.junit.generation;
-
-import static org.junit.Assert.*;
+package rtt.core.tests.junit.generation.executor;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import rtt.annotations.Parser;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
-public class ExecutorTests {	
+public class ExecutorFailingInitializeTests {
 
 	private Input input;
 	private List<String> params;
@@ -26,50 +24,10 @@ public class ExecutorTests {
 		params = new ArrayList<>();
 	}
 
-	private void createAndInitializeExecutor(Class<?> class1) throws Exception {
-		Executor executor = new Executor(class1);
+	private void initializeExecutor(Class<?> executorClass) throws Exception {
+		Executor executor = new Executor(executorClass);
 		executor.initialize(input, params);		
 	}
-
-	// Test: anonymous classes
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testAnonymousClass() throws Exception {
-		createAndInitializeExecutor(new Object() {}.getClass());
-	}
-
-	// Test: local classes
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testLocalClass() throws Exception {
-		@Parser class LocalClass {
-			@Parser.Initialize public LocalClass(InputStream in) {}
-		}
-
-		createAndInitializeExecutor(LocalClass.class);
-	}
-
-	// Test: Non-static member class
-
-	@Parser class NonStaticMemberClass {
-		@Parser.Initialize public NonStaticMemberClass(InputStream in) {}
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testMemberClass() throws Exception {
-		createAndInitializeExecutor(NonStaticMemberClass.class);
-	}
-
-	// Test: no parser annotation
-
-	static class NoParserAnnotation {			
-		public NoParserAnnotation() {}			
-	}
-
-	@Test(expected=RuntimeException.class)
-	public void testNoParserAnnotation() throws Exception {		
-		createAndInitializeExecutor(NoParserAnnotation.class);
-	}	
 
 	// Test: No initialize annotation
 
@@ -79,7 +37,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testNoInitAnnotationAnnotation() throws Exception {		
-		createAndInitializeExecutor(NoInitAnnotation.class);
+		initializeExecutor(NoInitAnnotation.class);
 	}
 
 	// Test: annotated constructor, but no parameter
@@ -91,7 +49,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testNoParameterConstructor() throws Exception {		
-		createAndInitializeExecutor(NoParameterConstructor.class);
+		initializeExecutor(NoParameterConstructor.class);
 	}
 
 	// Test: annotated method, but no parameter
@@ -103,7 +61,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testNoParameterMethod() throws Exception {		
-		createAndInitializeExecutor(NoParameterMethod.class);
+		initializeExecutor(NoParameterMethod.class);
 	}
 
 	// Test: annotated constructor, but wrong parameter
@@ -115,7 +73,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testWrongParameterConstructor() throws Exception {		
-		createAndInitializeExecutor(WrongParameterConstructor.class);
+		initializeExecutor(WrongParameterConstructor.class);
 	}
 
 	// Test: annotated method, but wrong parameter
@@ -127,7 +85,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testWrongParameterMethod() throws Exception {		
-		createAndInitializeExecutor(WrongParameterMethod.class);
+		initializeExecutor(WrongParameterMethod.class);
 	}
 
 	// Test: annotated method, but no parameter-less constructor
@@ -139,9 +97,9 @@ public class ExecutorTests {
 		public void initMethod(InputStream in) {}
 	}
 
-	@Test(expected=InstantiationException.class)
+	@Test(expected=RuntimeException.class)
 	public void testNoParameterlessConstructor() throws Exception {		
-		createAndInitializeExecutor(ParameterlessConstructor.class);
+		initializeExecutor(ParameterlessConstructor.class);
 	}
 
 	// Test: too much parameters
@@ -153,7 +111,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testTooMuchParameters() throws Exception {
-		createAndInitializeExecutor(TooMuchParameters.class);
+		initializeExecutor(TooMuchParameters.class);
 	}		
 
 	// Test: multiple annotated methods
@@ -168,7 +126,7 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testDoubleInitMethod() throws Exception {		
-		createAndInitializeExecutor(MultipleInitMethod.class);
+		initializeExecutor(MultipleInitMethod.class);
 	}
 
 	// Test: multiple annotated constructors
@@ -182,7 +140,29 @@ public class ExecutorTests {
 
 	@Test(expected=RuntimeException.class)
 	public void testMultipleConstructors() throws Exception {
-		createAndInitializeExecutor(MultipleInitConstruct.class);
+		initializeExecutor(MultipleInitConstruct.class);
+	}
+	
+	// Test: withParameter constructor
+
+	@Parser(withParams=true) static class WithParamsConstructorClass {
+		@Parser.Initialize public WithParamsConstructorClass(InputStream in) {}
+	}
+
+	@Test(expected=RuntimeException.class)
+	public void testWithParamsConstructor() throws Exception {
+		initializeExecutor(WithParamsConstructorClass.class);
+	}
+
+	// Test: withParameter method
+
+	@Parser(withParams=true) static class WithParamsMethodClass {
+		@Parser.Initialize public void init(InputStream in) {}
+	}
+
+	@Test(expected=RuntimeException.class)
+	public void testWithParamsMethod() throws Exception {
+		initializeExecutor(WithParamsMethodClass.class);
 	}
 
 }
