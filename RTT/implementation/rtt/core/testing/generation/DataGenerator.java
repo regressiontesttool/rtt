@@ -34,22 +34,27 @@ public class DataGenerator {
 		this.executor = parser;
 	}
 	
-	private Output createOutput() 
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
-		
-		Method astMethod = executor.getASTMethod();
-		if (astMethod == null) {
-			throw new NoSuchMethodException(NO_AST_METHOD);
-		}
+	private Output createOutput() throws InvocationTargetException {
 		
 		Output outputData = new Output();
 		
-		astMethod.setAccessible(true);
-		String astMethodName = astMethod.getName();
-		Object astMethodResult = astMethod.invoke(executor.getExecutor());
+		Method astMethod = executor.getASTMethod();
+		if (astMethod == null) {
+			RTTLogging.warn(NO_AST_METHOD);
+			return outputData;
+		}		
+		
+		Object astMethodResult = null;
+		try {
+			astMethod.setAccessible(true);
+			astMethodResult = astMethod.invoke(executor.getExecutor());
+		} catch (IllegalAccessException | IllegalArgumentException exception) {
+			throw new RuntimeException("Could not invoke method. ", exception);
+		}
+		
 		if (astMethodResult != null) {
 			Node astNode = new Node();
-			astNode.setGeneratorName(astMethodName);
+			astNode.setGeneratorName(astMethod.getName());
 			astNode.setGeneratorType(GeneratorType.METHOD);
 			
 			outputData.getNodes().addAll(handleObject(astMethodResult, astNode));
@@ -200,7 +205,7 @@ public class DataGenerator {
 		return resultNode;
 	}
 	
-	public static Output generateOutput(Input input, List<String> params, Executor parser) throws Throwable {
+	public static Output generateOutput(Input input, List<String> params, Executor parser) throws InvocationTargetException {
 			
 		Output outputData = new Output();
 

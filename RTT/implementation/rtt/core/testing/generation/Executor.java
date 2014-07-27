@@ -48,7 +48,7 @@ public class Executor {
 		return loader.resolveClass(className);
 	}
 	
-	public void initialize(Input input, List<String> params) throws Throwable {
+	public void initialize(Input input, List<String> params) throws InvocationTargetException {
 		InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes());
 		
 		Method initMethod = getInitializeMethod(executorClass, parserAnnotation.withParams());
@@ -119,8 +119,9 @@ public class Executor {
 		return true;	
 	}
 	
-	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws Throwable {
+	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws InvocationTargetException {
 		try {
+			
 			Object executor = executorClass.newInstance();
 			if (parserAnnotation.withParams()) {
 				initMethod.invoke(executor, inputStream, params);
@@ -129,42 +130,41 @@ public class Executor {
 			}
 			
 			return executor;
-		} catch (Throwable exception) {
-			if (exception instanceof InvocationTargetException) {
-				exception = exception.getCause();
-			}
 			
-			if (isAcceptedException(exception)) {
-				throw new UnsupportedOperationException("Accepted exception thrown", exception);
+		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException methodException) {
+			throw new RuntimeException("Could not execute initializing method.", methodException);
+			
+		} catch (InvocationTargetException invocationException) {			
+			if (isAcceptedException(invocationException)) {
+				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
 			} else {
-				throw exception;
+				throw invocationException;
 			}
 		}
 
 	}
 
-	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws Throwable {
+	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws InvocationTargetException {
 		try {
 			if (parserAnnotation.withParams()) {
 				return initConstructor.newInstance(input, params);
 			} else {
 				return initConstructor.newInstance(input);
 			}
-		} catch (Throwable exception) {
-			if (exception instanceof InvocationTargetException) {
-				exception = exception.getCause();
-			}
+		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException constructorException) {
+			throw new RuntimeException("Could not execute initializing constructor.", constructorException);
 			
-			if (isAcceptedException(exception)) {
-				throw new UnsupportedOperationException("Accepted exception thrown", exception);
+		} catch (InvocationTargetException invocationException) {			
+			if (isAcceptedException(invocationException)) {
+				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
 			} else {
-				throw exception;
+				throw invocationException;
 			}
 		}
 	}
 	
-	public boolean isAcceptedException(Throwable throwable) {
-		return acceptedExceptions.contains(throwable.getClass());
+	public boolean isAcceptedException(InvocationTargetException exception) {
+		return acceptedExceptions.contains(exception.getCause());
 	}
 
 	
