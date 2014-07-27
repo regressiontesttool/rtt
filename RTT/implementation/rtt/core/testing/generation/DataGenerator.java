@@ -228,7 +228,7 @@ public class DataGenerator {
 	 * <p>Instantiate the parser through
 	 * {@link Executor#initialize(Input, List)} before use!</p>
 	 * 
-	  * @param config the {@link Configuration}
+	 * @param config the {@link Configuration}
 	 * @param baseDir the base directory for searching
 	 * @return a {@link ParserExecutor} or null (if config is empty)
 	 * @throws Exception

@@ -36,7 +36,6 @@ import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.Executor;
-import rtt.core.testing.generation.ParserExecutor;
 import rtt.core.utils.GenerationInformation;
 import rtt.core.utils.GenerationInformation.GenerationResult;
 import rtt.core.utils.GenerationInformation.GenerationType;

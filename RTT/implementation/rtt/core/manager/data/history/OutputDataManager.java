@@ -16,7 +16,6 @@ import rtt.core.loader.fetching.SimpleFileFetching;
 import rtt.core.manager.data.AbstractDataManager;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.Executor;
-import rtt.core.testing.generation.ParserExecutor;
 import rtt.core.utils.GenerationInformation.GenerationResult;
 import rtt.core.utils.RTTLogging;
 

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Helper class for accessing annotations of an object. * 
+ * Helper class for accessing annotations of an object.
  */
 public class AnnotationProcessor {
 	
