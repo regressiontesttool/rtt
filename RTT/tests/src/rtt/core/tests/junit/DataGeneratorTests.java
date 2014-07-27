@@ -1,6 +1,6 @@
 package rtt.core.tests.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,12 @@ import org.junit.Test;
 import rtt.core.archive.configuration.Classpath;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
+import rtt.core.archive.output.ClassNode;
+import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Output;
+import rtt.core.archive.output.ValueNode;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.Executor;
-import rtt.core.testing.generation.ParserExecutor;
 
 public class DataGeneratorTests {
 
@@ -34,7 +37,45 @@ public class DataGeneratorTests {
 		
 		Executor parser = DataGenerator.locateParserExecutor(config, ".");
 		
-		DataGenerator.generateOutput(input, params, parser);
+		Output output = DataGenerator.generateOutput(input, params, parser);
+		if (output == null) {
+			fail("Output was null.");
+		}
+		
+		for (Node node : output.getNodes()) {
+			printNode(0, node);
+		}
 	}
+
+	private void printNode(int level, Node node) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("|");
+		for (int i = 0; i < level; i++) {
+			builder.append("   |");
+		}
+		builder.append("--");
+		builder.append(node.getGeneratorName());
+		builder.append(" - ");
+		builder.append(node.getGeneratorType());
+		builder.append(" (" + node.getClass().getSimpleName() + "): ");
+		
+		if (node instanceof ValueNode) {
+			builder.append(((ValueNode) node).getValue());
+		}
+		
+		if (node instanceof ClassNode) {
+			builder.append(((ClassNode) node).getFullName());
+		}
+		
+		System.out.println(builder.toString());
+		
+		if (node instanceof ClassNode) {
+			for (Node childNode : ((ClassNode) node).getNodes()) {
+				printNode(level + 1, childNode);
+			}
+		}
+	}
+	
+	
 
 }
