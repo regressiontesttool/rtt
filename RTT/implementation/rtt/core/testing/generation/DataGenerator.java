@@ -14,6 +14,7 @@ import rtt.annotations.Node.Informational;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.ClassNode;
+import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.ValueNode;
@@ -26,7 +27,6 @@ public class DataGenerator {
 	private static final Class<? extends Annotation> INFORMATIONAL_ANNOTATION = Informational.class;
 	
 	private static final String NO_AST_METHOD = "Could not find a method annotated with @Parser.AST";
-	private static final String NODE_NULL = "Resulting node was null.";	
 	
 	private Executor executor;	
 
@@ -48,94 +48,86 @@ public class DataGenerator {
 		String astMethodName = astMethod.getName();
 		Object astMethodResult = astMethod.invoke(executor.getExecutor());
 		if (astMethodResult != null) {
-			outputData.getNodes().addAll(createNodes(astMethodResult, astMethodName, false));
+			Node astNode = new Node();
+			astNode.setGeneratorName(astMethodName);
+			astNode.setGeneratorType(GeneratorType.METHOD);
+			
+			outputData.getNodes().addAll(handleObject(astMethodResult, astNode));
 		}
 		
 		return outputData;
 	}
 	
-	private List<Node> createNodes(final Object currentObject, 
-			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
+	private List<Node> handleObject(final Object currentObject, final Node templateNode) throws InvocationTargetException {
 		
 		List<Node> resultList = new ArrayList<>();
 		if (currentObject instanceof Object[]) {
-			resultList.addAll(createNodes((Object[]) currentObject, generatedBy, isInformational));
+			resultList.addAll(handleArray((Object[]) currentObject, templateNode));
 		} else if (currentObject instanceof Iterable<?>) {
-			resultList.addAll(createNodes((Iterable<?>) currentObject, generatedBy, isInformational));
+			resultList.addAll(handleIterable((Iterable<?>) currentObject, templateNode));
 		} else {
-			resultList.add(createNode(currentObject, generatedBy, isInformational));
+			resultList.add(createNode(currentObject, templateNode));
 		}
 		
 		return resultList;
 	}
 	
-	private List<Node> createNodes(final Object[] currentObject, 
-			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
+	private List<Node> handleArray(final Object[] currentObject, final Node templateNode) throws InvocationTargetException {
 		
 		List<Node> resultList = new ArrayList<>();
 		for (Object item : currentObject) {
-			resultList.addAll(createNodes(item, generatedBy, isInformational));
+			resultList.addAll(handleObject(item, templateNode));
 		}
 		
 		return resultList;
 	}
 	
-	private List<Node> createNodes(final Iterable<?> currentObject, 
-			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
+	private List<Node> handleIterable(final Iterable<?> currentObject, final Node templateNode) throws InvocationTargetException {
 		
 		List<Node> resultList = new ArrayList<>();
 		for (Object item : currentObject) {
-			resultList.addAll(createNodes(item, generatedBy, isInformational));
+			resultList.addAll(handleObject(item, templateNode));
 		}
 		
 		return resultList;
 	}
 	
-	private Node createNode(final Object currentObject, 
-			final String generatedBy, boolean isInformational) throws InvocationTargetException {
-		
-		Node resultNode = null;
+	private Node createNode(final Object currentObject, final Node templateNode) throws InvocationTargetException {
 		
 		if (currentObject == null) {
-			resultNode = new Node();
-			resultNode.setIsNull(true);
-			resultNode.setGeneratorName(generatedBy);
-		} else {
-			if (AnnotationProcessor.hasAnnotation(currentObject.getClass(), NODE_ANNOTATION)) {
-				resultNode = createClassNode(currentObject, generatedBy, isInformational);
-			} else {
-				resultNode = createValueNode(currentObject, generatedBy, isInformational);
-			}
+			templateNode.setIsNull(true);
+			return templateNode;
 		}
 		
-		if (resultNode == null) {
-			throw new IllegalStateException(NODE_NULL);
-		}		
-		
-		return resultNode;
+		if (AnnotationProcessor.hasAnnotation(currentObject.getClass(), NODE_ANNOTATION)) {
+			return createClassNode(currentObject, templateNode);
+		} 
+
+		return createValueNode(currentObject, templateNode);
 	}
 
-	private Node createClassNode(final Object currentObject, 
-			final String generatedBy, final boolean isInformational) throws InvocationTargetException {
+	private Node createClassNode(final Object currentObject, final Node parentNode) throws InvocationTargetException {
 		
 		Class<?> objectType = currentObject.getClass();		
 		ClassNode resultNode = new ClassNode();
 		
-		resultNode.setGeneratorName(generatedBy);
+		resultNode.setGeneratorName(parentNode.getGeneratorName());
+		resultNode.setGeneratorType(parentNode.getGeneratorType());
+		resultNode.setInformational(parentNode.isInformational());
+		
 		resultNode.setFullName(objectType.getName());
-		resultNode.setSimpleName(objectType.getSimpleName());
-		resultNode.setInformational(isInformational);
+		resultNode.setSimpleName(objectType.getSimpleName());		
 		
-		resultNode.getNodes().addAll(processFields(currentObject, COMPARE_ANNOTATION, isInformational));
-		resultNode.getNodes().addAll(processFields(currentObject, INFORMATIONAL_ANNOTATION, isInformational));
+		resultNode.getNodes().addAll(processFields(currentObject, COMPARE_ANNOTATION, parentNode.isInformational()));
+		resultNode.getNodes().addAll(processFields(currentObject, INFORMATIONAL_ANNOTATION, parentNode.isInformational()));
 		
-		resultNode.getNodes().addAll(processMethods(currentObject, COMPARE_ANNOTATION, isInformational));
-		resultNode.getNodes().addAll(processMethods(currentObject, INFORMATIONAL_ANNOTATION, isInformational));
+		resultNode.getNodes().addAll(processMethods(currentObject, COMPARE_ANNOTATION, parentNode.isInformational()));
+		resultNode.getNodes().addAll(processMethods(currentObject, INFORMATIONAL_ANNOTATION, parentNode.isInformational()));
 		
 		return resultNode;
 	}
 	
-	private List<Node> processFields(Object currentObject, Class<? extends Annotation> annotation, boolean isInformational) throws InvocationTargetException {
+	private List<Node> processFields(Object currentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) throws InvocationTargetException {
 		List<Node> resultList = new ArrayList<>();
 		List<Field> annotatedFields = AnnotationProcessor.getFields(currentObject.getClass(), annotation);
 		
@@ -151,7 +143,12 @@ public class DataGenerator {
 				throw new RuntimeException("Could not access field.", e);
 			}
 			
-			resultList.addAll(createNodes(fieldResult, fieldName, isInformational(isInformational, field, annotation)));
+			Node fieldNode = new Node();
+			fieldNode.setGeneratorName(fieldName);
+			fieldNode.setGeneratorType(GeneratorType.FIELD);
+			fieldNode.setInformational(isInformational(parentIsInformational, field));
+			
+			resultList.addAll(handleObject(fieldResult, fieldNode));
 		}
 		
 		return resultList;
@@ -176,21 +173,29 @@ public class DataGenerator {
 				throw new RuntimeException("Could not invoke method.", e);
 			}
 			
-			resultList.addAll(createNodes(methodResult, methodName, isInformational(parentIsInformational, method, annotation)));
+			Node methodNode = new Node();
+			methodNode.setGeneratorName(methodName);
+			methodNode.setGeneratorType(GeneratorType.METHOD);
+			methodNode.setInformational(isInformational(parentIsInformational, method));
+			
+			resultList.addAll(handleObject(methodResult, methodNode));
 		}
 		
 		return resultList;
 	}
 	
-	private boolean isInformational(boolean parentIsInformational, AnnotatedElement element, Class<? extends Annotation> annotation) {
-		return !parentIsInformational & element.isAnnotationPresent(annotation);
+	private boolean isInformational(boolean parentIsInformational, AnnotatedElement element) {
+		return parentIsInformational || element.isAnnotationPresent(INFORMATIONAL_ANNOTATION);
 	}
 
-	private Node createValueNode(final Object currentObject, final String generatedBy, final boolean isInformational) {
+	private Node createValueNode(final Object currentObject, final Node templateNode) {
 		ValueNode resultNode = new ValueNode();
-		resultNode.setGeneratorName(generatedBy);
-		resultNode.setValue(currentObject.toString());
-		resultNode.setInformational(isInformational);
+		
+		resultNode.setGeneratorName(templateNode.getGeneratorName());
+		resultNode.setGeneratorType(templateNode.getGeneratorType());
+		resultNode.setInformational(templateNode.isInformational());
+		
+		resultNode.setValue(currentObject.toString());	
 
 		return resultNode;
 	}
