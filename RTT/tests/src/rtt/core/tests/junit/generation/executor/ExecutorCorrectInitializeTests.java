@@ -1,7 +1,5 @@
 package rtt.core.tests.junit.generation.executor;
 
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;

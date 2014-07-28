@@ -3,7 +3,6 @@ package rtt.core.tests.junit;
 import static org.junit.Assert.*;
 
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
