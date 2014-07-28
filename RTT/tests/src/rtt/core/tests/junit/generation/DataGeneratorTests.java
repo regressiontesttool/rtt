@@ -69,7 +69,7 @@ public class DataGeneratorTests {
 //		}
 //	} 
 	
-	private void generateOutput(Class<?> objectType) throws Exception {
+	private void generateOutput(Class<?> objectType) throws Throwable {
 		Executor executor = new Executor(objectType);
 		DataGenerator.generateOutput(input, params, executor);
 	}	

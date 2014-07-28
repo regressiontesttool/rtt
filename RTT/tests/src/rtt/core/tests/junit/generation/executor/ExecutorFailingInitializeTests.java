@@ -24,7 +24,7 @@ public class ExecutorFailingInitializeTests {
 		params = new ArrayList<>();
 	}
 
-	private void initializeExecutor(Class<?> executorClass) throws Exception {
+	private void initializeExecutor(Class<?> executorClass) throws Throwable {
 		Executor executor = new Executor(executorClass);
 		executor.initialize(input, params);		
 	}
@@ -36,7 +36,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testNoInitAnnotationAnnotation() throws Exception {		
+	public void testNoInitAnnotationAnnotation() throws Throwable {		
 		initializeExecutor(NoInitAnnotation.class);
 	}
 
@@ -48,7 +48,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testNoParameterConstructor() throws Exception {		
+	public void testNoParameterConstructor() throws Throwable {		
 		initializeExecutor(NoParameterConstructor.class);
 	}
 
@@ -60,7 +60,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testNoParameterMethod() throws Exception {		
+	public void testNoParameterMethod() throws Throwable {		
 		initializeExecutor(NoParameterMethod.class);
 	}
 
@@ -72,7 +72,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testWrongParameterConstructor() throws Exception {		
+	public void testWrongParameterConstructor() throws Throwable {		
 		initializeExecutor(WrongParameterConstructor.class);
 	}
 
@@ -84,7 +84,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testWrongParameterMethod() throws Exception {		
+	public void testWrongParameterMethod() throws Throwable {		
 		initializeExecutor(WrongParameterMethod.class);
 	}
 
@@ -98,7 +98,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testNoParameterlessConstructor() throws Exception {		
+	public void testNoParameterlessConstructor() throws Throwable {		
 		initializeExecutor(ParameterlessConstructor.class);
 	}
 
@@ -110,7 +110,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testTooMuchParameters() throws Exception {
+	public void testTooMuchParameters() throws Throwable {
 		initializeExecutor(TooMuchParameters.class);
 	}		
 
@@ -125,7 +125,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testDoubleInitMethod() throws Exception {		
+	public void testDoubleInitMethod() throws Throwable {		
 		initializeExecutor(MultipleInitMethod.class);
 	}
 
@@ -139,7 +139,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testMultipleConstructors() throws Exception {
+	public void testMultipleConstructors() throws Throwable {
 		initializeExecutor(MultipleInitConstruct.class);
 	}
 	
@@ -150,7 +150,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testWithParamsConstructor() throws Exception {
+	public void testWithParamsConstructor() throws Throwable {
 		initializeExecutor(WithParamsConstructorClass.class);
 	}
 
@@ -161,7 +161,7 @@ public class ExecutorFailingInitializeTests {
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testWithParamsMethod() throws Exception {
+	public void testWithParamsMethod() throws Throwable {
 		initializeExecutor(WithParamsMethodClass.class);
 	}
 

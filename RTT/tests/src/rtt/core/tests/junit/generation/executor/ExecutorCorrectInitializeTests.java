@@ -1,5 +1,7 @@
 package rtt.core.tests.junit.generation.executor;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public class ExecutorCorrectInitializeTests {
 		params = new ArrayList<>();
 	}
 
-	private void initializeExecutor(Class<?> executorClass) throws Exception {
+	private void initializeExecutor(Class<?> executorClass) throws Throwable {
 		Executor executor = new Executor(executorClass);
 		executor.initialize(input, params);		
 	}
@@ -36,7 +38,7 @@ public class ExecutorCorrectInitializeTests {
 	}
 
 	@Test
-	public void testCorrectPublicMethodClass() throws Exception {
+	public void testCorrectPublicMethodClass() throws Throwable {
 		initializeExecutor(CorrectPublicMethodClass.class);
 	}
 
@@ -47,7 +49,7 @@ public class ExecutorCorrectInitializeTests {
 	}
 
 	@Test
-	public void testCorrectProtectedMethodClass() throws Exception {
+	public void testCorrectProtectedMethodClass() throws Throwable {
 		initializeExecutor(CorrectProtectedMethodClass.class);
 	}
 
@@ -58,7 +60,7 @@ public class ExecutorCorrectInitializeTests {
 	}
 
 	@Test
-	public void testCorrectPrivateMethodClass() throws Exception {
+	public void testCorrectPrivateMethodClass() throws Throwable {
 		initializeExecutor(CorrectPrivateMethodClass.class);
 	}
 
@@ -69,7 +71,7 @@ public class ExecutorCorrectInitializeTests {
 	}
 
 	@Test
-	public void testCorrectPublicConstructorClass() throws Exception {
+	public void testCorrectPublicConstructorClass() throws Throwable {
 		initializeExecutor(CorrectPublicConstructorClass.class);
 	}
 
@@ -80,7 +82,7 @@ public class ExecutorCorrectInitializeTests {
 	}
 
 	@Test
-	public void testCorrectProtectedConstructorClass() throws Exception {
+	public void testCorrectProtectedConstructorClass() throws Throwable {
 		initializeExecutor(CorrectProtectedConstructorClass.class);
 	}
 
@@ -91,30 +93,55 @@ public class ExecutorCorrectInitializeTests {
 	}
 
 	@Test
-	public void testCorrectPrivateConstructorClass() throws Exception {
+	public void testCorrectPrivateConstructorClass() throws Throwable {
 		initializeExecutor(CorrectPrivateConstructorClass.class);
 	}
 	
-	// Test: withParameter constructor
+	// Test: withParams constructor
 
 	@Parser(withParams=true) static class WithParamsConstructorClass {
 		@Parser.Initialize public WithParamsConstructorClass(InputStream in, String[] params) {}
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testWithParamsConstructor() throws Exception {
+	public void testWithParamsConstructor() throws Throwable {
 		initializeExecutor(WithParamsConstructorClass.class);
 	}
 
-	// Test: withParameter method
+	// Test: withParams method
 
 	@Parser(withParams=true) static class WithParamsMethodClass {
 		@Parser.Initialize public void init(InputStream in, String[] params) {}
 	}
 
 	@Test(expected=RuntimeException.class)
-	public void testWithParamsMethod() throws Exception {
+	public void testWithParamsMethod() throws Throwable {
 		initializeExecutor(WithParamsMethodClass.class);
 	}
+	
+	// Test: acceptedExceptions constructor
+	
+	@Parser(acceptedExceptions={IllegalArgumentException.class}) static class AcceptedExceptionConstructorClass {
+		@Parser.Initialize public AcceptedExceptionConstructorClass(InputStream in) {
+			throw new IllegalArgumentException("Testing exception");
+		}
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testAcceptedExceptionConstructor() throws Throwable {
+		initializeExecutor(AcceptedExceptionConstructorClass.class);
+	}
+	
+	// Test: acceptedExceptions method
 
+	@Parser(acceptedExceptions={IllegalArgumentException.class}) static class AcceptedExceptionMethodClass {
+		@Parser.Initialize public void initMethod(InputStream in) {
+			throw new IllegalArgumentException("Testing exception");
+		}
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testAcceptedExceptionMethodClass() throws Throwable {
+		initializeExecutor(AcceptedExceptionMethodClass.class);
+	}
 }
