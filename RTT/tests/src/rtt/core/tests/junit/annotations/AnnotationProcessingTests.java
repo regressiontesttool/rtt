@@ -34,9 +34,17 @@ public class AnnotationProcessingTests {
 	}
 	
 	static class SimpleClass {
+		public SimpleClass() {}		
+		protected SimpleClass(boolean text) {}		
+		private SimpleClass(float number) {}		
+		
 		@Initialize public SimpleClass(Object o) {}		
 		@Initialize protected SimpleClass(String text) {}		
 		@Initialize private SimpleClass(int number) {}
+		
+		private String privateString;
+		protected String protectedString;
+		public String publicString;
 		
 		@Compare private String privateCompareString;
 		@Compare protected String protectedCompareString;
@@ -45,6 +53,10 @@ public class AnnotationProcessingTests {
 		@Informational private String privateInfoString;
 		@Informational protected String protectedInfoString;
 		@Informational public String publicInfoString;
+		
+		private void privateMethod() {}
+		protected void protectedMethod() {}
+		public void publicMethod() {}
 		
 		@Compare private void privateCompareMethod() {}
 		@Compare protected void protectedCompareMethod() {}
