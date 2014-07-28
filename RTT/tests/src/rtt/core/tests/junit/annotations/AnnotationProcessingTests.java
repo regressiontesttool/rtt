@@ -18,7 +18,7 @@ import rtt.annotations.Parser;
 import rtt.annotations.Parser.Initialize;
 import rtt.annotations.processing.NewAnnotationProcessor;
 
-public class ProcessingTests {
+public class AnnotationProcessingTests {
 
 	@Before
 	public void setUp() throws Exception {
