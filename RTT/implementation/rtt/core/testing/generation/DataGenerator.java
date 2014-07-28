@@ -207,7 +207,7 @@ public class DataGenerator {
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
-			Executor executor) throws InvocationTargetException, InstantiationException {
+			Executor executor) throws Throwable {
 			
 		Output outputData = new Output();
 

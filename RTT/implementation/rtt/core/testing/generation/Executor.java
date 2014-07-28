@@ -79,7 +79,7 @@ public class Executor {
 		}
 	}
 	
-	public void initialize(Input input, List<String> params) throws InvocationTargetException, InstantiationException {
+	public void initialize(Input input, List<String> params) throws Throwable {
 		InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes());
 		
 		Method initMethod = getInitializeMethod(executorClass, parserAnnotation.withParams());
@@ -145,7 +145,7 @@ public class Executor {
 		}
 	}
 	
-	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws InvocationTargetException, InstantiationException {
+	private Object invokeInitMethod(Method initMethod, InputStream inputStream, List<String> params) throws Throwable {
 		try {
 			Constructor<?> constructor = executorClass.getDeclaredConstructor();
 			
@@ -164,17 +164,18 @@ public class Executor {
 			throw new RuntimeException("Could not access initializing method.", methodException);
 		} catch (NoSuchMethodException constructorException) {
 			throw new RuntimeException("Could not get parameter-less constructor.", constructorException);
-		} catch (InvocationTargetException invocationException) {			
-			if (isAcceptedException(invocationException)) {
-				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
+		} catch (InvocationTargetException invocationException) {
+			Throwable cause = invocationException.getCause();
+			if (isAcceptedException(cause)) {
+				throw new UnsupportedOperationException("Accepted exception are currently not supported.", cause);
 			} else {
-				throw invocationException;
+				throw cause;
 			}
 		}
 
 	}
 
-	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws InvocationTargetException, InstantiationException {
+	private Object invokeInitConstructor(Constructor<?> initConstructor, InputStream input, List<String> params) throws Throwable {
 		try {
 			if (parserAnnotation.withParams()) {
 				return initConstructor.newInstance(input, params);
@@ -183,17 +184,18 @@ public class Executor {
 			}
 		} catch (IllegalAccessException | IllegalArgumentException constructorException) {
 			throw new RuntimeException("Could not access initializing constructor.", constructorException);			
-		} catch (InvocationTargetException invocationException) {			
-			if (isAcceptedException(invocationException)) {
-				throw new UnsupportedOperationException("Accepted exception thrown", invocationException);
+		} catch (InvocationTargetException invocationException) {
+			Throwable cause = invocationException.getCause();
+			if (isAcceptedException(cause)) {
+				throw new UnsupportedOperationException("Accepted exception thrown", cause);
 			} else {
-				throw invocationException;
+				throw cause;
 			}
 		}
 	}
 	
-	public boolean isAcceptedException(InvocationTargetException exception) {
-		return acceptedExceptions.contains(exception.getCause());
+	public boolean isAcceptedException(Throwable exception) {
+		return acceptedExceptions.contains(exception.getClass());
 	}
 	
 	public Class<?> getExecutorClass() {
