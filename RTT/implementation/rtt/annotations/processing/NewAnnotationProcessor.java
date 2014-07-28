@@ -6,7 +6,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,30 +15,36 @@ public class NewAnnotationProcessor {
 	protected static class Element {
 		
 		private Class<?> type;
+		private Element parentElement;
 		
-		private List<Constructor<?>> constructors;
-		private List<Field> fields;
-		private List<Method> methods;	
+		private MemberElement<Constructor<?>> constructors;
+		private MemberElement<Field> fields;
+		private MemberElement<Method> methods;
 		
-		public Element(Class<?> objectType) {
+		public Element(Class<?> objectType, Element parentElement) {
 			this.type = objectType;
+			this.parentElement = parentElement;
 			
-			constructors = Arrays.asList(objectType.getDeclaredConstructors());
-			fields = Arrays.asList(objectType.getDeclaredFields());
-			methods = Arrays.asList(objectType.getDeclaredMethods());
-		}
-		
-		private <T extends AnnotatedElement> List<T> getAnnotatedElements(
-				List<T> elements, Class<? extends Annotation> annotation) {
+			constructors = new MemberElement<Constructor<?>>() {
+				@Override
+				protected Constructor<?>[] getElements() {
+					return type.getDeclaredConstructors();
+				}		
+			};
 			
-			List<T> annotatedElements = new ArrayList<>();
-			for (T element : elements) {
-				if (element.isAnnotationPresent(annotation)) {
-					annotatedElements.add(element);
+			fields = new MemberElement<Field>() {				
+				@Override
+				protected Field[] getElements() {
+					return type.getDeclaredFields();
 				}
-			}
+			};
 			
-			return annotatedElements;
+			methods = new MemberElement<Method>() {
+				@Override
+				protected Method[] getElements() {
+					return type.getDeclaredMethods();
+				}
+			};
 		}
 		
 		public Class<?> getType() {
@@ -48,16 +53,42 @@ public class NewAnnotationProcessor {
 
 		public List<Constructor<?>> getConstructors(
 				Class<? extends Annotation> annotation) {
-			return getAnnotatedElements(constructors, annotation);
+			return constructors.getAnnotatedElements(annotation);
 		}
 
 		public List<Method> getMethods(Class<? extends Annotation> annotation) {
-			return getAnnotatedElements(methods, annotation);
+			return methods.getAnnotatedElements(annotation);
 		}
 
 		public List<Field> getFields(Class<? extends Annotation> annotation) {
-			return getAnnotatedElements(fields, annotation);
+			return fields.getAnnotatedElements(annotation);
 		}		
+	}
+	
+	protected static abstract class MemberElement<T extends AnnotatedElement> {
+		private Map<Class<? extends Annotation>, List<T>> elements;
+		
+		public MemberElement() {
+			elements = new HashMap<>();
+		}
+		
+		public List<T> getAnnotatedElements(Class<? extends Annotation> annotation) {
+			if (!elements.containsKey(annotation)) {
+				T[] allElements = getElements();
+				List<T> annotatedElements = new ArrayList<>();
+				for (T element : allElements) {
+					if (element.isAnnotationPresent(annotation)) {
+						annotatedElements.add(element);
+					}
+				}
+				
+				elements.put(annotation, annotatedElements);
+			}
+			
+			return elements.get(annotation);
+		}
+
+		protected abstract T[] getElements();
 	}
 	
 	private static final NewAnnotationProcessor INSTANCE = 
@@ -78,8 +109,12 @@ public class NewAnnotationProcessor {
 	}
 
 	private void visitClass(Class<?> objectType) {
-		System.out.println("Visit class: " + objectType);
-		vistedClasses.put(objectType, new Element(objectType));
+		if (objectType != Object.class) {
+			System.out.println("Visit class: " + objectType);
+			
+			Element parentElement = getElement(objectType.getSuperclass());
+			vistedClasses.put(objectType, new Element(objectType, parentElement));
+		}		
 	}
 
 	public static List<Constructor<?>> getConstructors(Class<?> objectType,
