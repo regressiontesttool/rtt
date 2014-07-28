@@ -142,4 +142,5 @@ public class ExecutorCorrectInitializeTests {
 	public void testAcceptedExceptionMethodClass() throws Throwable {
 		initializeExecutor(AcceptedExceptionMethodClass.class);
 	}
+
 }

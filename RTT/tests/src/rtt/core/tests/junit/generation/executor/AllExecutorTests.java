@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ ExecutorCreationTests.class,
 		ExecutorCorrectInitializeTests.class,
-		ExecutorFailingInitializeTests.class })
+		ExecutorFailingInitializeTests.class,
+		ExecutorInheritanceInitializeTests.class})
 public class AllExecutorTests {
 
 }

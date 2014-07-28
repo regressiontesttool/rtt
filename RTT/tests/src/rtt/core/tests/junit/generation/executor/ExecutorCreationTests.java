@@ -59,4 +59,33 @@ public class ExecutorCreationTests {
 	public void testCorrectParserAnnotation() throws Exception {
 		new Executor(CorrectParserAnnotation.class);
 	}
+	
+	// Test: super class has parser annotation
+	
+	@Parser static class ParserSuperClass {}	
+	static class ExtendingParserClass extends ParserSuperClass {}
+	
+	@Test
+	public void testExtending() throws Throwable {
+		new Executor(ExtendingParserClass.class);
+	}
+	
+	// Test: two level super class has parser annotation
+	static class SecondSuperClass extends ParserSuperClass {}
+	static class ConcreteClass extends SecondSuperClass {}
+	
+	@Test
+	public void testTwoLevelSuperClass() throws Exception {
+		new Executor(ConcreteClass.class);
+	}
+	
+	// Test: interface has parser annotation
+	
+	@Parser interface ParserInterface {}
+	static class ImplementingParserClass implements ParserInterface {}
+	
+	@Test
+	public void testImplementing() throws Exception {
+		new Executor(ImplementingParserClass.class);
+	}
 }
