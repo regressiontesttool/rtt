@@ -10,9 +10,10 @@ import org.junit.Test;
 
 import rtt.annotations.Node.Compare;
 import rtt.annotations.Node.Informational;
-import rtt.annotations.processing.NewAnnotationProcessor;
+import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.tests.junit.utils.AnnotationUtils;
 
+@SuppressWarnings("unused")
 public class FieldProcessingTests {
 
 	@Before
@@ -53,12 +54,12 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testPermutedFields() throws Exception {
-		List<Field> compareFields = NewAnnotationProcessor.getFields(
+		List<Field> compareFields = AnnotationProcessor.getFields(
 				PermutedFieldsClass.class, Compare.class);
 		
 		AnnotationUtils.checkElements(compareFields, Compare.class, 3);
 		
-		List<Field> infoFields = NewAnnotationProcessor.getFields(
+		List<Field> infoFields = AnnotationProcessor.getFields(
 				PermutedFieldsClass.class, Informational.class);
 		
 		AnnotationUtils.checkElements(infoFields, Informational.class, 3);
@@ -104,10 +105,10 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testExtendingFields() throws Exception {
-		List<Field> compareFields = NewAnnotationProcessor.getFields(ExtendingFieldClass.class, Compare.class);
+		List<Field> compareFields = AnnotationProcessor.getFields(ExtendingFieldClass.class, Compare.class);
 		AnnotationUtils.checkElements(compareFields, Compare.class, 6);
 		
-		List<Field> infoFields = NewAnnotationProcessor.getFields(ExtendingFieldClass.class, Informational.class);		
+		List<Field> infoFields = AnnotationProcessor.getFields(ExtendingFieldClass.class, Informational.class);		
 		AnnotationUtils.checkElements(infoFields, Informational.class, 6);
 		
 		invokeFields(compareFields, ExtendingFieldClass.class);
@@ -145,10 +146,10 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testImplementingFields() throws Exception {
-		List<Field> compareFields = NewAnnotationProcessor.getFields(ImplementingClass.class, Compare.class);
+		List<Field> compareFields = AnnotationProcessor.getFields(ImplementingClass.class, Compare.class);
 		AnnotationUtils.checkElements(compareFields, Compare.class, 5);
 		
-		List<Field> infoFields = NewAnnotationProcessor.getFields(ImplementingClass.class, Informational.class);		
+		List<Field> infoFields = AnnotationProcessor.getFields(ImplementingClass.class, Informational.class);		
 		AnnotationUtils.checkElements(infoFields, Informational.class, 5);
 		
 		invokeFields(compareFields, ImplementingClass.class);
@@ -200,10 +201,10 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testImplementingAbstractFields() throws Exception {
-		List<Field> compareFields = NewAnnotationProcessor.getFields(ConcreteClass.class, Compare.class);
+		List<Field> compareFields = AnnotationProcessor.getFields(ConcreteClass.class, Compare.class);
 		AnnotationUtils.checkElements(compareFields, Compare.class, 8);
 		
-		List<Field> infoFields = NewAnnotationProcessor.getFields(ConcreteClass.class, Informational.class);		
+		List<Field> infoFields = AnnotationProcessor.getFields(ConcreteClass.class, Informational.class);		
 		AnnotationUtils.checkElements(infoFields, Informational.class, 8);
 		
 		invokeFields(compareFields, ConcreteClass.class);
@@ -252,10 +253,10 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testExtendedInterfaceFields() throws Exception {
-		List<Field> compareFields = NewAnnotationProcessor.getFields(ExtendedImplementingClass.class, Compare.class);
+		List<Field> compareFields = AnnotationProcessor.getFields(ExtendedImplementingClass.class, Compare.class);
 		AnnotationUtils.checkElements(compareFields, Compare.class, 7);
 		
-		List<Field> infoFields = NewAnnotationProcessor.getFields(ExtendedImplementingClass.class, Informational.class);		
+		List<Field> infoFields = AnnotationProcessor.getFields(ExtendedImplementingClass.class, Informational.class);		
 		AnnotationUtils.checkElements(infoFields, Informational.class, 7);
 		
 		invokeFields(compareFields, ExtendedImplementingClass.class);
