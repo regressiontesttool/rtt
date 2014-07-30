@@ -32,15 +32,12 @@ public class NewAnnotationProcessor {
 	}
 
 	private ClassElement createClassElement(Class<?> objectType) {
-		System.out.println("Creating class element: " + objectType);
-		
-		ClassElement parentElement = null;
 		Class<?> superClass = objectType.getSuperclass();
 		if (superClass != null && superClass != Object.class) {
-			parentElement = getElement(superClass);
-		}
-		
-		return new ClassElement(objectType, parentElement);		
+			return new ClassElement(objectType, getElement(superClass));
+		} else {
+			return new ClassElement(objectType);
+		}				
 	}
 
 	public static List<Constructor<?>> getConstructors(Class<?> objectType,

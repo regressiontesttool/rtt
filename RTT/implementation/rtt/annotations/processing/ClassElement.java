@@ -9,27 +9,23 @@ import java.util.List;
 public class ClassElement {
 	
 	Class<?> type;
-	private ClassElement parentElement;
+	ClassElement parentElement;
 	
-	private MemberElement<Constructor<?>> constructors;
-	private MemberElement<Field> fields;
-	private MemberElement<Method> methods;
+	private AbstractMemberElement<Constructor<?>> constructors;
+	private AbstractMemberElement<Field> fields;
+	private AbstractMemberElement<Method> methods;
 	
-	public ClassElement(Class<?> objectType, ClassElement parentElement) {
+	protected ClassElement(Class<?> objectType) {
 		this.type = objectType;
-		this.parentElement = parentElement;
-		
+
 		constructors = new ConstructorMemberElement(this);			
 		fields = new FieldMemberElement(this);			
 		methods = new MethodMemberElement(this);
 	}
 	
-	public Class<?> getType() {
-		return type;
-	}
-	
-	public ClassElement getParentElement() {
-		return parentElement;
+	protected ClassElement(Class<?> objectType, ClassElement parentElement) {
+		this(objectType);
+		this.parentElement = parentElement;		
 	}
 
 	public List<Constructor<?>> getConstructors(

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import rtt.core.utils.RTTLogging;
 
-final class MethodMemberElement extends	MemberElement<Method> {
+final class MethodMemberElement extends	AbstractMemberElement<Method> {
 	
 	private static final String VOID_NOT_ALLOWED = "Ignoring method '$' - A void return type is not allowed";
 	private static final String PARAMETERS_NOT_ALLOWED = "Ignoring method '$' - Parameters are not allowed";
@@ -26,14 +26,14 @@ final class MethodMemberElement extends	MemberElement<Method> {
 		
 		Map<String, Method> annotatedMethods = new HashMap<>();
 		
-		ClassElement parentElement = classElement.getParentElement();
+		ClassElement parentElement = classElement.parentElement;
 		if (parentElement != null) {
 			for (Method method : parentElement.getMethods(annotation)) {
 				annotatedMethods.put(method.getName(), method);
 			}
 		}
 		
-		addMethods(classElement.getType(), annotation, annotatedMethods);		
+		addMethods(classElement.type, annotation, annotatedMethods);		
 		
 		return new ArrayList<>(annotatedMethods.values());
 	}

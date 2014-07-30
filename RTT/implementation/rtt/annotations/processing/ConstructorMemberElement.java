@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class ConstructorMemberElement extends
-		MemberElement<Constructor<?>> {
+		AbstractMemberElement<Constructor<?>> {
 
 	public ConstructorMemberElement(ClassElement classElement) {
 		super(classElement);
@@ -18,14 +18,14 @@ final class ConstructorMemberElement extends
 		
 		List<Constructor<?>> annotatedConstructors = new ArrayList<>();
 		
-		ClassElement parentElement = classElement.getParentElement();
+		ClassElement parentElement = classElement.parentElement;
 		if (parentElement != null) {
 			for (Constructor<?> constructor : parentElement.getConstructors(annotation)) {
 				annotatedConstructors.add(constructor);
 			}
 		}
 				
-		Class<?> objectType = classElement.getType();
+		Class<?> objectType = classElement.type;
 		for (Constructor<?> constructor : objectType.getDeclaredConstructors()) {
 			if (constructor.isAnnotationPresent(annotation)) {
 				annotatedConstructors.add(constructor);
