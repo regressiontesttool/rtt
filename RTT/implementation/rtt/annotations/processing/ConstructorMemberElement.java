@@ -16,8 +16,15 @@ final class ConstructorMemberElement extends
 	protected synchronized List<Constructor<?>> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
-		List<Constructor<?>> annotatedConstructors = new ArrayList<>();
-				
+		List<Constructor<?>> annotatedConstructors = new ArrayList<>();		
+
+		ClassElement parentElement = classElement.parentElement;
+		if (parentElement != null) {
+			for (Constructor<?> constructor : parentElement.getConstructors(annotation)) {
+				annotatedConstructors.add(constructor);
+			}
+		}
+		
 		Class<?> objectType = classElement.type;
 		for (Constructor<?> constructor : objectType.getDeclaredConstructors()) {
 			if (constructor.isAnnotationPresent(annotation)) {

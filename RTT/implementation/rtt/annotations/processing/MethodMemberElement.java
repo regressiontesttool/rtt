@@ -4,17 +4,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import rtt.core.utils.RTTLogging;
-
 final class MethodMemberElement extends	AbstractMemberElement<Method> {
 	
-	private static final String VOID_NOT_ALLOWED = "Ignoring method '$' - A void return type is not allowed";
-	private static final String PARAMETERS_NOT_ALLOWED = "Ignoring method '$' - Parameters are not allowed";
-
 	public MethodMemberElement(ClassElement classElement) {
 		super(classElement);
 	}
@@ -29,13 +25,29 @@ final class MethodMemberElement extends	AbstractMemberElement<Method> {
 		ClassElement parentElement = classElement.parentElement;
 		if (parentElement != null) {
 			for (Method method : parentElement.getMethods(annotation)) {
-				annotatedMethods.put(method.getName(), method);
+				annotatedMethods.put(getSignature(method), method);
 			}
 		}
 		
 		addMethods(classElement.type, annotation, annotatedMethods);		
 		
+		System.out.println(Arrays.toString(annotatedMethods.keySet().toArray()));
+		
 		return new ArrayList<>(annotatedMethods.values());
+	}
+
+	private String getSignature(Method method) {
+		StringBuilder builder = new StringBuilder(method.getName());
+		builder.append("-");
+		builder.append(method.getReturnType().getSimpleName());
+		builder.append("-[");
+		for (Class<?> parameter : method.getParameterTypes()) {
+			builder.append(parameter.getSimpleName());
+			builder.append(";");
+		}
+		builder.append("]");
+		
+		return builder.toString();
 	}
 
 	private void addMethods(Class<?> objectType, 
@@ -47,31 +59,17 @@ final class MethodMemberElement extends	AbstractMemberElement<Method> {
 		}
 		
 		for (Method method : objectType.getDeclaredMethods()) {
-			String methodName = method.getName();
+			String signature = getSignature(method);
 			
-			if (method.isAnnotationPresent(annotation) && isAllowed(method)) {
-				annotatedMethods.put(methodName, method);
+			if (method.isAnnotationPresent(annotation)) {
+				annotatedMethods.put(signature, method);
 			}
 			
-			if (annotatedMethods.containsKey(methodName) &&
+			if (annotatedMethods.containsKey(signature) &&
 					!Modifier.isPrivate(method.getModifiers())) {
 				
-				annotatedMethods.put(methodName, method);
+				annotatedMethods.put(signature, method);
 			}
 		}
-	}
-
-	private boolean isAllowed(Method method) {
-		if (method.getReturnType() == Void.TYPE) {
-			RTTLogging.warn(VOID_NOT_ALLOWED.replace("$", method.getName()));
-			return false;
-		}
-		
-		if (method.getParameterTypes().length > 0) {
-			RTTLogging.warn(PARAMETERS_NOT_ALLOWED.replace("$", method.getName()));
-			return false;
-		}
-		
-		return true;
 	}
 }
