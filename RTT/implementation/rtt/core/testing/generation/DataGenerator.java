@@ -8,9 +8,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotations.AnnotationProcessor;
 import rtt.annotations.Node.Compare;
 import rtt.annotations.Node.Informational;
+import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.ClassNode;

@@ -9,8 +9,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotations.AnnotationProcessor;
 import rtt.annotations.Parser;
+import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.input.Input;
 import rtt.core.utils.RTTLogging;
 
