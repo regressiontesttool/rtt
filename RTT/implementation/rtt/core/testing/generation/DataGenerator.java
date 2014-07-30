@@ -213,14 +213,27 @@ public class DataGenerator {
 
 		if (executor != null) {
 			
-			RTTLogging.debug("Initializing parser: " + 
-					executor.getExecutorClass().getSimpleName());
-			
-			executor.initialize(input, params);
-			
-			RTTLogging.debug("Generating output data ...");
-			DataGenerator generator = new DataGenerator(executor);
-			outputData = generator.createOutput();
+			try {
+				RTTLogging.debug("Initializing parser: " + 
+						executor.getExecutorClass().getSimpleName());
+				
+				executor.initialize(input, params);
+				
+				RTTLogging.debug("Generating output data ...");
+				DataGenerator generator = new DataGenerator(executor);
+				
+				// TODO output data as parameter 
+				outputData = generator.createOutput();
+				
+			} catch (InvocationTargetException invocationException) {
+				Throwable cause = invocationException.getCause();
+				if (executor.isAcceptedException(cause)) {
+					throw new UnsupportedOperationException(
+							"Accepted exception are currently not supported.", cause);
+				} else {
+					throw cause;
+				}
+			}
 		}
 
 		return outputData;
