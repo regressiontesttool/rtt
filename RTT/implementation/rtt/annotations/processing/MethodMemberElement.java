@@ -30,10 +30,6 @@ final class MethodMemberElement extends	MemberElement<Method> {
 		
 		Class<?> objectType = classElement.getType();
 		
-		for (Class<?> interfaceType : objectType.getInterfaces()) {
-			addMethods(interfaceType, annotation, annotatedMethods);
-		}
-		
 		addMethods(objectType, annotation, annotatedMethods);		
 		
 		return annotatedMethods;
@@ -43,6 +39,10 @@ final class MethodMemberElement extends	MemberElement<Method> {
 			Class<?> objectType, 
 			Class<? extends Annotation> annotation, 
 			Map<String, Method> annotatedMethods) {
+		
+		for (Class<?> interfaceType : objectType.getInterfaces()) {
+			addMethods(interfaceType, annotation, annotatedMethods);
+		}
 		
 		for (Method method : objectType.getDeclaredMethods()) {
 			String methodName = method.getName();
