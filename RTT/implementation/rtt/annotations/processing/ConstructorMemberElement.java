@@ -17,13 +17,6 @@ final class ConstructorMemberElement extends
 			Class<? extends Annotation> annotation) {
 		
 		List<Constructor<?>> annotatedConstructors = new ArrayList<>();
-		
-		ClassElement parentElement = classElement.parentElement;
-		if (parentElement != null) {
-			for (Constructor<?> constructor : parentElement.getConstructors(annotation)) {
-				annotatedConstructors.add(constructor);
-			}
-		}
 				
 		Class<?> objectType = classElement.type;
 		for (Constructor<?> constructor : objectType.getDeclaredConstructors()) {
