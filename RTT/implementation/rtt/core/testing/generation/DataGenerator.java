@@ -28,6 +28,8 @@ public class DataGenerator {
 	private static final Class<? extends Annotation> INFORMATIONAL_ANNOTATION = Informational.class;
 	
 	private static final String NO_AST_METHOD = "Could not find a method annotated with @Parser.AST";
+	private static final String ONLY_NONVOID_METHODS = "Only methods with a non-void return type allowed.";
+	private static final String ONLY_PARAMETERLESS_METHODS = "Only methods without parameters allowed.";
 	
 	private Executor executor;	
 
@@ -167,8 +169,17 @@ public class DataGenerator {
 		List<Method> annotatedMethods = AnnotationProcessor.getMethods(currentObject.getClass(), annotation);
 		
 		for (Method method : annotatedMethods) {
-			method.setAccessible(true);
+			if (method.getReturnType() == Void.TYPE) {
+				RTTLogging.warn(ONLY_NONVOID_METHODS);
+				continue;
+			}
 			
+			if (method.getParameterTypes().length > 0) {
+				RTTLogging.warn(ONLY_PARAMETERLESS_METHODS);
+				continue;
+			}
+			
+			method.setAccessible(true);			
 			
 			String methodName;
 			Object methodResult;
