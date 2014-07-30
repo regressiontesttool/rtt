@@ -3,6 +3,8 @@ package rtt.core.tests.junit.annotations;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -22,9 +24,15 @@ public class MethodProcessingTests {
 	private void invokeMethods(List<Method> methods, Class<?> classType) {
 		try {
 			Object object = classType.newInstance();
+			List<Object> params = new ArrayList<>();
 			for (Method method : methods) {
+				params.clear();
+				for (Class<?> param : Arrays.asList(method.getParameterTypes())) {
+					params.add(param.newInstance());
+				}
+				
 				method.setAccessible(true);
-				method.invoke(object);
+				method.invoke(object, params.toArray());
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -33,10 +41,8 @@ public class MethodProcessingTests {
 	
 	// --------------------------------------------------------------
 	// Test: permuted methods
-	//	Only non-void and non-parameter methods 
-	//	should be detected by annotation processing
-	//	 --> compare methods count = 3 
-	//	 --> informational methods count = 3
+	//	Any method annotated should be detected
+	//	 --> count = 12
 	
 	static class PermutedMethodsClass {
 		
@@ -60,11 +66,9 @@ public class MethodProcessingTests {
 		@Compare protected void protectedCompareVoidMethod(String param) {}
 		@Compare public void publicCompareVoidMethod(String param) {}
 		
-		// correct annotated methods
 		@Compare private String privateCompareStringMethod() { return ""; }
 		@Compare protected String protectedCompareStringMethod() { return ""; }
 		@Compare public String publicCompareStringMethod() { return ""; }
-		// correct annotated methods
 		
 		@Compare private String privateCompareStringMethod(String param) { return ""; }
 		@Compare protected String protectedCompareStringMethod(String param) { return ""; }
@@ -74,11 +78,13 @@ public class MethodProcessingTests {
 		@Informational protected void protectedInfoVoidMethod() {}
 		@Informational public void publicInfoVoidMethod() {}
 		
-		// correct annotated methods
+		@Informational private void privateInformationalVoidMethod(String param) {}
+		@Informational protected void protectedInformationalVoidMethod(String param) {}
+		@Informational public void publicInformationalVoidMethod(String param) {}
+		
 		@Informational private String privateInfoStringMethod() { return ""; }
 		@Informational protected String protectedInfoStringMethod() { return ""; }
 		@Informational public String publicInfoStringMethod() { return ""; }
-		// correct annotated methods
 		
 		@Informational private String privateInfoStringMethod(String param) { return ""; }
 		@Informational protected String protectedInfoStringMethod(String param) { return ""; }
@@ -90,12 +96,12 @@ public class MethodProcessingTests {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(
 				PermutedMethodsClass.class, Compare.class);
 		
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 3);
+		AnnotationUtils.checkElements(compareMethods, Compare.class, 12);
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(
 				PermutedMethodsClass.class, Informational.class);
 		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 3);
+		AnnotationUtils.checkElements(infoMethods, Informational.class, 12);
 		
 		invokeMethods(compareMethods, PermutedMethodsClass.class);
 		invokeMethods(infoMethods, PermutedMethodsClass.class);
