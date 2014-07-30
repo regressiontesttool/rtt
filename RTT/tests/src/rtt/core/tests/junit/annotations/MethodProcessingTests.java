@@ -219,27 +219,27 @@ public class MethodProcessingTests {
 	}
 	
 	// --------------------------------------------------------------
-	// Test: Implementing abstract methods
+	// Test: Implementing interface methods
 	//    Annotated methods should be detected.
 	
 	static interface MethodInterface {
-		String method();
-		public String publicMethod();
+		String interfaceMethod();
+		public String publicInterfaceMethod();
 		
-		@Compare String compareMethod();
-		@Compare public String publicCompareMethod();
+		@Compare String compareInterfaceMethod();
+		@Compare public String publicInterfaceCompareMethod();
 		
-		@Informational String infoMethod();
-		@Informational public String publicInfoMethod();
+		@Informational String infoInterfaceMethod();
+		@Informational public String publicInfoInterfaceMethod();
 	}
 	
 	static class ImplementingClass implements MethodInterface {
-		public String method() { return ""; }
-		public String publicMethod() { return ""; }
-		public String compareMethod() { return ""; }
-		public String publicCompareMethod() { return ""; }
-		public String infoMethod() { return ""; }
-		public String publicInfoMethod() { return ""; }		
+		public String interfaceMethod() { return ""; }
+		public String publicInterfaceMethod() { return ""; }
+		public String compareInterfaceMethod() { return ""; }
+		public String publicInterfaceCompareMethod() { return ""; }
+		public String infoInterfaceMethod() { return ""; }
+		public String publicInfoInterfaceMethod() { return ""; }		
 	}
 	
 	@Test
@@ -251,6 +251,83 @@ public class MethodProcessingTests {
 		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(ImplementingClass.class, Informational.class);		
 		AnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
 		AnnotationUtils.checkMember(infoMethods, ImplementingClass.class);
+	}
+	
+	// --------------------------------------------------------------
+	// Test: Extending implementing abstract methods 
+	//    - (annotated) Interface <- Abstract class <- concrete Class
+	//    - methods from concrete class should be detected.
+	
+	static interface TopInterface {
+		public String publicInterfaceMethod1();
+		public String publicInterfaceMethod2();
+		
+		@Compare public String publicInterfaceCompareMethod1();
+		@Compare public String publicInterfaceCompareMethod2();
+		
+		@Informational public String publicInfoInterfaceMethod1();
+		@Informational public String publicInfoInterfaceMethod2();
+	}
+	
+	static abstract class ImplementingAbstractClass implements TopInterface {
+		public String publicInterfaceMethod1() { return ""; }
+		public String publicInterfaceCompareMethod1() { return ""; }
+		public String publicInfoInterfaceMethod1() { return ""; }
+	}
+	
+	static class ConcreteClass extends ImplementingAbstractClass {
+		public String publicInterfaceMethod2() { return ""; }		
+		public String publicInterfaceCompareMethod2() { return ""; }		
+		public String publicInfoInterfaceMethod2() { return ""; }
+	}
+	
+	@Test
+	public void testImplementingAbstractMethods() throws Exception {
+		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(ConcreteClass.class, Compare.class);
+		AnnotationUtils.checkElements(compareMethods, Compare.class, 2);
+		AnnotationUtils.checkMember(compareMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
+		AnnotationUtils.checkMember(compareMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
+		
+		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(ConcreteClass.class, Informational.class);		
+		AnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
+		AnnotationUtils.checkMember(infoMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
+		AnnotationUtils.checkMember(infoMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
+	}
+	
+	// --------------------------------------------------------------
+	// Test: one interfaces extends another
+	//    - methods from concrete class should be detected.
+	
+	interface InterfaceA {
+		public String publicInterfaceMethodA();		
+		@Compare public String publicInterfaceCompareMethodA();
+		@Informational public String publicInfoInterfaceMethodA();
+	}
+	
+	interface InterfaceB extends InterfaceA {
+		public String publicInterfaceMethodB();
+		@Compare public String publicInterfaceCompareMethodB();
+		@Informational public String publicInfoInterfaceMethodB();
+	}
+	
+	static class ExtendedImplementingClass implements InterfaceB {
+		public String publicInterfaceMethodA() { return ""; }
+		public String publicInterfaceCompareMethodA() { return ""; }
+		public String publicInfoInterfaceMethodA() { return ""; }
+		public String publicInterfaceMethodB() { return ""; }
+		public String publicInterfaceCompareMethodB() { return ""; }
+		public String publicInfoInterfaceMethodB() { return ""; }
+	}
+	
+	@Test
+	public void testExtendedInterfaceMethods() throws Exception {
+		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(ExtendedImplementingClass.class, Compare.class);
+		AnnotationUtils.checkElements(compareMethods, Compare.class, 2);
+		AnnotationUtils.checkMember(compareMethods, ExtendedImplementingClass.class);
+		
+		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(ExtendedImplementingClass.class, Informational.class);		
+		AnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
+		AnnotationUtils.checkMember(infoMethods, ExtendedImplementingClass.class);
 	}
 	
 }
