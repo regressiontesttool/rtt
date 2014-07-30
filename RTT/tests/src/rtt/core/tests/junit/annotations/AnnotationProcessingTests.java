@@ -1,15 +1,14 @@
 package rtt.core.tests.junit.annotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Before;
@@ -34,23 +33,21 @@ public class AnnotationProcessingTests {
 		assertNotNull("Elements was null.", elements);
 		assertFalse("Elements was empty.", elements.isEmpty());
 		assertEquals(itemCount, elements.size());
-		for (AnnotatedElement element : elements) {
-			assertTrue(element.isAnnotationPresent(annotation));
-		}
 	}
 	
-	private void checkMethods(Collection<Method> methods, Class<?> fromClass) {
-//		for (Method method : fromClass.getDeclaredMethods()) {
-//			if (!Modifier.isPrivate(method.getModifiers())) {
-//				String methodName = method.getName();
-//				for (Method listedMethod : methods) {
-//					if (listedMethod.)
-//				}
-//			}			
-//		}
-		
-		// TODO Auto-generated method stub
-		
+	private void checkMember(Iterable<? extends Member> members, Class<?> fromClass, String... memberNames) {
+		Arrays.sort(memberNames);		
+		for (Member member : members) {
+			if (Arrays.binarySearch(memberNames, member.getName()) >= 0) {
+				if (!member.getDeclaringClass().equals(fromClass)) {
+					String fromClassName = fromClass.getSimpleName();
+					String declaringClassName = member.getDeclaringClass().getSimpleName();
+					String memberName = member.getClass().getSimpleName() + " " + member.getName();
+					
+					fail("The member '" + memberName + "' was declared by " + declaringClassName + " and not by " + fromClassName);
+				}
+			}
+		}
 	}
 	
 	static class SimpleClass {
@@ -73,62 +70,22 @@ public class AnnotationProcessingTests {
 		@Informational private String privateInfoString;
 		@Informational protected String protectedInfoString;
 		@Informational public String publicInfoString;
-		
-		private void privateVoidMethod() {}
-		protected void protectedVoidMethod() {}
-		public void publicVoidMethod() {}
-		
-		private String privateStringMethod() { return ""; }
-		protected String protectedStringMethod() { return ""; }
-		public String publicStringMethod() { return ""; }
-		
-		@Compare private void privateCompareVoidMethod() {}
-		@Compare protected void protectedCompareVoidMethod() {}
-		@Compare public void publicCompareVoidMethod() {}
-		@Compare public void publicCompareParamVoidMethod(String param) {}
-		
-		@Compare private String privateCompareStringMethod() { return ""; }
-		@Compare protected String protectedCompareStringMethod() { return ""; }
-		@Compare public String publicCompareStringMethod() { return ""; }
-		
-		@Compare public String publicCompareParamStringMethod(String param) { return ""; }
-		
-		@Informational private void privateInfoVoidMethod() {}
-		@Informational protected void protectedInfoVoidMethod() {}
-		@Informational public void publicInfoVoidMethod() {}
-		
-		@Informational private String privateInfoStringMethod() { return ""; }
-		@Informational protected String protectedInfoStringMethod() { return ""; }
-		@Informational public String publicInfoStringMethod() { return ""; }
-		
-		@Informational public String publicInfoParamStringMethod(String param) { return ""; }
 	}	
 	
-	@Test
-	public void testSimpleInitConstructors() throws Exception {
-		Collection<Constructor<?>> constructors = NewAnnotationProcessor.getConstructors(SimpleClass.class, Parser.Initialize.class);
-		checkElements(constructors, Initialize.class, 3);
-	}
+//	@Test
+//	public void testSimpleInitConstructors() throws Exception {
+//		Collection<Constructor<?>> constructors = NewAnnotationProcessor.getConstructors(SimpleClass.class, Parser.Initialize.class);
+//		checkElements(constructors, Initialize.class, 3);
+//	}
 	
-	@Test
-	public void testSimpleAnnotatedFields() throws Exception {
-		Collection<Field> compareFields = NewAnnotationProcessor.getFields(SimpleClass.class, Compare.class);
-		checkElements(compareFields, Compare.class, 3);
-		
-		Collection<Field> infoFields = NewAnnotationProcessor.getFields(SimpleClass.class, Informational.class);
-		checkElements(infoFields, Informational.class, 3);
-	}
+	// --------------------------------------------------------------
+	// Test: permuted fields
+	//	 Only annotated fields should be 
+	//	 detected by annotation processing
+	//	 --> compare fields count = 3 
+	//	 --> informational fields count = 3
 	
-	@Test
-	public void testSimpleAnnotatedMethods() throws Exception {
-		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(SimpleClass.class, Compare.class);
-		checkElements(compareMethods, Compare.class, 3);
-		
-		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(SimpleClass.class, Informational.class);		
-		checkElements(infoMethods, Informational.class, 3);
-	}
-	
-	static class ExtendingClass extends SimpleClass {
+	static class PermutedFieldsClass {
 		private String privateString;
 		protected String protectedString;
 		public String publicString;
@@ -140,44 +97,169 @@ public class AnnotationProcessingTests {
 		@Informational private String privateInfoString;
 		@Informational protected String protectedInfoString;
 		@Informational public String publicInfoString;
-		
-		private void privateMethod() {}
-		protected void protectedMethod() {}
-		public void publicMethod() {}
-		
-		private void privateCompareMethod() {}
-		protected void protectedCompareMethod() {}
-		public void publicCompareMethod() {}
-		
-		private void privateInfoMethod() {}
-		protected void protectedInfoMethod() {}
-		public void publicInfoMethod() {}
-	}
-	
-//	@Test
-//	public void testExtendingInitConstructors() throws Exception {
-//		List<Constructor<?>> constructors = NewAnnotationProcessor.getConstructors(ExtendingClass.class, Parser.Initialize.class);
-//		checkElements(constructors, Initialize.class, 3);
-//	}
-	
-	@Test
-	public void testExtendingAnnotatedFields() throws Exception {
-		Collection<Field> compareFields = NewAnnotationProcessor.getFields(ExtendingClass.class, Compare.class);
-		checkElements(compareFields, Compare.class, 6);
-		
-		Collection<Field> infoFields = NewAnnotationProcessor.getFields(ExtendingClass.class, Informational.class);
-		checkElements(infoFields, Informational.class, 6);
 	}
 	
 	@Test
-	public void testExtendingAnnotatedMethods() throws Exception {
-		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(ExtendingClass.class, Compare.class);
+	public void testPermutedFields() throws Exception {
+		Collection<Field> compareFields = NewAnnotationProcessor.getFields(
+				PermutedFieldsClass.class, Compare.class);
+		
+		checkElements(compareFields, Compare.class, 3);
+		
+		Collection<Field> infoFields = NewAnnotationProcessor.getFields(
+				PermutedFieldsClass.class, Informational.class);
+		
+		checkElements(infoFields, Informational.class, 3);
+	}
+	
+	// --------------------------------------------------------------
+	// Test: permuted methods
+	//	Only non-void and non-parameter methods 
+	//	should be detected by annotation processing
+	//	 --> compare methods count = 3 
+	//	 --> informational methods count = 3
+	
+	static class PermutedMethodsClass {
+		
+		private void privateVoidMethod() {}
+		protected void protectedVoidMethod() {}
+		public void publicVoidMethod() {}
+		
+		private String privateStringMethod() { return ""; }
+		protected String protectedStringMethod() { return ""; }
+		public String publicStringMethod() { return ""; }
+		
+		private String privateStringMethod(String param) { return ""; }
+		protected String protectedStringMethod(String param) { return ""; }
+		public String publicStringMethod(String param) { return ""; }
+		
+		@Compare private void privateCompareVoidMethod() {}
+		@Compare protected void protectedCompareVoidMethod() {}
+		@Compare public void publicCompareVoidMethod() {}
+		
+		@Compare private void privateCompareVoidMethod(String param) {}
+		@Compare protected void protectedCompareVoidMethod(String param) {}
+		@Compare public void publicCompareVoidMethod(String param) {}
+		
+		// correct annotated methods
+		@Compare private String privateCompareStringMethod() { return ""; }
+		@Compare protected String protectedCompareStringMethod() { return ""; }
+		@Compare public String publicCompareStringMethod() { return ""; }
+		// correct annotated methods
+		
+		@Compare private String privateCompareStringMethod(String param) { return ""; }
+		@Compare protected String protectedCompareStringMethod(String param) { return ""; }
+		@Compare public String publicCompareStringMethod(String param) { return ""; }
+		
+		@Informational private void privateInfoVoidMethod() {}
+		@Informational protected void protectedInfoVoidMethod() {}
+		@Informational public void publicInfoVoidMethod() {}
+		
+		// correct annotated methods
+		@Informational private String privateInfoStringMethod() { return ""; }
+		@Informational protected String protectedInfoStringMethod() { return ""; }
+		@Informational public String publicInfoStringMethod() { return ""; }
+		// correct annotated methods
+		
+		@Informational private String privateInfoStringMethod(String param) { return ""; }
+		@Informational protected String protectedInfoStringMethod(String param) { return ""; }
+		@Informational public String publicInfoStringMethod(String param) { return ""; }
+	}
+	
+	@Test
+	public void testPermutedMethods() throws Exception {
+		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(
+				PermutedMethodsClass.class, Compare.class);
+		
 		checkElements(compareMethods, Compare.class, 3);
-		checkMethods(compareMethods, ExtendingClass.class);
 		
-		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(ExtendingClass.class, Informational.class);		
+		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(
+				PermutedMethodsClass.class, Informational.class);
+		
 		checkElements(infoMethods, Informational.class, 3);
 	}
+	
+	// --------------------------------------------------------------
+	// Test: Overriding methods
+	// Due to annotations within the super class, the extending class
+	// should have also multiple methods detected.
+	// --> methods count = 1 (private super class method)
+	//                   + 2 (protected & public extending class methods) 
+	
+	static class SuperMethodClass {
+		
+		private String privateMethod() { return ""; }
+		protected String protectedMethod() { return ""; }
+		public String publicMethod() { return ""; }
+		
+		@Compare private String privateCompareMethod() { return ""; }
+		@Compare protected String protectedCompareMethod() { return ""; }
+		@Compare public String publicCompareMethod() { return ""; }
+		
+		@Informational private String privateInfoMethod() { return ""; }
+		@Informational protected String protectedInfoMethod() { return ""; }
+		@Informational public String publicInfoMethod() { return ""; }
+	}
+	
+	static class ExtendingMethodClass extends SuperMethodClass {
+		private String privateMethod() { return ""; }
+		protected String protectedMethod() { return ""; }
+		public String publicMethod() { return ""; }
+		
+		private String privateCompareMethod() { return ""; }
+		protected String protectedCompareMethod() { return ""; }
+		public String publicCompareMethod() { return ""; }
+		
+		private String privateInfoMethod() { return ""; }
+		protected String protectedInfoMethod() { return ""; }
+		public String publicInfoMethod() { return ""; }
+	}
+	
+	@Test
+	public void testExtendingMethods() throws Exception {
+		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(ExtendingMethodClass.class, Compare.class);
+		checkElements(compareMethods, Compare.class, 3);
+		checkMember(compareMethods, ExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
+		checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
+		
+		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(ExtendingMethodClass.class, Informational.class);		
+		checkElements(infoMethods, Informational.class, 3);
+		checkMember(infoMethods, ExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
+		checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
+	}
+	
+	// --------------------------------------------------------------
+	// Test: Overriding methods twice
+	//   Due to annotations within the super class, the 'second' extending class
+	//   should have also multiple methods detected.
+	//   --> methods count = 1 (private super class method)
+	//                     + 2 (protected & public extending class methods) 
 
+	static class SecondExtendingMethodClass extends ExtendingMethodClass {
+		private String privateMethod() { return ""; }
+		protected String protectedMethod() { return ""; }
+		public String publicMethod() { return ""; }
+		
+		private String privateCompareMethod() { return ""; }
+		protected String protectedCompareMethod() { return ""; }
+		public String publicCompareMethod() { return ""; }
+		
+		private String privateInfoMethod() { return ""; }
+		protected String protectedInfoMethod() { return ""; }
+		public String publicInfoMethod() { return ""; }
+	}
+	
+	@Test
+	public void testSecondExtendingMethods() throws Exception {
+		Collection<Method> compareMethods = NewAnnotationProcessor.getMethods(SecondExtendingMethodClass.class, Compare.class);
+		checkElements(compareMethods, Compare.class, 3);
+		checkMember(compareMethods, SecondExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
+		checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
+		
+		Collection<Method> infoMethods = NewAnnotationProcessor.getMethods(SecondExtendingMethodClass.class, Informational.class);		
+		checkElements(infoMethods, Informational.class, 3);		
+		checkMember(infoMethods, SecondExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
+		checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
+	}
 	
 }
