@@ -2,6 +2,7 @@ package rtt.annotations.processing;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ final class MethodMemberElement extends	MemberElement<Method> {
 	}
 
 	@Override
-	protected Map<String, Method> createElements(ClassElement classElement,
+	protected synchronized Map<String, Method> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
 		Map<String, Method> annotatedMethods = new HashMap<>();
@@ -29,8 +30,16 @@ final class MethodMemberElement extends	MemberElement<Method> {
 		
 		Class<?> objectType = classElement.getType();
 		for (Method method : objectType.getDeclaredMethods()) {
+			String methodName = method.getName();
+			
 			if (method.isAnnotationPresent(annotation) && isAllowed(method)) {
-				annotatedMethods.put(method.getName(), method);
+				annotatedMethods.put(methodName, method);
+			}
+			
+			if (annotatedMethods.containsKey(methodName) &&
+					!Modifier.isPrivate(method.getModifiers())) {
+				
+				annotatedMethods.put(methodName, method);
 			}
 		}
 		

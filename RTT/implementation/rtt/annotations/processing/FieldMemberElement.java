@@ -12,7 +12,7 @@ final class FieldMemberElement extends MemberElement<Field> {
 	}
 
 	@Override
-	protected Map<String, Field> createElements(ClassElement classElement,
+	protected synchronized Map<String, Field> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
 		Map<String, Field> annotatedFields = new HashMap<>();

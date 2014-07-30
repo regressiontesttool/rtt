@@ -13,7 +13,7 @@ final class ConstructorMemberElement extends
 	}
 	
 	@Override
-	protected Map<String, Constructor<?>> createElements(ClassElement classElement,
+	protected synchronized Map<String, Constructor<?>> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
 		Map<String, Constructor<?>> annotatedConstructors = new HashMap<>();
