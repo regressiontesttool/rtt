@@ -7,7 +7,7 @@
 	<jaxb:bindings schemaLocation="Output.xsd" node="/xsd:schema">	
 		
 		<!-- adding plural s to "node" for better accessing (hint for List) -->
-		<jaxb:bindings node="//xsd:complexType[@name='output']//xsd:element[@name='node']">
+		<jaxb:bindings node="//xsd:element[@name='output']//xsd:element[@name='node']">
 			<jaxb:property name="nodes" />
 		</jaxb:bindings>
 		
