@@ -3,7 +3,6 @@ package rtt.annotations.processing;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 final class FieldMemberElement extends MemberElement<Field> {
@@ -13,7 +12,8 @@ final class FieldMemberElement extends MemberElement<Field> {
 	}
 
 	@Override
-	protected synchronized List<Field> createElements(ClassElement classElement,
+	protected synchronized List<Field> createElements(
+			ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
 		List<Field> annotatedFields = new ArrayList<>();
@@ -25,15 +25,24 @@ final class FieldMemberElement extends MemberElement<Field> {
 			}
 		}
 		
-		Class<?> objectType = classElement.getType();				
-		for (Field field : objectType.getDeclaredFields()){
+		addFields(classElement.getType(), annotation, annotatedFields);
+		
+		return annotatedFields;
+	}
+
+	private void addFields(Class<?> type,
+			Class<? extends Annotation> annotation, 
+			List<Field> annotatedFields) {
+		
+		for (Class<?> interfaceType : type.getInterfaces()) {
+			addFields(interfaceType, annotation, annotatedFields);
+		}
+		
+		for (Field field : type.getDeclaredFields()){
 			if (field.isAnnotationPresent(annotation)) {
 				annotatedFields.add(field);
 			}
 		}
 		
-		System.out.println("Fields: " + Arrays.toString(annotatedFields.toArray()));
-		
-		return annotatedFields;
 	}
 }

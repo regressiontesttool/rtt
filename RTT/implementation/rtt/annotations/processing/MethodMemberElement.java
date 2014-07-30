@@ -20,7 +20,8 @@ final class MethodMemberElement extends	MemberElement<Method> {
 	}
 
 	@Override
-	protected synchronized List<Method> createElements(ClassElement classElement,
+	protected synchronized List<Method> createElements(
+			ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
 		Map<String, Method> annotatedMethods = new HashMap<>();
@@ -37,8 +38,7 @@ final class MethodMemberElement extends	MemberElement<Method> {
 		return new ArrayList<>(annotatedMethods.values());
 	}
 
-	private void addMethods(
-			Class<?> objectType, 
+	private void addMethods(Class<?> objectType, 
 			Class<? extends Annotation> annotation, 
 			Map<String, Method> annotatedMethods) {
 		
