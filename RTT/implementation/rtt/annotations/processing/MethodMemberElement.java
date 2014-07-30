@@ -29,6 +29,21 @@ final class MethodMemberElement extends	MemberElement<Method> {
 		}
 		
 		Class<?> objectType = classElement.getType();
+		
+		for (Class<?> interfaceType : objectType.getInterfaces()) {
+			addMethods(interfaceType, annotation, annotatedMethods);
+		}
+		
+		addMethods(objectType, annotation, annotatedMethods);		
+		
+		return annotatedMethods;
+	}
+
+	private void addMethods(
+			Class<?> objectType, 
+			Class<? extends Annotation> annotation, 
+			Map<String, Method> annotatedMethods) {
+		
 		for (Method method : objectType.getDeclaredMethods()) {
 			String methodName = method.getName();
 			
@@ -42,8 +57,6 @@ final class MethodMemberElement extends	MemberElement<Method> {
 				annotatedMethods.put(methodName, method);
 			}
 		}
-		
-		return annotatedMethods;
 	}
 
 	private boolean isAllowed(Method method) {
