@@ -14,6 +14,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
+import rtt.core.utils.RTTLogging;
 
 /**
  * 
@@ -62,12 +63,12 @@ public class CreateArchive extends Task {
 			try {
 				if (!owrite) {
 					manager.loadArchive(archiveFile);
-					System.out.println("Archive loaded");
+					RTTLogging.info("Archive loaded");
 					loaded = true;
 				}
 			} catch (Exception e) { /* no archive exists */}
 			if (!loaded) {
-				System.out.println("Create Archive");
+				RTTLogging.info("Create Archive");
 				manager.createArchive(archiveFile);
 			}
 			
@@ -75,7 +76,7 @@ public class CreateArchive extends Task {
 			manager.setDefaultConfiguration(dconfig);
 			
 			
-			System.out.println("Save archive to: "+ archive);
+			RTTLogging.info("Save archive to: "+ archive);
 			manager.saveArchive(new File(archive));
 		} catch (Exception e) {
 			e.printStackTrace();

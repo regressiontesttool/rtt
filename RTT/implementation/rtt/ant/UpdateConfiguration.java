@@ -16,6 +16,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
+import rtt.core.utils.RTTLogging;
 
 /**
  * 
@@ -84,7 +85,7 @@ public class UpdateConfiguration extends Task {
 		try {
 			m = new Manager(archiveFile, true);
 			m.loadArchive(archiveFile);
-			System.out.println("Archive loaded");			
+			RTTLogging.info("Archive loaded");			
 			
 			for (Configuration c : configs) 
 			{
@@ -100,7 +101,7 @@ public class UpdateConfiguration extends Task {
 						c.isOverwrite()) ;
 			}
 			
-			System.out.println("Save archive to: "+ archive);
+			RTTLogging.info("Save archive to: "+ archive);
 			m.saveArchive(new File(archive));
 		} catch (Exception e) {
 			e.printStackTrace();

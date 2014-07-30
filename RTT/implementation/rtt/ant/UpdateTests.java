@@ -15,6 +15,7 @@ import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
 import rtt.core.utils.GenerationInformation;
+import rtt.core.utils.RTTLogging;
 
 /**
  * Task for regenerating the results.<br>
@@ -50,7 +51,7 @@ public class UpdateTests extends Task {
 		if (archive == null || archive.length() == 0)
 			throw new BuildException("Parameter <path> is required!");
 
-		log("regenerating Archive: <" + archive + ">");
+		RTTLogging.info("regenerating Archive: <" + archive + ">");
 		Manager m = null;
 		File archiveFile = new File(archive);
 		
@@ -60,8 +61,8 @@ public class UpdateTests extends Task {
 				m.loadArchive(archiveFile, config);
 			else
 				m.loadArchive(archiveFile);
-			log("Archive loaded (Configuration: " + config + ")");
-			log("Generating Testresults for Testcases");
+			RTTLogging.info("Archive loaded (Configuration: " + config + ")");
+			RTTLogging.info("Generating Testresults for Testcases");
 			GenerationInformation infos = m.generateTests(getTestSuite());
 			if (infos.hasErrors()) {
 				throw new BuildException("Error during data generation");

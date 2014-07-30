@@ -15,6 +15,7 @@ import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
 import rtt.core.utils.GenerationInformation;
+import rtt.core.utils.RTTLogging;
 
 /**
  * 
@@ -56,7 +57,7 @@ public class RunTest extends Task {
 	public void execute() throws BuildException {
 		if (archive == null || archive.length() == 0)
 			throw new BuildException("Parameter <path> is required!");
-		log("Testing Path: <" + archive + ">");
+		RTTLogging.info("Testing Path: <" + archive + ">");
 		
 		boolean noErrors = false;
 		File archiveFile = new File(archive);
@@ -69,7 +70,7 @@ public class RunTest extends Task {
 				m.loadArchive(archiveFile, config);
 			else
 				m.loadArchive(archiveFile);
-			log("Archive loaded");			
+			RTTLogging.info("Archive loaded");			
 			GenerationInformation info = m.runTests(getTestSuite(), matching);			
 			noErrors = !info.hasErrors();
 			m.saveArchive(archiveFile);

@@ -14,6 +14,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import rtt.core.manager.Manager;
+import rtt.core.utils.RTTLogging;
 
 /**
  * Task for exporting a log and its stylesheet from an archive<br>
@@ -43,14 +44,14 @@ public class ExportLog extends Task {
 			throw new BuildException("Parameter <path> is required!");
 		if (dest == null)
 			dest = ".";
-		log("Loading Archive: <" + archive + ">");
+		RTTLogging.info("Loading Archive: <" + archive + ">");
 		
 		File archiveFile = new File(archive);
 		
 		try {
 			Manager manager = new Manager(archiveFile, true);
 			manager.loadArchive(archiveFile);
-			log("Archive loaded");
+			RTTLogging.info("Archive loaded");
 			manager.exportLog(new File(dest));
 		} catch (Exception e) {
 			e.printStackTrace();
