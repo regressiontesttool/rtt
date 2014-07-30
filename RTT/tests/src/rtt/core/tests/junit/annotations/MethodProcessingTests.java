@@ -108,6 +108,74 @@ public class MethodProcessingTests {
 	}
 	
 	// --------------------------------------------------------------
+	// Test: Overriding permuted methods
+	// Due to annotations within the super class, the extending class
+	// should have also multiple methods detected.
+	// --> methods count = 12 
+	
+	static class ExtendingPermutedClass extends PermutedMethodsClass {
+		private void privateVoidMethod() {}
+		protected void protectedVoidMethod() {}
+		public void publicVoidMethod() {}
+		
+		private String privateStringMethod() { return ""; }
+		protected String protectedStringMethod() { return ""; }
+		public String publicStringMethod() { return ""; }
+		
+		private String privateStringMethod(String param) { return ""; }
+		protected String protectedStringMethod(String param) { return ""; }
+		public String publicStringMethod(String param) { return ""; }
+		
+		@Compare private void privateCompareVoidMethod() {}
+		protected void protectedCompareVoidMethod() {}
+		public void publicCompareVoidMethod() {}
+		
+		@Compare private void privateCompareVoidMethod(String param) {}
+		protected void protectedCompareVoidMethod(String param) {}
+		public void publicCompareVoidMethod(String param) {}
+		
+		@Compare private String privateCompareStringMethod() { return ""; }
+		protected String protectedCompareStringMethod() { return ""; }
+		public String publicCompareStringMethod() { return ""; }
+		
+		@Compare private String privateCompareStringMethod(String param) { return ""; }
+		protected String protectedCompareStringMethod(String param) { return ""; }
+		public String publicCompareStringMethod(String param) { return ""; }
+		
+		@Informational private void privateInfoVoidMethod() {}
+		protected void protectedInfoVoidMethod() {}
+		public void publicInfoVoidMethod() {}
+		
+		@Informational private void privateInformationalVoidMethod(String param) {}
+		protected void protectedInformationalVoidMethod(String param) {}
+		public void publicInformationalVoidMethod(String param) {}
+		
+		@Informational private String privateInfoStringMethod() { return ""; }
+		protected String protectedInfoStringMethod() { return ""; }
+		public String publicInfoStringMethod() { return ""; }
+		
+		@Informational private String privateInfoStringMethod(String param) { return ""; }
+		protected String protectedInfoStringMethod(String param) { return ""; }
+		public String publicInfoStringMethod(String param) { return ""; }
+	}
+	
+	@Test
+	public void testExtendingPermutedMethods() throws Exception {
+		List<Method> compareMethods = AnnotationProcessor.getMethods(
+				ExtendingPermutedClass.class, Compare.class);
+		
+		AnnotationUtils.checkElements(compareMethods, Compare.class, 12);
+		
+		List<Method> infoMethods = AnnotationProcessor.getMethods(
+				ExtendingPermutedClass.class, Informational.class);
+		
+		AnnotationUtils.checkElements(infoMethods, Informational.class, 12);
+		
+		invokeMethods(compareMethods, ExtendingPermutedClass.class);
+		invokeMethods(infoMethods, ExtendingPermutedClass.class);
+	}
+	
+	// --------------------------------------------------------------
 	// Test: Overriding methods
 	// Due to annotations within the super class, the extending class
 	// should have also multiple methods detected.
