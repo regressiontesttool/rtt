@@ -9,12 +9,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 public class AnnotationUtils {
 	
 	public static void checkElements(
-			Collection<? extends AnnotatedElement> elements, 
+			List<? extends AnnotatedElement> elements, 
 			Class<? extends Annotation> annotation, int itemCount) {
 		
 		assertNotNull("Elements was null.", elements);
@@ -22,7 +22,11 @@ public class AnnotationUtils {
 		assertEquals(itemCount, elements.size());
 	}
 	
-	public static void checkMember(Iterable<? extends Member> members, Class<?> fromClass, String... memberNames) {
+	public static void checkMember(
+			List<? extends Member> members, 
+			Class<?> fromClass, 
+			String... memberNames) {
+		
 		if (memberNames.length > 0) {
 			Arrays.sort(memberNames);
 		}
