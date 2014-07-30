@@ -4,8 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NewAnnotationProcessor {
@@ -43,21 +43,21 @@ public class NewAnnotationProcessor {
 		return new ClassElement(objectType, parentElement);		
 	}
 
-	public static Collection<Constructor<?>> getConstructors(Class<?> objectType,
+	public static List<Constructor<?>> getConstructors(Class<?> objectType,
 			Class<? extends Annotation> annotation) {
 		
 		ClassElement element = INSTANCE.getElement(objectType);
 		return element.getConstructors(annotation);		
 	}
 
-	public static Collection<Method> getMethods(Class<?> objectType,
+	public static List<Method> getMethods(Class<?> objectType,
 			Class<? extends Annotation> annotation) {
 
 		ClassElement element = INSTANCE.getElement(objectType);
 		return element.getMethods(annotation);		
 	}
 
-	public static Collection<Field> getFields(Class<?> objectType,
+	public static List<Field> getFields(Class<?> objectType,
 			Class<? extends Annotation> annotation) {
 		
 		ClassElement element = INSTANCE.getElement(objectType);

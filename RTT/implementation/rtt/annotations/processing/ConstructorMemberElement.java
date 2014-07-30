@@ -2,8 +2,8 @@ package rtt.annotations.processing;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 final class ConstructorMemberElement extends
 		MemberElement<Constructor<?>> {
@@ -13,20 +13,22 @@ final class ConstructorMemberElement extends
 	}
 	
 	@Override
-	protected synchronized Map<String, Constructor<?>> createElements(ClassElement classElement,
+	protected synchronized List<Constructor<?>> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
-		Map<String, Constructor<?>> annotatedConstructors = new HashMap<>();
+		List<Constructor<?>> annotatedConstructors = new ArrayList<>();
 		
 		ClassElement parentElement = classElement.getParentElement();
 		if (parentElement != null) {
-			annotatedConstructors.putAll(parentElement.getConstructorMap(annotation));
+			for (Constructor<?> constructor : parentElement.getConstructors(annotation)) {
+				annotatedConstructors.add(constructor);
+			}
 		}
 				
 		Class<?> objectType = classElement.getType();
 		for (Constructor<?> constructor : objectType.getDeclaredConstructors()) {
 			if (constructor.isAnnotationPresent(annotation)) {
-				annotatedConstructors.put(constructor.getName(), constructor);
+				annotatedConstructors.add(constructor);
 			}
 		}
 		

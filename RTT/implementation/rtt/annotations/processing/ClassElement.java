@@ -4,8 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 public class ClassElement {
 	
@@ -32,40 +31,22 @@ public class ClassElement {
 	public ClassElement getParentElement() {
 		return parentElement;
 	}
-	
-	protected Map<String, Constructor<?>> getConstructorMap(
-			Class<? extends Annotation> annotation) {
-		
-		return constructors.getAnnotatedElements(annotation);		
-	}
 
-	public Collection<Constructor<?>> getConstructors(
+	public List<Constructor<?>> getConstructors(
 			Class<? extends Annotation> annotation) {
 		
-		return getConstructorMap(annotation).values();
+		return constructors.getAnnotatedElements(annotation);
 	}
 	
-	protected Map<String, Method> getMethodMap(
+	public List<Method> getMethods(
 			Class<? extends Annotation> annotation) {
 		
 		return methods.getAnnotatedElements(annotation);
 	}
 
-	public Collection<Method> getMethods(
-			Class<? extends Annotation> annotation) {
-		
-		return getMethodMap(annotation).values();
-	}
-	
-	protected Map<String, Field> getFieldMap(
+	public List<Field> getFields(
 			Class<? extends Annotation> annotation) {
 		
 		return fields.getAnnotatedElements(annotation);
-	}
-
-	public Collection<Field> getFields(
-			Class<? extends Annotation> annotation) {
-		
-		return getFieldMap(annotation).values();
 	}		
 }

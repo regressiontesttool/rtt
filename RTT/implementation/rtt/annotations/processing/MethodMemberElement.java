@@ -3,7 +3,9 @@ package rtt.annotations.processing;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import rtt.core.utils.RTTLogging;
@@ -18,21 +20,21 @@ final class MethodMemberElement extends	MemberElement<Method> {
 	}
 
 	@Override
-	protected synchronized Map<String, Method> createElements(ClassElement classElement,
+	protected synchronized List<Method> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
 		Map<String, Method> annotatedMethods = new HashMap<>();
 		
 		ClassElement parentElement = classElement.getParentElement();
 		if (parentElement != null) {
-			annotatedMethods.putAll(parentElement.getMethodMap(annotation));
+			for (Method method : parentElement.getMethods(annotation)) {
+				annotatedMethods.put(method.getName(), method);
+			}
 		}
 		
-		Class<?> objectType = classElement.getType();
+		addMethods(classElement.getType(), annotation, annotatedMethods);		
 		
-		addMethods(objectType, annotation, annotatedMethods);		
-		
-		return annotatedMethods;
+		return new ArrayList<>(annotatedMethods.values());
 	}
 
 	private void addMethods(

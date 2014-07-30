@@ -2,8 +2,9 @@ package rtt.annotations.processing;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 final class FieldMemberElement extends MemberElement<Field> {
 
@@ -12,22 +13,26 @@ final class FieldMemberElement extends MemberElement<Field> {
 	}
 
 	@Override
-	protected synchronized Map<String, Field> createElements(ClassElement classElement,
+	protected synchronized List<Field> createElements(ClassElement classElement,
 			Class<? extends Annotation> annotation) {
 		
-		Map<String, Field> annotatedFields = new HashMap<>();
+		List<Field> annotatedFields = new ArrayList<>();
 		
 		ClassElement parentElement = classElement.getParentElement();
 		if (parentElement != null) {
-			annotatedFields.putAll(parentElement.getFieldMap(annotation));
+			for (Field field : parentElement.getFields(annotation)) {
+				annotatedFields.add(field);
+			}
 		}
 		
 		Class<?> objectType = classElement.getType();				
 		for (Field field : objectType.getDeclaredFields()){
 			if (field.isAnnotationPresent(annotation)) {
-				annotatedFields.put(field.getName(), field);
+				annotatedFields.add(field);
 			}
 		}
+		
+		System.out.println("Fields: " + Arrays.toString(annotatedFields.toArray()));
 		
 		return annotatedFields;
 	}
