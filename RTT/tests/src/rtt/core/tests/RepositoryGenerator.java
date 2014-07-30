@@ -20,7 +20,8 @@ import rtt.annotations.*;
  * repository}.
  * @author C. Bürger
  */
-@Parser public final class RepositoryGenerator {
+@Parser(acceptedExceptions=RuntimeException.class)
+public final class RepositoryGenerator {
 	private InputStream is;
 	
 	/**
