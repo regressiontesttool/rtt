@@ -67,7 +67,7 @@ public class FailureContent extends AbstractLogContent {
 	}
 	
 	private InputStream getInputStream(OutputDataManager manager, Integer version) {
-		return manager.getParserInputStream(version);
+		return manager.getOutputDataInputStream(version);
 	}
 
 	@Override

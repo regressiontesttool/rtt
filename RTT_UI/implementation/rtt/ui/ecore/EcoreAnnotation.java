@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcoreFactory;
 
 import rtt.annotations.Parser;
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node;
 import rtt.ui.ecore.editor.EcoreEditor;
 
 /**
@@ -56,13 +56,7 @@ public enum EcoreAnnotation {
 	 * Represents a {@link Node.Informational} annotation.
 	 */
 	NODE_INFORMATIONAL("rtt/annotation/node/informational", 
-			"@Node.Informational", EAttribute.class, EReference.class, EOperation.class),
-	
-	/**
-	 * Represents a {@link Node.Child} annotation.
-	 */
-	NODE_CHILDREN("rtt/annotation/node/children", 
-			"@Node.Child", EReference.class, EOperation.class);
+			"@Node.Informational", EAttribute.class, EReference.class, EOperation.class);
 	
 	private String source;
 	private String token;

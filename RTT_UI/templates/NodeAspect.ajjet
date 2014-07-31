@@ -41,12 +41,6 @@ public aspect NodeAspect {
 	}	
 	for (GenOperation genOperation : GeneratorUtil.getOperations(nodeClass, EcoreAnnotation.NODE_COMPARE)) { %>
 	declare @method: * <%=className %>.<%=genOperation.getFormattedName()%> : @Node.Compare;<%	
-	}	
-	for (GenFeature genFeature : GeneratorUtil.getNodeFeatures(nodeClass, EcoreAnnotation.NODE_CHILDREN)) { %>
-	declare @method: * <%=className %>.<%=genFeature.getGetAccessor() %>() : @Node.Child;<%
-	}	
-	for (GenOperation genOperation : GeneratorUtil.getOperations(nodeClass, EcoreAnnotation.NODE_CHILDREN)) { %>
-	declare @method: * <%=className %>.<%=genOperation.getFormattedName()%> : @Node.Child;<%	
 	} %>
 	
 <% } %>

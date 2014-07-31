@@ -51,7 +51,7 @@ public class OutputDataEditorInput implements IEditorInput {
 			OutputDataManager outputManager = new OutputDataManager(
 					loader, suiteName, caseName, project.getActiveConfiguration(), type);
 			
-			RttPluginUtil.loadResource(resourceSet, PARSER_URI, outputManager.getParserInputStream(version));
+			RttPluginUtil.loadResource(resourceSet, PARSER_URI, outputManager.getOutputDataInputStream(version));
 		} catch (RTTException e) {
 			RttLog.log(e);
 		} finally {

@@ -2,7 +2,7 @@ package rtt.ui.ecore.tests;
 
 import java.net.URL;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -205,19 +205,11 @@ public class AnnotationTest {
 				controller.setRelatedAnnotation(nodeAttribute, EcoreAnnotation.NODE_INFORMATIONAL));
 		checkAnnotationPresent(nodeAttribute, EcoreAnnotation.NODE_INFORMATIONAL);
 		checkAnnotationNotPresent(nodeAttribute, EcoreAnnotation.NODE_COMPARE);
-		checkAnnotationNotPresent(nodeAttribute, EcoreAnnotation.NODE_CHILDREN);
 
 		Assert.assertTrue("@Node.Compare was not set.", 
 				controller.setRelatedAnnotation(nodeAttribute, EcoreAnnotation.NODE_COMPARE));
 		checkAnnotationPresent(nodeAttribute, EcoreAnnotation.NODE_COMPARE);
 		checkAnnotationNotPresent(nodeAttribute, EcoreAnnotation.NODE_INFORMATIONAL);
-		checkAnnotationNotPresent(nodeAttribute, EcoreAnnotation.NODE_CHILDREN);
-
-		Assert.assertFalse("@Node.Children was set to an attribute.", 
-				controller.setRelatedAnnotation(nodeAttribute, EcoreAnnotation.NODE_CHILDREN));
-		checkAnnotationPresent(nodeAttribute, EcoreAnnotation.NODE_COMPARE); // should be present because was last set
-		checkAnnotationNotPresent(nodeAttribute, EcoreAnnotation.NODE_INFORMATIONAL);
-		checkAnnotationNotPresent(nodeAttribute, EcoreAnnotation.NODE_CHILDREN);
 	}
 	
 	@Test
@@ -236,7 +228,7 @@ public class AnnotationTest {
 		Assert.assertFalse("An annotation was set, but should not.",
 				controller.setRelatedAnnotation(parserReference, EcoreAnnotation.PARSER_AST));
 		Assert.assertFalse("An annotation was set, but should not", 
-				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.NODE_CHILDREN));
+				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.NODE_COMPARE));
 		
 		controller.addAnnotation(parserClass, EcoreAnnotation.PARSER);
 		controller.addAnnotation(nodeClass, EcoreAnnotation.NODE);
@@ -257,18 +249,10 @@ public class AnnotationTest {
 				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.NODE_INFORMATIONAL));
 		checkAnnotationPresent(nodeReference, EcoreAnnotation.NODE_INFORMATIONAL);
 		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.NODE_COMPARE);
-		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.NODE_CHILDREN);
 
 		Assert.assertTrue("@Node.Compare was not set.", 
 				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.NODE_COMPARE));
 		checkAnnotationPresent(nodeReference, EcoreAnnotation.NODE_COMPARE);
-		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.NODE_INFORMATIONAL);
-		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.NODE_CHILDREN);
-
-		Assert.assertTrue("@Node.Children was not set to an reference.", 
-				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.NODE_CHILDREN));
-		checkAnnotationPresent(nodeReference, EcoreAnnotation.NODE_CHILDREN);
-		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.NODE_COMPARE);
 		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.NODE_INFORMATIONAL);
 	}
 	
@@ -309,18 +293,10 @@ public class AnnotationTest {
 				controller.setRelatedAnnotation(nodeOperation, EcoreAnnotation.NODE_INFORMATIONAL));
 		checkAnnotationPresent(nodeOperation, EcoreAnnotation.NODE_INFORMATIONAL);
 		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.NODE_COMPARE);
-		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.NODE_CHILDREN);
 
 		Assert.assertTrue("@Node.Compare was not set.", 
 				controller.setRelatedAnnotation(nodeOperation, EcoreAnnotation.NODE_COMPARE));
 		checkAnnotationPresent(nodeOperation, EcoreAnnotation.NODE_COMPARE);
-		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.NODE_INFORMATIONAL);
-		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.NODE_CHILDREN);
-
-		Assert.assertTrue("@Node.Children was not set to an reference.", 
-				controller.setRelatedAnnotation(nodeOperation, EcoreAnnotation.NODE_CHILDREN));
-		checkAnnotationPresent(nodeOperation, EcoreAnnotation.NODE_CHILDREN);
-		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.NODE_COMPARE);
 		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.NODE_INFORMATIONAL);
 	}
 	
@@ -370,8 +346,6 @@ public class AnnotationTest {
 		
 		EReference nodeReference = TestUtils.getReference(nodeClass, TestConstants.REFERENCE);
 		Assert.assertNotNull("Node reference was null.", nodeReference);
-		Assert.assertTrue("@Node.Child annotation could not be set.", 
-				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.NODE_CHILDREN));
 		Assert.assertTrue("@Parser.AST annotation could not be set.", 
 				controller.setRelatedAnnotation(nodeReference, EcoreAnnotation.PARSER_AST));
 		
@@ -381,7 +355,6 @@ public class AnnotationTest {
 		checkAnnotationNotPresent(nodeClass, EcoreAnnotation.PARSER);
 		checkAnnotationPresent(nodeAttribute, EcoreAnnotation.NODE_INFORMATIONAL);
 		checkAnnotationNotPresent(nodeOperation, EcoreAnnotation.PARSER_INIT);
-		checkAnnotationPresent(nodeReference, EcoreAnnotation.NODE_CHILDREN);
 		checkAnnotationNotPresent(nodeReference, EcoreAnnotation.PARSER_AST);
 		
 	}

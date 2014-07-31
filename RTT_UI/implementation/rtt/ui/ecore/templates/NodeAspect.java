@@ -36,15 +36,9 @@ public class NodeAspect
   protected final String TEXT_16 = NL + "\tdeclare @method: * ";
   protected final String TEXT_17 = ".";
   protected final String TEXT_18 = " : @Node.Compare;";
-  protected final String TEXT_19 = NL + "\tdeclare @method: * ";
-  protected final String TEXT_20 = ".";
-  protected final String TEXT_21 = "() : @Node.Child;";
-  protected final String TEXT_22 = NL + "\tdeclare @method: * ";
-  protected final String TEXT_23 = ".";
-  protected final String TEXT_24 = " : @Node.Child;";
-  protected final String TEXT_25 = NL + "\t";
-  protected final String TEXT_26 = NL + "}";
-  protected final String TEXT_27 = NL;
+  protected final String TEXT_19 = NL + "\t";
+  protected final String TEXT_20 = NL + "}";
+  protected final String TEXT_21 = NL;
 
   public String generate(Object argument)
   {
@@ -112,30 +106,14 @@ public class NodeAspect
     stringBuffer.append(genOperation.getFormattedName());
     stringBuffer.append(TEXT_18);
     	
-	}	
-	for (GenFeature genFeature : GeneratorUtil.getNodeFeatures(nodeClass, EcoreAnnotation.NODE_CHILDREN)) { 
-    stringBuffer.append(TEXT_19);
-    stringBuffer.append(className );
-    stringBuffer.append(TEXT_20);
-    stringBuffer.append(genFeature.getGetAccessor() );
-    stringBuffer.append(TEXT_21);
-    
-	}	
-	for (GenOperation genOperation : GeneratorUtil.getOperations(nodeClass, EcoreAnnotation.NODE_CHILDREN)) { 
-    stringBuffer.append(TEXT_22);
-    stringBuffer.append(className );
-    stringBuffer.append(TEXT_23);
-    stringBuffer.append(genOperation.getFormattedName());
-    stringBuffer.append(TEXT_24);
-    	
 	} 
-    stringBuffer.append(TEXT_25);
+    stringBuffer.append(TEXT_19);
      } 
-    stringBuffer.append(TEXT_26);
+    stringBuffer.append(TEXT_20);
     
 genModel.emitSortedImports();
 
-    stringBuffer.append(TEXT_27);
+    stringBuffer.append(TEXT_21);
     return stringBuffer.toString();
   }
 }
