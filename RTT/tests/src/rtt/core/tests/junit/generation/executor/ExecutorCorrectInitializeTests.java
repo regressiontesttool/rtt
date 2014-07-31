@@ -1,6 +1,7 @@
 package rtt.core.tests.junit.generation.executor;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,24 +124,6 @@ public class ExecutorCorrectInitializeTests {
 		@Parser.Initialize public AcceptedExceptionConstructorClass(InputStream in) {
 			throw new IllegalArgumentException("Testing exception");
 		}
-	}
-	
-	@Test(expected=UnsupportedOperationException.class)
-	public void testAcceptedExceptionConstructor() throws Throwable {
-		initializeExecutor(AcceptedExceptionConstructorClass.class);
-	}
-	
-	// Test: acceptedExceptions method
-
-	@Parser(acceptedExceptions={IllegalArgumentException.class}) static class AcceptedExceptionMethodClass {
-		@Parser.Initialize public void initMethod(InputStream in) {
-			throw new IllegalArgumentException("Testing exception");
-		}
-	}
-	
-	@Test(expected=UnsupportedOperationException.class)
-	public void testAcceptedExceptionMethodClass() throws Throwable {
-		initializeExecutor(AcceptedExceptionMethodClass.class);
 	}
 
 }
