@@ -19,10 +19,10 @@ public class RttPreferenceStore {
 		return context.getNode(RttPluginUI.PLUGIN_ID);
 	}
 	
-	public static String get(IProject project, String key, String def) {
+	public static String get(IProject project, String key, String defaultValue) {
 		IEclipsePreferences  pref = getPreferences(project);
 		if (pref != null) {
-			return pref.get(key, def);
+			return pref.get(key, defaultValue);
 		}
 		
 		return null;

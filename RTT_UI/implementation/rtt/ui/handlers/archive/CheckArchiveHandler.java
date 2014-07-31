@@ -4,7 +4,9 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Shell;
 
 import rtt.ui.RttPluginUI;
@@ -14,6 +16,7 @@ import rtt.ui.content.main.ProjectContent;
 import rtt.ui.ecore.util.Messages;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
+import rtt.ui.utils.RttPreferenceStore;
 
 public class CheckArchiveHandler extends AbstractSelectionHandler implements IHandler {
 
@@ -32,7 +35,20 @@ public class CheckArchiveHandler extends AbstractSelectionHandler implements IHa
 		IFile archiveFile = rttProject.getArchiveFile();
 		
 		if (archiveFile == null) {
-			throw new ExecutionException("The archive file was null, but should not.");
+			IProject project = rttProject.getIProject();
+			
+			String prefArchiveLocation = RttPreferenceStore.get(project,
+					RttPreferenceStore.PREF_ARCHIVE_PATH, 
+					null);
+			if (prefArchiveLocation == null || prefArchiveLocation.equals("")) {
+				try {
+					archiveFile = setRTTArchive(project);
+				} catch (CoreException e) {
+					return new ExecutionException("Could not create archive.", e);
+				}
+			} else {
+				archiveFile = project.getFile(prefArchiveLocation);
+			}
 		}
 		
 		if (!archiveFile.exists() && Messages.openQuestion(parent, RECREATE_ARCHIVE)) {
@@ -47,5 +63,15 @@ public class CheckArchiveHandler extends AbstractSelectionHandler implements IHa
 		RttPluginUI.getProjectManager().setCurrentContent(projectContent, true);
 	
 		return null;
+	}
+	
+	public IFile setRTTArchive(IProject project) throws CoreException {
+		IFile archiveFile = project.getFile("./rtt/archive.zip");
+		IPath path = archiveFile.getProjectRelativePath();
+		
+		RttPreferenceStore.put(project, RttPreferenceStore.PREF_ARCHIVE_PATH,
+				path.toPortableString());
+		
+		return archiveFile;
 	}
 }
