@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Regression Test Tool Core
 Bundle-SymbolicName: rtt.core;singleton:=true
-Bundle-Version: 1.6.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  libraries/runtime/ant.jar,
  libraries/runtime/jewelcli-0.6.jar,
