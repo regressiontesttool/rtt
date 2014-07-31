@@ -9,31 +9,30 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
-import regression.test.LexerOutputType;
+import regression.test.ClassNode;
 import regression.test.TestFactory;
 import regression.test.TestPackage;
 
 /**
- * This is the item provider adapter for a {@link regression.test.LexerOutputType} object.
+ * This is the item provider adapter for a {@link regression.test.ClassNode} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class LexerOutputTypeItemProvider
-	extends ItemProviderAdapter
+public class ClassNodeItemProvider
+	extends NodeItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -46,7 +45,7 @@ public class LexerOutputTypeItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LexerOutputTypeItemProvider(AdapterFactory adapterFactory) {
+	public ClassNodeItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -61,8 +60,54 @@ public class LexerOutputTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addSimpleNamePropertyDescriptor(object);
+			addFullNamePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Simple Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addSimpleNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ClassNode_simpleName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ClassNode_simpleName_feature", "_UI_ClassNode_type"),
+				 TestPackage.Literals.CLASS_NODE__SIMPLE_NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Full Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addFullNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ClassNode_fullName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ClassNode_fullName_feature", "_UI_ClassNode_type"),
+				 TestPackage.Literals.CLASS_NODE__FULL_NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -77,7 +122,7 @@ public class LexerOutputTypeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.LEXER_OUTPUT_TYPE__TOKEN);
+			childrenFeatures.add(TestPackage.Literals.CLASS_NODE__NODE);
 		}
 		return childrenFeatures;
 	}
@@ -96,14 +141,14 @@ public class LexerOutputTypeItemProvider
 	}
 
 	/**
-	 * This returns LexerOutputType.gif.
+	 * This returns ClassNode.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/LexerOutputType"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ClassNode"));
 	}
 
 	/**
@@ -114,7 +159,10 @@ public class LexerOutputTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_LexerOutputType_type");
+		String label = ((ClassNode)object).getGeneratorName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_ClassNode_type") :
+			getString("_UI_ClassNode_type") + " " + label;
 	}
 
 	/**
@@ -128,8 +176,12 @@ public class LexerOutputTypeItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(LexerOutputType.class)) {
-			case TestPackage.LEXER_OUTPUT_TYPE__TOKEN:
+		switch (notification.getFeatureID(ClassNode.class)) {
+			case TestPackage.CLASS_NODE__SIMPLE_NAME:
+			case TestPackage.CLASS_NODE__FULL_NAME:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case TestPackage.CLASS_NODE__NODE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -149,19 +201,18 @@ public class LexerOutputTypeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.LEXER_OUTPUT_TYPE__TOKEN,
-				 TestFactory.eINSTANCE.createToken()));
-	}
+				(TestPackage.Literals.CLASS_NODE__NODE,
+				 TestFactory.eINSTANCE.createNode()));
 
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return RTTOutputDataEditPlugin.INSTANCE;
+		newChildDescriptors.add
+			(createChildParameter
+				(TestPackage.Literals.CLASS_NODE__NODE,
+				 TestFactory.eINSTANCE.createClassNode()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(TestPackage.Literals.CLASS_NODE__NODE,
+				 TestFactory.eINSTANCE.createValueNode()));
 	}
 
 }

@@ -4,6 +4,8 @@ package regression.test;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -60,14 +62,32 @@ public class TestPackage extends EPackageImpl {
 	public static final TestPackage eINSTANCE = regression.test.TestPackage.init();
 
 	/**
-	 * The meta object id for the '{@link regression.test.Attribute <em>Attribute</em>}' class.
+	 * The meta object id for the '{@link regression.test.Node <em>Node</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see regression.test.Attribute
-	 * @see regression.test.TestPackage#getAttribute()
+	 * @see regression.test.Node
+	 * @see regression.test.TestPackage#getNode()
 	 * @generated
 	 */
-	public static final int ATTRIBUTE = 0;
+	public static final int NODE = 2;
+
+	/**
+	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int NODE__GENERATOR_NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int NODE__GENERATOR_TYPE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Informational</b></em>' attribute.
@@ -76,53 +96,71 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ATTRIBUTE__INFORMATIONAL = 0;
+	public static final int NODE__INFORMATIONAL = 2;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Is Null</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ATTRIBUTE__NAME = 1;
+	public static final int NODE__IS_NULL = 3;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * The number of structural features of the '<em>Node</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ATTRIBUTE__VALUE = 2;
+	public static final int NODE_FEATURE_COUNT = 4;
 
 	/**
-	 * The number of structural features of the '<em>Attribute</em>' class.
+	 * The meta object id for the '{@link regression.test.ClassNode <em>Class Node</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see regression.test.ClassNode
+	 * @see regression.test.TestPackage#getClassNode()
+	 * @generated
+	 */
+	public static final int CLASS_NODE = 0;
+
+	/**
+	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ATTRIBUTE_FEATURE_COUNT = 3;
+	public static final int CLASS_NODE__GENERATOR_NAME = NODE__GENERATOR_NAME;
 
 	/**
-	 * The meta object id for the '{@link regression.test.Classable <em>Classable</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see regression.test.Classable
-	 * @see regression.test.TestPackage#getClassable()
-	 * @generated
-	 */
-	public static final int CLASSABLE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int CLASSABLE__FULL_NAME = 0;
+	public static final int CLASS_NODE__GENERATOR_TYPE = NODE__GENERATOR_TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Informational</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CLASS_NODE__INFORMATIONAL = NODE__INFORMATIONAL;
+
+	/**
+	 * The feature id for the '<em><b>Is Null</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CLASS_NODE__IS_NULL = NODE__IS_NULL;
 
 	/**
 	 * The feature id for the '<em><b>Simple Name</b></em>' attribute.
@@ -131,16 +169,34 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int CLASSABLE__SIMPLE_NAME = 1;
+	public static final int CLASS_NODE__SIMPLE_NAME = NODE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Classable</em>' class.
+	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int CLASSABLE_FEATURE_COUNT = 2;
+	public static final int CLASS_NODE__FULL_NAME = NODE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Node</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CLASS_NODE__NODE = NODE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Class Node</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CLASS_NODE_FEATURE_COUNT = NODE_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link regression.test.DocumentRoot <em>Document Root</em>}' class.
@@ -150,7 +206,7 @@ public class TestPackage extends EPackageImpl {
 	 * @see regression.test.TestPackage#getDocumentRoot()
 	 * @generated
 	 */
-	public static final int DOCUMENT_ROOT = 2;
+	public static final int DOCUMENT_ROOT = 1;
 
 	/**
 	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
@@ -180,22 +236,13 @@ public class TestPackage extends EPackageImpl {
 	public static final int DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = 2;
 
 	/**
-	 * The feature id for the '<em><b>Lexer Output</b></em>' containment reference.
+	 * The feature id for the '<em><b>Output</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int DOCUMENT_ROOT__LEXER_OUTPUT = 3;
-
-	/**
-	 * The feature id for the '<em><b>Parser Output</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int DOCUMENT_ROOT__PARSER_OUTPUT = 4;
+	public static final int DOCUMENT_ROOT__OUTPUT = 3;
 
 	/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
@@ -204,72 +251,17 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int DOCUMENT_ROOT_FEATURE_COUNT = 5;
+	public static final int DOCUMENT_ROOT_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link regression.test.LexerOutputType <em>Lexer Output Type</em>}' class.
+	 * The meta object id for the '{@link regression.test.OutputType <em>Output Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see regression.test.LexerOutputType
-	 * @see regression.test.TestPackage#getLexerOutputType()
+	 * @see regression.test.OutputType
+	 * @see regression.test.TestPackage#getOutputType()
 	 * @generated
 	 */
-	public static final int LEXER_OUTPUT_TYPE = 3;
-
-	/**
-	 * The feature id for the '<em><b>Token</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int LEXER_OUTPUT_TYPE__TOKEN = 0;
-
-	/**
-	 * The number of structural features of the '<em>Lexer Output Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int LEXER_OUTPUT_TYPE_FEATURE_COUNT = 1;
-
-	/**
-	 * The meta object id for the '{@link regression.test.Node <em>Node</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see regression.test.Node
-	 * @see regression.test.TestPackage#getNode()
-	 * @generated
-	 */
-	public static final int NODE = 4;
-
-	/**
-	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int NODE__FULL_NAME = CLASSABLE__FULL_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Simple Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int NODE__SIMPLE_NAME = CLASSABLE__SIMPLE_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Attribute</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int NODE__ATTRIBUTE = CLASSABLE_FEATURE_COUNT + 0;
+	public static final int OUTPUT_TYPE = 3;
 
 	/**
 	 * The feature id for the '<em><b>Node</b></em>' containment reference list.
@@ -278,7 +270,53 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE__NODE = CLASSABLE_FEATURE_COUNT + 1;
+	public static final int OUTPUT_TYPE__NODE = 0;
+
+	/**
+	 * The number of structural features of the '<em>Output Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int OUTPUT_TYPE_FEATURE_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link regression.test.ValueNode <em>Value Node</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see regression.test.ValueNode
+	 * @see regression.test.TestPackage#getValueNode()
+	 * @generated
+	 */
+	public static final int VALUE_NODE = 4;
+
+	/**
+	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int VALUE_NODE__GENERATOR_NAME = NODE__GENERATOR_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int VALUE_NODE__GENERATOR_TYPE = NODE__GENERATOR_TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Informational</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int VALUE_NODE__INFORMATIONAL = NODE__INFORMATIONAL;
 
 	/**
 	 * The feature id for the '<em><b>Is Null</b></em>' attribute.
@@ -287,168 +325,52 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE__IS_NULL = CLASSABLE_FEATURE_COUNT + 2;
+	public static final int VALUE_NODE__IS_NULL = NODE__IS_NULL;
 
 	/**
-	 * The feature id for the '<em><b>Method</b></em>' attribute.
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE__METHOD = CLASSABLE_FEATURE_COUNT + 3;
+	public static final int VALUE_NODE__VALUE = NODE_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Node</em>' class.
+	 * The number of structural features of the '<em>Value Node</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE_FEATURE_COUNT = CLASSABLE_FEATURE_COUNT + 4;
+	public static final int VALUE_NODE_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
 
 	/**
-	 * The meta object id for the '{@link regression.test.ParserOutputType <em>Parser Output Type</em>}' class.
+	 * The meta object id for the '{@link regression.test.GeneratorType <em>Generator Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see regression.test.ParserOutputType
-	 * @see regression.test.TestPackage#getParserOutputType()
+	 * @see regression.test.GeneratorType
+	 * @see regression.test.TestPackage#getGeneratorType()
 	 * @generated
 	 */
-	public static final int PARSER_OUTPUT_TYPE = 5;
+	public static final int GENERATOR_TYPE = 5;
 
 	/**
-	 * The feature id for the '<em><b>Tree</b></em>' containment reference list.
+	 * The meta object id for the '<em>Generator Type Object</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int PARSER_OUTPUT_TYPE__TREE = 0;
-
-	/**
-	 * The number of structural features of the '<em>Parser Output Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int PARSER_OUTPUT_TYPE_FEATURE_COUNT = 1;
-
-	/**
-	 * The meta object id for the '{@link regression.test.Token <em>Token</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see regression.test.Token
-	 * @see regression.test.TestPackage#getToken()
+	 * @see regression.test.GeneratorType
+	 * @see regression.test.TestPackage#getGeneratorTypeObject()
 	 * @generated
 	 */
-	public static final int TOKEN = 6;
-
-	/**
-	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TOKEN__FULL_NAME = CLASSABLE__FULL_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Simple Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TOKEN__SIMPLE_NAME = CLASSABLE__SIMPLE_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Attribute</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TOKEN__ATTRIBUTE = CLASSABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Is Eof</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TOKEN__IS_EOF = CLASSABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Token</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TOKEN_FEATURE_COUNT = CLASSABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The meta object id for the '{@link regression.test.Tree <em>Tree</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see regression.test.Tree
-	 * @see regression.test.TestPackage#getTree()
-	 * @generated
-	 */
-	public static final int TREE = 7;
-
-	/**
-	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TREE__FULL_NAME = CLASSABLE__FULL_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Simple Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TREE__SIMPLE_NAME = CLASSABLE__SIMPLE_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Node</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TREE__NODE = CLASSABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Tree</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int TREE_FEATURE_COUNT = CLASSABLE_FEATURE_COUNT + 1;
+	public static final int GENERATOR_TYPE_OBJECT = 6;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass attributeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass classableEClass = null;
+	private EClass classNodeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -462,13 +384,6 @@ public class TestPackage extends EPackageImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass lexerOutputTypeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass nodeEClass = null;
 
 	/**
@@ -476,21 +391,28 @@ public class TestPackage extends EPackageImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass parserOutputTypeEClass = null;
+	private EClass outputTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass tokenEClass = null;
+	private EClass valueNodeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass treeEClass = null;
+	private EEnum generatorTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType generatorTypeObjectEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -558,92 +480,54 @@ public class TestPackage extends EPackageImpl {
 
 
 	/**
-	 * Returns the meta object for class '{@link regression.test.Attribute <em>Attribute</em>}'.
+	 * Returns the meta object for class '{@link regression.test.ClassNode <em>Class Node</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Attribute</em>'.
-	 * @see regression.test.Attribute
+	 * @return the meta object for class '<em>Class Node</em>'.
+	 * @see regression.test.ClassNode
 	 * @generated
 	 */
-	public EClass getAttribute() {
-		return attributeEClass;
+	public EClass getClassNode() {
+		return classNodeEClass;
 	}
 
 	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Attribute#isInformational <em>Informational</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Informational</em>'.
-	 * @see regression.test.Attribute#isInformational()
-	 * @see #getAttribute()
-	 * @generated
-	 */
-	public EAttribute getAttribute_Informational() {
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Attribute#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see regression.test.Attribute#getName()
-	 * @see #getAttribute()
-	 * @generated
-	 */
-	public EAttribute getAttribute_Name() {
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Attribute#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see regression.test.Attribute#getValue()
-	 * @see #getAttribute()
-	 * @generated
-	 */
-	public EAttribute getAttribute_Value() {
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * Returns the meta object for class '{@link regression.test.Classable <em>Classable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Classable</em>'.
-	 * @see regression.test.Classable
-	 * @generated
-	 */
-	public EClass getClassable() {
-		return classableEClass;
-	}
-
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Classable#getFullName <em>Full Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Full Name</em>'.
-	 * @see regression.test.Classable#getFullName()
-	 * @see #getClassable()
-	 * @generated
-	 */
-	public EAttribute getClassable_FullName() {
-		return (EAttribute)classableEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Classable#getSimpleName <em>Simple Name</em>}'.
+	 * Returns the meta object for the attribute '{@link regression.test.ClassNode#getSimpleName <em>Simple Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Simple Name</em>'.
-	 * @see regression.test.Classable#getSimpleName()
-	 * @see #getClassable()
+	 * @see regression.test.ClassNode#getSimpleName()
+	 * @see #getClassNode()
 	 * @generated
 	 */
-	public EAttribute getClassable_SimpleName() {
-		return (EAttribute)classableEClass.getEStructuralFeatures().get(1);
+	public EAttribute getClassNode_SimpleName() {
+		return (EAttribute)classNodeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * Returns the meta object for the attribute '{@link regression.test.ClassNode#getFullName <em>Full Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Full Name</em>'.
+	 * @see regression.test.ClassNode#getFullName()
+	 * @see #getClassNode()
+	 * @generated
+	 */
+	public EAttribute getClassNode_FullName() {
+		return (EAttribute)classNodeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link regression.test.ClassNode#getNode <em>Node</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Node</em>'.
+	 * @see regression.test.ClassNode#getNode()
+	 * @see #getClassNode()
+	 * @generated
+	 */
+	public EReference getClassNode_Node() {
+		return (EReference)classNodeEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -698,54 +582,16 @@ public class TestPackage extends EPackageImpl {
 	}
 
 	/**
-	 * Returns the meta object for the containment reference '{@link regression.test.DocumentRoot#getLexerOutput <em>Lexer Output</em>}'.
+	 * Returns the meta object for the containment reference '{@link regression.test.DocumentRoot#getOutput <em>Output</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Lexer Output</em>'.
-	 * @see regression.test.DocumentRoot#getLexerOutput()
+	 * @return the meta object for the containment reference '<em>Output</em>'.
+	 * @see regression.test.DocumentRoot#getOutput()
 	 * @see #getDocumentRoot()
 	 * @generated
 	 */
-	public EReference getDocumentRoot_LexerOutput() {
+	public EReference getDocumentRoot_Output() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * Returns the meta object for the containment reference '{@link regression.test.DocumentRoot#getParserOutput <em>Parser Output</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Parser Output</em>'.
-	 * @see regression.test.DocumentRoot#getParserOutput()
-	 * @see #getDocumentRoot()
-	 * @generated
-	 */
-	public EReference getDocumentRoot_ParserOutput() {
-		return (EReference)documentRootEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * Returns the meta object for class '{@link regression.test.LexerOutputType <em>Lexer Output Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Lexer Output Type</em>'.
-	 * @see regression.test.LexerOutputType
-	 * @generated
-	 */
-	public EClass getLexerOutputType() {
-		return lexerOutputTypeEClass;
-	}
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.LexerOutputType#getToken <em>Token</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Token</em>'.
-	 * @see regression.test.LexerOutputType#getToken()
-	 * @see #getLexerOutputType()
-	 * @generated
-	 */
-	public EReference getLexerOutputType_Token() {
-		return (EReference)lexerOutputTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -761,32 +607,43 @@ public class TestPackage extends EPackageImpl {
 	}
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.Node#getAttribute <em>Attribute</em>}'.
+	 * Returns the meta object for the attribute '{@link regression.test.Node#getGeneratorName <em>Generator Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Attribute</em>'.
-	 * @see regression.test.Node#getAttribute()
+	 * @return the meta object for the attribute '<em>Generator Name</em>'.
+	 * @see regression.test.Node#getGeneratorName()
 	 * @see #getNode()
 	 * @generated
 	 */
-	public EReference getNode_Attribute() {
-		return (EReference)nodeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getNode_GeneratorName() {
+		return (EAttribute)nodeEClass.getEStructuralFeatures().get(0);
 	}
-
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.Node#getNode <em>Node</em>}'.
+	 * Returns the meta object for the attribute '{@link regression.test.Node#getGeneratorType <em>Generator Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Node</em>'.
-	 * @see regression.test.Node#getNode()
+	 * @return the meta object for the attribute '<em>Generator Type</em>'.
+	 * @see regression.test.Node#getGeneratorType()
 	 * @see #getNode()
 	 * @generated
 	 */
-	public EReference getNode_Node() {
-		return (EReference)nodeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getNode_GeneratorType() {
+		return (EAttribute)nodeEClass.getEStructuralFeatures().get(1);
 	}
 
+	/**
+	 * Returns the meta object for the attribute '{@link regression.test.Node#isInformational <em>Informational</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Informational</em>'.
+	 * @see regression.test.Node#isInformational()
+	 * @see #getNode()
+	 * @generated
+	 */
+	public EAttribute getNode_Informational() {
+		return (EAttribute)nodeEClass.getEStructuralFeatures().get(2);
+	}
 
 	/**
 	 * Returns the meta object for the attribute '{@link regression.test.Node#isIsNull <em>Is Null</em>}'.
@@ -798,110 +655,83 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 */
 	public EAttribute getNode_IsNull() {
-		return (EAttribute)nodeEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Node#getMethod <em>Method</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Method</em>'.
-	 * @see regression.test.Node#getMethod()
-	 * @see #getNode()
-	 * @generated
-	 */
-	public EAttribute getNode_Method() {
 		return (EAttribute)nodeEClass.getEStructuralFeatures().get(3);
 	}
 
-
 	/**
-	 * Returns the meta object for class '{@link regression.test.ParserOutputType <em>Parser Output Type</em>}'.
+	 * Returns the meta object for class '{@link regression.test.OutputType <em>Output Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Parser Output Type</em>'.
-	 * @see regression.test.ParserOutputType
+	 * @return the meta object for class '<em>Output Type</em>'.
+	 * @see regression.test.OutputType
 	 * @generated
 	 */
-	public EClass getParserOutputType() {
-		return parserOutputTypeEClass;
+	public EClass getOutputType() {
+		return outputTypeEClass;
 	}
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.ParserOutputType#getTree <em>Tree</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Tree</em>'.
-	 * @see regression.test.ParserOutputType#getTree()
-	 * @see #getParserOutputType()
-	 * @generated
-	 */
-	public EReference getParserOutputType_Tree() {
-		return (EReference)parserOutputTypeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * Returns the meta object for class '{@link regression.test.Token <em>Token</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Token</em>'.
-	 * @see regression.test.Token
-	 * @generated
-	 */
-	public EClass getToken() {
-		return tokenEClass;
-	}
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.Token#getAttribute <em>Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Attribute</em>'.
-	 * @see regression.test.Token#getAttribute()
-	 * @see #getToken()
-	 * @generated
-	 */
-	public EReference getToken_Attribute() {
-		return (EReference)tokenEClass.getEStructuralFeatures().get(0);
-	}
-
-
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Token#isIsEof <em>Is Eof</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Is Eof</em>'.
-	 * @see regression.test.Token#isIsEof()
-	 * @see #getToken()
-	 * @generated
-	 */
-	public EAttribute getToken_IsEof() {
-		return (EAttribute)tokenEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * Returns the meta object for class '{@link regression.test.Tree <em>Tree</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Tree</em>'.
-	 * @see regression.test.Tree
-	 * @generated
-	 */
-	public EClass getTree() {
-		return treeEClass;
-	}
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link regression.test.Tree#getNode <em>Node</em>}'.
+	 * Returns the meta object for the containment reference list '{@link regression.test.OutputType#getNode <em>Node</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Node</em>'.
-	 * @see regression.test.Tree#getNode()
-	 * @see #getTree()
+	 * @see regression.test.OutputType#getNode()
+	 * @see #getOutputType()
 	 * @generated
 	 */
-	public EReference getTree_Node() {
-		return (EReference)treeEClass.getEStructuralFeatures().get(0);
+	public EReference getOutputType_Node() {
+		return (EReference)outputTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * Returns the meta object for class '{@link regression.test.ValueNode <em>Value Node</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Value Node</em>'.
+	 * @see regression.test.ValueNode
+	 * @generated
+	 */
+	public EClass getValueNode() {
+		return valueNodeEClass;
+	}
+
+	/**
+	 * Returns the meta object for the attribute '{@link regression.test.ValueNode#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see regression.test.ValueNode#getValue()
+	 * @see #getValueNode()
+	 * @generated
+	 */
+	public EAttribute getValueNode_Value() {
+		return (EAttribute)valueNodeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * Returns the meta object for enum '{@link regression.test.GeneratorType <em>Generator Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Generator Type</em>'.
+	 * @see regression.test.GeneratorType
+	 * @generated
+	 */
+	public EEnum getGeneratorType() {
+		return generatorTypeEEnum;
+	}
+
+	/**
+	 * Returns the meta object for data type '{@link regression.test.GeneratorType <em>Generator Type Object</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Generator Type Object</em>'.
+	 * @see regression.test.GeneratorType
+	 * @model instanceClass="regression.test.GeneratorType"
+	 *        extendedMetaData="name='generatorType:Object' baseType='generatorType'"
+	 * @generated
+	 */
+	public EDataType getGeneratorTypeObject() {
+		return generatorTypeObjectEDataType;
 	}
 
 	/**
@@ -934,40 +764,34 @@ public class TestPackage extends EPackageImpl {
 		isCreated = true;
 
 		// Create classes and their features
-		attributeEClass = createEClass(ATTRIBUTE);
-		createEAttribute(attributeEClass, ATTRIBUTE__INFORMATIONAL);
-		createEAttribute(attributeEClass, ATTRIBUTE__NAME);
-		createEAttribute(attributeEClass, ATTRIBUTE__VALUE);
-
-		classableEClass = createEClass(CLASSABLE);
-		createEAttribute(classableEClass, CLASSABLE__FULL_NAME);
-		createEAttribute(classableEClass, CLASSABLE__SIMPLE_NAME);
+		classNodeEClass = createEClass(CLASS_NODE);
+		createEAttribute(classNodeEClass, CLASS_NODE__SIMPLE_NAME);
+		createEAttribute(classNodeEClass, CLASS_NODE__FULL_NAME);
+		createEReference(classNodeEClass, CLASS_NODE__NODE);
 
 		documentRootEClass = createEClass(DOCUMENT_ROOT);
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__MIXED);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__LEXER_OUTPUT);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__PARSER_OUTPUT);
-
-		lexerOutputTypeEClass = createEClass(LEXER_OUTPUT_TYPE);
-		createEReference(lexerOutputTypeEClass, LEXER_OUTPUT_TYPE__TOKEN);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__OUTPUT);
 
 		nodeEClass = createEClass(NODE);
-		createEReference(nodeEClass, NODE__ATTRIBUTE);
-		createEReference(nodeEClass, NODE__NODE);
+		createEAttribute(nodeEClass, NODE__GENERATOR_NAME);
+		createEAttribute(nodeEClass, NODE__GENERATOR_TYPE);
+		createEAttribute(nodeEClass, NODE__INFORMATIONAL);
 		createEAttribute(nodeEClass, NODE__IS_NULL);
-		createEAttribute(nodeEClass, NODE__METHOD);
 
-		parserOutputTypeEClass = createEClass(PARSER_OUTPUT_TYPE);
-		createEReference(parserOutputTypeEClass, PARSER_OUTPUT_TYPE__TREE);
+		outputTypeEClass = createEClass(OUTPUT_TYPE);
+		createEReference(outputTypeEClass, OUTPUT_TYPE__NODE);
 
-		tokenEClass = createEClass(TOKEN);
-		createEReference(tokenEClass, TOKEN__ATTRIBUTE);
-		createEAttribute(tokenEClass, TOKEN__IS_EOF);
+		valueNodeEClass = createEClass(VALUE_NODE);
+		createEAttribute(valueNodeEClass, VALUE_NODE__VALUE);
 
-		treeEClass = createEClass(TREE);
-		createEReference(treeEClass, TREE__NODE);
+		// Create enums
+		generatorTypeEEnum = createEEnum(GENERATOR_TYPE);
+
+		// Create data types
+		generatorTypeObjectEDataType = createEDataType(GENERATOR_TYPE_OBJECT);
 	}
 
 	/**
@@ -1001,45 +825,40 @@ public class TestPackage extends EPackageImpl {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		nodeEClass.getESuperTypes().add(this.getClassable());
-		tokenEClass.getESuperTypes().add(this.getClassable());
-		treeEClass.getESuperTypes().add(this.getClassable());
+		classNodeEClass.getESuperTypes().add(this.getNode());
+		valueNodeEClass.getESuperTypes().add(this.getNode());
 
 		// Initialize classes and features; add operations and parameters
-		initEClass(attributeEClass, Attribute.class, "Attribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getAttribute_Informational(), theXMLTypePackage.getBoolean(), "informational", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAttribute_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAttribute_Value(), theXMLTypePackage.getString(), "value", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(classableEClass, Classable.class, "Classable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getClassable_FullName(), theXMLTypePackage.getString(), "fullName", null, 0, 1, Classable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getClassable_SimpleName(), theXMLTypePackage.getString(), "simpleName", null, 0, 1, Classable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(classNodeEClass, ClassNode.class, "ClassNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getClassNode_SimpleName(), theXMLTypePackage.getString(), "simpleName", null, 1, 1, ClassNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getClassNode_FullName(), theXMLTypePackage.getString(), "fullName", null, 1, 1, ClassNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getClassNode_Node(), this.getNode(), null, "node", null, 1, -1, ClassNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDocumentRoot_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_XMLNSPrefixMap(), ecorePackage.getEStringToStringMapEntry(), null, "xMLNSPrefixMap", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_XSISchemaLocation(), ecorePackage.getEStringToStringMapEntry(), null, "xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_LexerOutput(), this.getLexerOutputType(), null, "lexerOutput", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_ParserOutput(), this.getParserOutputType(), null, "parserOutput", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-
-		initEClass(lexerOutputTypeEClass, LexerOutputType.class, "LexerOutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getLexerOutputType_Token(), this.getToken(), null, "token", null, 0, -1, LexerOutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Output(), this.getOutputType(), null, "output", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(nodeEClass, Node.class, "Node", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getNode_Attribute(), this.getAttribute(), null, "attribute", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getNode_Node(), this.getNode(), null, "node", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getNode_GeneratorName(), theXMLTypePackage.getString(), "generatorName", null, 1, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getNode_GeneratorType(), this.getGeneratorType(), "generatorType", null, 1, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getNode_Informational(), theXMLTypePackage.getBoolean(), "informational", "false", 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getNode_IsNull(), theXMLTypePackage.getBoolean(), "isNull", "false", 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getNode_Method(), theXMLTypePackage.getString(), "method", null, 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(parserOutputTypeEClass, ParserOutputType.class, "ParserOutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getParserOutputType_Tree(), this.getTree(), null, "tree", null, 0, -1, ParserOutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(outputTypeEClass, OutputType.class, "OutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getOutputType_Node(), this.getNode(), null, "node", null, 0, -1, OutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(tokenEClass, Token.class, "Token", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getToken_Attribute(), this.getAttribute(), null, "attribute", null, 0, -1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getToken_IsEof(), theXMLTypePackage.getBoolean(), "isEof", "false", 0, 1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(valueNodeEClass, ValueNode.class, "ValueNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getValueNode_Value(), theXMLTypePackage.getString(), "value", null, 1, 1, ValueNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(treeEClass, Tree.class, "Tree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTree_Node(), this.getNode(), null, "node", null, 0, -1, Tree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		// Initialize enums and add enum literals
+		initEEnum(generatorTypeEEnum, GeneratorType.class, "GeneratorType");
+		addEEnumLiteral(generatorTypeEEnum, GeneratorType.FIELD);
+		addEEnumLiteral(generatorTypeEEnum, GeneratorType.METHOD);
+
+		// Initialize data types
+		initEDataType(generatorTypeObjectEDataType, GeneratorType.class, "GeneratorTypeObject", IS_SERIALIZABLE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -1058,53 +877,35 @@ public class TestPackage extends EPackageImpl {
 	protected void createExtendedMetaDataAnnotations() {
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";		
 		addAnnotation
-		  (attributeEClass, 
+		  (classNodeEClass, 
 		   source, 
 		   new String[] {
-			 "name", "attribute",
-			 "kind", "empty"
+			 "name", "classNode",
+			 "kind", "elementOnly"
 		   });		
 		addAnnotation
-		  (getAttribute_Informational(), 
+		  (getClassNode_SimpleName(), 
 		   source, 
 		   new String[] {
-			 "kind", "attribute",
-			 "name", "informational"
+			 "kind", "element",
+			 "name", "simpleName",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getAttribute_Name(), 
+		  (getClassNode_FullName(), 
 		   source, 
 		   new String[] {
-			 "kind", "attribute",
-			 "name", "name"
+			 "kind", "element",
+			 "name", "fullName",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getAttribute_Value(), 
+		  (getClassNode_Node(), 
 		   source, 
 		   new String[] {
-			 "kind", "attribute",
-			 "name", "value"
-		   });		
-		addAnnotation
-		  (classableEClass, 
-		   source, 
-		   new String[] {
-			 "name", "classable",
-			 "kind", "empty"
-		   });		
-		addAnnotation
-		  (getClassable_FullName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "fullName"
-		   });		
-		addAnnotation
-		  (getClassable_SimpleName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "simpleName"
+			 "kind", "element",
+			 "name", "node",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (documentRootEClass, 
@@ -1135,58 +936,53 @@ public class TestPackage extends EPackageImpl {
 			 "name", "xsi:schemaLocation"
 		   });		
 		addAnnotation
-		  (getDocumentRoot_LexerOutput(), 
+		  (getDocumentRoot_Output(), 
 		   source, 
 		   new String[] {
 			 "kind", "element",
-			 "name", "lexerOutput",
+			 "name", "output",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getDocumentRoot_ParserOutput(), 
+		  (generatorTypeEEnum, 
 		   source, 
 		   new String[] {
-			 "kind", "element",
-			 "name", "parserOutput",
-			 "namespace", "##targetNamespace"
-		   });			
-		addAnnotation
-		  (lexerOutputTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "lexerOutput_._type",
-			 "kind", "elementOnly"
+			 "name", "generatorType"
 		   });		
 		addAnnotation
-		  (getLexerOutputType_Token(), 
+		  (generatorTypeObjectEDataType, 
 		   source, 
 		   new String[] {
-			 "kind", "element",
-			 "name", "token",
-			 "namespace", "##targetNamespace"
+			 "name", "generatorType:Object",
+			 "baseType", "generatorType"
 		   });		
 		addAnnotation
 		  (nodeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "node",
-			 "kind", "elementOnly"
+			 "kind", "empty"
 		   });		
 		addAnnotation
-		  (getNode_Attribute(), 
+		  (getNode_GeneratorName(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
-			 "name", "attribute",
-			 "namespace", "##targetNamespace"
+			 "kind", "attribute",
+			 "name", "generatorName"
 		   });		
 		addAnnotation
-		  (getNode_Node(), 
+		  (getNode_GeneratorType(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
-			 "name", "node",
-			 "namespace", "##targetNamespace"
+			 "kind", "attribute",
+			 "name", "generatorType"
+		   });		
+		addAnnotation
+		  (getNode_Informational(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "informational"
 		   });		
 		addAnnotation
 		  (getNode_IsNull(), 
@@ -1196,63 +992,33 @@ public class TestPackage extends EPackageImpl {
 			 "name", "isNull"
 		   });		
 		addAnnotation
-		  (getNode_Method(), 
+		  (outputTypeEClass, 
 		   source, 
 		   new String[] {
-			 "kind", "attribute",
-			 "name", "method"
-		   });			
-		addAnnotation
-		  (parserOutputTypeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "parserOutput_._type",
+			 "name", "output_._type",
 			 "kind", "elementOnly"
 		   });		
 		addAnnotation
-		  (getParserOutputType_Tree(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "tree",
-			 "namespace", "##targetNamespace"
-		   });		
-		addAnnotation
-		  (tokenEClass, 
-		   source, 
-		   new String[] {
-			 "name", "token",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getToken_Attribute(), 
-		   source, 
-		   new String[] {
-			 "kind", "element",
-			 "name", "attribute",
-			 "namespace", "##targetNamespace"
-		   });		
-		addAnnotation
-		  (getToken_IsEof(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "isEof"
-		   });		
-		addAnnotation
-		  (treeEClass, 
-		   source, 
-		   new String[] {
-			 "name", "tree",
-			 "kind", "elementOnly"
-		   });		
-		addAnnotation
-		  (getTree_Node(), 
+		  (getOutputType_Node(), 
 		   source, 
 		   new String[] {
 			 "kind", "element",
 			 "name", "node",
 			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (valueNodeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "valueNode",
+			 "kind", "empty"
+		   });		
+		addAnnotation
+		  (getValueNode_Value(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "value"
 		   });
 	}
 
@@ -1270,56 +1036,14 @@ public class TestPackage extends EPackageImpl {
 	 */
 	public interface Literals {
 		/**
-		 * The meta object literal for the '{@link regression.test.Attribute <em>Attribute</em>}' class.
+		 * The meta object literal for the '{@link regression.test.ClassNode <em>Class Node</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see regression.test.Attribute
-		 * @see regression.test.TestPackage#getAttribute()
+		 * @see regression.test.ClassNode
+		 * @see regression.test.TestPackage#getClassNode()
 		 * @generated
 		 */
-		public static final EClass ATTRIBUTE = eINSTANCE.getAttribute();
-
-		/**
-		 * The meta object literal for the '<em><b>Informational</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute ATTRIBUTE__INFORMATIONAL = eINSTANCE.getAttribute_Informational();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute ATTRIBUTE__NAME = eINSTANCE.getAttribute_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute ATTRIBUTE__VALUE = eINSTANCE.getAttribute_Value();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.Classable <em>Classable</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.Classable
-		 * @see regression.test.TestPackage#getClassable()
-		 * @generated
-		 */
-		public static final EClass CLASSABLE = eINSTANCE.getClassable();
-
-		/**
-		 * The meta object literal for the '<em><b>Full Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute CLASSABLE__FULL_NAME = eINSTANCE.getClassable_FullName();
+		public static final EClass CLASS_NODE = eINSTANCE.getClassNode();
 
 		/**
 		 * The meta object literal for the '<em><b>Simple Name</b></em>' attribute feature.
@@ -1327,7 +1051,23 @@ public class TestPackage extends EPackageImpl {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EAttribute CLASSABLE__SIMPLE_NAME = eINSTANCE.getClassable_SimpleName();
+		public static final EAttribute CLASS_NODE__SIMPLE_NAME = eINSTANCE.getClassNode_SimpleName();
+
+		/**
+		 * The meta object literal for the '<em><b>Full Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		public static final EAttribute CLASS_NODE__FULL_NAME = eINSTANCE.getClassNode_FullName();
+
+		/**
+		 * The meta object literal for the '<em><b>Node</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		public static final EReference CLASS_NODE__NODE = eINSTANCE.getClassNode_Node();
 
 		/**
 		 * The meta object literal for the '{@link regression.test.DocumentRoot <em>Document Root</em>}' class.
@@ -1364,38 +1104,12 @@ public class TestPackage extends EPackageImpl {
 		public static final EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
 		/**
-		 * The meta object literal for the '<em><b>Lexer Output</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Output</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EReference DOCUMENT_ROOT__LEXER_OUTPUT = eINSTANCE.getDocumentRoot_LexerOutput();
-
-		/**
-		 * The meta object literal for the '<em><b>Parser Output</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EReference DOCUMENT_ROOT__PARSER_OUTPUT = eINSTANCE.getDocumentRoot_ParserOutput();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.LexerOutputType <em>Lexer Output Type</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.LexerOutputType
-		 * @see regression.test.TestPackage#getLexerOutputType()
-		 * @generated
-		 */
-		public static final EClass LEXER_OUTPUT_TYPE = eINSTANCE.getLexerOutputType();
-
-		/**
-		 * The meta object literal for the '<em><b>Token</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EReference LEXER_OUTPUT_TYPE__TOKEN = eINSTANCE.getLexerOutputType_Token();
+		public static final EReference DOCUMENT_ROOT__OUTPUT = eINSTANCE.getDocumentRoot_Output();
 
 		/**
 		 * The meta object literal for the '{@link regression.test.Node <em>Node</em>}' class.
@@ -1408,20 +1122,28 @@ public class TestPackage extends EPackageImpl {
 		public static final EClass NODE = eINSTANCE.getNode();
 
 		/**
-		 * The meta object literal for the '<em><b>Attribute</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Generator Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EReference NODE__ATTRIBUTE = eINSTANCE.getNode_Attribute();
+		public static final EAttribute NODE__GENERATOR_NAME = eINSTANCE.getNode_GeneratorName();
 
 		/**
-		 * The meta object literal for the '<em><b>Node</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Generator Type</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EReference NODE__NODE = eINSTANCE.getNode_Node();
+		public static final EAttribute NODE__GENERATOR_TYPE = eINSTANCE.getNode_GeneratorType();
+
+		/**
+		 * The meta object literal for the '<em><b>Informational</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		public static final EAttribute NODE__INFORMATIONAL = eINSTANCE.getNode_Informational();
 
 		/**
 		 * The meta object literal for the '<em><b>Is Null</b></em>' attribute feature.
@@ -1432,66 +1154,14 @@ public class TestPackage extends EPackageImpl {
 		public static final EAttribute NODE__IS_NULL = eINSTANCE.getNode_IsNull();
 
 		/**
-		 * The meta object literal for the '<em><b>Method</b></em>' attribute feature.
+		 * The meta object literal for the '{@link regression.test.OutputType <em>Output Type</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see regression.test.OutputType
+		 * @see regression.test.TestPackage#getOutputType()
 		 * @generated
 		 */
-		public static final EAttribute NODE__METHOD = eINSTANCE.getNode_Method();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.ParserOutputType <em>Parser Output Type</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.ParserOutputType
-		 * @see regression.test.TestPackage#getParserOutputType()
-		 * @generated
-		 */
-		public static final EClass PARSER_OUTPUT_TYPE = eINSTANCE.getParserOutputType();
-
-		/**
-		 * The meta object literal for the '<em><b>Tree</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EReference PARSER_OUTPUT_TYPE__TREE = eINSTANCE.getParserOutputType_Tree();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.Token <em>Token</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.Token
-		 * @see regression.test.TestPackage#getToken()
-		 * @generated
-		 */
-		public static final EClass TOKEN = eINSTANCE.getToken();
-
-		/**
-		 * The meta object literal for the '<em><b>Attribute</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EReference TOKEN__ATTRIBUTE = eINSTANCE.getToken_Attribute();
-
-		/**
-		 * The meta object literal for the '<em><b>Is Eof</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute TOKEN__IS_EOF = eINSTANCE.getToken_IsEof();
-
-		/**
-		 * The meta object literal for the '{@link regression.test.Tree <em>Tree</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see regression.test.Tree
-		 * @see regression.test.TestPackage#getTree()
-		 * @generated
-		 */
-		public static final EClass TREE = eINSTANCE.getTree();
+		public static final EClass OUTPUT_TYPE = eINSTANCE.getOutputType();
 
 		/**
 		 * The meta object literal for the '<em><b>Node</b></em>' containment reference list feature.
@@ -1499,7 +1169,45 @@ public class TestPackage extends EPackageImpl {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EReference TREE__NODE = eINSTANCE.getTree_Node();
+		public static final EReference OUTPUT_TYPE__NODE = eINSTANCE.getOutputType_Node();
+
+		/**
+		 * The meta object literal for the '{@link regression.test.ValueNode <em>Value Node</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see regression.test.ValueNode
+		 * @see regression.test.TestPackage#getValueNode()
+		 * @generated
+		 */
+		public static final EClass VALUE_NODE = eINSTANCE.getValueNode();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		public static final EAttribute VALUE_NODE__VALUE = eINSTANCE.getValueNode_Value();
+
+		/**
+		 * The meta object literal for the '{@link regression.test.GeneratorType <em>Generator Type</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see regression.test.GeneratorType
+		 * @see regression.test.TestPackage#getGeneratorType()
+		 * @generated
+		 */
+		public static final EEnum GENERATOR_TYPE = eINSTANCE.getGeneratorType();
+
+		/**
+		 * The meta object literal for the '<em>Generator Type Object</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see regression.test.GeneratorType
+		 * @see regression.test.TestPackage#getGeneratorTypeObject()
+		 * @generated
+		 */
+		public static final EDataType GENERATOR_TYPE_OBJECT = eINSTANCE.getGeneratorTypeObject();
 
 	}
 

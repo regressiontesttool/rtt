@@ -66,15 +66,10 @@ public class TestSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case TestPackage.ATTRIBUTE: {
-				Attribute attribute = (Attribute)theEObject;
-				T result = caseAttribute(attribute);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case TestPackage.CLASSABLE: {
-				Classable classable = (Classable)theEObject;
-				T result = caseClassable(classable);
+			case TestPackage.CLASS_NODE: {
+				ClassNode classNode = (ClassNode)theEObject;
+				T result = caseClassNode(classNode);
+				if (result == null) result = caseNode(classNode);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -84,36 +79,22 @@ public class TestSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case TestPackage.LEXER_OUTPUT_TYPE: {
-				LexerOutputType lexerOutputType = (LexerOutputType)theEObject;
-				T result = caseLexerOutputType(lexerOutputType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case TestPackage.NODE: {
 				Node node = (Node)theEObject;
 				T result = caseNode(node);
-				if (result == null) result = caseClassable(node);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case TestPackage.PARSER_OUTPUT_TYPE: {
-				ParserOutputType parserOutputType = (ParserOutputType)theEObject;
-				T result = caseParserOutputType(parserOutputType);
+			case TestPackage.OUTPUT_TYPE: {
+				OutputType outputType = (OutputType)theEObject;
+				T result = caseOutputType(outputType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case TestPackage.TOKEN: {
-				Token token = (Token)theEObject;
-				T result = caseToken(token);
-				if (result == null) result = caseClassable(token);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case TestPackage.TREE: {
-				Tree tree = (Tree)theEObject;
-				T result = caseTree(tree);
-				if (result == null) result = caseClassable(tree);
+			case TestPackage.VALUE_NODE: {
+				ValueNode valueNode = (ValueNode)theEObject;
+				T result = caseValueNode(valueNode);
+				if (result == null) result = caseNode(valueNode);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -122,32 +103,17 @@ public class TestSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Attribute</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Class Node</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Attribute</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Class Node</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAttribute(Attribute object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Classable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Classable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseClassable(Classable object) {
+	public T caseClassNode(ClassNode object) {
 		return null;
 	}
 
@@ -167,21 +133,6 @@ public class TestSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Lexer Output Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Lexer Output Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLexerOutputType(LexerOutputType object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Node</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -197,47 +148,32 @@ public class TestSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Parser Output Type</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Output Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Parser Output Type</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Output Type</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseParserOutputType(ParserOutputType object) {
+	public T caseOutputType(OutputType object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Token</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Value Node</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Token</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Value Node</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseToken(Token object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Tree</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Tree</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseTree(Tree object) {
+	public T caseValueNode(ValueNode object) {
 		return null;
 	}
 

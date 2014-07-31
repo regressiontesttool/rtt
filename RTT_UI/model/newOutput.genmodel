@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/rtt.ui/src-gen" editDirectory="/rtt.ui/src-gen"
+    modelPluginID="rtt.ui" modelName="NewOutput" suppressInterfaces="true" importerID="org.eclipse.xsd.ecore.importer"
+    complianceLevel="7.0" copyrightFields="false" importOrganizing="true">
+  <foreignModel>../../RTT/schemes/Output.xsd</foreignModel>
+  <genPackages prefix="Test" basePackage="regression" resource="XML" disposableProviderFactory="true"
+      ecorePackage="newOuput.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="newOuput.ecore#//GeneratorType">
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/FIELD"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/METHOD"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="newOuput.ecore#//GeneratorTypeObject"/>
+    <genClasses ecoreClass="newOuput.ecore#//ClassNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//ClassNode/simpleName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//ClassNode/fullName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//ClassNode/node"/>
+    </genClasses>
+    <genClasses ecoreClass="newOuput.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/output"/>
+    </genClasses>
+    <genClasses ecoreClass="newOuput.ecore#//Node">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/generatorName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/generatorType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/informational"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/isNull"/>
+    </genClasses>
+    <genClasses ecoreClass="newOuput.ecore#//OutputType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//OutputType/node"/>
+    </genClasses>
+    <genClasses ecoreClass="newOuput.ecore#//ValueNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//ValueNode/value"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

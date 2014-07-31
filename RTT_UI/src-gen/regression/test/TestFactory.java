@@ -3,6 +3,7 @@
 package regression.test;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -35,7 +36,7 @@ public class TestFactory extends EFactoryImpl {
 	 */
 	public static TestFactory init() {
 		try {
-			TestFactory theTestFactory = (TestFactory)EPackage.Registry.INSTANCE.getEFactory("regression.test.tool"); 
+			TestFactory theTestFactory = (TestFactory)EPackage.Registry.INSTANCE.getEFactory(TestPackage.eNS_URI);
 			if (theTestFactory != null) {
 				return theTestFactory;
 			}
@@ -64,14 +65,11 @@ public class TestFactory extends EFactoryImpl {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case TestPackage.ATTRIBUTE: return createAttribute();
-			case TestPackage.CLASSABLE: return createClassable();
+			case TestPackage.CLASS_NODE: return createClassNode();
 			case TestPackage.DOCUMENT_ROOT: return createDocumentRoot();
-			case TestPackage.LEXER_OUTPUT_TYPE: return createLexerOutputType();
 			case TestPackage.NODE: return createNode();
-			case TestPackage.PARSER_OUTPUT_TYPE: return createParserOutputType();
-			case TestPackage.TOKEN: return createToken();
-			case TestPackage.TREE: return createTree();
+			case TestPackage.OUTPUT_TYPE: return createOutputType();
+			case TestPackage.VALUE_NODE: return createValueNode();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -82,9 +80,16 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Attribute createAttribute() {
-		Attribute attribute = new Attribute();
-		return attribute;
+	@Override
+	public Object createFromString(EDataType eDataType, String initialValue) {
+		switch (eDataType.getClassifierID()) {
+			case TestPackage.GENERATOR_TYPE:
+				return createGeneratorTypeFromString(eDataType, initialValue);
+			case TestPackage.GENERATOR_TYPE_OBJECT:
+				return createGeneratorTypeObjectFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		}
 	}
 
 	/**
@@ -92,9 +97,26 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Classable createClassable() {
-		Classable classable = new Classable();
-		return classable;
+	@Override
+	public String convertToString(EDataType eDataType, Object instanceValue) {
+		switch (eDataType.getClassifierID()) {
+			case TestPackage.GENERATOR_TYPE:
+				return convertGeneratorTypeToString(eDataType, instanceValue);
+			case TestPackage.GENERATOR_TYPE_OBJECT:
+				return convertGeneratorTypeObjectToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ClassNode createClassNode() {
+		ClassNode classNode = new ClassNode();
+		return classNode;
 	}
 
 	/**
@@ -112,16 +134,6 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LexerOutputType createLexerOutputType() {
-		LexerOutputType lexerOutputType = new LexerOutputType();
-		return lexerOutputType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Node createNode() {
 		Node node = new Node();
 		return node;
@@ -132,9 +144,9 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ParserOutputType createParserOutputType() {
-		ParserOutputType parserOutputType = new ParserOutputType();
-		return parserOutputType;
+	public OutputType createOutputType() {
+		OutputType outputType = new OutputType();
+		return outputType;
 	}
 
 	/**
@@ -142,9 +154,9 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Token createToken() {
-		Token token = new Token();
-		return token;
+	public ValueNode createValueNode() {
+		ValueNode valueNode = new ValueNode();
+		return valueNode;
 	}
 
 	/**
@@ -152,9 +164,37 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Tree createTree() {
-		Tree tree = new Tree();
-		return tree;
+	public GeneratorType createGeneratorTypeFromString(EDataType eDataType, String initialValue) {
+		GeneratorType result = GeneratorType.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertGeneratorTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public GeneratorType createGeneratorTypeObjectFromString(EDataType eDataType, String initialValue) {
+		return createGeneratorTypeFromString(TestPackage.Literals.GENERATOR_TYPE, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertGeneratorTypeObjectToString(EDataType eDataType, Object instanceValue) {
+		return convertGeneratorTypeToString(TestPackage.Literals.GENERATOR_TYPE, instanceValue);
 	}
 
 	/**

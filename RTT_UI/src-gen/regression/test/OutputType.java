@@ -9,29 +9,32 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Tree</b></em>'.
+ * A representation of the model object '<em><b>Output Type</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link regression.test.Tree#getNode <em>Node</em>}</li>
+ *   <li>{@link regression.test.OutputType#getNode <em>Node</em>}</li>
  * </ul>
  * </p>
  *
- * @see regression.test.TestPackage#getTree()
+ * @see regression.test.TestPackage#getOutputType()
  * @model kind="class"
- *        extendedMetaData="name='tree' kind='elementOnly'"
+ *        extendedMetaData="name='output_._type' kind='elementOnly'"
  * @generated
  */
-public class Tree extends Classable {
+public class OutputType extends EObjectImpl implements EObject {
 	/**
 	 * The cached value of the '{@link #getNode() <em>Node</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -47,7 +50,7 @@ public class Tree extends Classable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected Tree() {
+	protected OutputType() {
 		super();
 	}
 
@@ -58,7 +61,7 @@ public class Tree extends Classable {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return TestPackage.Literals.TREE;
+		return TestPackage.Literals.OUTPUT_TYPE;
 	}
 
 	/**
@@ -71,14 +74,14 @@ public class Tree extends Classable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Node</em>' containment reference list.
-	 * @see regression.test.TestPackage#getTree_Node()
+	 * @see regression.test.TestPackage#getOutputType_Node()
 	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='node' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	public EList<Node> getNode() {
 		if (node == null) {
-			node = new EObjectContainmentEList<Node>(Node.class, this, TestPackage.TREE__NODE);
+			node = new EObjectContainmentEList<Node>(Node.class, this, TestPackage.OUTPUT_TYPE__NODE);
 		}
 		return node;
 	}
@@ -91,7 +94,7 @@ public class Tree extends Classable {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case TestPackage.TREE__NODE:
+			case TestPackage.OUTPUT_TYPE__NODE:
 				return ((InternalEList<?>)getNode()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -105,7 +108,7 @@ public class Tree extends Classable {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case TestPackage.TREE__NODE:
+			case TestPackage.OUTPUT_TYPE__NODE:
 				return getNode();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -120,7 +123,7 @@ public class Tree extends Classable {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case TestPackage.TREE__NODE:
+			case TestPackage.OUTPUT_TYPE__NODE:
 				getNode().clear();
 				getNode().addAll((Collection<? extends Node>)newValue);
 				return;
@@ -136,7 +139,7 @@ public class Tree extends Classable {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case TestPackage.TREE__NODE:
+			case TestPackage.OUTPUT_TYPE__NODE:
 				getNode().clear();
 				return;
 		}
@@ -151,10 +154,10 @@ public class Tree extends Classable {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case TestPackage.TREE__NODE:
+			case TestPackage.OUTPUT_TYPE__NODE:
 				return node != null && !node.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
-} // Tree
+} // OutputType

@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EStructuralFeature;
+
+import org.eclipse.emf.common.util.ResourceLocator;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -17,10 +19,10 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Node;
-import regression.test.TestFactory;
 import regression.test.TestPackage;
 
 /**
@@ -30,7 +32,7 @@ import regression.test.TestPackage;
  * @generated
  */
 public class NodeItemProvider
-	extends ClassableItemProvider
+	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -58,10 +60,78 @@ public class NodeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addGeneratorNamePropertyDescriptor(object);
+			addGeneratorTypePropertyDescriptor(object);
+			addInformationalPropertyDescriptor(object);
 			addIsNullPropertyDescriptor(object);
-			addMethodPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Generator Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addGeneratorNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Node_generatorName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Node_generatorName_feature", "_UI_Node_type"),
+				 TestPackage.Literals.NODE__GENERATOR_NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Generator Type feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addGeneratorTypePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Node_generatorType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Node_generatorType_feature", "_UI_Node_type"),
+				 TestPackage.Literals.NODE__GENERATOR_TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Informational feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addInformationalPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Node_informational_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Node_informational_feature", "_UI_Node_type"),
+				 TestPackage.Literals.NODE__INFORMATIONAL,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -87,59 +157,6 @@ public class NodeItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Method feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addMethodPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Node_method_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Node_method_feature", "_UI_Node_type"),
-				 TestPackage.Literals.NODE__METHOD,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.NODE__ATTRIBUTE);
-			childrenFeatures.add(TestPackage.Literals.NODE__NODE);
-		}
-		return childrenFeatures;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	/**
 	 * This returns Node.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -154,24 +171,14 @@ public class NodeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated NOT
+	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		Node node = (Node) object;
-		StringBuffer buffer = new StringBuffer();
-		
-		buffer.append(node.getMethod());
-		buffer.append(" = ");
-		
-		if (node.isIsNull()) {
-			buffer.append("<null>");
-		} else {
-			buffer.append(super.getText(object));	
-		}
-		
-		return buffer.length() > 0 ? buffer.toString() :
-				getString("_UI_Node_type");
+		String label = ((Node)object).getGeneratorName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_Node_type") :
+			getString("_UI_Node_type") + " " + label;
 	}
 
 	/**
@@ -186,13 +193,11 @@ public class NodeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Node.class)) {
+			case TestPackage.NODE__GENERATOR_NAME:
+			case TestPackage.NODE__GENERATOR_TYPE:
+			case TestPackage.NODE__INFORMATIONAL:
 			case TestPackage.NODE__IS_NULL:
-			case TestPackage.NODE__METHOD:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case TestPackage.NODE__ATTRIBUTE:
-			case TestPackage.NODE__NODE:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -208,16 +213,17 @@ public class NodeItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
 
-		newChildDescriptors.add
-			(createChildParameter
-				(TestPackage.Literals.NODE__ATTRIBUTE,
-				 TestFactory.eINSTANCE.createAttribute()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(TestPackage.Literals.NODE__NODE,
-				 TestFactory.eINSTANCE.createNode()));
+	/**
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return NewOutputEditPlugin.INSTANCE;
 	}
 
 }
