@@ -5,47 +5,36 @@
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
 	
-	<xs:simpleType name="generatorType">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="FIELD" />
-			<xs:enumeration value="METHOD" />
-		</xs:restriction>
-	</xs:simpleType>
-
-	<xs:complexType name="node">
+	<xs:complexType name="member">
+		<xs:sequence>
+			<xs:element name="node" type="rtt:node" 
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
 		<xs:attribute name="informational" type="xs:boolean" default="false"/>
 		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
-		<xs:attribute name="generatorName" type="xs:string" use="required"/>
-		<xs:attribute name="generatorType" type="rtt:generatorType" use="required"/>		
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required" />
 	</xs:complexType>
-	
-	<xs:complexType name="valueNode">
-		<xs:complexContent>
-			<xs:extension base="rtt:node">
-				<xs:attribute name="value" type="xs:string" use="required" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:complexType name="classNode">
-		<xs:complexContent>
-			<xs:extension base="rtt:node">
-				<xs:sequence>
-					<xs:element name="simpleName" type="xs:string" />
-					<xs:element name="fullName" type="xs:string" />
-					<xs:element name="node" type="rtt:node" 
-						minOccurs="1" maxOccurs="unbounded" />
-					</xs:sequence>
-			</xs:extension>		
-		</xs:complexContent>
+
+	<xs:complexType name="node">
+		<xs:sequence>
+			<xs:element name="field" type="rtt:member"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="method" type="rtt:member" 
+				minOccurs="0" maxOccurs="unbounded" />		
+			</xs:sequence>
+			<xs:attribute name="simpleName" type="xs:string" />
+			<xs:attribute name="fullName" type="xs:string" />
 	</xs:complexType>
 		
 	<xs:element name="output" >
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="node" type="rtt:node" 
-					minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="AST" type="rtt:member" 
+					minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
+			<xs:attribute name="executor" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

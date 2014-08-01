@@ -6,15 +6,15 @@
 <jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
 	<jaxb:bindings schemaLocation="Output.xsd" node="/xsd:schema">	
 		
-		<!-- adding plural s to "node" for better accessing (hint for List) -->
+		<!-- adding plural s to "node" for better accessing (hint for List) 
 		<jaxb:bindings node="//xsd:element[@name='output']//xsd:element[@name='node']">
 			<jaxb:property name="nodes" />
-		</jaxb:bindings>
+		</jaxb:bindings> -->
 		
-		<!-- adding plural s to "node" for better accessing (hint for List) -->
+		<!-- adding plural s to "node" for better accessing (hint for List)
 		<jaxb:bindings node="//xsd:complexType[@name='classNode']//xsd:element[@name='node']">
 			<jaxb:property name="nodes" />
-		</jaxb:bindings>
+		</jaxb:bindings> -->
 		
 	</jaxb:bindings>
 </jaxb:bindings>
