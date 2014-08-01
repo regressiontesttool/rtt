@@ -3,8 +3,11 @@ package rtt.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -17,6 +20,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -159,6 +163,23 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		btnAddFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnAddFolder.setText("Add Binary Folder ...");
 		btnAddFolder.addSelectionListener(new ResourceSelectionAdapter(DialogType.CONTAINER, this));
+		
+		Button btnAddAbsolute = new Button(classpathComposite, SWT.NONE);
+		btnAddAbsolute.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		btnAddAbsolute.setText("Add Entry ...");
+		btnAddAbsolute.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				InputDialog dialog = new InputDialog(getParentShell(), "Add Entry...", "", "", null);
+				dialog.setBlockOnOpen(true);
+				
+				if (dialog.open() == Dialog.OK) {
+					cpEntries.add(dialog.getValue());
+					setOkButtonEnabled(true);
+					listViewer.refresh();
+				}
+			}
+		});
 		
 		Composite composite = new Composite(classpathComposite, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
