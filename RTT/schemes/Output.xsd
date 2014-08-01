@@ -5,7 +5,14 @@
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
 	
-	<xs:complexType name="member">
+	<xs:simpleType name="type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FIELD" />
+			<xs:enumeration value="METHOD" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="value">
 		<xs:sequence>
 			<xs:element name="node" type="rtt:node" 
 				minOccurs="0" maxOccurs="unbounded"/>
@@ -13,15 +20,13 @@
 		<xs:attribute name="informational" type="xs:boolean" default="false"/>
 		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="rtt:type" use="required" />
 		<xs:attribute name="value" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="node">
 		<xs:sequence>
-			<xs:element name="field" type="rtt:member"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="method" type="rtt:member" 
+			<xs:element name="values" type="rtt:value"
 				minOccurs="0" maxOccurs="unbounded" />		
 			</xs:sequence>
 			<xs:attribute name="simpleName" type="xs:string" />
@@ -31,7 +36,7 @@
 	<xs:element name="output" >
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="AST" type="rtt:member" 
+				<xs:element name="AST" type="rtt:value" 
 					minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
 			<xs:attribute name="executor" type="xs:string" />
