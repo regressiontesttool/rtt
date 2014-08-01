@@ -1,14 +1,11 @@
 package rtt.core.testing.compare;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import rtt.core.archive.output.ClassNode;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
-import rtt.core.archive.output.ValueNode;
+import rtt.core.archive.output.Value;
 import rtt.core.testing.compare.OutputCompare.CompareResult.DifferenceType;
 import rtt.core.testing.compare.results.TestFailure;
 
@@ -71,17 +68,17 @@ public class OutputCompare {
 			return difference != null && !difference.equals("");
 		}
 		
-		public static CompareResult create(DifferenceType type, Node expected, Node actual) {
+		public static CompareResult create(DifferenceType type, Value expected, Value actual) {
 			String message = "";
 			switch (type) {
 			case CLASSES:
 				message = type.getDescription(expected.getClass(), actual.getClass());
 				break;
 			case GEN_NAME:
-				message = type.getDescription(expected.getGeneratorName(), actual.getGeneratorName());
+				message = type.getDescription(expected.getName(), actual.getName());
 				break;
 			case GEN_TYPE:
-				message = type.getDescription(expected.getGeneratorType().name(), actual.getGeneratorType().name());
+				message = type.getDescription(expected.getType(), actual.getType());
 				break;
 			case ISINFORMATIONAL:
 				message = type.getDescription(expected.isInformational(), actual.isInformational());
@@ -101,19 +98,23 @@ public class OutputCompare {
 		}
 	}
 	
+	private static final String VALUE_UNEQUAL =	
+			"The node values are different.";
+	private static final String NODE_NULL = 
+			"One or both given nodes were null.";	
+	private static final String SIZE_UNEQUAL = 
+			"The amount of reference and actual nodes are not equal.";
+	private static final String SIMPLENAME_UNEQUAL =
+			"The simple name attributes are different.";
+	private static final String FULLNAME_UNEQUAL = 
+			"The full name attributes are different.";
+	private static final String CHILDREN_UNEQUAL =
+			"The sizes of children nodes are different.";
 	
-	private static final String NODE_NULL = "One or both given nodes were null.";	
-	private static final String SIZE_UNEQUAL = "The amount of reference and actual nodes are not equal.";
-	
-	private Map<Class<? extends Node>, ExtendedComparator<?>> comparerMap;
 	private boolean testInformational;
 	
-	public OutputCompare(boolean testInformational) {
+	private OutputCompare(boolean testInformational) {
 		this.testInformational = testInformational;
-		
-		comparerMap = new HashMap<>();			
-		comparerMap.put(ClassNode.class, new ClassNodeComparer(this));
-		comparerMap.put(ValueNode.class, new ValueNodeComparer(this));
 	}
 
 	public static List<TestFailure> compareOutput(
@@ -123,40 +124,19 @@ public class OutputCompare {
 			throw new IllegalArgumentException("Reference or actual output was null.");
 		}
 		
-		OutputCompare compare = new OutputCompare(testInformational);
+		OutputCompare comparer = new OutputCompare(testInformational);
+		CompareResult result = comparer.compareValue(
+				referenceOutput.getAST(), actualOutput.getAST());
 		
 		List<TestFailure> failures = new ArrayList<>();
-		
-		failures.addAll(compare.compareNodeLists(
-				referenceOutput.getNodes(), actualOutput.getNodes()));
-		
-		return failures;
-	}
-	
-	private List<TestFailure> compareNodeLists(List<Node> referenceNodes, 
-			List<Node> actualNodes) {
-		
-		List<TestFailure> failures = new ArrayList<>();
-		
-		if (referenceNodes.size() != actualNodes.size()) {
-			failures.add(new TestFailure(SIZE_UNEQUAL));
-			return failures;
-		}
-		
-		for(int index = 0; index < referenceNodes.size(); index++) {
-			Node referenceNode = referenceNodes.get(index);
-			Node actualNode = actualNodes.get(index);
-			
-			CompareResult result = compareNodes(referenceNode, actualNode);
-			if (result != null && result.hasDifferences()) {
-				failures.add(new TestFailure(result.getDifference()));
-			}
+		if (result != null && result.hasDifferences()) {			
+			failures.add(new TestFailure(result.getDifference()));
 		}
 		
 		return failures;
 	}
 	
-	public CompareResult compareNodes(Node referenceNode, Node actualNode) {
+	private CompareResult compareValue(Value referenceNode, Value actualNode) {
 		
 		if (referenceNode == null || actualNode == null) {
 			throw new IllegalStateException(NODE_NULL);
@@ -172,30 +152,79 @@ public class OutputCompare {
 				return CompareResult.create(DifferenceType.CLASSES, referenceNode, actualNode);
 			}
 			
-			if (!referenceNode.getGeneratorType().equals(actualNode.getGeneratorType())) {
+			if (!referenceNode.getName().equals(actualNode.getName())) {
+				return CompareResult.create(DifferenceType.GEN_NAME, referenceNode, actualNode);
+			}
+			
+			if (!referenceNode.getType().equals(actualNode.getType())) {
 				return CompareResult.create(DifferenceType.GEN_TYPE, referenceNode, actualNode);
 			}
-
-			if (!referenceNode.getGeneratorName().equals(actualNode.getGeneratorName())) {
-				return CompareResult.create(DifferenceType.GEN_NAME, referenceNode, actualNode);
-			}			
 
 			if (referenceNode.isIsNull() != actualNode.isIsNull()) {
 				return CompareResult.create(DifferenceType.ISNULL, referenceNode, actualNode);
 			}
 			
-			ExtendedComparator<?> comparer = getComparer(referenceNode.getClass());
-			if (comparer != null) {
-				return comparer.compareNodes(referenceNode, actualNode);
-			}			
+			if (!referenceNode.isIsNull()) {
+				if (!referenceNode.getValue().equals(actualNode.getValue())) {
+					return CompareResult.create(VALUE_UNEQUAL);
+				}
+				
+				return compareNodes(referenceNode.getNode(), actualNode.getNode());
+			}	
+		}
+		
+		return null;
+	}
+	
+	private CompareResult compareNodes(
+			List<Node> referenceNodes, List<Node> actualNodes) {
+		
+		if (referenceNodes.size() != actualNodes.size()) {
+			return CompareResult.create(SIZE_UNEQUAL);
+		}
+		
+		for(int index = 0; index < referenceNodes.size(); index++) {
+			Node referenceNode = referenceNodes.get(index);
+			Node actualNode = actualNodes.get(index);
+			
+			CompareResult result = compareNode(referenceNode, actualNode);
+			if (result != null && result.hasDifferences()) {
+				return result;
+			}
 		}
 		
 		return null;
 	}
 
-	private ExtendedComparator<? extends Node> getComparer(Class<?> nodeClass) {
-		if (comparerMap.containsKey(nodeClass)) {
-			return comparerMap.get(nodeClass);
+	private CompareResult compareNode(Node referenceNode, Node actualNode) {
+		if (!referenceNode.getSimpleName().equals(actualNode.getSimpleName())) {
+			return CompareResult.create(SIMPLENAME_UNEQUAL);
+		}
+		
+		if (!referenceNode.getFullName().equals(actualNode.getFullName())) {
+			return CompareResult.create(FULLNAME_UNEQUAL);
+		}
+		
+		return compareChildren(
+				referenceNode.getValues(),
+				actualNode.getValues());
+	}
+	
+	private CompareResult compareChildren(
+			List<Value> refValues, List<Value> actualValues) {
+		
+		if (refValues.size() != actualValues.size()) {
+			return CompareResult.create(CHILDREN_UNEQUAL);
+		}
+		
+		int childCount = refValues.size();
+		for (int index = 0; index < childCount; index++) {
+			CompareResult result = compareValue(
+					refValues.get(index), actualValues.get(index));
+			
+			if (result != null && result.hasDifferences()) {
+				return result;
+			}			
 		}
 		
 		return null;

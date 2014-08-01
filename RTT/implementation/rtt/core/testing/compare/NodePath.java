@@ -3,15 +3,16 @@ package rtt.core.testing.compare;
 import java.util.LinkedList;
 import java.util.List;
 
+import rtt.core.archive.output.Value;
 import rtt.core.archive.output.Node;
 import rtt.core.manager.Printer;
 
 public class NodePath {
 
-	List<Node> path;
+	List<Value> path;
 
-	public NodePath(Node root) {
-		path = new LinkedList<Node>();
+	public NodePath(Value root) {
+		path = new LinkedList<Value>();
 		path.add(root);
 	}
 
@@ -19,7 +20,7 @@ public class NodePath {
 
 		String xp = "/archiveLog";
 		Integer curPos = null;
-		Node curNode = null;
+		Value curNode = null;
 		for (int i = 0; i < path.size(); i++) {
 			curNode = path.get(i);
 
@@ -50,13 +51,13 @@ public class NodePath {
 		return xp;
 	}
 
-	NodePath(List<Node> path, Node newNode) {
-		this.path = new LinkedList<Node>();
+	NodePath(List<Value> path, Value newNode) {
+		this.path = new LinkedList<Value>();
 		this.path.addAll(path);
 		this.path.add(newNode);
 	}
 
-	public NodePath concat(Node newNode) {
+	public NodePath concat(Value newNode) {
 		return new NodePath(path, newNode);
 	}
 
@@ -65,7 +66,7 @@ public class NodePath {
 		String offset = new String();
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < path.size(); i++) {
-			builder.append(offset + Printer.PrintNode(path.get(i)) + "\n");
+			builder.append(offset + Printer.printValue(path.get(i)) + "\n");
 			offset += " ";
 
 		}

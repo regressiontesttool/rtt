@@ -59,7 +59,7 @@ public class OutputManager extends AbstractDataManager<Output> {
 			return true;
 		}
 		
-		if (oldData.getNodes() == newData.getNodes()) {
+		if (oldData.getAST() == newData.getAST()) {
 			return true;
 		}
 

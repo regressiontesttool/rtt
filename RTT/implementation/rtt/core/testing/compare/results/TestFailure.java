@@ -1,16 +1,18 @@
 package rtt.core.testing.compare.results;
 
+import rtt.core.archive.output.Value;
 import rtt.core.archive.output.Node;
 import rtt.core.manager.Printer;
 import rtt.core.testing.compare.NodePath;
 
 public class TestFailure implements ITestFailure {
-	Node was, expected;
+	Value was;
+	Value expected;
 	Integer attrPos;
 	NodePath path;
 	String m = null;
 
-	public TestFailure(Node was, Node expected, 
+	public TestFailure(Value was, Value expected, 
 			NodePath path, Integer attribPos) {
 		super();
 		this.was = was;
@@ -29,8 +31,8 @@ public class TestFailure implements ITestFailure {
 		if (m != null)
 			return m;
 
-		return "Expected Node:\n" + Printer.PrintNode(expected)
-				+ "\nbut Node was:\n" + Printer.PrintNode(was) + "\n"
+		return "Expected Node:\n" + Printer.printValue(expected)
+				+ "\nbut Node was:\n" + Printer.printValue(was) + "\n"
 				+ "Path:\n" + path.toString();
 	}
 
@@ -47,8 +49,8 @@ public class TestFailure implements ITestFailure {
 		if (m != null)
 			return m;
 
-		return "Node " + Printer.PrintNode(was)
+		return "Node " + Printer.printValue(was)
 				+ " differs from expected node "
-				+ Printer.PrintNode(expected);
+				+ Printer.printValue(expected);
 	}
 }

@@ -13,11 +13,10 @@ import rtt.annotations.Node.Informational;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.ClassNode;
-import rtt.core.archive.output.GeneratorType;
+import rtt.core.archive.output.Type;
+import rtt.core.archive.output.Value;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
-import rtt.core.archive.output.ValueNode;
 import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
@@ -31,20 +30,13 @@ public class DataGenerator {
 	private static final String ONLY_NONVOID_METHODS = "Only methods with a non-void return type allowed.";
 	private static final String ONLY_PARAMETERLESS_METHODS = "Only methods without parameters allowed.";
 	
-	private Executor executor;	
-
-	protected DataGenerator(Executor parser) {
-		this.executor = parser;
-	}
+	private DataGenerator() {}
 	
-	private Output createOutput() throws InvocationTargetException {
-		
-		Output outputData = new Output();
+	public static void createOutput(Executor executor, Output outputData) throws InvocationTargetException {
 		
 		Method astMethod = executor.getASTMethod();
 		if (astMethod == null) {
-			RTTLogging.warn(NO_AST_METHOD);
-			return outputData;
+			RTTLogging.throwException(new RuntimeException(NO_AST_METHOD));
 		}		
 		
 		Object astMethodResult = null;
@@ -55,118 +47,93 @@ public class DataGenerator {
 			throw new RuntimeException("Could not invoke method. ", exception);
 		}
 		
-		if (astMethodResult != null) {
-			Node astNode = new Node();
-			astNode.setGeneratorName(astMethod.getName());
-			astNode.setGeneratorType(GeneratorType.METHOD);
-			
-			outputData.getNodes().addAll(handleObject(astMethodResult, astNode));
-		}
+		Value astValue = new Value();
+		astValue.setName(astMethod.getName());
+		astValue.setType(Type.METHOD);
+		handleResult(astMethodResult, astValue);
 		
-		return outputData;
+		outputData.setAST(astValue);
 	}
 	
-	private List<Node> handleObject(final Object currentObject, final Node templateNode) throws InvocationTargetException {
+	private static void handleResult(final Object currentObject, final Value member) throws InvocationTargetException {
 		
-		List<Node> resultList = new ArrayList<>();
 		if (currentObject instanceof Object[]) {
-			resultList.addAll(handleArray((Object[]) currentObject, templateNode));
+			handleArray((Object[]) currentObject, member);
 		} else if (currentObject instanceof Iterable<?>) {
-			resultList.addAll(handleIterable((Iterable<?>) currentObject, templateNode));
+			handleIterable((Iterable<?>) currentObject, member);			
+		} else if (currentObject != null) {
+			handleObject(currentObject, member);
 		} else {
-			resultList.add(createNode(currentObject, templateNode));
+			member.setIsNull(true);
 		}
-		
-		return resultList;
 	}
 	
-	private List<Node> handleArray(final Object[] currentObject, final Node templateNode) throws InvocationTargetException {
-		
-		List<Node> resultList = new ArrayList<>();
-		for (Object item : currentObject) {
-			resultList.addAll(handleObject(item, templateNode));
+	private static void handleArray(final Object[] objectArray, final Value member) throws InvocationTargetException {
+		for (Object object : objectArray) {
+			handleObject(object, member);
 		}
-		
-		return resultList;
 	}
 	
-	private List<Node> handleIterable(final Iterable<?> currentObject, final Node templateNode) throws InvocationTargetException {
-		
-		List<Node> resultList = new ArrayList<>();
-		for (Object item : currentObject) {
-			resultList.addAll(handleObject(item, templateNode));
+	private static void handleIterable(final Iterable<?> iterable, final Value member) throws InvocationTargetException {		
+		for (Object object : iterable) {
+			handleObject(object, member);
 		}
-		
-		return resultList;
 	}
 	
-	private Node createNode(final Object currentObject, final Node templateNode) throws InvocationTargetException {
-		
-		if (currentObject == null) {
-			templateNode.setIsNull(true);
-			return templateNode;
+	private static void handleObject(final Object object, final Value member) throws InvocationTargetException {
+		if (AnnotationProcessor.hasAnnotation(object.getClass(), NODE_ANNOTATION)) {
+			handleNode(object, member);
+		} else {
+			member.setValue(object.toString());
 		}
-		
-		if (AnnotationProcessor.hasAnnotation(currentObject.getClass(), NODE_ANNOTATION)) {
-			return createClassNode(currentObject, templateNode);
-		} 
-
-		return createValueNode(currentObject, templateNode);
 	}
 
-	private Node createClassNode(final Object currentObject, final Node parentNode) throws InvocationTargetException {
+	private static void handleNode(final Object currentObject, final Value member) throws InvocationTargetException {
 		
 		Class<?> objectType = currentObject.getClass();		
-		ClassNode resultNode = new ClassNode();
 		
-		resultNode.setGeneratorName(parentNode.getGeneratorName());
-		resultNode.setGeneratorType(parentNode.getGeneratorType());
-		resultNode.setInformational(parentNode.isInformational());
-		
+		Node resultNode = new Node();
 		resultNode.setFullName(objectType.getName());
-		resultNode.setSimpleName(objectType.getSimpleName());		
+		resultNode.setSimpleName(objectType.getSimpleName());	
 		
-		resultNode.getNodes().addAll(processFields(currentObject, COMPARE_ANNOTATION, parentNode.isInformational()));
-		resultNode.getNodes().addAll(processFields(currentObject, INFORMATIONAL_ANNOTATION, parentNode.isInformational()));
+		resultNode.getValues().addAll(processFields(currentObject, COMPARE_ANNOTATION, member.isInformational()));
+		resultNode.getValues().addAll(processFields(currentObject, INFORMATIONAL_ANNOTATION, member.isInformational()));
 		
-		resultNode.getNodes().addAll(processMethods(currentObject, COMPARE_ANNOTATION, parentNode.isInformational()));
-		resultNode.getNodes().addAll(processMethods(currentObject, INFORMATIONAL_ANNOTATION, parentNode.isInformational()));
+		resultNode.getValues().addAll(processMethods(currentObject, COMPARE_ANNOTATION, member.isInformational()));
+		resultNode.getValues().addAll(processMethods(currentObject, INFORMATIONAL_ANNOTATION, member.isInformational()));
 		
-		return resultNode;
+		member.getNode().add(resultNode);
 	}
 	
-	private List<Node> processFields(Object currentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) throws InvocationTargetException {
-		List<Node> resultList = new ArrayList<>();
-		List<Field> annotatedFields = AnnotationProcessor.getFields(currentObject.getClass(), annotation);
+	private static List<Value> processFields(Object parentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) throws InvocationTargetException {
+		List<Value> resultList = new ArrayList<>();
+		List<Field> annotatedFields = AnnotationProcessor.getFields(parentObject.getClass(), annotation);
 		
 		for (Field field : annotatedFields) {
-			field.setAccessible(true);
+			Value fieldValue = new Value();
+			fieldValue.setName(field.getName());
+			fieldValue.setType(Type.FIELD);
+			fieldValue.setInformational(isInformational(parentIsInformational, field));
 			
-			String fieldName;
-			Object fieldResult;
+			field.setAccessible(true);
 			try {
-				fieldName = field.getName();
-				fieldResult = field.get(currentObject);
+				handleResult(field.get(parentObject), fieldValue);
 			} catch (IllegalAccessException | IllegalArgumentException e) {
-				throw new RuntimeException("Could not access field.", e);
+				RTTLogging.throwException(
+						new RuntimeException("Could not access field.", e));
 			}
 			
-			Node fieldNode = new Node();
-			fieldNode.setGeneratorName(fieldName);
-			fieldNode.setGeneratorType(GeneratorType.FIELD);
-			fieldNode.setInformational(isInformational(parentIsInformational, field));
-			
-			resultList.addAll(handleObject(fieldResult, fieldNode));
+			resultList.add(fieldValue);
 		}
 		
 		return resultList;
 	}
 	
-	private List<Node> processMethods(final Object currentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) 
+	private static List<Value> processMethods(final Object parentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) 
 			throws InvocationTargetException {
 		
-		List<Node> resultList = new ArrayList<>();
-		List<Method> annotatedMethods = AnnotationProcessor.getMethods(currentObject.getClass(), annotation);
+		List<Value> resultList = new ArrayList<>();
+		List<Method> annotatedMethods = AnnotationProcessor.getMethods(parentObject.getClass(), annotation);
 		
 		for (Method method : annotatedMethods) {
 			if (method.getReturnType() == Void.TYPE) {
@@ -179,42 +146,26 @@ public class DataGenerator {
 				continue;
 			}
 			
-			method.setAccessible(true);			
+			Value methodValue = new Value();
+			methodValue.setName(method.getName());
+			methodValue.setType(Type.METHOD);
+			methodValue.setInformational(isInformational(parentIsInformational, method));
 			
-			String methodName;
-			Object methodResult;
+			method.setAccessible(true);			
 			try {
-				methodName = method.getName();
-				methodResult = method.invoke(currentObject);
+				handleResult(method.invoke(parentObject), methodValue);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				throw new RuntimeException("Could not invoke method.", e);
 			}
 			
-			Node methodNode = new Node();
-			methodNode.setGeneratorName(methodName);
-			methodNode.setGeneratorType(GeneratorType.METHOD);
-			methodNode.setInformational(isInformational(parentIsInformational, method));
-			
-			resultList.addAll(handleObject(methodResult, methodNode));
+			resultList.add(methodValue);
 		}
 		
 		return resultList;
 	}
 	
-	private boolean isInformational(boolean parentIsInformational, AnnotatedElement element) {
+	private static boolean isInformational(boolean parentIsInformational, AnnotatedElement element) {
 		return parentIsInformational || element.isAnnotationPresent(INFORMATIONAL_ANNOTATION);
-	}
-
-	private Node createValueNode(final Object currentObject, final Node templateNode) {
-		ValueNode resultNode = new ValueNode();
-		
-		resultNode.setGeneratorName(templateNode.getGeneratorName());
-		resultNode.setGeneratorType(templateNode.getGeneratorType());
-		resultNode.setInformational(templateNode.isInformational());
-		
-		resultNode.setValue(currentObject.toString());	
-
-		return resultNode;
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
@@ -231,10 +182,7 @@ public class DataGenerator {
 				executor.initialize(input, params);
 				
 				RTTLogging.debug("Generating output data ...");
-				DataGenerator generator = new DataGenerator(executor);
-				
-				// TODO output data as parameter 
-				outputData = generator.createOutput();
+				DataGenerator.createOutput(executor, outputData);
 				
 			} catch (InvocationTargetException invocationException) {
 				Throwable cause = invocationException.getCause();

@@ -1,27 +1,27 @@
 package rtt.core.manager;
 
-import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Value;
 
 public class Printer {
 
-	static public String PrintNode(Node node) {
+	static public String printValue(Value value) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Node: ");
 		
-		if (node == null) {
+		if (value == null) {
 			builder.append("<null>");
 			return builder.toString();
 		}		
 		
-		builder.append(node.getGeneratorName());
+		builder.append(value.getName());
 		builder.append(" - ");
-		builder.append(node.getGeneratorType().name());
+		builder.append(value.getType());
 		
-		if (node.isIsNull()) {
+		if (value.isIsNull()) {
 			builder.append(" returned null.");
 		}
 		
-		if (node.isInformational()) {
+		if (value.isInformational()) {
 			builder.append(" [INFORMATIONAL]");
 		}
 	
