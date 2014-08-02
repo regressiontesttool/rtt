@@ -9,34 +9,41 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="FIELD" />
 			<xs:enumeration value="METHOD" />
+			<xs:enumeration value="ELEMENT" />
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="value">
-		<xs:sequence>
-			<xs:element name="node" type="rtt:node" 
-				minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="informational" type="xs:boolean" default="false"/>
-		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
+	<xs:complexType name="element" abstract="true">
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="rtt:type" use="required" />
-		<xs:attribute name="value" type="xs:string" use="required" />
+		<xs:attribute name="informational" type="xs:boolean" default="false" />
 	</xs:complexType>
-
+	
+	<xs:complexType name="value">
+		<xs:complexContent>
+			<xs:extension base="rtt:element">
+				<xs:attribute name="value" type="xs:string" use="required" />
+			</xs:extension>		
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name="node">
-		<xs:sequence>
-			<xs:element name="values" type="rtt:value"
-				minOccurs="0" maxOccurs="unbounded" />		
-			</xs:sequence>
-			<xs:attribute name="simpleName" type="xs:string" />
-			<xs:attribute name="fullName" type="xs:string" />
+		<xs:complexContent>
+			<xs:extension base="rtt:element">
+				<xs:sequence>
+					<xs:element name="element" type="rtt:element" 
+						minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="fullName" type="xs:string" />			
+				<xs:attribute name="simpleName" type="xs:string" />	
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 		
 	<xs:element name="output" >
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="AST" type="rtt:value" 
+				<xs:element name="AST" type="rtt:element" 
 					minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
 			<xs:attribute name="executor" type="xs:string" />
