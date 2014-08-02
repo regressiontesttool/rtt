@@ -3,6 +3,7 @@ package rtt.core.testing.compare;
 import java.util.ArrayList;
 import java.util.List;
 
+import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.Value;
@@ -32,7 +33,6 @@ public class OutputCompare {
 		public enum DifferenceType {
 			CLASSES("Node classes"),
 			ISINFORMATIONAL("IsInformational"),
-			ISNULL("IsNull"),
 			GEN_NAME("Generator name"),
 			GEN_TYPE("Generator type");
 			
@@ -68,7 +68,7 @@ public class OutputCompare {
 			return difference != null && !difference.equals("");
 		}
 		
-		public static CompareResult create(DifferenceType type, Value expected, Value actual) {
+		public static CompareResult create(DifferenceType type, Element expected, Element actual) {
 			String message = "";
 			switch (type) {
 			case CLASSES:
@@ -82,9 +82,6 @@ public class OutputCompare {
 				break;
 			case ISINFORMATIONAL:
 				message = type.getDescription(expected.isInformational(), actual.isInformational());
-				break;
-			case ISNULL:
-				message = type.getDescription(expected.isIsNull(), actual.isIsNull());
 				break;
 			}
 
@@ -136,60 +133,44 @@ public class OutputCompare {
 		return failures;
 	}
 	
-	private CompareResult compareValue(Value referenceNode, Value actualNode) {
+	private CompareResult compareValue(Element referenceElement, Element actualElement) {
 		
-		if (referenceNode == null || actualNode == null) {
+		if (referenceElement == null || actualElement == null) {
 			throw new IllegalStateException(NODE_NULL);
 		}
 		
-		if (referenceNode.isInformational() != actualNode.isInformational()) {
-			return CompareResult.create(DifferenceType.ISINFORMATIONAL, referenceNode, actualNode);
+		if (referenceElement.isInformational() != actualElement.isInformational()) {
+			return CompareResult.create(DifferenceType.ISINFORMATIONAL, referenceElement, actualElement);
 		}
 		
-		if (!referenceNode.isInformational() || testInformational) {
+		if (!referenceElement.isInformational() || testInformational) {
 			
-			if (referenceNode.getClass() != actualNode.getClass()) {
-				return CompareResult.create(DifferenceType.CLASSES, referenceNode, actualNode);
+			if (referenceElement.getClass() != actualElement.getClass()) {
+				return CompareResult.create(DifferenceType.CLASSES, referenceElement, actualElement);
 			}
 			
-			if (!referenceNode.getName().equals(actualNode.getName())) {
-				return CompareResult.create(DifferenceType.GEN_NAME, referenceNode, actualNode);
+			if (!referenceElement.getName().equals(actualElement.getName())) {
+				return CompareResult.create(DifferenceType.GEN_NAME, referenceElement, actualElement);
 			}
 			
-			if (!referenceNode.getType().equals(actualNode.getType())) {
-				return CompareResult.create(DifferenceType.GEN_TYPE, referenceNode, actualNode);
-			}
-
-			if (referenceNode.isIsNull() != actualNode.isIsNull()) {
-				return CompareResult.create(DifferenceType.ISNULL, referenceNode, actualNode);
+			if (!referenceElement.getType().equals(actualElement.getType())) {
+				return CompareResult.create(DifferenceType.GEN_TYPE, referenceElement, actualElement);
 			}
 			
-			if (!referenceNode.isIsNull()) {
-				if (!referenceNode.getValue().equals(actualNode.getValue())) {
+			if (referenceElement instanceof Value) {
+				String refValue = String.valueOf(((Value) referenceElement).getValue());
+				String actualValue = String.valueOf(((Value) actualElement).getValue());			
+				
+				if (!refValue.equals(actualValue)) {
 					return CompareResult.create(VALUE_UNEQUAL);
 				}
-				
-				return compareNodes(referenceNode.getNode(), actualNode.getNode());
-			}	
-		}
-		
-		return null;
-	}
-	
-	private CompareResult compareNodes(
-			List<Node> referenceNodes, List<Node> actualNodes) {
-		
-		if (referenceNodes.size() != actualNodes.size()) {
-			return CompareResult.create(SIZE_UNEQUAL);
-		}
-		
-		for(int index = 0; index < referenceNodes.size(); index++) {
-			Node referenceNode = referenceNodes.get(index);
-			Node actualNode = actualNodes.get(index);
+			}
 			
-			CompareResult result = compareNode(referenceNode, actualNode);
-			if (result != null && result.hasDifferences()) {
-				return result;
+			if (referenceElement instanceof Node) {
+				Node refNode = (Node) referenceElement;
+				Node actualNode = (Node) actualElement;
+				
+				return compareNode(refNode, actualNode);
 			}
 		}
 		
@@ -205,13 +186,12 @@ public class OutputCompare {
 			return CompareResult.create(FULLNAME_UNEQUAL);
 		}
 		
-		return compareChildren(
-				referenceNode.getValues(),
-				actualNode.getValues());
+		return compareChildren(referenceNode.getElement(),
+				actualNode.getElement());
 	}
 	
 	private CompareResult compareChildren(
-			List<Value> refValues, List<Value> actualValues) {
+			List<Element> refValues, List<Element> actualValues) {
 		
 		if (refValues.size() != actualValues.size()) {
 			return CompareResult.create(CHILDREN_UNEQUAL);

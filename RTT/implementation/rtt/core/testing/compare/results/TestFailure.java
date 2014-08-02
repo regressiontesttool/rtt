@@ -31,8 +31,8 @@ public class TestFailure implements ITestFailure {
 		if (m != null)
 			return m;
 
-		return "Expected Node:\n" + Printer.printValue(expected)
-				+ "\nbut Node was:\n" + Printer.printValue(was) + "\n"
+		return "Expected Node:\n" + Printer.printElement(expected)
+				+ "\nbut Node was:\n" + Printer.printElement(was) + "\n"
 				+ "Path:\n" + path.toString();
 	}
 
@@ -49,8 +49,8 @@ public class TestFailure implements ITestFailure {
 		if (m != null)
 			return m;
 
-		return "Node " + Printer.printValue(was)
+		return "Node " + Printer.printElement(was)
 				+ " differs from expected node "
-				+ Printer.printValue(expected);
+				+ Printer.printElement(expected);
 	}
 }
