@@ -2,6 +2,7 @@ package rtt.core.testing.generation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,10 +14,11 @@ import rtt.annotations.Node.Informational;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
-import rtt.core.archive.output.Type;
-import rtt.core.archive.output.Value;
+import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
+import rtt.core.archive.output.Type;
+import rtt.core.archive.output.Value;
 import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
@@ -47,92 +49,133 @@ public class DataGenerator {
 			throw new RuntimeException("Could not invoke method. ", exception);
 		}
 		
-		Value astValue = new Value();
-		astValue.setName(astMethod.getName());
-		astValue.setType(Type.METHOD);
-		handleResult(astMethodResult, astValue);
+		DataGenerator generator = new DataGenerator();
+		outputData.setAST(generator.handleResult(
+				astMethodResult, astMethod.getName(), Type.METHOD));
+	}
+	
+	private Element handleResult(final Object object, String name, Type type) throws InvocationTargetException {
+		if (object != null) {
+			if (object.getClass().isArray()) {				
+				return handleArray(object, name, type);
+			}
+			
+			if (object instanceof Iterable<?>) {
+				return handleIterable((Iterable<?>) object, name, type);
+			}
+		}	
 		
-		outputData.setAST(astValue);
+		return handleObject(object, name, type);
 	}
 	
-	private static void handleResult(final Object currentObject, final Value member) throws InvocationTargetException {
+	private Element handleArray(final Object array, String name, Type type) throws InvocationTargetException {
+		Node node = createNode(array, name, type);
 		
-		if (currentObject instanceof Object[]) {
-			handleArray((Object[]) currentObject, member);
-		} else if (currentObject instanceof Iterable<?>) {
-			handleIterable((Iterable<?>) currentObject, member);			
-		} else if (currentObject != null) {
-			handleObject(currentObject, member);
-		} else {
-			member.setIsNull(true);
+		String elementName = null;		
+		for (int index = 0; index < Array.getLength(array); index++) {
+			elementName = name + "[" + index + "]";
+			Element element = handleResult(Array.get(array, index), 
+					elementName, Type.ELEMENT);
+			
+			node.getElement().add(element);
 		}
-	}
-	
-	private static void handleArray(final Object[] objectArray, final Value member) throws InvocationTargetException {
-		for (Object object : objectArray) {
-			handleObject(object, member);
-		}
-	}
-	
-	private static void handleIterable(final Iterable<?> iterable, final Value member) throws InvocationTargetException {		
-		for (Object object : iterable) {
-			handleObject(object, member);
-		}
-	}
-	
-	private static void handleObject(final Object object, final Value member) throws InvocationTargetException {
-		if (AnnotationProcessor.hasAnnotation(object.getClass(), NODE_ANNOTATION)) {
-			handleNode(object, member);
-		} else {
-			member.setValue(object.toString());
-		}
+		
+		return node;
 	}
 
-	private static void handleNode(final Object currentObject, final Value member) throws InvocationTargetException {
+	private Element handleIterable(final Iterable<?> iterable, String name, Type type) throws InvocationTargetException {
+		Node node = createNode(iterable, name, type);
 		
-		Class<?> objectType = currentObject.getClass();		
+		int index = 0;
+		String elementName = null;
 		
-		Node resultNode = new Node();
-		resultNode.setFullName(objectType.getName());
-		resultNode.setSimpleName(objectType.getSimpleName());	
+		for (Object object : iterable) {
+			elementName = name + "[" + index + "]";
+			Element element = handleResult(object, elementName, Type.ELEMENT);
+			node.getElement().add(element);
+			index++;
+		}
 		
-		resultNode.getValues().addAll(processFields(currentObject, COMPARE_ANNOTATION, member.isInformational()));
-		resultNode.getValues().addAll(processFields(currentObject, INFORMATIONAL_ANNOTATION, member.isInformational()));
-		
-		resultNode.getValues().addAll(processMethods(currentObject, COMPARE_ANNOTATION, member.isInformational()));
-		resultNode.getValues().addAll(processMethods(currentObject, INFORMATIONAL_ANNOTATION, member.isInformational()));
-		
-		member.getNode().add(resultNode);
+		return node;
 	}
 	
-	private static List<Value> processFields(Object parentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) throws InvocationTargetException {
-		List<Value> resultList = new ArrayList<>();
+	private Node createNode(final Object object, String name, Type type) {
+		Class<?> objectType = object.getClass();
+		
+		Node node = new Node();
+		node.setName(name);
+		node.setType(type);
+		
+		node.setFullName(objectType.getName());
+		node.setSimpleName(objectType.getSimpleName());
+		
+		return node;
+	}
+
+	private Element handleObject(final Object object, String name, Type type) throws InvocationTargetException {
+		if (object != null && hasNodeAnnotation(object)) {
+			return handleNode(object, name, type);
+		}
+		
+		return createValue(object, name, type);
+	}
+
+	private Value createValue(Object value, String name, Type type) {
+		Value valueElement = new Value();
+		
+		valueElement.setName(name);
+		valueElement.setType(type);
+		if (value != null) {
+			valueElement.setValue(value.toString());
+		}
+		
+		return valueElement;
+	}
+	
+	private boolean hasNodeAnnotation(final Object object) {
+		if (object != null) {
+			return AnnotationProcessor.hasAnnotation(
+					object.getClass(), NODE_ANNOTATION);
+		}
+		
+		return false;
+	}
+
+	private Element handleNode(final Object object, String name, Type type) throws InvocationTargetException {
+		Node resultNode = createNode(object, name, type);
+		
+		resultNode.getElement().addAll(processFields(object, COMPARE_ANNOTATION, false));
+		resultNode.getElement().addAll(processFields(object, INFORMATIONAL_ANNOTATION, true));
+		
+		resultNode.getElement().addAll(processMethods(object, COMPARE_ANNOTATION, false));
+		resultNode.getElement().addAll(processMethods(object, INFORMATIONAL_ANNOTATION, true));
+		
+		return resultNode;
+	}
+	
+	private List<Element> processFields(final Object parentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) throws InvocationTargetException {
+		List<Element> resultList = new ArrayList<>();
 		List<Field> annotatedFields = AnnotationProcessor.getFields(parentObject.getClass(), annotation);
 		
 		for (Field field : annotatedFields) {
-			Value fieldValue = new Value();
-			fieldValue.setName(field.getName());
-			fieldValue.setType(Type.FIELD);
-			fieldValue.setInformational(isInformational(parentIsInformational, field));
-			
-			field.setAccessible(true);
 			try {
-				handleResult(field.get(parentObject), fieldValue);
+				field.setAccessible(true);
+				resultList.add(handleResult(
+						field.get(parentObject), field.getName(), Type.FIELD));
+				
 			} catch (IllegalAccessException | IllegalArgumentException e) {
 				RTTLogging.throwException(
 						new RuntimeException("Could not access field.", e));
 			}
-			
-			resultList.add(fieldValue);
 		}
 		
 		return resultList;
 	}
 	
-	private static List<Value> processMethods(final Object parentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) 
+	private List<Element> processMethods(final Object parentObject, Class<? extends Annotation> annotation, boolean parentIsInformational) 
 			throws InvocationTargetException {
 		
-		List<Value> resultList = new ArrayList<>();
+		List<Element> resultList = new ArrayList<>();
 		List<Method> annotatedMethods = AnnotationProcessor.getMethods(parentObject.getClass(), annotation);
 		
 		for (Method method : annotatedMethods) {
@@ -146,19 +189,15 @@ public class DataGenerator {
 				continue;
 			}
 			
-			Value methodValue = new Value();
-			methodValue.setName(method.getName());
-			methodValue.setType(Type.METHOD);
-			methodValue.setInformational(isInformational(parentIsInformational, method));
 			
-			method.setAccessible(true);			
 			try {
-				handleResult(method.invoke(parentObject), methodValue);
+				method.setAccessible(true);
+				resultList.add(handleResult(
+						method.invoke(parentObject), method.getName(), Type.METHOD));
+				
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				throw new RuntimeException("Could not invoke method.", e);
 			}
-			
-			resultList.add(methodValue);
 		}
 		
 		return resultList;
