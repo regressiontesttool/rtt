@@ -68,12 +68,12 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	protected TestSwitch<Adapter> modelSwitch =
 		new TestSwitch<Adapter>() {
 			@Override
-			public Adapter caseClassNode(ClassNode object) {
-				return createClassNodeAdapter();
-			}
-			@Override
 			public Adapter caseDocumentRoot(DocumentRoot object) {
 				return createDocumentRootAdapter();
+			}
+			@Override
+			public Adapter caseElement(Element object) {
+				return createElementAdapter();
 			}
 			@Override
 			public Adapter caseNode(Node object) {
@@ -84,8 +84,12 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 				return createOutputTypeAdapter();
 			}
 			@Override
-			public Adapter caseValueNode(ValueNode object) {
-				return createValueNodeAdapter();
+			public Adapter caseReference(Reference object) {
+				return createReferenceAdapter();
+			}
+			@Override
+			public Adapter caseValue(Value object) {
+				return createValueAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -108,20 +112,6 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.ClassNode <em>Class Node</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see regression.test.ClassNode
-	 * @generated
-	 */
-	public Adapter createClassNodeAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link regression.test.DocumentRoot <em>Document Root</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -132,6 +122,20 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDocumentRootAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link regression.test.Element <em>Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see regression.test.Element
+	 * @generated
+	 */
+	public Adapter createElementAdapter() {
 		return null;
 	}
 
@@ -164,16 +168,30 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.ValueNode <em>Value Node</em>}'.
+	 * Creates a new adapter for an object of class '{@link regression.test.Reference <em>Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see regression.test.ValueNode
+	 * @see regression.test.Reference
 	 * @generated
 	 */
-	public Adapter createValueNodeAdapter() {
+	public Adapter createReferenceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link regression.test.Value <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see regression.test.Value
+	 * @generated
+	 */
+	public Adapter createValueAdapter() {
 		return null;
 	}
 

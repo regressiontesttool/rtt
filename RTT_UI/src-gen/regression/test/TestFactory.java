@@ -65,11 +65,12 @@ public class TestFactory extends EFactoryImpl {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case TestPackage.CLASS_NODE: return createClassNode();
 			case TestPackage.DOCUMENT_ROOT: return createDocumentRoot();
+			case TestPackage.ELEMENT: return createElement();
 			case TestPackage.NODE: return createNode();
 			case TestPackage.OUTPUT_TYPE: return createOutputType();
-			case TestPackage.VALUE_NODE: return createValueNode();
+			case TestPackage.REFERENCE: return createReference();
+			case TestPackage.VALUE: return createValue();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -83,10 +84,10 @@ public class TestFactory extends EFactoryImpl {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case TestPackage.GENERATOR_TYPE:
-				return createGeneratorTypeFromString(eDataType, initialValue);
-			case TestPackage.GENERATOR_TYPE_OBJECT:
-				return createGeneratorTypeObjectFromString(eDataType, initialValue);
+			case TestPackage.TYPE:
+				return createTypeFromString(eDataType, initialValue);
+			case TestPackage.TYPE_OBJECT:
+				return createTypeObjectFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -100,10 +101,10 @@ public class TestFactory extends EFactoryImpl {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case TestPackage.GENERATOR_TYPE:
-				return convertGeneratorTypeToString(eDataType, instanceValue);
-			case TestPackage.GENERATOR_TYPE_OBJECT:
-				return convertGeneratorTypeObjectToString(eDataType, instanceValue);
+			case TestPackage.TYPE:
+				return convertTypeToString(eDataType, instanceValue);
+			case TestPackage.TYPE_OBJECT:
+				return convertTypeObjectToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -114,9 +115,9 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ClassNode createClassNode() {
-		ClassNode classNode = new ClassNode();
-		return classNode;
+	public DocumentRoot createDocumentRoot() {
+		DocumentRoot documentRoot = new DocumentRoot();
+		return documentRoot;
 	}
 
 	/**
@@ -124,9 +125,9 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DocumentRoot createDocumentRoot() {
-		DocumentRoot documentRoot = new DocumentRoot();
-		return documentRoot;
+	public Element createElement() {
+		Element element = new Element();
+		return element;
 	}
 
 	/**
@@ -154,9 +155,9 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ValueNode createValueNode() {
-		ValueNode valueNode = new ValueNode();
-		return valueNode;
+	public Reference createReference() {
+		Reference reference = new Reference();
+		return reference;
 	}
 
 	/**
@@ -164,8 +165,18 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GeneratorType createGeneratorTypeFromString(EDataType eDataType, String initialValue) {
-		GeneratorType result = GeneratorType.get(initialValue);
+	public Value createValue() {
+		Value value = new Value();
+		return value;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Type createTypeFromString(EDataType eDataType, String initialValue) {
+		Type result = Type.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
@@ -175,7 +186,7 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertGeneratorTypeToString(EDataType eDataType, Object instanceValue) {
+	public String convertTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
@@ -184,8 +195,8 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GeneratorType createGeneratorTypeObjectFromString(EDataType eDataType, String initialValue) {
-		return createGeneratorTypeFromString(TestPackage.Literals.GENERATOR_TYPE, initialValue);
+	public Type createTypeObjectFromString(EDataType eDataType, String initialValue) {
+		return createTypeFromString(TestPackage.Literals.TYPE, initialValue);
 	}
 
 	/**
@@ -193,8 +204,8 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertGeneratorTypeObjectToString(EDataType eDataType, Object instanceValue) {
-		return convertGeneratorTypeToString(TestPackage.Literals.GENERATOR_TYPE, instanceValue);
+	public String convertTypeObjectToString(EDataType eDataType, Object instanceValue) {
+		return convertTypeToString(TestPackage.Literals.TYPE, instanceValue);
 	}
 
 	/**

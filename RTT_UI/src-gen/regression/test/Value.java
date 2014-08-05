@@ -10,22 +10,22 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Value Node</b></em>'.
+ * A representation of the model object '<em><b>Value</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link regression.test.ValueNode#getValue <em>Value</em>}</li>
+ *   <li>{@link regression.test.Value#getValue <em>Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see regression.test.TestPackage#getValueNode()
+ * @see regression.test.TestPackage#getValue()
  * @model kind="class"
- *        extendedMetaData="name='valueNode' kind='empty'"
+ *        extendedMetaData="name='value' kind='empty'"
  * @generated
  */
-public class ValueNode extends Node {
+public class Value extends Element {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -51,7 +51,7 @@ public class ValueNode extends Node {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ValueNode() {
+	protected Value() {
 		super();
 	}
 
@@ -62,7 +62,7 @@ public class ValueNode extends Node {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return TestPackage.Literals.VALUE_NODE;
+		return TestPackage.Literals.VALUE;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class ValueNode extends Node {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
 	 * @see #setValue(String)
-	 * @see regression.test.TestPackage#getValueNode_Value()
+	 * @see regression.test.TestPackage#getValue_Value()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='value'"
 	 * @generated
@@ -85,7 +85,7 @@ public class ValueNode extends Node {
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.ValueNode#getValue <em>Value</em>}' attribute.
+	 * Sets the value of the '{@link regression.test.Value#getValue <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Value</em>' attribute.
@@ -96,7 +96,7 @@ public class ValueNode extends Node {
 		String oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.VALUE_NODE__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.VALUE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class ValueNode extends Node {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case TestPackage.VALUE_NODE__VALUE:
+			case TestPackage.VALUE__VALUE:
 				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -121,7 +121,7 @@ public class ValueNode extends Node {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case TestPackage.VALUE_NODE__VALUE:
+			case TestPackage.VALUE__VALUE:
 				setValue((String)newValue);
 				return;
 		}
@@ -136,7 +136,7 @@ public class ValueNode extends Node {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case TestPackage.VALUE_NODE__VALUE:
+			case TestPackage.VALUE__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -151,7 +151,7 @@ public class ValueNode extends Node {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case TestPackage.VALUE_NODE__VALUE:
+			case TestPackage.VALUE__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
@@ -173,4 +173,4 @@ public class ValueNode extends Node {
 		return result.toString();
 	}
 
-} // ValueNode
+} // Value

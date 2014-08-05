@@ -20,16 +20,16 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.TestPackage;
-import regression.test.ValueNode;
+import regression.test.Value;
 
 /**
- * This is the item provider adapter for a {@link regression.test.ValueNode} object.
+ * This is the item provider adapter for a {@link regression.test.Value} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class ValueNodeItemProvider
-	extends NodeItemProvider
+public class ValueItemProvider
+	extends ElementItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -42,7 +42,7 @@ public class ValueNodeItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ValueNodeItemProvider(AdapterFactory adapterFactory) {
+	public ValueItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -73,9 +73,9 @@ public class ValueNodeItemProvider
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_ValueNode_value_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ValueNode_value_feature", "_UI_ValueNode_type"),
-				 TestPackage.Literals.VALUE_NODE__VALUE,
+				 getString("_UI_Value_value_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Value_value_feature", "_UI_Value_type"),
+				 TestPackage.Literals.VALUE__VALUE,
 				 true,
 				 false,
 				 false,
@@ -85,14 +85,14 @@ public class ValueNodeItemProvider
 	}
 
 	/**
-	 * This returns ValueNode.gif.
+	 * This returns Value.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ValueNode"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Value"));
 	}
 
 	/**
@@ -103,10 +103,8 @@ public class ValueNodeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((ValueNode)object).getGeneratorName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_ValueNode_type") :
-			getString("_UI_ValueNode_type") + " " + label;
+		Value value = (Value) object;
+		return super.getText(value) + value.getValue();
 	}
 
 	/**
@@ -120,8 +118,8 @@ public class ValueNodeItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(ValueNode.class)) {
-			case TestPackage.VALUE_NODE__VALUE:
+		switch (notification.getFeatureID(Value.class)) {
+			case TestPackage.VALUE__VALUE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

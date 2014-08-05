@@ -10,14 +10,24 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Generator Type</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see regression.test.TestPackage#getGeneratorType()
- * @model extendedMetaData="name='generatorType'"
+ * @see regression.test.TestPackage#getType()
+ * @model extendedMetaData="name='type'"
  * @generated
  */
-public enum GeneratorType implements Enumerator {
+public enum Type implements Enumerator {
+	/**
+	 * The '<em><b>ELEMENT</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #ELEMENT_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	ELEMENT(0, "ELEMENT", "ELEMENT"),
+
 	/**
 	 * The '<em><b>FIELD</b></em>' literal object.
 	 * <!-- begin-user-doc -->
@@ -26,7 +36,7 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	FIELD(0, "FIELD", "FIELD"),
+	FIELD(1, "FIELD", "FIELD"),
 
 	/**
 	 * The '<em><b>METHOD</b></em>' literal object.
@@ -36,7 +46,22 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	METHOD(1, "METHOD", "METHOD");
+	METHOD(2, "METHOD", "METHOD");
+
+	/**
+	 * The '<em><b>ELEMENT</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>ELEMENT</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #ELEMENT
+	 * @model
+	 * @generated
+	 * @ordered
+	 */
+	public static final int ELEMENT_VALUE = 0;
 
 	/**
 	 * The '<em><b>FIELD</b></em>' literal value.
@@ -51,7 +76,7 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int FIELD_VALUE = 0;
+	public static final int FIELD_VALUE = 1;
 
 	/**
 	 * The '<em><b>METHOD</b></em>' literal value.
@@ -66,37 +91,38 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int METHOD_VALUE = 1;
+	public static final int METHOD_VALUE = 2;
 
 	/**
-	 * An array of all the '<em><b>Generator Type</b></em>' enumerators.
+	 * An array of all the '<em><b>Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final GeneratorType[] VALUES_ARRAY =
-		new GeneratorType[] {
+	private static final Type[] VALUES_ARRAY =
+		new Type[] {
+			ELEMENT,
 			FIELD,
 			METHOD,
 		};
 
 	/**
-	 * A public read-only list of all the '<em><b>Generator Type</b></em>' enumerators.
+	 * A public read-only list of all the '<em><b>Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static final List<GeneratorType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+	public static final List<Type> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Generator Type</b></em>' literal with the specified literal value.
+	 * Returns the '<em><b>Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static GeneratorType get(String literal) {
+	public static Type get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			GeneratorType result = VALUES_ARRAY[i];
+			Type result = VALUES_ARRAY[i];
 			if (result.toString().equals(literal)) {
 				return result;
 			}
@@ -105,14 +131,14 @@ public enum GeneratorType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Generator Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Type</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static GeneratorType getByName(String name) {
+	public static Type getByName(String name) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			GeneratorType result = VALUES_ARRAY[i];
+			Type result = VALUES_ARRAY[i];
 			if (result.getName().equals(name)) {
 				return result;
 			}
@@ -121,13 +147,14 @@ public enum GeneratorType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Generator Type</b></em>' literal with the specified integer value.
+	 * Returns the '<em><b>Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static GeneratorType get(int value) {
+	public static Type get(int value) {
 		switch (value) {
+			case ELEMENT_VALUE: return ELEMENT;
 			case FIELD_VALUE: return FIELD;
 			case METHOD_VALUE: return METHOD;
 		}
@@ -161,7 +188,7 @@ public enum GeneratorType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private GeneratorType(int value, String name, String literal) {
+	private Type(int value, String name, String literal) {
 		this.value = value;
 		this.name = name;
 		this.literal = literal;
@@ -205,4 +232,4 @@ public enum GeneratorType implements Enumerator {
 		return literal;
 	}
 	
-} //GeneratorType
+} //Type

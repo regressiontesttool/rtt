@@ -2,13 +2,20 @@
  */
 package regression.test;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
+
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,125 +25,67 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link regression.test.Node#getGeneratorName <em>Generator Name</em>}</li>
- *   <li>{@link regression.test.Node#getGeneratorType <em>Generator Type</em>}</li>
- *   <li>{@link regression.test.Node#isInformational <em>Informational</em>}</li>
- *   <li>{@link regression.test.Node#isIsNull <em>Is Null</em>}</li>
+ *   <li>{@link regression.test.Node#getElement <em>Element</em>}</li>
+ *   <li>{@link regression.test.Node#getFullName <em>Full Name</em>}</li>
+ *   <li>{@link regression.test.Node#getSimpleName <em>Simple Name</em>}</li>
  * </ul>
  * </p>
  *
  * @see regression.test.TestPackage#getNode()
  * @model kind="class"
- *        extendedMetaData="name='node' kind='empty'"
+ *        extendedMetaData="name='node' kind='elementOnly'"
  * @generated
  */
-public class Node extends EObjectImpl implements EObject {
+public class Node extends Element {
 	/**
-	 * The default value of the '{@link #getGeneratorName() <em>Generator Name</em>}' attribute.
+	 * The cached value of the '{@link #getElement() <em>Element</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGeneratorName()
+	 * @see #getElement()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String GENERATOR_NAME_EDEFAULT = null;
+	protected EList<Element> element;
 
 	/**
-	 * The cached value of the '{@link #getGeneratorName() <em>Generator Name</em>}' attribute.
+	 * The default value of the '{@link #getFullName() <em>Full Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGeneratorName()
+	 * @see #getFullName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String generatorName = GENERATOR_NAME_EDEFAULT;
+	protected static final String FULL_NAME_EDEFAULT = null;
 
 	/**
-	 * The default value of the '{@link #getGeneratorType() <em>Generator Type</em>}' attribute.
+	 * The cached value of the '{@link #getFullName() <em>Full Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGeneratorType()
+	 * @see #getFullName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final GeneratorType GENERATOR_TYPE_EDEFAULT = GeneratorType.FIELD;
+	protected String fullName = FULL_NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getGeneratorType() <em>Generator Type</em>}' attribute.
+	 * The default value of the '{@link #getSimpleName() <em>Simple Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGeneratorType()
+	 * @see #getSimpleName()
 	 * @generated
 	 * @ordered
 	 */
-	protected GeneratorType generatorType = GENERATOR_TYPE_EDEFAULT;
+	protected static final String SIMPLE_NAME_EDEFAULT = null;
 
 	/**
-	 * This is true if the Generator Type attribute has been set.
+	 * The cached value of the '{@link #getSimpleName() <em>Simple Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @see #getSimpleName()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean generatorTypeESet;
-
-	/**
-	 * The default value of the '{@link #isInformational() <em>Informational</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isInformational()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean INFORMATIONAL_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isInformational() <em>Informational</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isInformational()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean informational = INFORMATIONAL_EDEFAULT;
-
-	/**
-	 * This is true if the Informational attribute has been set.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean informationalESet;
-
-	/**
-	 * The default value of the '{@link #isIsNull() <em>Is Null</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIsNull()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean IS_NULL_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isIsNull() <em>Is Null</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIsNull()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean isNull = IS_NULL_EDEFAULT;
-
-	/**
-	 * This is true if the Is Null attribute has been set.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean isNullESet;
+	protected String simpleName = SIMPLE_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -158,258 +107,107 @@ public class Node extends EObjectImpl implements EObject {
 	}
 
 	/**
-	 * Returns the value of the '<em><b>Generator Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Element</b></em>' containment reference list.
+	 * The list contents are of type {@link regression.test.Element}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generator Name</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Element</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Generator Name</em>' attribute.
-	 * @see #setGeneratorName(String)
-	 * @see regression.test.TestPackage#getNode_GeneratorName()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='attribute' name='generatorName'"
+	 * @return the value of the '<em>Element</em>' containment reference list.
+	 * @see regression.test.TestPackage#getNode_Element()
+	 * @model containment="true"
+	 *        extendedMetaData="kind='element' name='element' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	public String getGeneratorName() {
-		return generatorName;
+	public EList<Element> getElement() {
+		if (element == null) {
+			element = new EObjectContainmentEList<Element>(Element.class, this, TestPackage.NODE__ELEMENT);
+		}
+		return element;
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.Node#getGeneratorName <em>Generator Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Generator Name</em>' attribute.
-	 * @see #getGeneratorName()
-	 * @generated
-	 */
-	public void setGeneratorName(String newGeneratorName) {
-		String oldGeneratorName = generatorName;
-		generatorName = newGeneratorName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__GENERATOR_NAME, oldGeneratorName, generatorName));
-	}
-
-	/**
-	 * Returns the value of the '<em><b>Generator Type</b></em>' attribute.
-	 * The literals are from the enumeration {@link regression.test.GeneratorType}.
+	 * Returns the value of the '<em><b>Full Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generator Type</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Full Name</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Generator Type</em>' attribute.
-	 * @see regression.test.GeneratorType
-	 * @see #isSetGeneratorType()
-	 * @see #unsetGeneratorType()
-	 * @see #setGeneratorType(GeneratorType)
-	 * @see regression.test.TestPackage#getNode_GeneratorType()
-	 * @model unsettable="true" required="true"
-	 *        extendedMetaData="kind='attribute' name='generatorType'"
+	 * @return the value of the '<em>Full Name</em>' attribute.
+	 * @see #setFullName(String)
+	 * @see regression.test.TestPackage#getNode_FullName()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='fullName'"
 	 * @generated
 	 */
-	public GeneratorType getGeneratorType() {
-		return generatorType;
+	public String getFullName() {
+		return fullName;
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.Node#getGeneratorType <em>Generator Type</em>}' attribute.
+	 * Sets the value of the '{@link regression.test.Node#getFullName <em>Full Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Generator Type</em>' attribute.
-	 * @see regression.test.GeneratorType
-	 * @see #isSetGeneratorType()
-	 * @see #unsetGeneratorType()
-	 * @see #getGeneratorType()
+	 * @param value the new value of the '<em>Full Name</em>' attribute.
+	 * @see #getFullName()
 	 * @generated
 	 */
-	public void setGeneratorType(GeneratorType newGeneratorType) {
-		GeneratorType oldGeneratorType = generatorType;
-		generatorType = newGeneratorType == null ? GENERATOR_TYPE_EDEFAULT : newGeneratorType;
-		boolean oldGeneratorTypeESet = generatorTypeESet;
-		generatorTypeESet = true;
+	public void setFullName(String newFullName) {
+		String oldFullName = fullName;
+		fullName = newFullName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__GENERATOR_TYPE, oldGeneratorType, generatorType, !oldGeneratorTypeESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__FULL_NAME, oldFullName, fullName));
 	}
 
 	/**
-	 * Unsets the value of the '{@link regression.test.Node#getGeneratorType <em>Generator Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isSetGeneratorType()
-	 * @see #getGeneratorType()
-	 * @see #setGeneratorType(GeneratorType)
-	 * @generated
-	 */
-	public void unsetGeneratorType() {
-		GeneratorType oldGeneratorType = generatorType;
-		boolean oldGeneratorTypeESet = generatorTypeESet;
-		generatorType = GENERATOR_TYPE_EDEFAULT;
-		generatorTypeESet = false;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, TestPackage.NODE__GENERATOR_TYPE, oldGeneratorType, GENERATOR_TYPE_EDEFAULT, oldGeneratorTypeESet));
-	}
-
-	/**
-	 * Returns whether the value of the '{@link regression.test.Node#getGeneratorType <em>Generator Type</em>}' attribute is set.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return whether the value of the '<em>Generator Type</em>' attribute is set.
-	 * @see #unsetGeneratorType()
-	 * @see #getGeneratorType()
-	 * @see #setGeneratorType(GeneratorType)
-	 * @generated
-	 */
-	public boolean isSetGeneratorType() {
-		return generatorTypeESet;
-	}
-
-	/**
-	 * Returns the value of the '<em><b>Informational</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
+	 * Returns the value of the '<em><b>Simple Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Informational</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Simple Name</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Informational</em>' attribute.
-	 * @see #isSetInformational()
-	 * @see #unsetInformational()
-	 * @see #setInformational(boolean)
-	 * @see regression.test.TestPackage#getNode_Informational()
-	 * @model default="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
-	 *        extendedMetaData="kind='attribute' name='informational'"
+	 * @return the value of the '<em>Simple Name</em>' attribute.
+	 * @see #setSimpleName(String)
+	 * @see regression.test.TestPackage#getNode_SimpleName()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='simpleName'"
 	 * @generated
 	 */
-	public boolean isInformational() {
-		return informational;
+	public String getSimpleName() {
+		return simpleName;
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.Node#isInformational <em>Informational</em>}' attribute.
+	 * Sets the value of the '{@link regression.test.Node#getSimpleName <em>Simple Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Informational</em>' attribute.
-	 * @see #isSetInformational()
-	 * @see #unsetInformational()
-	 * @see #isInformational()
+	 * @param value the new value of the '<em>Simple Name</em>' attribute.
+	 * @see #getSimpleName()
 	 * @generated
 	 */
-	public void setInformational(boolean newInformational) {
-		boolean oldInformational = informational;
-		informational = newInformational;
-		boolean oldInformationalESet = informationalESet;
-		informationalESet = true;
+	public void setSimpleName(String newSimpleName) {
+		String oldSimpleName = simpleName;
+		simpleName = newSimpleName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__INFORMATIONAL, oldInformational, informational, !oldInformationalESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__SIMPLE_NAME, oldSimpleName, simpleName));
 	}
 
 	/**
-	 * Unsets the value of the '{@link regression.test.Node#isInformational <em>Informational</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #isSetInformational()
-	 * @see #isInformational()
-	 * @see #setInformational(boolean)
 	 * @generated
 	 */
-	public void unsetInformational() {
-		boolean oldInformational = informational;
-		boolean oldInformationalESet = informationalESet;
-		informational = INFORMATIONAL_EDEFAULT;
-		informationalESet = false;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, TestPackage.NODE__INFORMATIONAL, oldInformational, INFORMATIONAL_EDEFAULT, oldInformationalESet));
-	}
-
-	/**
-	 * Returns whether the value of the '{@link regression.test.Node#isInformational <em>Informational</em>}' attribute is set.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return whether the value of the '<em>Informational</em>' attribute is set.
-	 * @see #unsetInformational()
-	 * @see #isInformational()
-	 * @see #setInformational(boolean)
-	 * @generated
-	 */
-	public boolean isSetInformational() {
-		return informationalESet;
-	}
-
-	/**
-	 * Returns the value of the '<em><b>Is Null</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Is Null</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Is Null</em>' attribute.
-	 * @see #isSetIsNull()
-	 * @see #unsetIsNull()
-	 * @see #setIsNull(boolean)
-	 * @see regression.test.TestPackage#getNode_IsNull()
-	 * @model default="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
-	 *        extendedMetaData="kind='attribute' name='isNull'"
-	 * @generated
-	 */
-	public boolean isIsNull() {
-		return isNull;
-	}
-
-	/**
-	 * Sets the value of the '{@link regression.test.Node#isIsNull <em>Is Null</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Is Null</em>' attribute.
-	 * @see #isSetIsNull()
-	 * @see #unsetIsNull()
-	 * @see #isIsNull()
-	 * @generated
-	 */
-	public void setIsNull(boolean newIsNull) {
-		boolean oldIsNull = isNull;
-		isNull = newIsNull;
-		boolean oldIsNullESet = isNullESet;
-		isNullESet = true;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__IS_NULL, oldIsNull, isNull, !oldIsNullESet));
-	}
-
-	/**
-	 * Unsets the value of the '{@link regression.test.Node#isIsNull <em>Is Null</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isSetIsNull()
-	 * @see #isIsNull()
-	 * @see #setIsNull(boolean)
-	 * @generated
-	 */
-	public void unsetIsNull() {
-		boolean oldIsNull = isNull;
-		boolean oldIsNullESet = isNullESet;
-		isNull = IS_NULL_EDEFAULT;
-		isNullESet = false;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, TestPackage.NODE__IS_NULL, oldIsNull, IS_NULL_EDEFAULT, oldIsNullESet));
-	}
-
-	/**
-	 * Returns whether the value of the '{@link regression.test.Node#isIsNull <em>Is Null</em>}' attribute is set.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return whether the value of the '<em>Is Null</em>' attribute is set.
-	 * @see #unsetIsNull()
-	 * @see #isIsNull()
-	 * @see #setIsNull(boolean)
-	 * @generated
-	 */
-	public boolean isSetIsNull() {
-		return isNullESet;
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case TestPackage.NODE__ELEMENT:
+				return ((InternalEList<?>)getElement()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -420,14 +218,12 @@ public class Node extends EObjectImpl implements EObject {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case TestPackage.NODE__GENERATOR_NAME:
-				return getGeneratorName();
-			case TestPackage.NODE__GENERATOR_TYPE:
-				return getGeneratorType();
-			case TestPackage.NODE__INFORMATIONAL:
-				return isInformational();
-			case TestPackage.NODE__IS_NULL:
-				return isIsNull();
+			case TestPackage.NODE__ELEMENT:
+				return getElement();
+			case TestPackage.NODE__FULL_NAME:
+				return getFullName();
+			case TestPackage.NODE__SIMPLE_NAME:
+				return getSimpleName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -437,20 +233,19 @@ public class Node extends EObjectImpl implements EObject {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case TestPackage.NODE__GENERATOR_NAME:
-				setGeneratorName((String)newValue);
+			case TestPackage.NODE__ELEMENT:
+				getElement().clear();
+				getElement().addAll((Collection<? extends Element>)newValue);
 				return;
-			case TestPackage.NODE__GENERATOR_TYPE:
-				setGeneratorType((GeneratorType)newValue);
+			case TestPackage.NODE__FULL_NAME:
+				setFullName((String)newValue);
 				return;
-			case TestPackage.NODE__INFORMATIONAL:
-				setInformational((Boolean)newValue);
-				return;
-			case TestPackage.NODE__IS_NULL:
-				setIsNull((Boolean)newValue);
+			case TestPackage.NODE__SIMPLE_NAME:
+				setSimpleName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -464,17 +259,14 @@ public class Node extends EObjectImpl implements EObject {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case TestPackage.NODE__GENERATOR_NAME:
-				setGeneratorName(GENERATOR_NAME_EDEFAULT);
+			case TestPackage.NODE__ELEMENT:
+				getElement().clear();
 				return;
-			case TestPackage.NODE__GENERATOR_TYPE:
-				unsetGeneratorType();
+			case TestPackage.NODE__FULL_NAME:
+				setFullName(FULL_NAME_EDEFAULT);
 				return;
-			case TestPackage.NODE__INFORMATIONAL:
-				unsetInformational();
-				return;
-			case TestPackage.NODE__IS_NULL:
-				unsetIsNull();
+			case TestPackage.NODE__SIMPLE_NAME:
+				setSimpleName(SIMPLE_NAME_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -488,14 +280,12 @@ public class Node extends EObjectImpl implements EObject {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case TestPackage.NODE__GENERATOR_NAME:
-				return GENERATOR_NAME_EDEFAULT == null ? generatorName != null : !GENERATOR_NAME_EDEFAULT.equals(generatorName);
-			case TestPackage.NODE__GENERATOR_TYPE:
-				return isSetGeneratorType();
-			case TestPackage.NODE__INFORMATIONAL:
-				return isSetInformational();
-			case TestPackage.NODE__IS_NULL:
-				return isSetIsNull();
+			case TestPackage.NODE__ELEMENT:
+				return element != null && !element.isEmpty();
+			case TestPackage.NODE__FULL_NAME:
+				return FULL_NAME_EDEFAULT == null ? fullName != null : !FULL_NAME_EDEFAULT.equals(fullName);
+			case TestPackage.NODE__SIMPLE_NAME:
+				return SIMPLE_NAME_EDEFAULT == null ? simpleName != null : !SIMPLE_NAME_EDEFAULT.equals(simpleName);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -510,14 +300,10 @@ public class Node extends EObjectImpl implements EObject {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (generatorName: ");
-		result.append(generatorName);
-		result.append(", generatorType: ");
-		if (generatorTypeESet) result.append(generatorType); else result.append("<unset>");
-		result.append(", informational: ");
-		if (informationalESet) result.append(informational); else result.append("<unset>");
-		result.append(", isNull: ");
-		if (isNullESet) result.append(isNull); else result.append("<unset>");
+		result.append(" (fullName: ");
+		result.append(fullName);
+		result.append(", simpleName: ");
+		result.append(simpleName);
 		result.append(')');
 		return result.toString();
 	}
