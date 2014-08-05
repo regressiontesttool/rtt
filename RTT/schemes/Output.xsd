@@ -13,7 +13,8 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="element" abstract="true">
+	<xs:complexType name="element">
+		<xs:attribute name="address" type="xs:string" use="required" />
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="rtt:type" use="required" />
 		<xs:attribute name="informational" type="xs:boolean" default="false" />
@@ -37,6 +38,14 @@
 				<xs:attribute name="fullName" type="xs:string" />			
 				<xs:attribute name="simpleName" type="xs:string" />	
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="reference">
+		<xs:complexContent>
+			<xs:extension base="rtt:element">
+				<xs:attribute name="to" type="xs:string" />
+			</xs:extension>			
 		</xs:complexContent>
 	</xs:complexType>
 		
