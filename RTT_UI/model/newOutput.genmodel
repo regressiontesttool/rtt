@@ -6,33 +6,38 @@
   <foreignModel>../../RTT/schemes/Output.xsd</foreignModel>
   <genPackages prefix="Test" basePackage="regression" resource="XML" disposableProviderFactory="true"
       ecorePackage="newOuput.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="newOuput.ecore#//GeneratorType">
-      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/FIELD"/>
-      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/METHOD"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="newOuput.ecore#//Type">
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//Type/ELEMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//Type/FIELD"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//Type/METHOD"/>
     </genEnums>
-    <genDataTypes ecoreDataType="newOuput.ecore#//GeneratorTypeObject"/>
-    <genClasses ecoreClass="newOuput.ecore#//ClassNode">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//ClassNode/simpleName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//ClassNode/fullName"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//ClassNode/node"/>
-    </genClasses>
+    <genDataTypes ecoreDataType="newOuput.ecore#//TypeObject"/>
     <genClasses ecoreClass="newOuput.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/xSISchemaLocation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/output"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="newOuput.ecore#//Element">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/address"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/informational"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/type"/>
+    </genClasses>
     <genClasses ecoreClass="newOuput.ecore#//Node">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/generatorName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/generatorType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/informational"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/isNull"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//Node/element"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/fullName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/simpleName"/>
     </genClasses>
     <genClasses ecoreClass="newOuput.ecore#//OutputType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//OutputType/node"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//OutputType/ast"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//OutputType/executor"/>
     </genClasses>
-    <genClasses ecoreClass="newOuput.ecore#//ValueNode">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//ValueNode/value"/>
+    <genClasses ecoreClass="newOuput.ecore#//Reference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Reference/to"/>
+    </genClasses>
+    <genClasses ecoreClass="newOuput.ecore#//Value">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Value/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
