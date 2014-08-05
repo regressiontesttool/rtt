@@ -144,16 +144,16 @@ public class CompareNodeInformationalTests {
 		
 		// child diffs because of unequal child informational types
 		testDifference(createSampleNode(3, ChildType.ELEMENT, true, true), 
-				createSampleNode(3, ChildType.ELEMENT, true), Difference.CHILD_COUNT);
+				createSampleNode(3, ChildType.ELEMENT, true), Difference.INFORMATIONAL);
 	}
 	
 	@Test
 	public void testValueChild() throws Exception {
 		// unequal informational states of child value(s)
 		testDifference(createSampleNode(2, ChildType.VALUE, false),
-				createSampleNode(2, ChildType.VALUE, false, true), Difference.CHILD_COUNT);
+				createSampleNode(2, ChildType.VALUE, false, true), Difference.INFORMATIONAL);
 		testDifference(createSampleNode(2, ChildType.VALUE, false, true),
-				createSampleNode(2, ChildType.VALUE, false), Difference.CHILD_COUNT);
+				createSampleNode(2, ChildType.VALUE, false), Difference.INFORMATIONAL);
 	}
 	
 	@Test

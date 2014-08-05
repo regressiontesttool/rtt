@@ -99,10 +99,6 @@ public class OutputCompare {
 	public OutputCompare(boolean testInformational) {
 		this.testInformational = testInformational;
 	}
-	
-	private boolean hasDifferences(CompareResult result) {
-		return result != null && result.hasDifferences();
-	}
 
 	public static List<TestFailure> compareOutput(
 			Output referenceOutput, Output actualOutput, boolean testInformational) {
@@ -134,7 +130,7 @@ public class OutputCompare {
 		}
 		
 		CompareResult result = compareElementAttributes(referenceElement, actualElement);
-		if (!hasDifferences(result)) {
+		if (!hasDifferences(result) && testInformational(referenceElement)) {
 			if (referenceElement instanceof Value) {
 				result = compareValueAttributes(
 						(Value) referenceElement,
@@ -149,6 +145,14 @@ public class OutputCompare {
 		}
 		
 		return result;
+	}
+	
+	private boolean hasDifferences(CompareResult result) {
+		return result != null && result.hasDifferences();
+	}
+	
+	private boolean testInformational(Element element) {
+		return !element.isInformational() || testInformational;
 	}
 	
 	private CompareResult compareElementAttributes(Element referenceElement, Element actualElement) {
@@ -185,14 +189,15 @@ public class OutputCompare {
 		
 		CompareResult result = compareNodeAttributes(referenceNode, actualNode);
 		if (!hasDifferences(result)) {
-			List<Element> referenceCompareElements = getCompareElements(referenceNode.getElement());
-			List<Element> actualCompareElements = getCompareElements(actualNode.getElement());
+			List<Element> referenceCompareElements = referenceNode.getElement();
+			List<Element> actualCompareElements = actualNode.getElement();
+			
+			if (testInformational == false) {
+				referenceCompareElements = getCompareElements(referenceCompareElements);
+				actualCompareElements = getCompareElements(actualCompareElements);
+			}
 			
 			result = compareChildElements(referenceCompareElements, actualCompareElements);
-		}
-		
-		if (!hasDifferences(result)) {
-			// Test infos ?
 		}
 		
 		return result;	
