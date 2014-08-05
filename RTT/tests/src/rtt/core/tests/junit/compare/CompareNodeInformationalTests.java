@@ -11,7 +11,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
 import rtt.core.tests.junit.utils.CompareUtils;
 
-public class CompareNodeTests {
+public class CompareNodeInformationalTests {
 	
 	public enum ChildType {
 		ELEMENT, VALUE, NODE;		
@@ -26,7 +26,7 @@ public class CompareNodeTests {
 	
 	@Before
 	public void setUp() throws Exception {
-		comparer = new OutputCompare(false);
+		comparer = new OutputCompare(true);
 	}
 	
 	private Node createNode(String name, Type type, String fullName, String simpleName, boolean informational) {
@@ -110,8 +110,8 @@ public class CompareNodeTests {
 		testNoDifferences(changedNode, changedNode);
 		
 		changedNode.setInformational(true);
-		testNoDifferences(createSampleNode(true), changedNode);
-		testNoDifferences(changedNode, createSampleNode(true));
+		testDifference(createSampleNode(true), changedNode, Difference.FULLNAME);
+		testDifference(changedNode, createSampleNode(true), Difference.FULLNAME);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
@@ -125,26 +125,26 @@ public class CompareNodeTests {
 		testNoDifferences(changedNode, changedNode);
 		
 		changedNode.setInformational(true);
-		testNoDifferences(createSampleNode(true), changedNode);
-		testNoDifferences(changedNode, createSampleNode(true));
+		testDifference(createSampleNode(true), changedNode, Difference.SIMPLENAME);
+		testDifference(changedNode, createSampleNode(true), Difference.SIMPLENAME);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
 	// Children tests
 	
 	@Test
-	public void testNoChildDiffsForInformationalNode() throws Exception {
-		// no child diffs despite unequal child count
-		testNoDifferences(createSampleNode(3, ChildType.VALUE, true), 
-				createSampleNode(2, ChildType.VALUE, true));
+	public void testChildDiffsForInformationalNode() throws Exception {
+		// child diffs because of unequal child count
+		testDifference(createSampleNode(3, ChildType.VALUE, true), 
+				createSampleNode(2, ChildType.VALUE, true), Difference.CHILD_COUNT);
 		
-		// no child diffs despite unequal child classes
-		testNoDifferences(createSampleNode(3, ChildType.ELEMENT, true), 
-				createSampleNode(3, ChildType.VALUE, true));
+		// child diffs because of unequal child classes
+		testDifference(createSampleNode(3, ChildType.ELEMENT, true), 
+				createSampleNode(3, ChildType.VALUE, true), Difference.CLASSES);
 		
-		// no child diffs despite unequal child informational types
-		testNoDifferences(createSampleNode(3, ChildType.ELEMENT, true, true), 
-				createSampleNode(3, ChildType.ELEMENT, true));
+		// child diffs because of unequal child informational types
+		testDifference(createSampleNode(3, ChildType.ELEMENT, true, true), 
+				createSampleNode(3, ChildType.ELEMENT, true), Difference.CHILD_COUNT);
 	}
 	
 	@Test
@@ -182,8 +182,8 @@ public class CompareNodeTests {
 		node.getElement().add(value);
 		node.getElement().add(CompareValueTests.createSampleValue(true));
 		
-		testNoDifferences(createSampleNode(2, ChildType.VALUE, false, true), node);
-		testNoDifferences(node, createSampleNode(2, ChildType.VALUE, false, true));
+		testDifference(createSampleNode(2, ChildType.VALUE, false, true), node, Difference.VALUE);
+		testDifference(node, createSampleNode(2, ChildType.VALUE, false, true), Difference.VALUE);
 	}
 	
 	

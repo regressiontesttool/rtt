@@ -27,7 +27,7 @@ public class CompareUtils {
 			Element referenceElement, Element actualElement) {
 		CompareResult result = comparer.compareElements(referenceElement, actualElement);
 		if (result != null && result.hasDifferences()) {
-			fail("Differences found, but there should not: " + result.getMessage());
+			fail("Differences found '" + result.getDifference().name() + "' , but there should not: " + result.getMessage());
 		}
 	}
 	
@@ -35,7 +35,7 @@ public class CompareUtils {
 			Element referenceElement, Element actualElement, Difference expected) {
 		CompareResult result = comparer.compareElements(referenceElement, actualElement);
 		if (result == null || !result.hasDifferences()) {
-			fail("Compare found no differences, but there should be some.");
+			fail("Compare found no differences, but expected was '" + expected.name() + "'.");
 		}
 		
 		if (!result.getDifference().equals(expected)) {

@@ -10,7 +10,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
 import rtt.core.tests.junit.utils.CompareUtils;
 
-public class CompareValueTests {
+public class CompareValueInformationalTests {
 
 	private static final String NAME = "SampleElement";
 	private static final Type TYPE = Type.ELEMENT;
@@ -20,7 +20,7 @@ public class CompareValueTests {
 
 	@Before
 	public void setUp() throws Exception{
-		comparer = new OutputCompare(false);
+		comparer = new OutputCompare(true);
 	}
 	
 	public static Value createSampleValue(boolean informational) {
@@ -75,8 +75,8 @@ public class CompareValueTests {
 		testNoDifferences(changedValue, changedValue);
 		
 		changedValue.setInformational(true);
-		testNoDifferences(createSampleValue(true), changedValue);
-		testNoDifferences(changedValue, createSampleValue(true));
+		testDifference(createSampleValue(true), changedValue, Difference.VALUE);
+		testDifference(changedValue, createSampleValue(true), Difference.VALUE);
 		testNoDifferences(changedValue, changedValue);
 	}
 	
@@ -88,8 +88,8 @@ public class CompareValueTests {
 		testNoDifferences(changedValue, changedValue);
 		
 		changedValue.setInformational(true);
-		testNoDifferences(createSampleValue(true), changedValue);
-		testNoDifferences(changedValue, createSampleValue(true));
+		testDifference(createSampleValue(true), changedValue, Difference.VALUE);
+		testDifference(changedValue, createSampleValue(true), Difference.VALUE);
 		testNoDifferences(changedValue, changedValue);
 	}
 

@@ -11,7 +11,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
 import rtt.core.tests.junit.utils.CompareUtils;
 
-public class CompareElementTests {
+public class CompareElementInformationalTests {
 	
 	private static final String NAME = "SampleElement";
 	private static final Type TYPE = Type.ELEMENT;
@@ -20,7 +20,7 @@ public class CompareElementTests {
 
 	@Before
 	public void setUp() throws Exception{
-		comparer = new OutputCompare(false);
+		comparer = new OutputCompare(true);
 	}
 	
 	public static Element createSampleElement(boolean informational) {
