@@ -58,7 +58,8 @@ public class DataGenerator {
 		}	
 		
 		DataGenerator generator = new DataGenerator();
-		outputData.setAST(generator.handleResult(astMethodResult, astElement));
+		outputData.setExecutor(executor.getExecutorClass().getName());
+		outputData.setAst(generator.handleResult(astMethodResult, astElement));
 	}
 	
 	private Element handleResult(final Object object, Element prototype) throws InvocationTargetException {
