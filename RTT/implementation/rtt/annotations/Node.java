@@ -34,6 +34,11 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Node {
+	
+	@Target({ElementType.FIELD})
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface Address {}
+	
 
 	@Target( { ElementType.FIELD, ElementType.METHOD })
 	@Inherited
