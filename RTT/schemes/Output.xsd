@@ -7,7 +7,7 @@
 	
 	<xs:simpleType name="type">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="ELEMENT" />
+			<xs:enumeration value="OBJECT" />
 			<xs:enumeration value="FIELD" />
 			<xs:enumeration value="METHOD" />			
 		</xs:restriction>
@@ -15,8 +15,8 @@
 	
 	<xs:complexType name="element">
 		<xs:attribute name="address" type="xs:string" use="required" />
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="rtt:type" use="required" />
+		<xs:attribute name="generatorName" type="xs:string" use="required"/>
+		<xs:attribute name="generatorType" type="rtt:type" use="required" />
 		<xs:attribute name="informational" type="xs:boolean" default="false" />
 	</xs:complexType>
 	
@@ -40,22 +40,13 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
-	<xs:complexType name="reference">
-		<xs:complexContent>
-			<xs:extension base="rtt:element">
-				<xs:attribute name="to" type="xs:string" />
-			</xs:extension>			
-		</xs:complexContent>
-	</xs:complexType>
 		
 	<xs:element name="output" >
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="ast" type="rtt:element" 
+				<xs:element name="initialNode" type="rtt:element" 
 					minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
-			<xs:attribute name="executor" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
