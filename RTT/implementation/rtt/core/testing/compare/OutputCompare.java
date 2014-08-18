@@ -156,14 +156,15 @@ public class OutputCompare {
 	}
 	
 	private CompareResult compareElementAttributes(Element referenceElement, Element actualElement) {
-		if (!referenceElement.getName().equals(actualElement.getName())) {
+		if (!referenceElement.getGeneratorName().equals(actualElement.getGeneratorName())) {
 			return CompareResult.create(Difference.NAME, 
-					referenceElement.getName(), actualElement.getName());
+					referenceElement.getGeneratorName(), actualElement.getGeneratorName());
 		}
 		
-		if (!referenceElement.getType().equals(actualElement.getType())) {
+		if (!referenceElement.getGeneratorType().equals(actualElement.getGeneratorType())) {
 			return CompareResult.create(Difference.TYPE, 
-					referenceElement.getType().name(), actualElement.getType().name());
+					referenceElement.getGeneratorType().name(), 
+					actualElement.getGeneratorType().name());
 		}
 		
 		if (referenceElement.isInformational() != actualElement.isInformational()) {

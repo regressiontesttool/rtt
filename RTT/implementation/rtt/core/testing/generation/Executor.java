@@ -29,7 +29,7 @@ public class Executor {
 	
 	private static final String NO_NODE_ANNOTATION = 
 			"The given class doesn't have a @Node annotation.";
-	private static final String NO_INIT = 
+	private static final String NO_INIT_MEMBER = 
 			"Could not find a method or constructor annotated with @Node.Initialize.";
 	private static final String NO_SINGLE_INIT_METHOD = 
 			"Found more than one method annotated with @Node.Initialize.";
@@ -43,7 +43,7 @@ public class Executor {
 			"The second parameter needs to be an array of strings.";
 	
 	private Class<?> executorClass = null;
-	private Object executor = null;	
+	private Object initialNode = null;	
 	private List<Class<? extends Throwable>> acceptedExceptions;
 	
 	private Initialize initAnnotation;	
@@ -64,7 +64,7 @@ public class Executor {
 		}
 		
 		if (initAnnotation == null) {
-			RTTLogging.throwException(new RuntimeException(NO_INIT));
+			RTTLogging.throwException(new RuntimeException(NO_INIT_MEMBER));
 		}
 		
 		acceptedExceptions = new ArrayList<>();
@@ -145,17 +145,17 @@ public class Executor {
 		Method initMethod = getInitializeMethod(executorClass);
 		if (initMethod != null) {
 			initMethod.setAccessible(true);
-			executor = invokeInitMethod(initMethod, inputStream, params);
+			initialNode = invokeInitMethod(initMethod, inputStream, params);
 		}
 		
 		Constructor<?> initConstructor = getInitializeConstructor(executorClass);
 		if (initConstructor != null) {
 			initConstructor.setAccessible(true);
-			executor = invokeInitConstructor(initConstructor, inputStream, params);
+			initialNode = invokeInitConstructor(initConstructor, inputStream, params);
 		}
 		
-		if (executor == null) {
-			throw new RuntimeException(NO_INIT);
+		if (initialNode == null) {
+			throw new RuntimeException(NO_INIT_MEMBER);
 		}
 		
 		try {
@@ -215,7 +215,7 @@ public class Executor {
 		return executorClass;
 	}
 	
-	public Object getExecutor() {
-		return executor;
+	public Object getInitialNode() {
+		return initialNode;
 	}
 }

@@ -468,7 +468,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		Executor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		Executor parser = DataGenerator.locateInitialNode(config, baseDir);
 		
 		RTTLogging.info("**** Generate reference data ****");
 		
@@ -562,7 +562,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		Executor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		Executor parser = DataGenerator.locateInitialNode(config, baseDir);
 		
 		Tester tester = new Tester(currentArchive.getLoader(), matching);
 		List<TestResult> testResults = new ArrayList<TestResult>();
