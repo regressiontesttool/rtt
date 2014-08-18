@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotations.Parser;
+import rtt.annotations.Node;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
@@ -30,16 +30,16 @@ public class ExecutorInheritanceInitializeTests {
 
 	// Test: super class has parser annotation
 
-	@Parser static class SuperParserClass {
+	@Node static class SuperParserClass {
 		public SuperParserClass() {}
 	}
 
 	static class ImplementingConstructorClass extends SuperParserClass {
-		@Parser.Initialize public ImplementingConstructorClass(InputStream in) {super();}
+		@Node.Initialize public ImplementingConstructorClass(InputStream in) {super();}
 	}
 	
 	static class ImplementingMethodClass extends SuperParserClass {
-		@Parser.Initialize public void initMethod(InputStream in) {}
+		@Node.Initialize public void initMethod(InputStream in) {}
 	}
 
 	@Test
@@ -51,12 +51,12 @@ public class ExecutorInheritanceInitializeTests {
 	// Test: super class has parser annotation
 	// init constructor & method has super class
 	
-	@Parser static class SuperParserConstructorClass {
-		@Parser.Initialize public SuperParserConstructorClass(InputStream in) {}
+	@Node static class SuperParserConstructorClass {
+		@Node.Initialize public SuperParserConstructorClass(InputStream in) {}
 	}
 	
-	@Parser static class SuperParserMethodClass {
-		@Parser.Initialize public void initMethod(InputStream in) {}
+	@Node static class SuperParserMethodClass {
+		@Node.Initialize public void initMethod(InputStream in) {}
 	}
 	
 	static class ImplementingSuperConstructorClass extends SuperParserConstructorClass {

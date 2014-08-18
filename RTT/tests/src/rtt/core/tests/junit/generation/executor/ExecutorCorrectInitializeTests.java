@@ -1,14 +1,13 @@
 package rtt.core.tests.junit.generation.executor;
 
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotations.Parser;
+import rtt.annotations.Node;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
@@ -32,8 +31,8 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: correct public annotated initialize method
 
-	@Parser static class CorrectPublicMethodClass {
-		@Parser.Initialize public void initMethod(InputStream in) {}
+	@Node static class CorrectPublicMethodClass {
+		@Node.Initialize public void initMethod(InputStream in) {}
 	}
 
 	@Test
@@ -43,8 +42,8 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: correct protected annotated initialize method
 
-	@Parser static class CorrectProtectedMethodClass {
-		@Parser.Initialize protected void initMethod(InputStream in) {}
+	@Node static class CorrectProtectedMethodClass {
+		@Node.Initialize protected void initMethod(InputStream in) {}
 	}
 
 	@Test
@@ -54,8 +53,8 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: correct private annotated initialize method
 
-	@Parser static class CorrectPrivateMethodClass {
-		@Parser.Initialize private void initMethod(InputStream in) {}
+	@Node static class CorrectPrivateMethodClass {
+		@Node.Initialize private void initMethod(InputStream in) {}
 	}
 
 	@Test
@@ -65,8 +64,8 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: correct public annotated initialize method
 
-	@Parser static class CorrectPublicConstructorClass {
-		@Parser.Initialize public CorrectPublicConstructorClass(InputStream in) {}
+	@Node static class CorrectPublicConstructorClass {
+		@Node.Initialize public CorrectPublicConstructorClass(InputStream in) {}
 	}
 
 	@Test
@@ -76,8 +75,8 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: correct protected annotated initialize method
 
-	@Parser static class CorrectProtectedConstructorClass {
-		@Parser.Initialize protected CorrectProtectedConstructorClass(InputStream in) {}
+	@Node static class CorrectProtectedConstructorClass {
+		@Node.Initialize protected CorrectProtectedConstructorClass(InputStream in) {}
 	}
 
 	@Test
@@ -87,8 +86,8 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: correct private annotated initialize method
 
-	@Parser static class CorrectPrivateConstructorClass {
-		@Parser.Initialize private CorrectPrivateConstructorClass(InputStream in) {}
+	@Node static class CorrectPrivateConstructorClass {
+		@Node.Initialize private CorrectPrivateConstructorClass(InputStream in) {}
 	}
 
 	@Test
@@ -98,8 +97,9 @@ public class ExecutorCorrectInitializeTests {
 	
 	// Test: withParams constructor
 
-	@Parser(withParams=true) static class WithParamsConstructorClass {
-		@Parser.Initialize public WithParamsConstructorClass(InputStream in, String[] params) {}
+	@Node static class WithParamsConstructorClass {
+		@Node.Initialize(withParams=true) 
+		public WithParamsConstructorClass(InputStream in, String[] params) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -109,8 +109,9 @@ public class ExecutorCorrectInitializeTests {
 
 	// Test: withParams method
 
-	@Parser(withParams=true) static class WithParamsMethodClass {
-		@Parser.Initialize public void init(InputStream in, String[] params) {}
+	@Node static class WithParamsMethodClass {
+		@Node.Initialize(withParams=true) 
+		public void init(InputStream in, String[] params) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -120,8 +121,9 @@ public class ExecutorCorrectInitializeTests {
 	
 	// Test: acceptedExceptions constructor
 	
-	@Parser(acceptedExceptions={IllegalArgumentException.class}) static class AcceptedExceptionConstructorClass {
-		@Parser.Initialize public AcceptedExceptionConstructorClass(InputStream in) {
+	@Node static class AcceptedExceptionConstructorClass {
+		@Node.Initialize(acceptedExceptions={IllegalArgumentException.class})
+		public AcceptedExceptionConstructorClass(InputStream in) {
 			throw new IllegalArgumentException("Testing exception");
 		}
 	}

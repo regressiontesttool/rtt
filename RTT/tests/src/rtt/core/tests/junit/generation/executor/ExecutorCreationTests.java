@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
-import rtt.annotations.Parser;
+import rtt.annotations.Node;
 import rtt.core.testing.generation.Executor;
 
 public class ExecutorCreationTests {
@@ -20,8 +20,8 @@ public class ExecutorCreationTests {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testLocalClass() throws Exception {
-		@Parser class LocalClass {
-			@Parser.Initialize public LocalClass(InputStream in) {}
+		@Node class LocalClass {
+			@Node.Initialize public LocalClass(InputStream in) {}
 		}
 
 		new Executor(LocalClass.class);
@@ -29,8 +29,8 @@ public class ExecutorCreationTests {
 
 	// Test: Non-static member class
 
-	@Parser class NonStaticMemberClass {
-		@Parser.Initialize public NonStaticMemberClass(InputStream in) {}
+	@Node class NonStaticMemberClass {
+		@Node.Initialize public NonStaticMemberClass(InputStream in) {}
 	}
 
 	@Test(expected=IllegalArgumentException.class)
@@ -51,7 +51,7 @@ public class ExecutorCreationTests {
 	
 	// Test: correct parser annotation
 	
-	@Parser static class CorrectParserAnnotation {
+	@Node static class CorrectParserAnnotation {
 		public CorrectParserAnnotation() {}
 	}
 	
@@ -62,7 +62,7 @@ public class ExecutorCreationTests {
 	
 	// Test: super class has parser annotation
 	
-	@Parser static class ParserSuperClass {}	
+	@Node static class ParserSuperClass {}	
 	static class ExtendingParserClass extends ParserSuperClass {}
 	
 	@Test
@@ -81,7 +81,7 @@ public class ExecutorCreationTests {
 	
 	// Test: interface has parser annotation
 	
-	@Parser interface ParserInterface {}
+	@Node interface ParserInterface {}
 	static class ImplementingParserClass implements ParserInterface {}
 	
 	@Test

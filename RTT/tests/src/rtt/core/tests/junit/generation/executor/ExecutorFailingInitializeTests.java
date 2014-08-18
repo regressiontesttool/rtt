@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotations.Parser;
+import rtt.annotations.Node;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
@@ -31,7 +31,7 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: No initialize annotation
 
-	@Parser static class NoInitAnnotation {
+	@Node static class NoInitAnnotation {
 		public NoInitAnnotation() {}
 	}
 
@@ -42,8 +42,8 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: annotated constructor, but no parameter
 
-	@Parser static class NoParameterConstructor {
-		@Parser.Initialize
+	@Node static class NoParameterConstructor {
+		@Node.Initialize
 		public NoParameterConstructor() {}
 	}
 
@@ -54,8 +54,8 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: annotated method, but no parameter
 
-	@Parser static class NoParameterMethod {
-		@Parser.Initialize
+	@Node static class NoParameterMethod {
+		@Node.Initialize
 		public void initMethod() {}
 	}
 
@@ -66,8 +66,8 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: annotated constructor, but wrong parameter
 
-	@Parser static class WrongParameterConstructor {
-		@Parser.Initialize
+	@Node static class WrongParameterConstructor {
+		@Node.Initialize
 		public WrongParameterConstructor(Object o) {}
 	}
 
@@ -78,8 +78,8 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: annotated method, but wrong parameter
 
-	@Parser static class WrongParameterMethod {
-		@Parser.Initialize
+	@Node static class WrongParameterMethod {
+		@Node.Initialize
 		public void initMethod(Object o) {}
 	}
 
@@ -90,10 +90,10 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: annotated method, but no parameter-less constructor
 
-	@Parser static class ParameterlessConstructor {
+	@Node static class ParameterlessConstructor {
 		public ParameterlessConstructor(Object o) {}
 
-		@Parser.Initialize
+		@Node.Initialize
 		public void initMethod(InputStream in) {}
 	}
 
@@ -104,8 +104,8 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: too much parameters
 
-	@Parser static class TooMuchParameters {
-		@Parser.Initialize
+	@Node static class TooMuchParameters {
+		@Node.Initialize
 		public void initMe(InputStream in, Object o) {}
 	}
 
@@ -116,11 +116,11 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: multiple annotated methods
 
-	@Parser static class MultipleInitMethod {
+	@Node static class MultipleInitMethod {
 		public MultipleInitMethod() {}		
-		@Parser.Initialize
+		@Node.Initialize
 		public void initMethod(InputStream in) {}		
-		@Parser.Initialize
+		@Node.Initialize
 		public void secondMethod() {}
 	}
 
@@ -131,10 +131,10 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: multiple annotated constructors
 
-	@Parser static class MultipleInitConstruct {
-		@Parser.Initialize
+	@Node static class MultipleInitConstruct {
+		@Node.Initialize
 		public MultipleInitConstruct() {}
-		@Parser.Initialize
+		@Node.Initialize
 		public MultipleInitConstruct(InputStream in) {}
 	}
 
@@ -145,8 +145,9 @@ public class ExecutorFailingInitializeTests {
 	
 	// Test: withParameter constructor
 
-	@Parser(withParams=true) static class WithParamsConstructorClass {
-		@Parser.Initialize public WithParamsConstructorClass(InputStream in) {}
+	@Node static class WithParamsConstructorClass {
+		@Node.Initialize(withParams=true)
+		public WithParamsConstructorClass(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -156,8 +157,9 @@ public class ExecutorFailingInitializeTests {
 
 	// Test: withParameter method
 
-	@Parser(withParams=true) static class WithParamsMethodClass {
-		@Parser.Initialize public void init(InputStream in) {}
+	@Node static class WithParamsMethodClass {
+		@Node.Initialize(withParams=true)
+		public void init(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)

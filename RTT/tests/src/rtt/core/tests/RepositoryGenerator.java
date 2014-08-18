@@ -20,7 +20,7 @@ import rtt.annotations.*;
  * repository}.
  * @author C. Bürger
  */
-@Parser(acceptedExceptions=RuntimeException.class)
+@Node
 public final class RepositoryGenerator {
 	private InputStream is;
 	
@@ -29,7 +29,7 @@ public final class RepositoryGenerator {
 	 * stream as source for splicing and repository generation.
 	 * @param is Input consumed while and needed for repository generation.
 	 */
-	@Parser.Initialize
+	@Node.Initialize(acceptedExceptions=RuntimeException.class)
 	public RepositoryGenerator(InputStream is) {this.is = is;}
 	
 	/**
@@ -66,7 +66,7 @@ public final class RepositoryGenerator {
 	 * @throws RuntimeException Thrown, if the first input chunk is a negative
 	 * number.
 	 */
-	@Parser.AST public Repository createRepository() throws IOException {
+	@Node.Compare public Repository createRepository() throws IOException {
 		// Initialize the repository:
 		Value value = nextChunk();
 		Repository repository = new Repository(value.value, new Repository[2]);
