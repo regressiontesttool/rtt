@@ -14,9 +14,13 @@ import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.input.Input;
+import rtt.core.exceptions.AnnotationException;
 import rtt.core.utils.RTTLogging;
 
 public class Executor {
+	
+	private static final Class<Node> NODE_ANNOTATION = Node.class;
+	private static final Class<Initialize> INIT_ANNOTATION = Initialize.class;
 	
 	private static final String NO_INTERFACES = 
 			"Interfaces are not allowed for output data generation.";
@@ -29,7 +33,7 @@ public class Executor {
 	
 	private static final String NO_NODE_ANNOTATION = 
 			"The given class doesn't have a @Node annotation.";
-	private static final String NO_INIT_MEMBER = 
+	private static final String NO_INIT_ANNOTATION = 
 			"Could not find a method or constructor annotated with @Node.Initialize.";
 	private static final String NO_SINGLE_INIT_METHOD = 
 			"Found more than one method annotated with @Node.Initialize.";
@@ -53,18 +57,18 @@ public class Executor {
 		
 		Method initMethod = getInitializeMethod(initialNodeClass);
 		if (initMethod != null) {
-			initAnnotation = initMethod.getAnnotation(Initialize.class);
+			initAnnotation = initMethod.getAnnotation(INIT_ANNOTATION);
 			checkParameters(initMethod.getParameterTypes(), initAnnotation.withParams());
 		} else {
 			Constructor<?> initConstructor = getInitializeConstructor(initialNodeClass);
 			if (initConstructor != null) {
-				initAnnotation = initConstructor.getAnnotation(Initialize.class);
+				initAnnotation = initConstructor.getAnnotation(INIT_ANNOTATION);
 				checkParameters(initConstructor.getParameterTypes(), initAnnotation.withParams());
 			}
 		}
 		
 		if (initAnnotation == null) {
-			RTTLogging.throwException(new RuntimeException(NO_INIT_MEMBER));
+			RTTLogging.throwException(new AnnotationException(NO_INIT_ANNOTATION));
 		}
 		
 		acceptedExceptions = new ArrayList<>();
@@ -74,7 +78,7 @@ public class Executor {
 		
 		this.executorClass = initialNodeClass;
 	}
-	
+
 	private void checkClass(Class<?> initialNodeClass) {
 		if (initialNodeClass.isInterface()) {
 			RTTLogging.throwException(new IllegalArgumentException(NO_INTERFACES));
@@ -92,13 +96,13 @@ public class Executor {
 			RTTLogging.throwException(new IllegalArgumentException(NO_NONSTATIC_MEMBERCLASS));;
 		}
 		
-		if (!initialNodeClass.isAnnotationPresent(Node.class)) {
-			RTTLogging.throwException(new RuntimeException(NO_NODE_ANNOTATION));
+		if (!AnnotationProcessor.hasAnnotation(initialNodeClass, NODE_ANNOTATION)) {
+			RTTLogging.throwException(new AnnotationException(NO_NODE_ANNOTATION));
 		}
 	}
 
 	private Method getInitializeMethod(Class<?> initialNodeClass) {
-		List<Method> annotatedMethods = AnnotationProcessor.getMethods(executorClass, Initialize.class);
+		List<Method> annotatedMethods = AnnotationProcessor.getMethods(initialNodeClass, INIT_ANNOTATION);
 		if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
 			if (annotatedMethods.size() > 1) {
 				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_METHOD));
@@ -111,7 +115,7 @@ public class Executor {
 	}
 	
 	private Constructor<?> getInitializeConstructor(Class<?> initialNodeClass) {		
-		List<Constructor<?>> annotatedConstructors = AnnotationProcessor.getConstructors(initialNodeClass, Initialize.class);
+		List<Constructor<?>> annotatedConstructors = AnnotationProcessor.getConstructors(initialNodeClass, INIT_ANNOTATION);
 		if (annotatedConstructors != null && !annotatedConstructors.isEmpty()) {
 			if (annotatedConstructors.size() > 1) {
 				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_CONSTRUCTOR));
@@ -127,15 +131,15 @@ public class Executor {
 		int paramSize = withParams ? 2 : 1;
 		
 		if (parameterTypes.length != paramSize) {
-			RTTLogging.throwException(new RuntimeException(PARAMETER_COUNT_ERROR.replace("$$", "" + paramSize)));
+			RTTLogging.throwException(new AnnotationException(PARAMETER_COUNT_ERROR.replace("$$", "" + paramSize)));
 		}
 		
 		if (parameterTypes[0] == null || !parameterTypes[0].equals(InputStream.class)) {
-			RTTLogging.throwException(new RuntimeException(NO_INPUTSTREAM_PARAMETER));
+			RTTLogging.throwException(new AnnotationException(NO_INPUTSTREAM_PARAMETER));
 		}
 		
 		if (withParams && (parameterTypes[1] == null || !parameterTypes.equals(String[].class))) {
-			RTTLogging.throwException(new RuntimeException(NO_STRINGARRAY_PARAMETER));
+			RTTLogging.throwException(new AnnotationException(NO_STRINGARRAY_PARAMETER));
 		}
 	}
 	
@@ -155,7 +159,7 @@ public class Executor {
 		}
 		
 		if (initialNode == null) {
-			throw new RuntimeException(NO_INIT_MEMBER);
+			throw new RuntimeException(NO_INIT_ANNOTATION);
 		}
 		
 		try {
