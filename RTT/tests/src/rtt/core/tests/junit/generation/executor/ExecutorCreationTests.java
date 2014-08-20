@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.junit.Test;
 
 import rtt.annotations.Node;
+import rtt.annotations.Node.Initialize;
 import rtt.core.testing.generation.Executor;
 
 public class ExecutorCreationTests {
@@ -52,7 +53,7 @@ public class ExecutorCreationTests {
 	// Test: correct parser annotation
 	
 	@Node static class CorrectParserAnnotation {
-		public CorrectParserAnnotation() {}
+		@Initialize public CorrectParserAnnotation(InputStream in) {}
 	}
 	
 	@Test
@@ -63,7 +64,9 @@ public class ExecutorCreationTests {
 	// Test: super class has parser annotation
 	
 	@Node static class ParserSuperClass {}	
-	static class ExtendingParserClass extends ParserSuperClass {}
+	static class ExtendingParserClass extends ParserSuperClass {
+		@Initialize public ExtendingParserClass(InputStream in) {}
+	}
 	
 	@Test
 	public void testExtending() throws Throwable {
@@ -72,7 +75,9 @@ public class ExecutorCreationTests {
 	
 	// Test: two level super class has parser annotation
 	static class SecondSuperClass extends ParserSuperClass {}
-	static class ConcreteClass extends SecondSuperClass {}
+	static class ConcreteClass extends SecondSuperClass {
+		@Initialize public ConcreteClass(InputStream in) {}
+	}
 	
 	@Test
 	public void testTwoLevelSuperClass() throws Exception {
@@ -82,7 +87,9 @@ public class ExecutorCreationTests {
 	// Test: interface has parser annotation
 	
 	@Node interface ParserInterface {}
-	static class ImplementingParserClass implements ParserInterface {}
+	static class ImplementingParserClass implements ParserInterface {
+		@Initialize public ImplementingParserClass(InputStream in) {}
+	}
 	
 	@Test
 	public void testImplementing() throws Exception {

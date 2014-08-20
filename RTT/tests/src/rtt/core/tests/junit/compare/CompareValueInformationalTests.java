@@ -13,7 +13,7 @@ import rtt.core.tests.junit.utils.CompareUtils;
 public class CompareValueInformationalTests {
 
 	private static final String NAME = "SampleElement";
-	private static final Type TYPE = Type.ELEMENT;
+	private static final Type TYPE = Type.OBJECT;
 	private static final String VALUE = "aValue";
 	
 	private OutputCompare comparer;
@@ -30,8 +30,8 @@ public class CompareValueInformationalTests {
 	private static Value createValue(String name, Type type, String value, boolean informational) {
 		Value element = new Value();
 		
-		element.setName(name);
-		element.setType(type);
+		element.setGeneratorName(name);
+		element.setGeneratorType(type);
 		element.setInformational(informational);
 		element.setValue(value);		
 		

@@ -18,7 +18,7 @@ public class CompareNodeTests {
 	}
 
 	private static final String NAME = "aName";
-	private static final Type TYPE = Type.ELEMENT;
+	private static final Type TYPE = Type.OBJECT;
 	private static final String FULL_NAME = "aFullName";
 	private static final String SIMPLE_NAME = "aSimpleName";
 	
@@ -31,8 +31,8 @@ public class CompareNodeTests {
 	
 	private Node createNode(String name, Type type, String fullName, String simpleName, boolean informational) {
 		Node node = new Node();
-		node.setName(name);
-		node.setType(type);
+		node.setGeneratorName(name);
+		node.setGeneratorType(type);
 		node.setInformational(informational);
 		node.setFullName(fullName);
 		node.setSimpleName(simpleName);

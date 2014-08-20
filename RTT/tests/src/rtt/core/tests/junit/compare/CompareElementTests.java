@@ -14,7 +14,7 @@ import rtt.core.tests.junit.utils.CompareUtils;
 public class CompareElementTests {
 	
 	private static final String NAME = "SampleElement";
-	private static final Type TYPE = Type.ELEMENT;
+	private static final Type TYPE = Type.OBJECT;
 	
 	private OutputCompare comparer;
 
@@ -30,8 +30,8 @@ public class CompareElementTests {
 	public static Element createElement(String name, Type value, boolean informational) {
 		Element element = new Element() {};
 		
-		element.setName(name);
-		element.setType(value);
+		element.setGeneratorName(name);
+		element.setGeneratorType(value);
 		element.setInformational(informational);
 		
 		return element;		
@@ -111,8 +111,8 @@ public class CompareElementTests {
 	@Test
 	public void testValueElementCompare() throws Exception {
 		Value value = new Value();
-		value.setName(NAME);
-		value.setType(TYPE);
+		value.setGeneratorName(NAME);
+		value.setGeneratorType(TYPE);
 		value.setValue("aValue");
 		
 		testDifference(createSampleElement(false), value, Difference.CLASSES);
@@ -126,8 +126,8 @@ public class CompareElementTests {
 	@Test
 	public void testNodeElementCompare() throws Exception {
 		Node node = new Node();
-		node.setName(NAME);
-		node.setType(TYPE);
+		node.setGeneratorName(NAME);
+		node.setGeneratorType(TYPE);
 		node.setFullName("aFullName");
 		node.setSimpleName("aSimpleName");		
 		node.getElement().add(createSampleElement(false));
