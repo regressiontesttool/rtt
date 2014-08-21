@@ -10,16 +10,15 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.input.Input;
 import rtt.core.exceptions.AnnotationException;
+import rtt.core.utils.AnnotationUtil;
 import rtt.core.utils.RTTLogging;
 
 public class Executor {
 	
-	private static final Class<Node> NODE_ANNOTATION = Node.class;
 	private static final Class<Initialize> INIT_ANNOTATION = Initialize.class;
 	
 	private static final String NO_INTERFACES = 
@@ -96,7 +95,7 @@ public class Executor {
 			RTTLogging.throwException(new IllegalArgumentException(NO_NONSTATIC_MEMBERCLASS));;
 		}
 		
-		if (!AnnotationProcessor.hasAnnotation(initialNodeClass, NODE_ANNOTATION)) {
+		if (!AnnotationUtil.isNode(initialNodeClass)) {
 			RTTLogging.throwException(new AnnotationException(NO_NODE_ANNOTATION));
 		}
 	}

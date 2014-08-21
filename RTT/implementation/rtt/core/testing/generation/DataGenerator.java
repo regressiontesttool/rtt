@@ -1,7 +1,5 @@
 package rtt.core.testing.generation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -10,25 +8,18 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
-import rtt.annotations.processing.AnnotationProcessor;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.Type;
+import rtt.core.utils.AnnotationUtil;
 import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
 	
-	private static final Class<? extends Annotation> NODE_ANNOTATION = rtt.annotations.Node.class;
-	private static final Class<? extends Annotation> COMPARE_ANNOTATION = Compare.class;
-	private static final Class<? extends Annotation> INFORMATIONAL_ANNOTATION = Informational.class;
-	
-	private static final String NO_AST_METHOD = "Could not find a method annotated with @Parser.AST";
 	private static final String ONLY_NONVOID_METHODS = "Only methods with a non-void return type allowed.";
 	private static final String ONLY_PARAMETERLESS_METHODS = "Only methods without parameters allowed.";
 	
@@ -45,15 +36,11 @@ public class DataGenerator {
 	}
 	
 	private Element handleObject(final Object object, Element prototype) throws InvocationTargetException {
-		if (object != null && hasNodeAnnotation(object.getClass())) {
+		if (AnnotationUtil.isNode(object)) {
 			return handleNode(object, prototype);
 		}
 		
 		return GeneratorUtil.createValue(object, prototype);
-	}
-	
-	private boolean hasNodeAnnotation(final Class<?> objectType) {
-		return AnnotationProcessor.hasAnnotation(objectType, NODE_ANNOTATION);
 	}
 	
 	private Element handleNode(final Object object, Element prototype) throws InvocationTargetException {
@@ -67,11 +54,11 @@ public class DataGenerator {
 			Node resultNode = GeneratorUtil.createNode(object, prototype);
 			GeneratorUtil.setObjectAddress(object, resultNode.getAddress());
 			
-			resultNode.getElement().addAll(processFields(object, resultNode, COMPARE_ANNOTATION));
-			resultNode.getElement().addAll(processFields(object, resultNode, INFORMATIONAL_ANNOTATION));
+			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getCompareFields(object)));
+			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getInformationalFields(object)));
 			
-			resultNode.getElement().addAll(processMethods(object, resultNode, COMPARE_ANNOTATION));
-			resultNode.getElement().addAll(processMethods(object, resultNode, INFORMATIONAL_ANNOTATION));
+			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getCompareMethods(object)));
+			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getInformationalMethods(object)));
 			
 			result = resultNode;
 		}
@@ -80,10 +67,9 @@ public class DataGenerator {
 	}
 	
 	private List<Element> processFields(final Object nodeObject, final Node parentNode, 
-			Class<? extends Annotation> annotation) throws InvocationTargetException {
+			List<Field> annotatedFields) throws InvocationTargetException {
 		
 		List<Element> resultList = new ArrayList<>();
-		List<Field> annotatedFields = AnnotationProcessor.getFields(nodeObject.getClass(), annotation);
 		
 		int fieldAddress = 1;
 		Element element = null;
@@ -93,7 +79,8 @@ public class DataGenerator {
 			element.setAddress(parentNode.getAddress() + "." + fieldAddress);
 			element.setGeneratorName(field.getName());
 			element.setGeneratorType(Type.FIELD);
-			element.setInformational(isInformational(parentNode, field));
+			element.setInformational(parentNode.isInformational() 
+					|| AnnotationUtil.isInformational(field));
 			
 			try {
 				field.setAccessible(true);
@@ -109,10 +96,9 @@ public class DataGenerator {
 	}
 	
 	private List<Element> processMethods(final Object nodeObject, final Node parentNode,
-			Class<? extends Annotation> annotation) throws InvocationTargetException {
+			List<Method> annotatedMethods) throws InvocationTargetException {
 		
 		List<Element> resultList = new ArrayList<>();
-		List<Method> annotatedMethods = AnnotationProcessor.getMethods(nodeObject.getClass(), annotation);
 		
 		Element element = null;
 		int methodAddress = 1;
@@ -132,7 +118,9 @@ public class DataGenerator {
 			element.setAddress(parentNode.getAddress() + "." + methodAddress);
 			element.setGeneratorName(method.getName());
 			element.setGeneratorType(Type.METHOD);
-			element.setInformational(isInformational(parentNode, method));
+
+			element.setInformational(parentNode.isInformational() 
+					|| AnnotationUtil.isInformational(method));
 			
 			try {
 				method.setAccessible(true);
@@ -145,10 +133,6 @@ public class DataGenerator {
 		}
 		
 		return resultList;
-	}
-	
-	private static boolean isInformational(Element parent, AnnotatedElement element) {
-		return parent.isInformational() || element.isAnnotationPresent(INFORMATIONAL_ANNOTATION);
 	}
 	
 	private Element handleResult(final Object object, Element prototype) throws InvocationTargetException {
