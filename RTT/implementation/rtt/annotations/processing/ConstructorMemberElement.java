@@ -2,36 +2,31 @@ package rtt.annotations.processing;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-final class ConstructorMemberElement extends
-		AbstractMemberElement<Constructor<?>> {
+final class ConstructorMemberElement extends AbstractMemberElement<Constructor<?>> {
 
 	public ConstructorMemberElement(ClassElement classElement) {
 		super(classElement);
 	}
 	
 	@Override
-	protected synchronized List<Constructor<?>> createElements(ClassElement classElement,
+	protected Map<String, Constructor<?>> getParentElements(
+			ClassElement parentElement, 
 			Class<? extends Annotation> annotation) {
 		
-		List<Constructor<?>> annotatedConstructors = new ArrayList<>();		
+		return parentElement.getConstructorMap(annotation);
+	}
 
-		ClassElement parentElement = classElement.parentElement;
-		if (parentElement != null) {
-			for (Constructor<?> constructor : parentElement.getConstructors(annotation)) {
-				annotatedConstructors.add(constructor);
-			}
-		}
+	@Override
+	protected void addElements(Class<?> objectType,
+			Class<? extends Annotation> annotation,
+			Map<String, Constructor<?>> annotatedElements) {
 		
-		Class<?> objectType = classElement.type;
 		for (Constructor<?> constructor : objectType.getDeclaredConstructors()) {
 			if (constructor.isAnnotationPresent(annotation)) {
-				annotatedConstructors.add(constructor);
+				annotatedElements.put(constructor.toGenericString(), constructor);
 			}
 		}
-		
-		return annotatedConstructors;
 	}
 }

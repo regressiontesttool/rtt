@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 final class FieldMemberElement extends AbstractMemberElement<Field> {
 
@@ -12,37 +13,23 @@ final class FieldMemberElement extends AbstractMemberElement<Field> {
 	}
 
 	@Override
-	protected synchronized List<Field> createElements(
-			ClassElement classElement,
+	protected Map<String, Field> getParentElements(ClassElement parentElement,
 			Class<? extends Annotation> annotation) {
-		
-		List<Field> annotatedFields = new ArrayList<>();
-		
-		ClassElement parentElement = classElement.parentElement;
-		if (parentElement != null) {
-			for (Field field : parentElement.getFields(annotation)) {
-				annotatedFields.add(field);
-			}
-		}
-		
-		addFields(classElement.type, annotation, annotatedFields);
-		
-		return annotatedFields;
+		return parentElement.getFieldMap(annotation);
 	}
 
-	private void addFields(Class<?> type,
-			Class<? extends Annotation> annotation, 
-			List<Field> annotatedFields) {
+	@Override
+	protected void addElements(Class<?> type,
+			Class<? extends Annotation> annotation, Map<String, Field> annotatedElements) {
 		
 		for (Class<?> interfaceType : type.getInterfaces()) {
-			addFields(interfaceType, annotation, annotatedFields);
+			addElements(interfaceType, annotation, annotatedElements);
 		}
 		
 		for (Field field : type.getDeclaredFields()){
 			if (field.isAnnotationPresent(annotation)) {
-				annotatedFields.add(field);
+				annotatedElements.put(field.toGenericString(), field);
 			}
 		}
-		
 	}
 }
