@@ -29,7 +29,7 @@ public class CompareNodeTests {
 		comparer = new OutputCompare(false);
 	}
 	
-	private Node createNode(String name, Type type, String fullName, String simpleName, boolean informational) {
+	private static Node createNode(String name, Type type, String fullName, String simpleName, boolean informational) {
 		Node node = new Node();
 		node.setGeneratorName(name);
 		node.setGeneratorType(type);
@@ -40,32 +40,36 @@ public class CompareNodeTests {
 		return node;
 	}
 	
-	private Node createSampleNode(boolean informational) {
+	public static Node createSampleNode(boolean informational) {
 		return createNode(NAME, TYPE, FULL_NAME, SIMPLE_NAME, informational);
 	}
 	
-	private Node createSampleNode(int childCount, ChildType type, 
-			boolean informational) {		
-		return createSampleNode(childCount, type, informational, false);
+	public enum CreateInfo {
+		NONE,
+		PARENT,
+		CHILDS,
+		PARENT_AND_CHILDS;
 	}
 	
-	private Node createSampleNode(int childCount, ChildType type, 
-			boolean informational, boolean childInfos) {
+	public static Node createSampleNode(int childCount, ChildType type, CreateInfo status) {
 		
-		Node node = createSampleNode(informational);
+		boolean parentIsInfo = ((status == CreateInfo.PARENT) || (status == CreateInfo.PARENT_AND_CHILDS));
+		boolean childIsInfo = ((status == CreateInfo.CHILDS) || (status == CreateInfo.PARENT_AND_CHILDS));
+		
+		Node node = createSampleNode(parentIsInfo);	
 		
 		for(int i = 0; i < childCount; i++) {
 			Element childElement = null;
 			
 			switch (type) {
 			case ELEMENT:
-				childElement = CompareElementTests.createSampleElement(childInfos);
+				childElement = CompareElementTests.createSampleElement(childIsInfo);
 				break;
 			case VALUE:
-				childElement = CompareValueTests.createSampleValue(childInfos);
+				childElement = CompareValueTests.createSampleValue(childIsInfo);
 				break;			
 			case NODE:
-				childElement = createSampleNode(childInfos);
+				childElement = createSampleNode(childIsInfo);
 				break;
 			}
 			
@@ -135,31 +139,31 @@ public class CompareNodeTests {
 	@Test
 	public void testNoChildDiffsForInformationalNode() throws Exception {
 		// no child diffs despite unequal child count
-		testNoDifferences(createSampleNode(3, ChildType.VALUE, true), 
-				createSampleNode(2, ChildType.VALUE, true));
+		testNoDifferences(createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), 
+				createSampleNode(2, ChildType.VALUE, CreateInfo.PARENT));
 		
 		// no child diffs despite unequal child classes
-		testNoDifferences(createSampleNode(3, ChildType.ELEMENT, true), 
-				createSampleNode(3, ChildType.VALUE, true));
+		testNoDifferences(createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT), 
+				createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT));
 		
 		// no child diffs despite unequal child informational types
-		testNoDifferences(createSampleNode(3, ChildType.ELEMENT, true, true), 
-				createSampleNode(3, ChildType.ELEMENT, true));
+		testNoDifferences(createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT_AND_CHILDS), 
+				createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT));
 	}
 	
 	@Test
 	public void testValueChild() throws Exception {
 		// unequal informational states of child value(s)
-		testDifference(createSampleNode(2, ChildType.VALUE, false),
-				createSampleNode(2, ChildType.VALUE, false, true), Difference.CHILD_COUNT);
-		testDifference(createSampleNode(2, ChildType.VALUE, false, true),
-				createSampleNode(2, ChildType.VALUE, false), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(2, ChildType.VALUE, CreateInfo.NONE),
+				createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS),
+				createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.CHILD_COUNT);
 	}
 	
 	@Test
 	public void testChildValues() throws Exception {
-		testNoDifferences(createSampleNode(1, ChildType.VALUE, false),
-				createSampleNode(1, ChildType.VALUE, false));
+		testNoDifferences(createSampleNode(1, ChildType.VALUE, CreateInfo.NONE),
+				createSampleNode(1, ChildType.VALUE, CreateInfo.NONE));
 		
 		Node node = createSampleNode(false);
 		Value value = CompareValueTests.createSampleValue(false);
@@ -167,14 +171,14 @@ public class CompareNodeTests {
 		node.getElement().add(value);
 		node.getElement().add(CompareValueTests.createSampleValue(false));
 		
-		testDifference(createSampleNode(2, ChildType.VALUE, false), node, Difference.VALUE);
-		testDifference(node, createSampleNode(2, ChildType.VALUE, false), Difference.VALUE);
+		testDifference(createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), node, Difference.VALUE);
+		testDifference(node, createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.VALUE);
 	}
 	
 	@Test
 	public void testChildValuesInformational() throws Exception {		
-		testNoDifferences(createSampleNode(1, ChildType.VALUE, false, true), 
-				createSampleNode(1, ChildType.VALUE, false, true));
+		testNoDifferences(createSampleNode(1, ChildType.VALUE, CreateInfo.CHILDS), 
+				createSampleNode(1, ChildType.VALUE, CreateInfo.CHILDS));
 		
 		Node node = createSampleNode(false);
 		Value value = CompareValueTests.createSampleValue(true);
@@ -182,8 +186,8 @@ public class CompareNodeTests {
 		node.getElement().add(value);
 		node.getElement().add(CompareValueTests.createSampleValue(true));
 		
-		testNoDifferences(createSampleNode(2, ChildType.VALUE, false, true), node);
-		testNoDifferences(node, createSampleNode(2, ChildType.VALUE, false, true));
+		testNoDifferences(createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS), node);
+		testNoDifferences(node, createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS));
 	}
 	
 	

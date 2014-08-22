@@ -2,8 +2,6 @@ package rtt.annotations.processing;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 final class FieldMemberElement extends AbstractMemberElement<Field> {
