@@ -6,6 +6,7 @@ import java.util.List;
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
+import rtt.core.archive.output.Reference;
 import rtt.core.archive.output.Value;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
 import rtt.core.testing.compare.results.TestFailure;
@@ -36,10 +37,10 @@ public class OutputCompare {
 			NAME("Name"),
 			TYPE("Type"),
 			VALUE("Value"),
+			REFERENCE("Reference"),
 			SIMPLENAME("Simple name"),
 			FULLNAME("Full name"),
-			CHILD_COUNT("Sizes of children");
-			
+			CHILD_COUNT("Sizes of children");			
 			
 			private String description;
 			
@@ -137,6 +138,12 @@ public class OutputCompare {
 						(Value) actualElement); 
 			}
 			
+			if (referenceElement instanceof Reference) {
+				result = compareReferenceAttributes(
+						(Reference) referenceElement,
+						(Reference) actualElement);
+			}
+			
 			if (referenceElement instanceof Node) {
 				result = compareNodes(
 						(Node) referenceElement,
@@ -181,6 +188,17 @@ public class OutputCompare {
 		
 		if (!valueOfRefer.equals(valueOfActual)) {
 			return CompareResult.create(Difference.VALUE, valueOfRefer, valueOfActual);
+		}
+		
+		return null;
+	}
+	
+	private CompareResult compareReferenceAttributes(Reference referenceValue, Reference actualValue) {
+		String valueOfRefer = String.valueOf(referenceValue.getTo());
+		String valueOfActual = String.valueOf(actualValue.getTo());			
+		
+		if (!valueOfRefer.equals(valueOfActual)) {
+			return CompareResult.create(Difference.REFERENCE, valueOfRefer, valueOfActual);
 		}
 		
 		return null;
