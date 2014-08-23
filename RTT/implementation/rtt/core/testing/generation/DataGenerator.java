@@ -25,17 +25,6 @@ public class DataGenerator {
 	
 	private DataGenerator() {}
 	
-	public static void createOutput(Executor executor, Output outputData) throws InvocationTargetException {
-		Element initElement = new Element();
-		initElement.setAddress("1");
-		initElement.setGeneratorName(executor.getExecutorClass().getName());
-		initElement.setGeneratorType(Type.OBJECT);
-		
-		DataGenerator generator = new DataGenerator();		
-		outputData.setInitialElement(generator.handleObject(
-				executor.getInitialNode(), initElement));
-	}
-	
 	private Element handleObject(final Object object, Element prototype) throws InvocationTargetException {
 		if (AnnotationUtil.isNode(object)) {
 			return handleNode(object, prototype);
@@ -178,31 +167,39 @@ public class DataGenerator {
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
-			Executor executor) throws Throwable {
-			
+			Executor executor) throws Throwable {		
+		if (input == null || params == null || executor == null) {
+			throw new IllegalArgumentException("One argument was null.");
+		}
+		
 		Output outputData = new Output();
-
-		if (executor != null) {
+		
+		Class<?> initObjectType = executor.getInitialObjectType();
+		
+		Element initPrototype = new Element();
+		initPrototype.setAddress("1");
+		initPrototype.setGeneratorName(initObjectType.getName());
+		initPrototype.setGeneratorType(Type.OBJECT);
+		
+		Object initObject = null;			
+		try {
+			RTTLogging.debug("Initial object type: " + 
+					executor.getInitialObjectType().getSimpleName());				
+			initObject = executor.initialize(input, params);
 			
-			try {
-				RTTLogging.debug("Initializing parser: " + 
-						executor.getExecutorClass().getSimpleName());
-				
-				executor.initialize(input, params);
-				
-				RTTLogging.debug("Generating output data ...");
-				DataGenerator.createOutput(executor, outputData);
-				
-			} catch (InvocationTargetException invocationException) {
-				Throwable cause = invocationException.getCause();
-				if (executor.isAcceptedException(cause)) {
-					throw new UnsupportedOperationException(
-							"Accepted exception are currently not supported.", cause);
-				} else {
-					throw cause;
-				}
+		} catch (InvocationTargetException invocationException) {
+			Throwable cause = invocationException.getCause();
+			if (executor.isAcceptedException(cause)) {
+				throw new UnsupportedOperationException(
+						"Accepted exception are currently not supported.", cause);
+			} else {
+				throw cause;
 			}
 		}
+		
+		RTTLogging.debug("Generating output data ...");
+		DataGenerator generator = new DataGenerator();
+		outputData.setInitialElement(generator.handleObject(initObject, initPrototype));
 
 		return outputData;
 	}
@@ -211,7 +208,7 @@ public class DataGenerator {
 	 * <p>Tries to locate the {@link Executor} via the class loader</p>
 	 * 
 	 * <p>Instantiate the executor through
-	 * {@link Executor#initialize(Input, List)} before use!</p>
+	 * {@link Executor#generateInitialObject(Input, List)} before use!</p>
 	 * 
 	 * @param config the {@link Configuration}
 	 * @param baseDir the base directory for searching

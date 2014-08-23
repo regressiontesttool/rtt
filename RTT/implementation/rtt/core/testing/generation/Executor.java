@@ -45,21 +45,20 @@ public class Executor {
 	private static final String NO_STRINGARRAY_PARAMETER = 
 			"The second parameter needs to be an array of strings.";
 	
-	private Class<?> executorClass = null;
-	private Object initialNode = null;	
+	private Class<?> initialObjectType = null;
 	private List<Class<? extends Throwable>> acceptedExceptions;
 	
 	private Initialize initAnnotation;	
 
-	public Executor(Class<?> initialNodeClass) {
-		checkClass(initialNodeClass);
+	public Executor(Class<?> initialObjectType) {
+		checkClass(initialObjectType);
 		
-		Method initMethod = getInitializeMethod(initialNodeClass);
+		Method initMethod = getInitializeMethod(initialObjectType);
 		if (initMethod != null) {
 			initAnnotation = initMethod.getAnnotation(INIT_ANNOTATION);
 			checkParameters(initMethod.getParameterTypes(), initAnnotation.withParams());
 		} else {
-			Constructor<?> initConstructor = getInitializeConstructor(initialNodeClass);
+			Constructor<?> initConstructor = getInitializeConstructor(initialObjectType);
 			if (initConstructor != null) {
 				initAnnotation = initConstructor.getAnnotation(INIT_ANNOTATION);
 				checkParameters(initConstructor.getParameterTypes(), initAnnotation.withParams());
@@ -75,7 +74,7 @@ public class Executor {
 			acceptedExceptions.add(throwable);
 		}
 		
-		this.executorClass = initialNodeClass;
+		this.initialObjectType = initialObjectType;
 	}
 
 	private void checkClass(Class<?> initialNodeClass) {
@@ -142,39 +141,37 @@ public class Executor {
 		}
 	}
 	
-	public void initialize(Input input, List<String> params) throws InvocationTargetException {
-		InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes());
+	public Object initialize(Input input, List<String> params) throws InvocationTargetException {
+		Object initialObject = null;
 		
-		Method initMethod = getInitializeMethod(executorClass);
-		if (initMethod != null) {
-			initMethod.setAccessible(true);
-			initialNode = invokeInitMethod(initMethod, inputStream, params);
-		}
-		
-		Constructor<?> initConstructor = getInitializeConstructor(executorClass);
-		if (initConstructor != null) {
-			initConstructor.setAccessible(true);
-			initialNode = invokeInitConstructor(initConstructor, inputStream, params);
-		}
-		
-		if (initialNode == null) {
-			throw new RuntimeException(NO_INIT_ANNOTATION);
-		}
-		
-		try {
-			inputStream.close();
+		try (InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes())) {
+			Method initMethod = getInitializeMethod(initialObjectType);
+			if (initMethod != null) {
+				initMethod.setAccessible(true);
+				initialObject = invokeInitMethod(initMethod, inputStream, params);
+			}
+			
+			Constructor<?> initConstructor = getInitializeConstructor(initialObjectType);
+			if (initConstructor != null) {
+				initConstructor.setAccessible(true);
+				initialObject = invokeInitConstructor(initConstructor, inputStream, params);
+			}
+			
+			if (initialObject == null) {
+				throw new RuntimeException(NO_INIT_ANNOTATION);
+			}
 		} catch (IOException e) {
-			RTTLogging.throwException(
-					new RuntimeException("Could not close input stream.", e));
+			RTTLogging.error("Could not access input stream.", e);
 		}
+		
+		return initialObject;
 	}	
 	
 	private Object invokeInitMethod(Method initMethod, InputStream inputStream, 
 			List<String> params) throws InvocationTargetException {
 		
 		try {
-			Constructor<?> constructor = executorClass.getDeclaredConstructor();
-			
+			Constructor<?> constructor = initialObjectType.getDeclaredConstructor();			
 			constructor.setAccessible(true);
 			
 			Object executor = constructor.newInstance();
@@ -214,11 +211,7 @@ public class Executor {
 		return acceptedExceptions.contains(exception.getClass());
 	}
 	
-	public Class<?> getExecutorClass() {
-		return executorClass;
-	}
-	
-	public Object getInitialNode() {
-		return initialNode;
+	public Class<?> getInitialObjectType() {
+		return initialObjectType;
 	}
 }
