@@ -1,7 +1,6 @@
 package rtt.core.testing.compare.results;
 
 import rtt.core.archive.output.Value;
-import rtt.core.archive.output.Node;
 import rtt.core.manager.Printer;
 import rtt.core.testing.compare.NodePath;
 
