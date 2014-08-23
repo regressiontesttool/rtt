@@ -59,10 +59,6 @@ public class OutputManager extends AbstractDataManager<Output> {
 			return true;
 		}
 		
-		if (oldData.getInitialNode() == newData.getInitialNode()) {
-			return true;
-		}
-
 		List<TestFailure> failures = OutputCompare
 				.compareOutput(oldData, newData, false);
 		if (failures != null && failures.isEmpty() == false) {

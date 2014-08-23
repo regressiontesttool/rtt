@@ -108,16 +108,23 @@ public class OutputCompare {
 			throw new IllegalArgumentException("Reference or actual output was null.");
 		}
 		
-		OutputCompare comparer = new OutputCompare(testInformational);
-		CompareResult result = null; //comparer.compareElement(
-				//referenceOutput.getAST(), actualOutput.getAST());
-		
 		List<TestFailure> failures = new ArrayList<>();
-		if (result != null && result.hasDifferences()) {			
-			failures.add(new TestFailure(result.getMessage()));
+		Element refInitElement = referenceOutput.getInitialElement();
+		Element actualInitElement = actualOutput.getInitialElement();		
+		
+		if (refInitElement != null && actualInitElement != null) {
+			OutputCompare comparer = new OutputCompare(testInformational);
+			CompareResult result = comparer.compareElements(
+					refInitElement, actualInitElement);
+			
+			if (result != null && result.hasDifferences()) {			
+				failures.add(new TestFailure(result.getMessage()));
+			}
+		} else if (refInitElement != actualInitElement) {
+			failures.add(new TestFailure("Initial elements are different."));
 		}
 		
-		return failures;
+		return failures;		
 	}
 	
 	public CompareResult compareElements(Element referenceElement, Element actualElement) {

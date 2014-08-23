@@ -32,7 +32,8 @@ public class DataGenerator {
 		initElement.setGeneratorType(Type.OBJECT);
 		
 		DataGenerator generator = new DataGenerator();		
-		outputData.setInitialNode(generator.handleObject(executor.getInitialNode(), initElement));
+		outputData.setInitialElement(generator.handleObject(
+				executor.getInitialNode(), initElement));
 	}
 	
 	private Element handleObject(final Object object, Element prototype) throws InvocationTargetException {
