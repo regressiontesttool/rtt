@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Reference;
 import rtt.core.archive.output.Value;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
@@ -198,6 +199,24 @@ public class CompareNodeInformationalTests {
 		changedNode.setInformational(true);
 		testDifference(CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), changedNode, Difference.VALUE);
 		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), Difference.VALUE);
+		testNoDifferences(changedNode, changedNode);
+	}
+	
+	@Test
+	public void testUnequalChildReference() throws Exception {
+		Node changedNode = CompareNodeTests.createSampleNode(2, ChildType.REFERENCE, CreateInfo.NONE);
+		Reference changedChild = CompareReferenceTests.createSampleReference(false);
+		changedChild.setTo("2.2.2");		
+		changedNode.getElement().add(changedChild);
+		
+		// value of child was changed --> Difference.VALUE 
+		testDifference(CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), changedNode, Difference.REFERENCE);
+		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), Difference.REFERENCE);
+		testNoDifferences(changedNode, changedNode);
+		
+		changedNode.setInformational(true);
+		testDifference(CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.PARENT), changedNode, Difference.REFERENCE);
+		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.PARENT), Difference.REFERENCE);
 		testNoDifferences(changedNode, changedNode);
 	}
 	

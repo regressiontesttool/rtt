@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Reference;
 import rtt.core.archive.output.Type;
 import rtt.core.archive.output.Value;
 import rtt.core.testing.compare.OutputCompare;
@@ -14,7 +15,7 @@ import rtt.core.tests.junit.utils.CompareUtils;
 public class CompareNodeTests {
 	
 	public enum ChildType {
-		ELEMENT, VALUE, NODE;		
+		ELEMENT, VALUE, REFERENCE, NODE;		
 	}
 
 	private static final String NAME = "aName";
@@ -67,7 +68,10 @@ public class CompareNodeTests {
 				break;
 			case VALUE:
 				childElement = CompareValueTests.createSampleValue(childIsInfo);
-				break;			
+				break;
+			case REFERENCE:
+				childElement = CompareReferenceTests.createSampleReference(childIsInfo);
+				break;
 			case NODE:
 				childElement = createSampleNode(childIsInfo);
 				break;
@@ -285,6 +289,25 @@ public class CompareNodeTests {
 		changedNode.setInformational(true);
 		testNoDifferences(createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), changedNode);
 		testNoDifferences(changedNode, createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT));
+		testNoDifferences(changedNode, changedNode);
+	}
+	
+	@Test
+	public void testUnequalChildReference() throws Exception {
+		Node changedNode = createSampleNode(2, ChildType.REFERENCE, CreateInfo.NONE);
+		Reference changedChild = CompareReferenceTests.createSampleReference(false);
+		changedChild.setTo("2.2.2");		
+		changedNode.getElement().add(changedChild);
+		
+		// value of child was changed --> Difference.VALUE 
+		testDifference(createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), changedNode, Difference.REFERENCE);
+		testDifference(changedNode, createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), Difference.REFERENCE);
+		testNoDifferences(changedNode, changedNode);
+		
+		// value of child was changed, but node is informational --> no difference
+		changedNode.setInformational(true);
+		testNoDifferences(createSampleNode(3, ChildType.REFERENCE, CreateInfo.PARENT), changedNode);
+		testNoDifferences(changedNode, createSampleNode(3, ChildType.REFERENCE, CreateInfo.PARENT));
 		testNoDifferences(changedNode, changedNode);
 	}
 	
