@@ -13,7 +13,7 @@ import org.junit.Test;
 import rtt.annotations.Node.Compare;
 import rtt.annotations.Node.Informational;
 import rtt.annotations.processing.AnnotationProcessor;
-import rtt.core.tests.junit.utils.AnnotationUtils;
+import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
 public class MethodProcessingTests {
@@ -96,12 +96,12 @@ public class MethodProcessingTests {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(
 				PermutedMethodsClass.class, Compare.class);
 		
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 12);
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 12);
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(
 				PermutedMethodsClass.class, Informational.class);
 		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 12);
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 12);
 		
 		invokeMethods(compareMethods, PermutedMethodsClass.class);
 		invokeMethods(infoMethods, PermutedMethodsClass.class);
@@ -164,12 +164,12 @@ public class MethodProcessingTests {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(
 				ExtendingPermutedClass.class, Compare.class);
 		
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 12);
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 12);
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(
 				ExtendingPermutedClass.class, Informational.class);
 		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 12);
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 12);
 		
 		invokeMethods(compareMethods, ExtendingPermutedClass.class);
 		invokeMethods(infoMethods, ExtendingPermutedClass.class);
@@ -213,14 +213,14 @@ public class MethodProcessingTests {
 	@Test
 	public void testExtendingMethods() throws Exception {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(ExtendingMethodClass.class, Compare.class);
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 3);
-		AnnotationUtils.checkMember(compareMethods, ExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
-		AnnotationUtils.checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 3);
+		TestAnnotationUtils.checkMember(compareMethods, ExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
+		TestAnnotationUtils.checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(ExtendingMethodClass.class, Informational.class);		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 3);
-		AnnotationUtils.checkMember(infoMethods, ExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
-		AnnotationUtils.checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 3);
+		TestAnnotationUtils.checkMember(infoMethods, ExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
+		TestAnnotationUtils.checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
 		
 		invokeMethods(compareMethods, ExtendingMethodClass.class);
 		invokeMethods(infoMethods, ExtendingMethodClass.class);
@@ -250,14 +250,14 @@ public class MethodProcessingTests {
 	@Test
 	public void testSecondExtendingMethods() throws Exception {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(SecondExtendingMethodClass.class, Compare.class);
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 3);
-		AnnotationUtils.checkMember(compareMethods, SecondExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
-		AnnotationUtils.checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 3);
+		TestAnnotationUtils.checkMember(compareMethods, SecondExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
+		TestAnnotationUtils.checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(SecondExtendingMethodClass.class, Informational.class);		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 3);		
-		AnnotationUtils.checkMember(infoMethods, SecondExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
-		AnnotationUtils.checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 3);		
+		TestAnnotationUtils.checkMember(infoMethods, SecondExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
+		TestAnnotationUtils.checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
 		
 		invokeMethods(compareMethods, SecondExtendingMethodClass.class);
 		invokeMethods(infoMethods, SecondExtendingMethodClass.class);
@@ -306,14 +306,14 @@ public class MethodProcessingTests {
 	@Test
 	public void testExtendingAbstractMethods() throws Exception {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(ExtendingAbstractClass.class, Compare.class);
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 5);
-		AnnotationUtils.checkMember(compareMethods, ExtendingAbstractClass.class, "publicAbstractCompareMethod", "protectedAbstractCompareMethod");
-		AnnotationUtils.checkMember(compareMethods, AbstractClass.class, "privateCompareMethod", "publicCompareMethod", "protectedCompareMethod");
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 5);
+		TestAnnotationUtils.checkMember(compareMethods, ExtendingAbstractClass.class, "publicAbstractCompareMethod", "protectedAbstractCompareMethod");
+		TestAnnotationUtils.checkMember(compareMethods, AbstractClass.class, "privateCompareMethod", "publicCompareMethod", "protectedCompareMethod");
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(ExtendingAbstractClass.class, Informational.class);		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 5);		
-		AnnotationUtils.checkMember(infoMethods, ExtendingAbstractClass.class, "publicAbstractInfoMethod", "protectedAbstractInfoMethod");
-		AnnotationUtils.checkMember(infoMethods, AbstractClass.class, "privateInfoMethod", "publicInfoMethod", "protectedInfoMethod");
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 5);		
+		TestAnnotationUtils.checkMember(infoMethods, ExtendingAbstractClass.class, "publicAbstractInfoMethod", "protectedAbstractInfoMethod");
+		TestAnnotationUtils.checkMember(infoMethods, AbstractClass.class, "privateInfoMethod", "publicInfoMethod", "protectedInfoMethod");
 		
 		invokeMethods(compareMethods, ExtendingAbstractClass.class);
 		invokeMethods(infoMethods, ExtendingAbstractClass.class);
@@ -346,12 +346,12 @@ public class MethodProcessingTests {
 	@Test
 	public void testImplementingMethods() throws Exception {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(ImplementingClass.class, Compare.class);
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 2);
-		AnnotationUtils.checkMember(compareMethods, ImplementingClass.class);
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 2);
+		TestAnnotationUtils.checkMember(compareMethods, ImplementingClass.class);
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(ImplementingClass.class, Informational.class);		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
-		AnnotationUtils.checkMember(infoMethods, ImplementingClass.class);
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
+		TestAnnotationUtils.checkMember(infoMethods, ImplementingClass.class);
 		
 		invokeMethods(compareMethods, ImplementingClass.class);
 		invokeMethods(infoMethods, ImplementingClass.class);
@@ -388,14 +388,14 @@ public class MethodProcessingTests {
 	@Test
 	public void testImplementingAbstractMethods() throws Exception {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(ConcreteClass.class, Compare.class);
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 2);
-		AnnotationUtils.checkMember(compareMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
-		AnnotationUtils.checkMember(compareMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 2);
+		TestAnnotationUtils.checkMember(compareMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
+		TestAnnotationUtils.checkMember(compareMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(ConcreteClass.class, Informational.class);		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
-		AnnotationUtils.checkMember(infoMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
-		AnnotationUtils.checkMember(infoMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
+		TestAnnotationUtils.checkMember(infoMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
+		TestAnnotationUtils.checkMember(infoMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
 		
 		invokeMethods(compareMethods, ConcreteClass.class);
 		invokeMethods(infoMethods, ConcreteClass.class);
@@ -429,12 +429,12 @@ public class MethodProcessingTests {
 	@Test
 	public void testExtendedInterfaceMethods() throws Exception {
 		List<Method> compareMethods = AnnotationProcessor.getMethods(ExtendedImplementingClass.class, Compare.class);
-		AnnotationUtils.checkElements(compareMethods, Compare.class, 2);
-		AnnotationUtils.checkMember(compareMethods, ExtendedImplementingClass.class);
+		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 2);
+		TestAnnotationUtils.checkMember(compareMethods, ExtendedImplementingClass.class);
 		
 		List<Method> infoMethods = AnnotationProcessor.getMethods(ExtendedImplementingClass.class, Informational.class);		
-		AnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
-		AnnotationUtils.checkMember(infoMethods, ExtendedImplementingClass.class);
+		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
+		TestAnnotationUtils.checkMember(infoMethods, ExtendedImplementingClass.class);
 		
 		invokeMethods(compareMethods, ExtendedImplementingClass.class);
 		invokeMethods(infoMethods, ExtendedImplementingClass.class);

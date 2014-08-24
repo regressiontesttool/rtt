@@ -13,12 +13,14 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
@@ -61,8 +63,31 @@ public class OutputTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addExecutorPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Executor feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addExecutorPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_OutputType_executor_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_OutputType_executor_feature", "_UI_OutputType_type"),
+				 TestPackage.Literals.OUTPUT_TYPE__EXECUTOR,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -77,7 +102,7 @@ public class OutputTypeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.OUTPUT_TYPE__NODE);
+			childrenFeatures.add(TestPackage.Literals.OUTPUT_TYPE__AST);
 		}
 		return childrenFeatures;
 	}
@@ -114,7 +139,10 @@ public class OutputTypeItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_OutputType_type");
+		String label = ((OutputType)object).getExecutor();
+		return label == null || label.length() == 0 ?
+			getString("_UI_OutputType_type") :
+			getString("_UI_OutputType_type") + " " + label;
 	}
 
 	/**
@@ -129,7 +157,10 @@ public class OutputTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(OutputType.class)) {
-			case TestPackage.OUTPUT_TYPE__NODE:
+			case TestPackage.OUTPUT_TYPE__EXECUTOR:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case TestPackage.OUTPUT_TYPE__AST:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -149,18 +180,23 @@ public class OutputTypeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.OUTPUT_TYPE__NODE,
+				(TestPackage.Literals.OUTPUT_TYPE__AST,
+				 TestFactory.eINSTANCE.createElement()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(TestPackage.Literals.OUTPUT_TYPE__AST,
 				 TestFactory.eINSTANCE.createNode()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.OUTPUT_TYPE__NODE,
-				 TestFactory.eINSTANCE.createClassNode()));
+				(TestPackage.Literals.OUTPUT_TYPE__AST,
+				 TestFactory.eINSTANCE.createReference()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.OUTPUT_TYPE__NODE,
-				 TestFactory.eINSTANCE.createValueNode()));
+				(TestPackage.Literals.OUTPUT_TYPE__AST,
+				 TestFactory.eINSTANCE.createValue()));
 	}
 
 	/**

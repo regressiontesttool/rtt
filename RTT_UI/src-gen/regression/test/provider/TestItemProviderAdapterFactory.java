@@ -72,29 +72,6 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.ClassNode} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ClassNodeItemProvider classNodeItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.ClassNode}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createClassNodeAdapter() {
-		if (classNodeItemProvider == null) {
-			classNodeItemProvider = new ClassNodeItemProvider(this);
-		}
-
-		return classNodeItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link regression.test.DocumentRoot} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -115,6 +92,29 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 		}
 
 		return documentRootItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link regression.test.Element} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ElementItemProvider elementItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link regression.test.Element}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createElementAdapter() {
+		if (elementItemProvider == null) {
+			elementItemProvider = new ElementItemProvider(this);
+		}
+
+		return elementItemProvider;
 	}
 
 	/**
@@ -164,26 +164,49 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.ValueNode} instances.
+	 * This keeps track of the one adapter used for all {@link regression.test.Reference} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ValueNodeItemProvider valueNodeItemProvider;
+	protected ReferenceItemProvider referenceItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link regression.test.ValueNode}.
+	 * This creates an adapter for a {@link regression.test.Reference}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createValueNodeAdapter() {
-		if (valueNodeItemProvider == null) {
-			valueNodeItemProvider = new ValueNodeItemProvider(this);
+	public Adapter createReferenceAdapter() {
+		if (referenceItemProvider == null) {
+			referenceItemProvider = new ReferenceItemProvider(this);
 		}
 
-		return valueNodeItemProvider;
+		return referenceItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link regression.test.Value} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ValueItemProvider valueItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link regression.test.Value}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createValueAdapter() {
+		if (valueItemProvider == null) {
+			valueItemProvider = new ValueItemProvider(this);
+		}
+
+		return valueItemProvider;
 	}
 
 	/**
@@ -285,11 +308,12 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	 * @generated
 	 */
 	public void dispose() {
-		if (classNodeItemProvider != null) classNodeItemProvider.dispose();
 		if (documentRootItemProvider != null) documentRootItemProvider.dispose();
+		if (elementItemProvider != null) elementItemProvider.dispose();
 		if (nodeItemProvider != null) nodeItemProvider.dispose();
 		if (outputTypeItemProvider != null) outputTypeItemProvider.dispose();
-		if (valueNodeItemProvider != null) valueNodeItemProvider.dispose();
+		if (referenceItemProvider != null) referenceItemProvider.dispose();
+		if (valueItemProvider != null) valueItemProvider.dispose();
 	}
 
 }

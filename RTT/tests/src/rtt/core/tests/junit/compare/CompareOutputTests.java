@@ -2,55 +2,98 @@ package rtt.core.tests.junit.compare;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.core.archive.output.GeneratorType;
+import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
-import rtt.core.archive.output.ValueNode;
+import rtt.core.archive.output.Type;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestFailure;
 
-public class CompareOutputTests {
 
-	private static final String NO_DIFFS_ERROR = "Compare found no differences where there should be some.";
-	private static final String DIFFS_FOUND_ERROR = "Compare found differences where none should be.";
+public class CompareOutputTests {
 
 	@Before
 	public void setUp() throws Exception {
 		
 	}
 	
-	private void checkThrowsException(Output reference, Output actual, boolean checkInfos) {
+	private enum InitElement {
+		ELEMENT, VALUE, REFERENCE, NODE;
+	}
+	
+	private void testThrowsException(Output reference, Output actual, 
+			boolean checkInfos, Class<? extends Throwable> expectedException) {
+		
 		try {
 			OutputCompare.compareOutput(reference, actual, checkInfos);
-			fail();
+			fail("Expected exception '" + expectedException.getSimpleName() + "' was not thrown.");
 		} catch (Exception e) {
-			// do nothing
+			if (!expectedException.isInstance(e)) {
+				fail("An other exception '" + e.getClass().getSimpleName() 
+						+ "' instead of expected '" + expectedException.getSimpleName() + "' was thrown.");
+			}
 		}
 	}
 	
-	private boolean hasFailures(Output refOutput, Output actualOutput, 
-			boolean testInfos) {
+	private void testNoDifferences(Output reference, Output actual, boolean testInfos) {
+		List<TestFailure> failures = OutputCompare.compareOutput(reference, actual, testInfos);
 		
-		List<TestFailure> failures = OutputCompare.compareOutput(
-				refOutput, actualOutput, testInfos);
-		
-		return failures.size() > 0;
+		if (failures != null && failures.size() > 0) {
+			StringBuilder failMessage = new StringBuilder("Differences found, but there should not: ");
+			Iterator<TestFailure> iterator = failures.iterator();
+			while(iterator.hasNext()) {
+				failMessage.append(iterator.next().getMessage());
+				failMessage.append(iterator.hasNext() ? "," : ".");
+			}
+			
+			fail(failMessage.toString());
+		}
 	}
 	
-	private Output createOutput(int nodeCount) {
-		Output output = new Output();
+	private void testDifference(Output reference, Output actual, boolean testInfos) {
+		List<TestFailure> failures = OutputCompare.compareOutput(reference, actual, testInfos);
+		if (failures == null || failures.size() <= 0) {
+			fail("There should be failures, but was not.");
+		}
+	}
+	
+	private Output createOutput(InitElement initType, boolean initInfo) {		
+		Element initialElement = null;
+		switch (initType) {
+		case ELEMENT:
+			initialElement = CompareElementTests.createSampleElement(initInfo);
+			break;
+		case NODE:
+			initialElement = CompareNodeTests.createSampleNode(initInfo);
+			break;
+		case REFERENCE:
+			initialElement = CompareReferenceTests.createSampleReference(initInfo);
+			break;
+		case VALUE:
+			initialElement = CompareValueTests.createSampleValue(initInfo);
+			break;		
+		}
 		
-		for (int i = 0; i < nodeCount; i++) {
-			Node node = new Node();
-			node.setGeneratorName("Item " + i);
-			node.setGeneratorType(GeneratorType.METHOD);
+		Output output = new Output();		
+		output.setInitialElement(initialElement);
+		return output;
+	}
+	
+	private Output createOutput(boolean initInfo, int childCount, boolean childInfos) {
+		Output output = createOutput(InitElement.NODE, initInfo);
+		
+		Node initialNode = (Node) output.getInitialElement();
+		for (int i = 0; i < childCount; i++) {
+			Element element = CompareElementTests.createElement(
+					"Item " + i, Type.OBJECT, childInfos);
 			
-			output.getNodes().add(node);
+			initialNode.getElement().add(element);
 		}
 		
 		return output;
@@ -58,66 +101,116 @@ public class CompareOutputTests {
 	
 	@Test
 	public void testNullOutputs() throws Exception {
-		checkThrowsException(null, null, true);
-		checkThrowsException(null, null, false);
+		testThrowsException(null, null, true, RuntimeException.class);
+		testThrowsException(null, null, false, RuntimeException.class);
 		
-		checkThrowsException(new Output(), null, true);
-		checkThrowsException(new Output(), null, false);
+		testThrowsException(new Output(), null, true, RuntimeException.class);
+		testThrowsException(new Output(), null, false, RuntimeException.class);
 		
-		checkThrowsException(null, new Output(), true);
-		checkThrowsException(null, new Output(), false);
+		testThrowsException(null, new Output(), true, RuntimeException.class);
+		testThrowsException(null, new Output(), false, RuntimeException.class);
 	}	
 
 	@Test
 	public void testBothEmptyOutputs() throws Exception {
-		assertFalse(DIFFS_FOUND_ERROR, hasFailures(new Output(), new Output(), true));
-		assertFalse(DIFFS_FOUND_ERROR, hasFailures(new Output(), new Output(), false));
+		testNoDifferences(new Output(), new Output(), true);
+		testNoDifferences(new Output(), new Output(), false);
 	}	
 	
 	@Test
 	public void testOneEmptyOutputs() throws Exception {
 		Output emptyOutput = new Output();
-		Output nonEmptyOutput = createOutput(2);
+		Output nonEmptyOutput = new Output();
 		
-		assertTrue(NO_DIFFS_ERROR, hasFailures(emptyOutput, nonEmptyOutput, true));
-		assertTrue(NO_DIFFS_ERROR, hasFailures(emptyOutput, nonEmptyOutput, false));
+		nonEmptyOutput.setInitialElement(
+				CompareElementTests.createSampleElement(false));
 		
-		assertTrue(NO_DIFFS_ERROR, hasFailures(nonEmptyOutput, emptyOutput, true));
-		assertTrue(NO_DIFFS_ERROR, hasFailures(nonEmptyOutput, emptyOutput, false));
+		testDifference(emptyOutput, nonEmptyOutput, true);
+		testDifference(emptyOutput, nonEmptyOutput, false);
+		
+		testDifference(nonEmptyOutput, emptyOutput, true);
+		testDifference(nonEmptyOutput, emptyOutput, false);
+		
+		nonEmptyOutput.setInitialElement(
+				CompareElementTests.createSampleElement(true));
+		
+		testDifference(emptyOutput, nonEmptyOutput, true);
+		testDifference(emptyOutput, nonEmptyOutput, false);
+		
+		testDifference(nonEmptyOutput, emptyOutput, true);
+		testDifference(nonEmptyOutput, emptyOutput, false);
 	}
 	
 	@Test
-	public void testEqualOutputs() throws Exception {
-		Output refOutput = createOutput(2);
-		Output actualOutput = createOutput(2);
+	public void testEqualOutputs_InitElement() throws Exception {
+		Output refOutput = createOutput(InitElement.ELEMENT, false);
+		Output actualOutput = createOutput(InitElement.ELEMENT, false);
 		
-		assertFalse(DIFFS_FOUND_ERROR, hasFailures(refOutput, actualOutput, true));
-		assertFalse(DIFFS_FOUND_ERROR, hasFailures(refOutput, actualOutput, false));
+		testNoDifferences(refOutput, actualOutput, true);
+		testNoDifferences(refOutput, actualOutput, false);
+		
+		testNoDifferences(actualOutput, refOutput, true);
+		testNoDifferences(actualOutput, refOutput, false);
 	}
 	
 	@Test
-	public void testInformationalNodes() throws Exception {
-		Node refNode = new Node();
-		refNode.setGeneratorName("referenceNode");
-		refNode.setGeneratorType(GeneratorType.METHOD);
-		refNode.setIsNull(false);
-		refNode.setInformational(true);
+	public void testEqualOutputs_InitValues() throws Exception {
+		Output refOutput = createOutput(InitElement.VALUE, false);
+		Output actualOutput = createOutput(InitElement.VALUE, false);
 		
-		Output refOutput = createOutput(2);
-		refOutput.getNodes().add(refNode);
+		testNoDifferences(refOutput, actualOutput, true);
+		testNoDifferences(refOutput, actualOutput, false);
 		
-		ValueNode actualNode = new ValueNode();
-		actualNode.setGeneratorName("valueNode");
-		actualNode.setGeneratorType(GeneratorType.FIELD);
-		actualNode.setIsNull(true);
-		actualNode.setInformational(true);
-		actualNode.setValue("aValue");
+		testNoDifferences(actualOutput, refOutput, true);
+		testNoDifferences(actualOutput, refOutput, false);
+	}
+	
+	@Test
+	public void testEqualOutputs_InitReference() throws Exception {
+		Output refOutput = createOutput(InitElement.REFERENCE, false);
+		Output actualOutput = createOutput(InitElement.REFERENCE, false);
 		
-		Output actualOutput = createOutput(2);		
-		actualOutput.getNodes().add(actualNode);
+		testNoDifferences(refOutput, actualOutput, true);
+		testNoDifferences(refOutput, actualOutput, false);
 		
-		assertFalse(DIFFS_FOUND_ERROR, hasFailures(refOutput, actualOutput, false));
-		assertTrue(NO_DIFFS_ERROR, hasFailures(refOutput, actualOutput, true));
+		testNoDifferences(actualOutput, refOutput, true);
+		testNoDifferences(actualOutput, refOutput, false);
+	}
+	
+	@Test
+	public void testEqualOutputs_InitNode() throws Exception {
+		Output refOutput = createOutput(InitElement.NODE, false);
+		Output actualOutput = createOutput(InitElement.NODE, false);
+		
+		testNoDifferences(refOutput, actualOutput, true);
+		testNoDifferences(refOutput, actualOutput, false);
+		
+		testNoDifferences(actualOutput, refOutput, true);
+		testNoDifferences(actualOutput, refOutput, false);
+	}
+	
+	@Test
+	public void testEqualChildCount() throws Exception {
+		Output refOutput = createOutput(false, 3, false);
+		Output actualOutput = createOutput(false, 3, false);
+		
+		testNoDifferences(refOutput, actualOutput, true);
+		testNoDifferences(refOutput, actualOutput, false);
+		
+		testNoDifferences(actualOutput, refOutput, true);
+		testNoDifferences(actualOutput, refOutput, false);
+	}
+	
+	@Test
+	public void testUnequalChildCount() throws Exception {
+		Output refOutput = createOutput(false, 2, false);
+		Output actualOutput = createOutput(false, 3, false);
+		
+		testDifference(refOutput, actualOutput, true);
+		testDifference(refOutput, actualOutput, false);
+		
+		testDifference(actualOutput, refOutput, true);
+		testDifference(actualOutput, refOutput, false);
 	}
 
 }

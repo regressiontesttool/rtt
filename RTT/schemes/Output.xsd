@@ -5,94 +5,56 @@
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
 	
-	<xs:simpleType name="generatorType">
+	<xs:simpleType name="type">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="OBJECT" />
 			<xs:enumeration value="FIELD" />
-			<xs:enumeration value="METHOD" />
+			<xs:enumeration value="METHOD" />			
 		</xs:restriction>
 	</xs:simpleType>
-
-	<xs:complexType name="node">
-		<xs:attribute name="informational" type="xs:boolean" default="false"/>
-		<xs:attribute name="isNull" type="xs:boolean" default="false"/>
+	
+	<xs:complexType name="element">
+		<xs:attribute name="address" type="xs:string" use="required" />
 		<xs:attribute name="generatorName" type="xs:string" use="required"/>
-		<xs:attribute name="generatorType" type="rtt:generatorType" use="required"/>		
+		<xs:attribute name="generatorType" type="rtt:type" use="required" />
+		<xs:attribute name="informational" type="xs:boolean" default="false" />
 	</xs:complexType>
 	
-	<xs:complexType name="valueNode">
+	<xs:complexType name="value">
 		<xs:complexContent>
-			<xs:extension base="rtt:node">
+			<xs:extension base="rtt:element">
 				<xs:attribute name="value" type="xs:string" use="required" />
+			</xs:extension>		
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="reference">
+		<xs:complexContent>
+			<xs:extension base="rtt:element">
+				<xs:attribute name="to" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="classNode">
+	<xs:complexType name="node">
 		<xs:complexContent>
-			<xs:extension base="rtt:node">
+			<xs:extension base="rtt:element">
 				<xs:sequence>
-					<xs:element name="simpleName" type="xs:string" />
-					<xs:element name="fullName" type="xs:string" />
-					<xs:element name="node" type="rtt:node" 
-						minOccurs="1" maxOccurs="unbounded" />
-					</xs:sequence>
-			</xs:extension>		
+					<xs:element name="element" type="rtt:element" 
+						minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="fullName" type="xs:string" />			
+				<xs:attribute name="simpleName" type="xs:string" />	
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 		
 	<xs:element name="output" >
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="node" type="rtt:node" 
-					minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="initialElement" type="rtt:element" 
+					minOccurs="1" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
-
-
-<!-- 
-	<xs:complexType name="classable">
-		<xs:attribute name="simpleName" type="xs:string" />
-		<xs:attribute name="fullName" type="xs:string" />
-	</xs:complexType>
-
-	<xs:complexType name="attribute">
-		<xs:attribute name="name" type="xs:string" />
-		<xs:attribute name="value" type="xs:string" />
-		<xs:attribute name="informational" type="xs:boolean" />
-	</xs:complexType>
-
-	<xs:element name="parserOutput">
-		<xs:complexType>
-			<xs:annotation>
-				<xs:documentation>type of parser output</xs:documentation>
-			</xs:annotation>
-			<xs:sequence>
-				<xs:element name="tree" type="rtt:tree" maxOccurs="unbounded" minOccurs="0" />	
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:complexType name="tree">
-		<xs:complexContent>
-			<xs:extension base="rtt:classable">
-				<xs:sequence>
-					<xs:element name="node" type="rtt:node" maxOccurs="unbounded" minOccurs="0"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-
-	<xs:complexType name="node">
-		<xs:complexContent>
-			<xs:extension base="rtt:classable">
-				<xs:sequence>
-					<xs:element name="attribute" type="rtt:attribute" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element name="node" type="rtt:node" minOccurs="0" maxOccurs="unbounded" />
-				</xs:sequence>
-				<xs:attribute name="isNull" type="xs:boolean" default="false" />
-				<xs:attribute name="method" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType> -->

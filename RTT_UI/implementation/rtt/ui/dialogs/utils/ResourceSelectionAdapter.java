@@ -41,7 +41,7 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 		case CONTAINER:
 			dialog = new ContainerSelectionDialog(configDialog
 					.getShell(), project.getIProject(), false,
-					"Select a binary folder ...");
+					"Select a folder ...");
 			break;
 			
 		case RESOURCE:
@@ -63,9 +63,11 @@ public class ResourceSelectionAdapter extends SelectionAdapter {
 					IPath folderPath = (IPath) o;
 					path = folderPath.removeFirstSegments(1);
 				}
-
+				
 				if (path != null && !path.isEmpty()) {
-					path = path.makeRelativeTo(project.getArchivePath(true));
+					path = path.makeRelativeTo(project.getIProject().getFullPath());
+					System.out.println("Path:" + path);
+
 					if (!path.isEmpty()) {
 						cpEntries.add(path.toPortableString());
 						configDialog.setOkButtonEnabled(true);
