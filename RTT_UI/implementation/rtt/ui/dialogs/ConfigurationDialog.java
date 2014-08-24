@@ -70,7 +70,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		this.project = project;
 		
 		configName = config.getName();
-		initNodeName = config.getParserClass();
+		initNodeName = config.getInitialNode();
 		cpEntries = new ArrayList<String>();
 		
 		if (config.getClasspath() != null && config.getClasspath().getPath()  != null) {

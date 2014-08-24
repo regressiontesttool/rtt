@@ -12,7 +12,7 @@ public class SimpleTypedContent extends AbstractContent {
 		
 		NO_ARCHIVE("No Archive found.", ContentIcon.ARCHIVE),
 		
-		PARSERCLASS("Parser: ", ContentIcon.PARSER), 
+		INITIALNODE("Initial Node: ", ContentIcon.INITIALNODE), 
 		CLASSPATHENTRY("", ContentIcon.CLASSPATH),
 		
 		PARAMETER("", ContentIcon.PARAMETER);

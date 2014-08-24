@@ -339,7 +339,7 @@ public class RttProject {
 	public Configuration createEmptyConfiguration() {
 		Configuration config = new Configuration();
 		config.setName("");
-		config.setParserClass("");
+		config.setInitialNode("");
 
 		Classpath classpath = new Classpath();
 		try {
