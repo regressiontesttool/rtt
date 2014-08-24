@@ -39,7 +39,7 @@ public class DataGenerator {
 		String address = GeneratorUtil.getObjectAddress(object);
 		
 		if (address != null && !address.equals("")) {
-			result = GeneratorUtil.createValue(address, prototype);
+			result = GeneratorUtil.createReference(address, prototype);
 		} else {
 			Node resultNode = GeneratorUtil.createNode(object, prototype);
 			GeneratorUtil.setObjectAddress(object, resultNode.getAddress());
@@ -61,7 +61,7 @@ public class DataGenerator {
 		
 		List<Element> resultList = new ArrayList<>();
 		
-		int fieldAddress = 1;
+		int fieldAddress = parentNode.getElement().size() + 1;
 		Element element = null;
 		
 		for (Field field : annotatedFields) {
@@ -91,7 +91,7 @@ public class DataGenerator {
 		List<Element> resultList = new ArrayList<>();
 		
 		Element element = null;
-		int methodAddress = 1;
+		int methodAddress = parentNode.getElement().size() + 1;
 		
 		for (Method method : annotatedMethods) {
 			if (method.getReturnType() == Void.TYPE) {

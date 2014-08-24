@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import rtt.annotations.Node.Address;
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
+import rtt.core.archive.output.Reference;
 import rtt.core.archive.output.Type;
 import rtt.core.archive.output.Value;
 import rtt.core.utils.RTTLogging;
@@ -81,6 +82,17 @@ public class GeneratorUtil {
 		}
 		
 		return valueElement;
+	}
+	
+	public static Reference createReference(String address, Element prototype) {
+		if (address == null) {
+			throw new IllegalArgumentException("The given address was null.");
+		}
+		
+		Reference reference = copyElement(prototype, new Reference());		
+		reference.setTo(address);
+		
+		return reference;
 	}
 	
 	public static Element createChildElement(final Element prototype, final int index) {
