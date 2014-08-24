@@ -155,12 +155,12 @@ public class NodeItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
 		Node node = (Node) object;
-		return super.getText(node) + node.getSimpleName();
+		return super.getText(object) + node.getSimpleName();
 	}
 
 	/**

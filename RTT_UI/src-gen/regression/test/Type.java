@@ -19,14 +19,14 @@ import org.eclipse.emf.common.util.Enumerator;
  */
 public enum Type implements Enumerator {
 	/**
-	 * The '<em><b>ELEMENT</b></em>' literal object.
+	 * The '<em><b>OBJECT</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #ELEMENT_VALUE
+	 * @see #OBJECT_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	ELEMENT(0, "ELEMENT", "ELEMENT"),
+	OBJECT(0, "OBJECT", "OBJECT"),
 
 	/**
 	 * The '<em><b>FIELD</b></em>' literal object.
@@ -49,19 +49,19 @@ public enum Type implements Enumerator {
 	METHOD(2, "METHOD", "METHOD");
 
 	/**
-	 * The '<em><b>ELEMENT</b></em>' literal value.
+	 * The '<em><b>OBJECT</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of '<em><b>ELEMENT</b></em>' literal object isn't clear,
+	 * If the meaning of '<em><b>OBJECT</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @see #ELEMENT
+	 * @see #OBJECT
 	 * @model
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ELEMENT_VALUE = 0;
+	public static final int OBJECT_VALUE = 0;
 
 	/**
 	 * The '<em><b>FIELD</b></em>' literal value.
@@ -101,7 +101,7 @@ public enum Type implements Enumerator {
 	 */
 	private static final Type[] VALUES_ARRAY =
 		new Type[] {
-			ELEMENT,
+			OBJECT,
 			FIELD,
 			METHOD,
 		};
@@ -154,7 +154,7 @@ public enum Type implements Enumerator {
 	 */
 	public static Type get(int value) {
 		switch (value) {
-			case ELEMENT_VALUE: return ELEMENT;
+			case OBJECT_VALUE: return OBJECT;
 			case FIELD_VALUE: return FIELD;
 			case METHOD_VALUE: return METHOD;
 		}

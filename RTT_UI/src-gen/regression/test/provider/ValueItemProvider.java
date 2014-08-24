@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -19,6 +18,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
+import regression.test.Node;
 import regression.test.TestPackage;
 import regression.test.Value;
 
@@ -104,7 +104,7 @@ public class ValueItemProvider
 	@Override
 	public String getText(Object object) {
 		Value value = (Value) object;
-		return super.getText(value) + value.getValue();
+		return super.getText(object) + value.getValue();
 	}
 
 	/**

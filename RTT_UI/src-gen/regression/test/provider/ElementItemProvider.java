@@ -8,9 +8,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -24,6 +22,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Element;
 import regression.test.TestPackage;
+import regression.test.Type;
 
 /**
  * This is the item provider adapter for a {@link regression.test.Element} object.
@@ -61,9 +60,9 @@ public class ElementItemProvider
 			super.getPropertyDescriptors(object);
 
 			addAddressPropertyDescriptor(object);
+			addGeneratorNamePropertyDescriptor(object);
+			addGeneratorTypePropertyDescriptor(object);
 			addInformationalPropertyDescriptor(object);
-			addNamePropertyDescriptor(object);
-			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -82,6 +81,50 @@ public class ElementItemProvider
 				 getString("_UI_Element_address_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_Element_address_feature", "_UI_Element_type"),
 				 TestPackage.Literals.ELEMENT__ADDRESS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Generator Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addGeneratorNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Element_generatorName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Element_generatorName_feature", "_UI_Element_type"),
+				 TestPackage.Literals.ELEMENT__GENERATOR_NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Generator Type feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addGeneratorTypePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Element_generatorType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Element_generatorType_feature", "_UI_Element_type"),
+				 TestPackage.Literals.ELEMENT__GENERATOR_TYPE,
 				 true,
 				 false,
 				 false,
@@ -113,67 +156,25 @@ public class ElementItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Name feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addNamePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Element_name_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Element_name_feature", "_UI_Element_type"),
-				 TestPackage.Literals.ELEMENT__NAME,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Element_type_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Element_type_feature", "_UI_Element_type"),
-				 TestPackage.Literals.ELEMENT__TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
 		Element element = (Element) object;
+		StringBuilder text = new StringBuilder();
+		if (element.getGeneratorType() != Type.OBJECT) {
+			text.append("[");
+			text.append(element.getGeneratorType().name());
+			text.append("] ");
+		}
 		
-		StringBuilder builder = new StringBuilder();
-		builder.append("[");
-		builder.append(element.getType().name());
-		builder.append("] ");
-		builder.append(element.getName());
-		builder.append(" = ");
-
-		return builder.toString();
+		text.append(element.getGeneratorName());
+		text.append(" = ");
+		
+		return text.toString();
 	}
 
 	/**
@@ -189,9 +190,9 @@ public class ElementItemProvider
 
 		switch (notification.getFeatureID(Element.class)) {
 			case TestPackage.ELEMENT__ADDRESS:
+			case TestPackage.ELEMENT__GENERATOR_NAME:
+			case TestPackage.ELEMENT__GENERATOR_TYPE:
 			case TestPackage.ELEMENT__INFORMATIONAL:
-			case TestPackage.ELEMENT__NAME:
-			case TestPackage.ELEMENT__TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

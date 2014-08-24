@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -21,6 +20,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Reference;
 import regression.test.TestPackage;
+import regression.test.Value;
 
 /**
  * This is the item provider adapter for a {@link regression.test.Reference} object.
@@ -104,7 +104,7 @@ public class ReferenceItemProvider
 	@Override
 	public String getText(Object object) {
 		Reference reference = (Reference) object;
-		return super.getText(reference) + reference.getTo() + " (REF)";
+		return super.getText(object) + reference.getTo();
 	}
 
 	/**

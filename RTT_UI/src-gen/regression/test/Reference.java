@@ -76,7 +76,7 @@ public class Reference extends Element {
 	 * @return the value of the '<em>To</em>' attribute.
 	 * @see #setTo(String)
 	 * @see regression.test.TestPackage#getReference_To()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='to'"
 	 * @generated
 	 */
