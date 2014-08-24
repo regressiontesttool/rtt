@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcoreFactory;
 
-import rtt.annotations.Parser;
 import rtt.annotations.Node;
 import rtt.ui.ecore.editor.EcoreEditor;
 
@@ -23,19 +22,19 @@ import rtt.ui.ecore.editor.EcoreEditor;
 public enum EcoreAnnotation {
 	
 	/**
-	 * Represents the {@link Parser} annotation.
+	 * @deprecated
 	 */
 	PARSER("rtt/annotation/parser", 
 			"@Parser", EClass.class),
 	
 	/**
-	 * Represents the {@link Parser.Initialize} annotation.
+	 * @deprecated
 	 */
 	PARSER_INIT("rtt/annotation/parser/init", 
 			"@Parser.Initialize", EOperation.class),
 	
 	/**
-	 * Represents the {@link Parser.AST} annotation.
+	 * @deprecated
 	 */
 	PARSER_AST("rtt/annotation/parser/ast", 
 			"@Parser.AST", EReference.class, EOperation.class),
