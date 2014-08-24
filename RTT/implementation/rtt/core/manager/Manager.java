@@ -190,7 +190,7 @@ public class Manager {
 	 * A {@link ConfigStatus} object will be returned to indicate which actions are taken by this function. See {@link ConfigStatus#ADDED}, {@link ConfigStatus#UPDATED} and {@link ConfigStatus#SKIPPED}.
 	 * 
 	 * @param configName the name of the configuration
-	 * @param parserName the name of parser class
+	 * @param initialNode the name of initial node
 	 * @param cpEntries a list of entries, which should be added to the class path.
 	 * @param defaultConfig indicates, if new configuration should be the default configuration of this archive
 	 * @param overwrite indicates, if an existing configuration should be overwritten
@@ -199,7 +199,7 @@ public class Manager {
 	 * @see ConfigStatus#UPDATED
 	 * @see ConfigStatus#SKIPPED
 	 */
-	public ConfigStatus setConfiguration(String configName, String parserName, 
+	public ConfigStatus setConfiguration(String configName, String initialNode, 
 			List<String> cpEntries, boolean defaultConfig, boolean overwrite) {
 		
 		List<Detail> infos = new LinkedList<Detail>();
@@ -210,7 +210,7 @@ public class Manager {
 		cPath.getPath().addAll(cpEntries);
 		config.setClasspath(cPath);
 		
-		config.setParserClass(parserName);
+		config.setInitialNode(initialNode);
 		
 		ConfigStatus state = currentArchive.setConfiguration(config, overwrite);
 		
@@ -229,14 +229,10 @@ public class Manager {
 			break;
 		}
 
-		if (state.parserSet) {
+		if (state.initialNodeSet) {
 			Detail detail = new Detail();
-			detail.setMsg("Parser class:");
-			if (parserName == null || parserName.trim().isEmpty()) {
-				detail.setSuffix("<None>");
-			} else {
-				detail.setSuffix(parserName);
-			}			
+			detail.setMsg("Initial Node:");
+			detail.setSuffix(initialNode);		
 			detail.setPriority(0);
 			
 			infos.add(detail);
@@ -468,7 +464,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		Executor parser = DataGenerator.locateInitialNode(config, baseDir);
+		Executor executor = DataGenerator.locateInitialNode(config, baseDir);
 		
 		RTTLogging.info("**** Generate reference data ****");
 		
@@ -480,7 +476,7 @@ public class Manager {
 					config, OutputDataType.REFERENCE);
 
 			// create new reference data
-			GenerationResult result = refManager.createData(parser,
+			GenerationResult result = refManager.createData(executor,
 					tcase.getInputID(), tcase.getParameter());
 			
 			StringBuilder infoMessage = new StringBuilder();
@@ -562,7 +558,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		Executor parser = DataGenerator.locateInitialNode(config, baseDir);
+		Executor executor = DataGenerator.locateInitialNode(config, baseDir);
 		
 		Tester tester = new Tester(currentArchive.getLoader(), matching);
 		List<TestResult> testResults = new ArrayList<TestResult>();
@@ -577,7 +573,7 @@ public class Manager {
 					tcase.getName(), config, OutputDataType.TEST);
 			
 			// Create new test data ...
-			GenerationResult genResult = testManager.createData(parser, tcase.getInputID(), tcase.getParameter());
+			GenerationResult genResult = testManager.createData(executor, tcase.getInputID(), tcase.getParameter());
 			genInfos.addResult(genResult);
 			
 			StringBuilder infoMessage = new StringBuilder();

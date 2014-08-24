@@ -217,7 +217,7 @@ public class DataGenerator {
 	public static Executor locateInitialNode(Configuration config,
 			String baseDir) throws MalformedURLException, ClassNotFoundException {
 		
-		String initialNode = config.getParserClass();
+		String initialNode = config.getInitialNode();
 		if (initialNode == null || initialNode.trim().isEmpty()) {
 			throw new IllegalStateException("The given configuration contains no initial node.");
 		}

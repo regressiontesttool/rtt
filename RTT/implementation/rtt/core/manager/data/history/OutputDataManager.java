@@ -132,7 +132,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		return true;		
 	}
 
-	public GenerationResult createData(Executor parser, Integer inputVersion, List<String> params) {
+	public GenerationResult createData(Executor executor, Integer inputVersion, List<String> params) {
 		GenerationResult result = new GenerationResult(suiteName, caseName);
 
 		Output newOutput = null;
@@ -140,7 +140,7 @@ public class OutputDataManager extends AbstractDataManager<History> implements I
 		try {
 			Input input = inputManager.getInput(inputVersion);
 			
-			newOutput = DataGenerator.generateOutput(input, params, parser);
+			newOutput = DataGenerator.generateOutput(input, params, executor);
 		} catch (Throwable t) {
 			RTTLogging.trace("Could not create output data", t);
 			if (t instanceof InvocationTargetException) {
