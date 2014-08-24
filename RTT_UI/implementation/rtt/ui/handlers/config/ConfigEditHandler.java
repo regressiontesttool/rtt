@@ -46,7 +46,7 @@ public class ConfigEditHandler extends AbstractSelectionHandler implements
 			try {
 
 				String configName = configDialog.getConfigName();
-				String parserClass = configDialog.getParserName();
+				String parserClass = configDialog.getInitNodeName();
 				List<String> cpEntries = configDialog.getClasspathEntries();
 				
 				project.setConfiguration(configName, parserClass, cpEntries, configDialog.isDefault());

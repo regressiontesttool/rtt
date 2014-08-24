@@ -7,7 +7,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -20,7 +19,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -45,13 +43,13 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	private String message;
 	
 	private Text nameText;
-	private Text parserText;
+	private Text initNodeText;
 	private Button defaultButton;
 	private ListViewer listViewer;
 	private boolean nameEditable = true;
 	
 	private String configName = "";
-	private String parserName = "";
+	private String initNodeName = "";
 	private List<String> cpEntries;
 	private boolean isDefault = false;
 	
@@ -72,7 +70,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		this.project = project;
 		
 		configName = config.getName();
-		parserName = config.getParserClass();
+		initNodeName = config.getParserClass();
 		cpEntries = new ArrayList<String>();
 		
 		if (config.getClasspath() != null && config.getClasspath().getPath()  != null) {
@@ -126,19 +124,20 @@ public class ConfigurationDialog extends TitleAreaDialog {
 			}
 		});
 		
-		Label parserLabel = new Label(container, SWT.NONE);
-		parserLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		parserLabel.setText("Parser class:");
+		Label initNodeLabel = new Label(container, SWT.NONE);
+		initNodeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		initNodeLabel.setText("Initial Node:");
 		
-		parserText = new Text(container, SWT.BORDER);
-		parserText.setText(parserName);		
-		parserText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		parserText.addModifyListener(getModifyListener());
+		initNodeText = new Text(container, SWT.BORDER);
+		initNodeText.setText(initNodeName);		
+		initNodeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		initNodeText.addModifyListener(getModifyListener());
 		
-		Button parserButton = new Button(container, SWT.NONE);
-		parserButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 0, 1));
-		parserButton.setText("Find ...");
-		parserButton.addSelectionListener(new ClassSelectionAdapter(getParentShell(), parserText, project.getSearchScope()));
+		Button initNodeButton = new Button(container, SWT.NONE);
+		initNodeButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 0, 1));
+		initNodeButton.setText("Find ...");
+		initNodeButton.addSelectionListener(new ClassSelectionAdapter(getParentShell(), 
+				initNodeText, project.getSearchScope()));
 		
 		Label classpathLabel = new Label(container, SWT.NONE);
 		classpathLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -262,22 +261,22 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	public void setOkButtonEnabled(boolean enable) {
 		Button okButton = this.getButton(OK);
 		if (okButton != null) {
-			// if name is empty, disable ok button. When not empty, disable only if lexer AND parser is empty
+			// if name or init node text is empty, disable
 			getButton(OK).setEnabled(enable && hasContent());
 		}		
 	}
 	
 	private boolean hasContent() {
 		boolean nameHasContent = hasContent(nameText);
-		boolean parserHasContent = hasContent(parserText);
+		boolean initNodeHasContent = hasContent(initNodeText);
 		
-		if (nameHasContent && parserHasContent) {
+		if (nameHasContent && initNodeHasContent) {
 			setErrorMessage(null);
 		} else {
 			setErrorMessage("Please check marked text box(es)");
 		}
 		
-		return nameHasContent && (parserHasContent);			
+		return nameHasContent && initNodeHasContent;			
 	}
 	
 	private boolean hasContent(Text text) {
@@ -296,7 +295,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		configName = nameText.getText().trim();
-		parserName = parserText.getText().trim();
+		initNodeName = initNodeText.getText().trim();
 		isDefault = defaultButton.getSelection();	
 		
 		super.okPressed();
@@ -320,8 +319,8 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		return configName;
 	}
 	
-	public String getParserName() {
-		return parserName;
+	public String getInitNodeName() {
+		return initNodeName;
 	}
 	
 	public List<String> getClasspathEntries() {
