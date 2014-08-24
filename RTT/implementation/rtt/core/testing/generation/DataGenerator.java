@@ -174,11 +174,9 @@ public class DataGenerator {
 		
 		Output outputData = new Output();
 		
-		Class<?> initObjectType = executor.getInitialObjectType();
-		
 		Element initPrototype = new Element();
 		initPrototype.setAddress("1");
-		initPrototype.setGeneratorName(initObjectType.getName());
+		initPrototype.setGeneratorName("Initial Node");
 		initPrototype.setGeneratorType(Type.OBJECT);
 		
 		Object initObject = null;			
