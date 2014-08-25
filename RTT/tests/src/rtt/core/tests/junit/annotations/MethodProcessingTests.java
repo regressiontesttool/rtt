@@ -6,13 +6,16 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
+import rtt.annotations.Node.Value;
 import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
@@ -21,12 +24,13 @@ public class MethodProcessingTests {
 	@Before
 	public void setUp() throws Exception {}
 	
-	private void invokeMethods(List<Method> methods, Class<?> classType) {
+	private void invokeMethods(Set<ValueMember<?>> members, Class<?> classType) {
 		try {
 			Object object = classType.newInstance();
 			List<Object> params = new ArrayList<>();
-			for (Method method : methods) {
+			for (ValueMember<?> valueMember : members) {
 				params.clear();
+				Method method = (Method) valueMember.getMember();
 				for (Class<?> param : Arrays.asList(method.getParameterTypes())) {
 					params.add(param.newInstance());
 				}
@@ -41,8 +45,8 @@ public class MethodProcessingTests {
 	
 	// --------------------------------------------------------------
 	// Test: permuted methods
-	//	Any method annotated should be detected
-	//	 --> count = 12
+	//	Only non-void and parameter-less methods should be detected
+	//	 --> count = 3 + 3
 	
 	static class PermutedMethodsClass {
 		
@@ -58,60 +62,55 @@ public class MethodProcessingTests {
 		protected String protectedStringMethod(String param) { return ""; }
 		public String publicStringMethod(String param) { return ""; }
 		
-		@Compare private void privateCompareVoidMethod() {}
-		@Compare protected void protectedCompareVoidMethod() {}
-		@Compare public void publicCompareVoidMethod() {}
+		@Value private void privateCompareVoidMethod() {}
+		@Value protected void protectedCompareVoidMethod() {}
+		@Value public void publicCompareVoidMethod() {}
 		
-		@Compare private void privateCompareVoidMethod(String param) {}
-		@Compare protected void protectedCompareVoidMethod(String param) {}
-		@Compare public void publicCompareVoidMethod(String param) {}
+		@Value private void privateCompareVoidMethod(String param) {}
+		@Value protected void protectedCompareVoidMethod(String param) {}
+		@Value public void publicCompareVoidMethod(String param) {}
 		
-		@Compare private String privateCompareStringMethod() { return ""; }
-		@Compare protected String protectedCompareStringMethod() { return ""; }
-		@Compare public String publicCompareStringMethod() { return ""; }
+		@Value private String privateCompareStringMethod() { return ""; }
+		@Value protected String protectedCompareStringMethod() { return ""; }
+		@Value public String publicCompareStringMethod() { return ""; }
 		
-		@Compare private String privateCompareStringMethod(String param) { return ""; }
-		@Compare protected String protectedCompareStringMethod(String param) { return ""; }
-		@Compare public String publicCompareStringMethod(String param) { return ""; }
+		@Value private String privateCompareStringMethod(String param) { return ""; }
+		@Value protected String protectedCompareStringMethod(String param) { return ""; }
+		@Value public String publicCompareStringMethod(String param) { return ""; }
 		
-		@Informational private void privateInfoVoidMethod() {}
-		@Informational protected void protectedInfoVoidMethod() {}
-		@Informational public void publicInfoVoidMethod() {}
+		@Value(informational=true) private void privateInfoVoidMethod() {}
+		@Value(informational=true) protected void protectedInfoVoidMethod() {}
+		@Value(informational=true) public void publicInfoVoidMethod() {}
 		
-		@Informational private void privateInformationalVoidMethod(String param) {}
-		@Informational protected void protectedInformationalVoidMethod(String param) {}
-		@Informational public void publicInformationalVoidMethod(String param) {}
+		@Value(informational=true) private void privateInformationalVoidMethod(String param) {}
+		@Value(informational=true) protected void protectedInformationalVoidMethod(String param) {}
+		@Value(informational=true) public void publicInformationalVoidMethod(String param) {}
 		
-		@Informational private String privateInfoStringMethod() { return ""; }
-		@Informational protected String protectedInfoStringMethod() { return ""; }
-		@Informational public String publicInfoStringMethod() { return ""; }
+		@Value(informational=true) private String privateInfoStringMethod() { return ""; }
+		@Value(informational=true) protected String protectedInfoStringMethod() { return ""; }
+		@Value(informational=true) public String publicInfoStringMethod() { return ""; }
 		
-		@Informational private String privateInfoStringMethod(String param) { return ""; }
-		@Informational protected String protectedInfoStringMethod(String param) { return ""; }
-		@Informational public String publicInfoStringMethod(String param) { return ""; }
+		@Value(informational=true) private String privateInfoStringMethod(String param) { return ""; }
+		@Value(informational=true) protected String protectedInfoStringMethod(String param) { return ""; }
+		@Value(informational=true) public String publicInfoStringMethod(String param) { return ""; }
 	}
 	
 	@Test
 	public void testPermutedMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(
-				PermutedMethodsClass.class, Compare.class);
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				PermutedMethodsClass.class);
 		
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 12);
+		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.checkMember(members, PermutedMethodsClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(
-				PermutedMethodsClass.class, Informational.class);
-		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 12);
-		
-		invokeMethods(compareMethods, PermutedMethodsClass.class);
-		invokeMethods(infoMethods, PermutedMethodsClass.class);
+		invokeMethods(members, PermutedMethodsClass.class);
 	}
 	
 	// --------------------------------------------------------------
 	// Test: Overriding permuted methods
 	// Due to annotations within the super class, the extending class
 	// should have also multiple methods detected.
-	// --> methods count = 12 
+	// --> methods count = 3 + 3
 	
 	static class ExtendingPermutedClass extends PermutedMethodsClass {
 		private void privateVoidMethod() {}
@@ -126,53 +125,48 @@ public class MethodProcessingTests {
 		protected String protectedStringMethod(String param) { return ""; }
 		public String publicStringMethod(String param) { return ""; }
 		
-		@Compare private void privateCompareVoidMethod() {}
+		@Value private void privateCompareVoidMethod() {}
 		protected void protectedCompareVoidMethod() {}
 		public void publicCompareVoidMethod() {}
 		
-		@Compare private void privateCompareVoidMethod(String param) {}
+		@Value private void privateCompareVoidMethod(String param) {}
 		protected void protectedCompareVoidMethod(String param) {}
 		public void publicCompareVoidMethod(String param) {}
 		
-		@Compare private String privateCompareStringMethod() { return ""; }
+		@Value private String privateCompareStringMethod() { return ""; }
 		protected String protectedCompareStringMethod() { return ""; }
 		public String publicCompareStringMethod() { return ""; }
 		
-		@Compare private String privateCompareStringMethod(String param) { return ""; }
+		@Value private String privateCompareStringMethod(String param) { return ""; }
 		protected String protectedCompareStringMethod(String param) { return ""; }
 		public String publicCompareStringMethod(String param) { return ""; }
 		
-		@Informational private void privateInfoVoidMethod() {}
+		@Value(informational=true) private void privateInfoVoidMethod() {}
 		protected void protectedInfoVoidMethod() {}
 		public void publicInfoVoidMethod() {}
 		
-		@Informational private void privateInformationalVoidMethod(String param) {}
+		@Value(informational=true) private void privateInformationalVoidMethod(String param) {}
 		protected void protectedInformationalVoidMethod(String param) {}
 		public void publicInformationalVoidMethod(String param) {}
 		
-		@Informational private String privateInfoStringMethod() { return ""; }
+		@Value(informational=true) private String privateInfoStringMethod() { return ""; }
 		protected String protectedInfoStringMethod() { return ""; }
 		public String publicInfoStringMethod() { return ""; }
 		
-		@Informational private String privateInfoStringMethod(String param) { return ""; }
+		@Value(informational=true) private String privateInfoStringMethod(String param) { return ""; }
 		protected String protectedInfoStringMethod(String param) { return ""; }
 		public String publicInfoStringMethod(String param) { return ""; }
 	}
 	
 	@Test
 	public void testExtendingPermutedMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(
-				ExtendingPermutedClass.class, Compare.class);
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				ExtendingPermutedClass.class);
 		
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 12);
+		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.checkMember(members, ExtendingPermutedClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(
-				ExtendingPermutedClass.class, Informational.class);
-		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 12);
-		
-		invokeMethods(compareMethods, ExtendingPermutedClass.class);
-		invokeMethods(infoMethods, ExtendingPermutedClass.class);
+		invokeMethods(members, ExtendingPermutedClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -187,13 +181,13 @@ public class MethodProcessingTests {
 		protected String protectedMethod() { return ""; }
 		public String publicMethod() { return ""; }
 		
-		@Compare private String privateCompareMethod() { return ""; }
-		@Compare protected String protectedCompareMethod() { return ""; }
-		@Compare public String publicCompareMethod() { return ""; }
+		@Value private String privateCompareMethod() { return ""; }
+		@Value protected String protectedCompareMethod() { return ""; }
+		@Value public String publicCompareMethod() { return ""; }
 		
-		@Informational private String privateInfoMethod() { return ""; }
-		@Informational protected String protectedInfoMethod() { return ""; }
-		@Informational public String publicInfoMethod() { return ""; }
+		@Value(informational=true) private String privateInfoMethod() { return ""; }
+		@Value(informational=true) protected String protectedInfoMethod() { return ""; }
+		@Value(informational=true) public String publicInfoMethod() { return ""; }
 	}
 	
 	static class ExtendingMethodClass extends SuperMethodClass {
@@ -212,18 +206,16 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendingMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(ExtendingMethodClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 3);
-		TestAnnotationUtils.checkMember(compareMethods, ExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
-		TestAnnotationUtils.checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				ExtendingMethodClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(ExtendingMethodClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 3);
-		TestAnnotationUtils.checkMember(infoMethods, ExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
-		TestAnnotationUtils.checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
+		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.checkMember(members, ExtendingMethodClass.class, 
+				"publicCompareMethod", "protectedCompareMethod");
+		TestAnnotationUtils.checkMember(members, SuperMethodClass.class, 
+				"privateCompareMethod");
 		
-		invokeMethods(compareMethods, ExtendingMethodClass.class);
-		invokeMethods(infoMethods, ExtendingMethodClass.class);
+		invokeMethods(members, ExtendingMethodClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -249,18 +241,16 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testSecondExtendingMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(SecondExtendingMethodClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 3);
-		TestAnnotationUtils.checkMember(compareMethods, SecondExtendingMethodClass.class, "publicCompareMethod", "protectedCompareMethod");
-		TestAnnotationUtils.checkMember(compareMethods, SuperMethodClass.class, "privateCompareMethod");
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				SecondExtendingMethodClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(SecondExtendingMethodClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 3);		
-		TestAnnotationUtils.checkMember(infoMethods, SecondExtendingMethodClass.class, "publicInfoMethod", "protectedInfoMethod");
-		TestAnnotationUtils.checkMember(infoMethods, SuperMethodClass.class, "privateInfoMethod");
+		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.checkMember(members, SecondExtendingMethodClass.class, 
+				"publicCompareMethod", "protectedCompareMethod");
+		TestAnnotationUtils.checkMember(members, SuperMethodClass.class, 
+				"privateCompareMethod");
 		
-		invokeMethods(compareMethods, SecondExtendingMethodClass.class);
-		invokeMethods(infoMethods, SecondExtendingMethodClass.class);
+		invokeMethods(members, SecondExtendingMethodClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -274,22 +264,22 @@ public class MethodProcessingTests {
 		protected String protectedMethod() { return ""; }
 		public String publicMethod() { return ""; }
 		
-		@Compare private String privateCompareMethod() { return ""; }
-		@Compare protected String protectedCompareMethod() { return ""; }
-		@Compare public String publicCompareMethod() { return ""; }
+		@Value private String privateCompareMethod() { return ""; }
+		@Value protected String protectedCompareMethod() { return ""; }
+		@Value public String publicCompareMethod() { return ""; }
 		
-		@Informational private String privateInfoMethod() { return ""; }
-		@Informational protected String protectedInfoMethod() { return ""; }
-		@Informational public String publicInfoMethod() { return ""; }
+		@Value(informational=true) private String privateInfoMethod() { return ""; }
+		@Value(informational=true) protected String protectedInfoMethod() { return ""; }
+		@Value(informational=true) public String publicInfoMethod() { return ""; }
 		
 		protected abstract String protectedAbstractMethod();
 		public abstract String publicAbstractMethod();
 		
-		@Compare protected abstract String protectedAbstractCompareMethod();
-		@Compare public abstract String publicAbstractCompareMethod();
+		@Value protected abstract String protectedAbstractCompareMethod();
+		@Value public abstract String publicAbstractCompareMethod();
 		
-		@Informational protected abstract String protectedAbstractInfoMethod();
-		@Informational public abstract String publicAbstractInfoMethod();
+		@Value(informational=true) protected abstract String protectedAbstractInfoMethod();
+		@Value(informational=true) public abstract String publicAbstractInfoMethod();
 	}
 	
 	static class ExtendingAbstractClass extends AbstractClass {
@@ -305,18 +295,16 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendingAbstractMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(ExtendingAbstractClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 5);
-		TestAnnotationUtils.checkMember(compareMethods, ExtendingAbstractClass.class, "publicAbstractCompareMethod", "protectedAbstractCompareMethod");
-		TestAnnotationUtils.checkMember(compareMethods, AbstractClass.class, "privateCompareMethod", "publicCompareMethod", "protectedCompareMethod");
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				ExtendingAbstractClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(ExtendingAbstractClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 5);		
-		TestAnnotationUtils.checkMember(infoMethods, ExtendingAbstractClass.class, "publicAbstractInfoMethod", "protectedAbstractInfoMethod");
-		TestAnnotationUtils.checkMember(infoMethods, AbstractClass.class, "privateInfoMethod", "publicInfoMethod", "protectedInfoMethod");
+		TestAnnotationUtils.checkMembers(members, 5, 5);
+		TestAnnotationUtils.checkMember(members, ExtendingAbstractClass.class,
+				"publicAbstractCompareMethod", "protectedAbstractCompareMethod");
+		TestAnnotationUtils.checkMember(members, AbstractClass.class,
+				"privateCompareMethod", "publicCompareMethod", "protectedCompareMethod");
 		
-		invokeMethods(compareMethods, ExtendingAbstractClass.class);
-		invokeMethods(infoMethods, ExtendingAbstractClass.class);
+		invokeMethods(members, ExtendingAbstractClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -327,11 +315,11 @@ public class MethodProcessingTests {
 		String interfaceMethod();
 		public String publicInterfaceMethod();
 		
-		@Compare String compareInterfaceMethod();
-		@Compare public String publicInterfaceCompareMethod();
+		@Value String compareInterfaceMethod();
+		@Value public String publicInterfaceCompareMethod();
 		
-		@Informational String infoInterfaceMethod();
-		@Informational public String publicInfoInterfaceMethod();
+		@Value(informational=true) String infoInterfaceMethod();
+		@Value(informational=true) public String publicInfoInterfaceMethod();
 	}
 	
 	static class ImplementingClass implements MethodInterface {
@@ -345,16 +333,13 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testImplementingMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(ImplementingClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 2);
-		TestAnnotationUtils.checkMember(compareMethods, ImplementingClass.class);
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				ImplementingClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(ImplementingClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
-		TestAnnotationUtils.checkMember(infoMethods, ImplementingClass.class);
+		TestAnnotationUtils.checkMembers(members, 2, 2);
+		TestAnnotationUtils.checkMember(members, ImplementingClass.class);
 		
-		invokeMethods(compareMethods, ImplementingClass.class);
-		invokeMethods(infoMethods, ImplementingClass.class);
+		invokeMethods(members, ImplementingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -366,11 +351,11 @@ public class MethodProcessingTests {
 		public String publicInterfaceMethod1();
 		public String publicInterfaceMethod2();
 		
-		@Compare public String publicInterfaceCompareMethod1();
-		@Compare public String publicInterfaceCompareMethod2();
+		@Value public String publicInterfaceCompareMethod1();
+		@Value public String publicInterfaceCompareMethod2();
 		
-		@Informational public String publicInfoInterfaceMethod1();
-		@Informational public String publicInfoInterfaceMethod2();
+		@Value(informational=true) public String publicInfoInterfaceMethod1();
+		@Value(informational=true) public String publicInfoInterfaceMethod2();
 	}
 	
 	static abstract class ImplementingAbstractClass implements TopInterface {
@@ -387,18 +372,14 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testImplementingAbstractMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(ConcreteClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 2);
-		TestAnnotationUtils.checkMember(compareMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
-		TestAnnotationUtils.checkMember(compareMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				ConcreteClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(ConcreteClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
-		TestAnnotationUtils.checkMember(infoMethods, ConcreteClass.class, "publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
-		TestAnnotationUtils.checkMember(infoMethods, ImplementingAbstractClass.class, "publicInterfaceMethod1", "publicInterfaceCompareMethod1", "publicInterfaceInfoMethod1");
+		TestAnnotationUtils.checkMembers(members, 2, 2);
+		TestAnnotationUtils.checkMember(members, ConcreteClass.class,
+				"publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
 		
-		invokeMethods(compareMethods, ConcreteClass.class);
-		invokeMethods(infoMethods, ConcreteClass.class);
+		invokeMethods(members, ConcreteClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -407,14 +388,14 @@ public class MethodProcessingTests {
 	
 	interface InterfaceA {
 		public String publicInterfaceMethodA();		
-		@Compare public String publicInterfaceCompareMethodA();
-		@Informational public String publicInfoInterfaceMethodA();
+		@Value public String publicInterfaceCompareMethodA();
+		@Value(informational=true) public String publicInfoInterfaceMethodA();
 	}
 	
 	interface InterfaceB extends InterfaceA {
 		public String publicInterfaceMethodB();
-		@Compare public String publicInterfaceCompareMethodB();
-		@Informational public String publicInfoInterfaceMethodB();
+		@Value public String publicInterfaceCompareMethodB();
+		@Value(informational=true) public String publicInfoInterfaceMethodB();
 	}
 	
 	static class ExtendedImplementingClass implements InterfaceB {
@@ -428,16 +409,13 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendedInterfaceMethods() throws Exception {
-		List<Method> compareMethods = AnnotationProcessor.getMethods(ExtendedImplementingClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareMethods, Compare.class, 2);
-		TestAnnotationUtils.checkMember(compareMethods, ExtendedImplementingClass.class);
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				ExtendedImplementingClass.class);
 		
-		List<Method> infoMethods = AnnotationProcessor.getMethods(ExtendedImplementingClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoMethods, Informational.class, 2);		
-		TestAnnotationUtils.checkMember(infoMethods, ExtendedImplementingClass.class);
+		TestAnnotationUtils.checkMembers(members, 2, 2);
+		TestAnnotationUtils.checkMember(members, ExtendedImplementingClass.class);
 		
-		invokeMethods(compareMethods, ExtendedImplementingClass.class);
-		invokeMethods(infoMethods, ExtendedImplementingClass.class);
+		invokeMethods(members, ExtendedImplementingClass.class);
 	}
 	
 }

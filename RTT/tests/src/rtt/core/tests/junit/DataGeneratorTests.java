@@ -1,6 +1,9 @@
 package rtt.core.tests.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -10,8 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Address;
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
 import rtt.annotations.Node.Initialize;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Element;
@@ -104,13 +105,13 @@ public class DataGeneratorTests {
 		protected String protectedStringField = "";
 		public String publicStringField = "";
 		
-		@Compare private String privateCompareStringField = "";
-		@Compare protected String protectedCompareStringField = "";
-		@Compare public String publicCompareStringField = "";
+		@rtt.annotations.Node.Value private String privateCompareStringField = "";
+		@rtt.annotations.Node.Value protected String protectedCompareStringField = "";
+		@rtt.annotations.Node.Value public String publicCompareStringField = "";
 		
-		@Informational private String privateInfoStringField = "";
-		@Informational protected String protectedInfoStringField = "";
-		@Informational public String publicInfoStringField = "";		
+		@rtt.annotations.Node.Value(informational=true) private String privateInfoStringField = "";
+		@rtt.annotations.Node.Value(informational=true) protected String protectedInfoStringField = "";
+		@rtt.annotations.Node.Value(informational=true) public String publicInfoStringField = "";		
 	}
 	
 	@Test
@@ -128,13 +129,13 @@ public class DataGeneratorTests {
 		protected String protectedStringMethod() { return ""; }
 		public String publicStringMethod() { return ""; }
 		
-		@Compare private String privateCompareStringMethod() { return ""; }
-		@Compare protected String protectedCompareStringMethod() { return ""; }
-		@Compare public String publicCompareStringMethod() { return ""; }
+		@rtt.annotations.Node.Value private String privateCompareStringMethod() { return ""; }
+		@rtt.annotations.Node.Value protected String protectedCompareStringMethod() { return ""; }
+		@rtt.annotations.Node.Value public String publicCompareStringMethod() { return ""; }
 		
-		@Informational private String privateInfoStringMethod() { return ""; }
-		@Informational protected String protectedInfoStringMethod() { return ""; }
-		@Informational public String publicInfoStringMethod() { return ""; }
+		@rtt.annotations.Node.Value(informational=true) private String privateInfoStringMethod() { return ""; }
+		@rtt.annotations.Node.Value(informational=true) protected String protectedInfoStringMethod() { return ""; }
+		@rtt.annotations.Node.Value(informational=true) public String publicInfoStringMethod() { return ""; }
 	}
 	
 	@Test
@@ -148,16 +149,16 @@ public class DataGeneratorTests {
 	@rtt.annotations.Node static class TestClass {
 		@Initialize public TestClass(InputStream in) {}
 		
-		@Compare NodeClass aSampleCompareField = new NodeClass();
-		@Informational NodeClass aSampleInfoField = new NodeClass();
+		@rtt.annotations.Node.Value NodeClass aSampleCompareField = new NodeClass();
+		@rtt.annotations.Node.Value(informational=true) NodeClass aSampleInfoField = new NodeClass();
 		
-		@Compare NodeClass aSampleCompareMethod() {	return new NodeClass(); }		
-		@Informational NodeClass aSampleInfoMethod() { return new NodeClass(); }
+		@rtt.annotations.Node.Value NodeClass aSampleCompareMethod() {	return new NodeClass(); }		
+		@rtt.annotations.Node.Value(informational=true) NodeClass aSampleInfoMethod() { return new NodeClass(); }
 	}
 	
 	@rtt.annotations.Node static class NodeClass {
-		@Compare protected String protectedCompareStringField = "";
-		@Compare protected String protectedCompareStringMethod() { return ""; }
+		@rtt.annotations.Node.Value protected String protectedCompareStringField = "";
+		@rtt.annotations.Node.Value protected String protectedCompareStringMethod() { return ""; }
 	}
 	
 	@Test
@@ -184,18 +185,18 @@ public class DataGeneratorTests {
 		@Initialize public ReferencingClass(InputStream in) {}
 		private ReferencedClass referencedClass = new ReferencedClass();
 		
-		@Compare protected ReferencedClass referencingMethod1() {
+		@rtt.annotations.Node.Value protected ReferencedClass referencingMethod1() {
 			return referencedClass;
 		}
 		
-		@Compare protected ReferencedClass referencingMethod2() {
+		@rtt.annotations.Node.Value protected ReferencedClass referencingMethod2() {
 			return referencedClass;
 		}
 	}
 	
 	@rtt.annotations.Node static class ReferencedClass {
 		 @Address String address = null;
-		 @Compare private String aField = "aField";
+		 @rtt.annotations.Node.Value private String aField = "aField";
 	}
 	
 	@Test

@@ -5,25 +5,33 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
+
+import rtt.annotations.processing2.ValueMember;
 
 public class TestAnnotationUtils {
 	
-	public static void checkElements(
-			List<? extends AnnotatedElement> elements, 
-			Class<? extends Annotation> annotation, int itemCount) {
+	public static void checkMembers(Set<ValueMember<?>> members, 
+			int compareCount, int infoCount) {
 		
-		assertNotNull("Elements was null.", elements);
-		assertFalse("Elements was empty.", elements.isEmpty());
-		assertEquals(itemCount, elements.size());
+		assertNotNull("Members was null.", members);
+		assertFalse("Members was empty.", members.size() == 0);
+		
+		int realInfoCount = 0;
+		for (ValueMember<?> valueMember : members) {
+			if (valueMember.isInformational()) {
+				realInfoCount++;
+			}
+		}
+		
+		assertEquals(infoCount, realInfoCount);
+		assertEquals(compareCount, members.size() - infoCount);
 	}
 	
 	public static void checkMember(
-			List<? extends Member> members, 
+			Set<ValueMember<?>> members, 
 			Class<?> fromClass, 
 			String... memberNames) {
 		
@@ -31,8 +39,8 @@ public class TestAnnotationUtils {
 			Arrays.sort(memberNames);
 		}
 				
-		for (Member member : members) {
-			
+		for (ValueMember<?> valueMember : members) {
+			Member member = valueMember.getMember();
 			boolean checkMethod = true;
 			if (memberNames.length > 0) {
 				checkMethod = Arrays.binarySearch(
