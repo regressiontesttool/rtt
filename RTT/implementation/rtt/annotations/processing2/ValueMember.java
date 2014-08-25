@@ -35,11 +35,7 @@ public abstract class ValueMember<T extends Member>
 	
 	protected abstract String getSignature(T member);
 	protected abstract Type getType(T member);	
-	public abstract Object getResult(T member, Object object) throws Exception;
-	
-	public T getMember() {
-		return member;
-	}
+	protected abstract Object getResult(T member, Object object) throws Exception;
 	
 	@SuppressWarnings("unchecked")
 	public boolean hasMember(Member searchedMember) {
@@ -53,7 +49,7 @@ public abstract class ValueMember<T extends Member>
 		return false;
 	}
 
-	public Value getValueAnnotation() {
+	public Value getAnnotation() {
 		return valueAnnotation;
 	}
 	
@@ -84,11 +80,7 @@ public abstract class ValueMember<T extends Member>
 		}
 		
 		if (this.type != other.type) {
-			if (this.type == Type.FIELD) {
-				return -1;
-			} else {
-				return 1;
-			}
+			return type.compareTo(other.type);
 		}
 		
 		if (this.informational != other.informational) {

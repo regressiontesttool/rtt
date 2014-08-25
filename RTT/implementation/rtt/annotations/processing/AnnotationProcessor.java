@@ -69,36 +69,6 @@ public class AnnotationProcessor {
 	}
 	
 	/**
-	 * <p>Returns a *single* {@link Method} which contains the given {@link Annotation}.<br />
-	 * <i>Note</i>: if more than one {@link Method} was found, <code>null</code> will be returned.</p>
-	 * @param objectType the type of object
-	 * @param annotationType the type of annotation
-	 * @return a {@link Method} object or <code>null</code>.
-	 */
-	public static Method getSingleMethod(Class<?> objectType, Class<? extends Annotation> annotationType) {
-		List<Method> annotatedMethods = getMethods(objectType, annotationType);
-		if (annotatedMethods != null && annotatedMethods.size() == 1) {
-			return annotatedMethods.get(0);
-		}
-		
-		return null;
-	}
-
-	/**
-	 * <p>Returns *all* {@link Field}s of a given object type, 
-	 * which contain the given type of {@link Annotation}.</p>
-	 * @param objectType the type of object 
-	 * @param annotationType the type of annotation
-	 * @return a {@link List} of {@link Field}s
-	 */
-	public static List<Field> getFields(Class<?> objectType,
-			Class<? extends Annotation> annotation) {
-		
-		ClassElement element = INSTANCE.getElement(objectType);
-		return element.getFields(annotation);		
-	}
-	
-	/**
 	 * Returns an actual annotation of a given class.
 	 * @param objectType
 	 * @param annotationType
@@ -119,17 +89,4 @@ public class AnnotationProcessor {
 
 		return null;
 	}
-
-	/**
-	 * Returns {@code true}, if class has specified {@link Annotation}.
-	 * @param objectType
-	 * @param annotationType
-	 * @return {@code true}, if class has {@link Annotation}.
-	 */
-	public static boolean hasAnnotation(Class<?> objectType, 
-			Class<? extends Annotation> annotationType) {
-		
-		return getAnnotation(objectType, annotationType) != null;
-	}
-
 }

@@ -6,15 +6,14 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
-import rtt.annotations.processing2.ValueMember;
 import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.ValueMember;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.Type;
-import rtt.core.utils.AnnotationUtil;
 import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
@@ -23,7 +22,7 @@ public class DataGenerator {
 	private DataGenerator() {}
 	
 	private Element handleObject(final Object object, Element prototype) throws Exception {
-		if (AnnotationUtil.isNode(object)) {
+		if (AnnotationProcessor2.isNode(object)) {
 			return handleNode(object, prototype);
 		}
 		
@@ -44,7 +43,7 @@ public class DataGenerator {
 			int childAddress = 1;
 			
 			Set<ValueMember<?>> annotatedElements = 
-					AnnotationProcessor2.getValueMembers(object);
+					AnnotationProcessor2.getValueMembers(object.getClass());
 			
 			Element element = null;
 			for (ValueMember<?> annotatedElement : annotatedElements) {

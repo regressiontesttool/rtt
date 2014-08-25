@@ -1,12 +1,15 @@
 package rtt.annotations.processing2;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
+import rtt.annotations.Node.Initialize;
 import rtt.annotations.Node.Value;
 import rtt.core.utils.RTTLogging;
 
@@ -16,23 +19,57 @@ public class ClassElement2 {
 	private static final String ONLY_PARAMETERLESS_METHODS = "Only methods without parameters allowed.";
 
 	private static final Class<Value> VALUE_ANNOTATION = Value.class;
+	private static final Class<Initialize> INIT_ANNOTATION = Initialize.class;
 	
-	private Set<ValueMember<?>> valueMembers;
+	private SortedSet<ValueMember<?>> valueMembers;
+	private SortedSet<InitialMember<?>> initMembers;
 	
 	public ClassElement2(Class<?> objectType) {
-		this(objectType, null);
+		valueMembers = createValueMembers(objectType, null);
+		initMembers = createInitMembers(objectType, null);
 	}
 	
 	public ClassElement2(Class<?> objectType, ClassElement2 parent) {
-		valueMembers = new TreeSet<>();		
-		if (parent != null) {
-			valueMembers.addAll(parent.valueMembers);
+		valueMembers = createValueMembers(objectType, parent.valueMembers);
+		initMembers = createInitMembers(objectType, parent.initMembers);
+	}
+
+	private SortedSet<ValueMember<?>> createValueMembers(Class<?> objectType, 
+			SortedSet<ValueMember<?>> parentMembers) {
+		
+		SortedSet<ValueMember<?>> members = new TreeSet<>();		
+		if (parentMembers != null) {
+			members.addAll(parentMembers);
 		}
 		
-		addValueFields(objectType, valueMembers);
-		addValueMethods(objectType, valueMembers);
+		addValueFields(objectType, members);
+		addValueMethods(objectType, members);
+		
+		return members;
 	}
 	
+	public SortedSet<ValueMember<?>> getValueMembers() {
+		return valueMembers;		
+	}
+	
+	private SortedSet<InitialMember<?>> createInitMembers(Class<?> objectType, 
+			SortedSet<InitialMember<?>> parentMembers) {
+		
+		SortedSet<InitialMember<?>> members = new TreeSet<>();		
+		if (parentMembers != null) {
+			members.addAll(parentMembers);
+		}
+		
+		addInitConstructors(objectType, members);
+		addInitMethods(objectType, members);
+		
+		return members;
+	}
+	
+	public SortedSet<InitialMember<?>> getInitMembers() {
+		return initMembers;
+	}
+
 	private void addValueFields(Class<?> objectType,
 			Set<ValueMember<?>> annotatedFields) {
 		
@@ -72,17 +109,19 @@ public class ClassElement2 {
 				
 			} else if (!Modifier.isPrivate(method.getModifiers())) {
 				
-				ValueMember<?> annotatedMethod = searchValueMember(method);
+				ValueMember<?> annotatedMethod = searchValueMember(method, annotatedMethods);
 				if (annotatedMethod != null) {
 					annotatedMethods.add(new ValueMethod(
-							method, annotatedMethod.getValueAnnotation()));
+							method, annotatedMethod.getAnnotation()));
 				}
 			}
 		}
 	}
 
-	private ValueMember<?> searchValueMember(Member member) {
-		for (ValueMember<?> annotatedMember : valueMembers) {
+	private ValueMember<?> searchValueMember(Member member, 
+			Set<ValueMember<?>> annotatedMethods) {
+		
+		for (ValueMember<?> annotatedMember : annotatedMethods) {
 			if (annotatedMember.hasMember(member)) {
 				return annotatedMember;
 			}
@@ -91,7 +130,47 @@ public class ClassElement2 {
 		return null;
 	}
 	
-	public Set<ValueMember<?>> getValueMembers() {
-		return valueMembers;		
+	private void addInitConstructors(Class<?> objectType,
+			Set<InitialMember<?>> members) {
+		
+		for (Constructor<?> constructor : objectType.getDeclaredConstructors()) {
+			if (constructor.isAnnotationPresent(INIT_ANNOTATION)) {
+				members.add(new InitialConstructor(
+						constructor, constructor.getAnnotation(INIT_ANNOTATION)));
+			}
+		}
 	}
+
+	private void addInitMethods(Class<?> objectType,
+			Set<InitialMember<?>> annotatedMethods) {
+		
+		for (Method method : objectType.getDeclaredMethods()) {			
+			if (method.isAnnotationPresent(INIT_ANNOTATION)) {				
+				annotatedMethods.add(new InitialMethod(
+						method, method.getAnnotation(INIT_ANNOTATION)));
+				
+			} else if (!Modifier.isPrivate(method.getModifiers())) {
+				
+				InitialMember<?> annotatedMethod = searchInitMember(method, annotatedMethods);
+				if (annotatedMethod != null) {
+					annotatedMethods.add(new InitialMethod(
+							method, annotatedMethod.getAnnotation()));
+				}
+			}
+		}
+	}
+	
+	private InitialMember<?> searchInitMember(Member member, 
+			Set<InitialMember<?>> annotatedMethods) {
+		
+		for (InitialMember<?> annotatedMember : annotatedMethods) {
+			if (annotatedMember.hasMember(member)) {
+				return annotatedMember;
+			}
+		}
+		
+		return null;
+	}
+	
+	
 }
