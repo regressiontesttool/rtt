@@ -2,8 +2,7 @@ package rtt.annotations.processing2;
 
 import java.lang.reflect.Member;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
+import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
 
 public abstract class AnnotatedElement<T extends Member> 
@@ -14,34 +13,49 @@ public abstract class AnnotatedElement<T extends Member>
 	private Type type;
 	private boolean informational;
 	
+	private Value valueAnnotation;
 	private T member;
-	
-	public AnnotatedElement(T member, Compare annotation) {
-		this(annotation.name(), annotation.index(), false, member);
-	}
-	
-	public AnnotatedElement(T member, Informational annotation) {
-		this(annotation.name(), annotation.index(), false, member);
-	}
-	
-	private AnnotatedElement(String nameAttribute, int index, 
-			boolean informational, T member) {
+
+	public AnnotatedElement(T member, Value valueAnnotation) {
 		
-		this.index = index;
-		this.informational = informational;
-		this.member = member;		
+		this.member = member;
+		this.valueAnnotation = valueAnnotation;
 		
+		this.index = valueAnnotation.index();
+		this.informational = valueAnnotation.informational();		
 		this.type = getType(member);
-		if (nameAttribute != null && !nameAttribute.trim().equals("")) {
-			this.name = nameAttribute.trim();
+		
+		String nameAttribute = valueAnnotation.name().trim();
+		if (nameAttribute != null && !nameAttribute.equals("")) {
+			this.name = nameAttribute;
 		} else {
-			this.name = getName(member);
+			this.name = getSignature(member);
 		}		
 	}
 	
-	protected abstract String getName(T member);
-	protected abstract Type getType(T member);
+	protected abstract String getSignature(T member);
+	protected abstract Type getType(T member);	
 	public abstract Object getResult(T member, Object object) throws Exception;
+	
+	public T getMember() {
+		return member;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean hasMember(Member searchedMember) {
+		if (searchedMember.getClass().isInstance(member)) {
+			String ownSignature = getSignature(this.member);
+			String searchedSignature = getSignature((T) searchedMember);
+			
+			return ownSignature.equals(searchedSignature); 
+		}
+		
+		return false;
+	}
+
+	public Value getValueAnnotation() {
+		return valueAnnotation;
+	}
 	
 	public final String getName() {
 		return name;

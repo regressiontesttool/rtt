@@ -3,6 +3,7 @@ package rtt.annotations.processing2;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -10,69 +11,49 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
+import org.apache.tools.ant.types.resources.selectors.Compare;
+
 import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing.ClassElement;
 
 public class AnnotationProcessor2 {
-
-	public static Set<AnnotatedElement<?>> getAnnotatedElements(Object object) {
-		Class<?> objectType = object.getClass();		
-		SortedSet<AnnotatedElement<?>> elements = new TreeSet<>();
-		elements.addAll(getAnnotatedFields(objectType));
-		elements.addAll(getAnnotatedMethods(objectType));
-		
-		return elements;
+	
+	private static final AnnotationProcessor2 INSTANCE = 
+			new AnnotationProcessor2();
+	
+	private Map<Class<?>, ClassElement2> vistedClasses;
+	
+	public AnnotationProcessor2() {
+		vistedClasses = new HashMap<>();
 	}
 	
-	private static Set<AnnotatedElement<Field>> getAnnotatedFields(Class<?> objectType) {
-		
-		Set<AnnotatedElement<Field>> annotatedFields = new TreeSet<>();		
-		Map<Field, Compare> compareFields = getFields(objectType, Compare.class);
-		
-		for (Entry<Field, Compare> fieldEntry : compareFields.entrySet()) {
-			annotatedFields.add(new AnnotatedField(
-					fieldEntry.getKey(), fieldEntry.getValue()));
+	private ClassElement2 getElement(Class<?> objectType) {
+		if (objectType == null) {
+			throw new IllegalArgumentException("Object type must not be null.");
 		}
 		
-		Map<Field, Informational> infoFields = getFields(objectType, Informational.class);;
-		for (Entry<Field, Informational> fieldEntry : infoFields.entrySet()) {
-			annotatedFields.add(new AnnotatedField(
-					fieldEntry.getKey(), fieldEntry.getValue()));
-		}		
-		
-		return annotatedFields;
-	}	
-
-	private static <T extends Annotation> Map<Field, T> getFields(
-			Class<?> objectType, Class<T> annotation) {
-		
-		AnnotationProcessor.getFields(objectType, annotation);
-		
-		return new TreeMap<>();
-	}
-
-	private static Set<AnnotatedElement<Method>> getAnnotatedMethods(Class<?> objectType) {
-		Set<AnnotatedElement<Method>> annotatedMethods = new TreeSet<>();		
-		Map<Method, Compare> compareMethods = getMethods(objectType, Compare.class);
-		
-		for (Entry<Method, Compare> methodEntry : compareMethods.entrySet()) {
-			annotatedMethods.add(new AnnotatedMethod(
-					methodEntry.getKey(), methodEntry.getValue()));
+		if (!vistedClasses.containsKey(objectType)) {
+			vistedClasses.put(objectType, createClassElement(objectType));
 		}
 		
-		Map<Method, Informational> infoMethods = getMethods(objectType, Informational.class);
-		for (Entry<Method, Informational> methodEntry : infoMethods.entrySet()) {
-			annotatedMethods.add(new AnnotatedMethod(
-					methodEntry.getKey(), methodEntry.getValue()));
-		}		
-		
-		return annotatedMethods;
+		return vistedClasses.get(objectType);
 	}
 
-	private static <T extends Annotation> Map<Method, T> getMethods(
-			Class<?> objectType, Class<T> annotation) {
-		
-		return new TreeMap<>();
+	private ClassElement2 createClassElement(Class<?> objectType) {
+		Class<?> superClass = objectType.getSuperclass();
+		if (superClass != null && superClass != Object.class) {
+			return new ClassElement2(objectType, getElement(superClass));
+		} else {
+			return new ClassElement2(objectType);
+		}				
 	}
+
+	public static Set<AnnotatedElement<?>> getAnnotatedElements(Object object) {
+		Class<?> objectType = object.getClass();
+		ClassElement2 classElement = INSTANCE.getElement(objectType);
+		
+		return classElement.getValueMembers();
+	}
+	
+	
 }

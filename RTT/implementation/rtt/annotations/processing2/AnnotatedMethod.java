@@ -2,24 +2,28 @@ package rtt.annotations.processing2;
 
 import java.lang.reflect.Method;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
+import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
 
 public class AnnotatedMethod extends AnnotatedElement<Method> {
 
-	public AnnotatedMethod(Method member, Compare annotation) {
-		super(member, annotation);
-	}
-
-	public AnnotatedMethod(Method member, Informational annotation) {
-		super(member, annotation);
+	public AnnotatedMethod(Method method, Value valueAnnotation) {
+		super(method, valueAnnotation);
 	}
 
 	@Override
-	protected String getName(Method member) {
-		// TODO Auto-generated method stub
-		return null;
+	protected String getSignature(Method method) {
+		StringBuilder builder = new StringBuilder(method.getName());
+		builder.append("-");
+		builder.append(method.getReturnType().getSimpleName());
+		builder.append("-[");
+		for (Class<?> parameter : method.getParameterTypes()) {
+			builder.append(parameter.getSimpleName());
+			builder.append(";");
+		}
+		builder.append("]");
+		
+		return builder.toString();
 	}
 
 	@Override
@@ -31,5 +35,5 @@ public class AnnotatedMethod extends AnnotatedElement<Method> {
 	public Object getResult(Method member, Object object) throws Exception {
 		member.setAccessible(true);
 		return member.invoke(object);
-	}
+	}	
 }

@@ -2,22 +2,17 @@ package rtt.annotations.processing2;
 
 import java.lang.reflect.Field;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
+import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
 
 public class AnnotatedField extends AnnotatedElement<Field>{
-
-	public AnnotatedField(Field member, Compare annotation) {
-		super(member, annotation);
-	}
 	
-	public AnnotatedField(Field member, Informational annotation) {
-		super(member, annotation);
+	public AnnotatedField(Field field, Value valueAnnotation) {
+		super(field, valueAnnotation);
 	}
 
 	@Override
-	protected String getName(Field member) {
+	protected String getSignature(Field member) {
 		return member.toGenericString();
 	}
 
@@ -27,11 +22,8 @@ public class AnnotatedField extends AnnotatedElement<Field>{
 	}
 
 	@Override
-	public Object getResult(Field member, Object object) throws IllegalArgumentException, IllegalAccessException {
+	public Object getResult(Field member, Object object) throws Exception {
 		member.setAccessible(true);
 		return member.get(object);
 	}
-	
-	
-
 }
