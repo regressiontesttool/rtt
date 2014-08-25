@@ -5,9 +5,9 @@ import java.lang.reflect.Field;
 import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
 
-public class AnnotatedField extends AnnotatedElement<Field>{
+public class ValueField extends ValueMember<Field>{
 	
-	public AnnotatedField(Field field, Value valueAnnotation) {
+	public ValueField(Field field, Value valueAnnotation) {
 		super(field, valueAnnotation);
 	}
 

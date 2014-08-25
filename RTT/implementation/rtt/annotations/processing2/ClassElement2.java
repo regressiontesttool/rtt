@@ -17,47 +17,42 @@ public class ClassElement2 {
 
 	private static final Class<Value> VALUE_ANNOTATION = Value.class;
 	
-	private Set<AnnotatedElement<?>> valueMembers;
+	private Set<ValueMember<?>> valueMembers;
 	
-	public ClassElement2(Class<?> objectType, ClassElement2 parent) {
-		valueMembers = new TreeSet<>();
-		
-		if (parent != null) {
-			valueMembers.addAll(parent.valueMembers);
-		}
-		
-		addFields(objectType, valueMembers);
-		addMethods(objectType, valueMembers);
-	}
-
 	public ClassElement2(Class<?> objectType) {
 		this(objectType, null);
 	}
 	
-	public Set<AnnotatedElement<?>> getValueMembers() {
-		return valueMembers;		
+	public ClassElement2(Class<?> objectType, ClassElement2 parent) {
+		valueMembers = new TreeSet<>();		
+		if (parent != null) {
+			valueMembers.addAll(parent.valueMembers);
+		}
+		
+		addValueFields(objectType, valueMembers);
+		addValueMethods(objectType, valueMembers);
 	}
 	
-	private void addFields(Class<?> objectType,
-			Set<AnnotatedElement<?>> annotatedFields) {
+	private void addValueFields(Class<?> objectType,
+			Set<ValueMember<?>> annotatedFields) {
 		
 		for (Class<?> interfaceType : objectType.getInterfaces()) {
-			addFields(interfaceType, annotatedFields);
+			addValueFields(interfaceType, annotatedFields);
 		}
 		
 		for (Field field : objectType.getDeclaredFields()){
 			if (field.isAnnotationPresent(VALUE_ANNOTATION)) {
-				annotatedFields.add(new AnnotatedField(
+				annotatedFields.add(new ValueField(
 						field, field.getAnnotation(VALUE_ANNOTATION)));
 			}
 		}
 	}
 
-	private void addMethods(Class<?> objectType,
-			Set<AnnotatedElement<?>> annotatedMethods) {
+	private void addValueMethods(Class<?> objectType,
+			Set<ValueMember<?>> annotatedMethods) {
 		
 		for (Class<?> interfaceType : objectType.getInterfaces()) {
-			addMethods(interfaceType, annotatedMethods);
+			addValueMethods(interfaceType, annotatedMethods);
 		}
 		
 		for (Method method : objectType.getDeclaredMethods()) {
@@ -72,27 +67,31 @@ public class ClassElement2 {
 					continue;
 				}
 				
-				annotatedMethods.add(new AnnotatedMethod(
+				annotatedMethods.add(new ValueMethod(
 						method, method.getAnnotation(VALUE_ANNOTATION)));
 				
 			} else if (!Modifier.isPrivate(method.getModifiers())) {
 				
-				AnnotatedElement<?> annotatedMethod = searchMember(method);
+				ValueMember<?> annotatedMethod = searchValueMember(method);
 				if (annotatedMethod != null) {
-					annotatedMethods.add(new AnnotatedMethod(
+					annotatedMethods.add(new ValueMethod(
 							method, annotatedMethod.getValueAnnotation()));
 				}
 			}
 		}
 	}
 
-	private AnnotatedElement<?> searchMember(Member member) {
-		for (AnnotatedElement<?> annotatedMember : valueMembers) {
+	private ValueMember<?> searchValueMember(Member member) {
+		for (ValueMember<?> annotatedMember : valueMembers) {
 			if (annotatedMember.hasMember(member)) {
 				return annotatedMember;
 			}
 		}
 		
 		return null;
-	}	
+	}
+	
+	public Set<ValueMember<?>> getValueMembers() {
+		return valueMembers;		
+	}
 }

@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
-import rtt.annotations.processing2.AnnotatedElement;
+import rtt.annotations.processing2.ValueMember;
 import rtt.annotations.processing2.AnnotationProcessor2;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
@@ -19,9 +19,6 @@ import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
-	
-	private static final String ONLY_NONVOID_METHODS = "Only methods with a non-void return type allowed.";
-	private static final String ONLY_PARAMETERLESS_METHODS = "Only methods without parameters allowed.";
 	
 	private DataGenerator() {}
 	
@@ -46,11 +43,11 @@ public class DataGenerator {
 			
 			int childAddress = 1;
 			
-			Set<AnnotatedElement<?>> annotatedElements = 
-					AnnotationProcessor2.getAnnotatedElements(object);
+			Set<ValueMember<?>> annotatedElements = 
+					AnnotationProcessor2.getValueMembers(object);
 			
 			Element element = null;
-			for (AnnotatedElement<?> annotatedElement : annotatedElements) {
+			for (ValueMember<?> annotatedElement : annotatedElements) {
 				element = new Element();
 				element.setAddress(resultNode.getAddress() + "." + childAddress);
 				element.setGeneratorName(annotatedElement.getName());
@@ -61,16 +58,11 @@ public class DataGenerator {
 				try {
 					resultNode.getElement().add(handleResult(
 							annotatedElement.getResult(object), element));
+					childAddress++;
 				} catch (Exception e) {
 					RTTLogging.throwException(e);
 				}				
 			}
-			
-//			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getCompareFields(object)));
-//			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getInformationalFields(object)));
-//			
-//			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getCompareMethods(object)));
-//			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getInformationalMethods(object)));
 			
 			result = resultNode;
 		}

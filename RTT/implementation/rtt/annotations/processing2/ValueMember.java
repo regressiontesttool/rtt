@@ -5,8 +5,8 @@ import java.lang.reflect.Member;
 import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
 
-public abstract class AnnotatedElement<T extends Member> 
-	implements Comparable<AnnotatedElement<?>> {
+public abstract class ValueMember<T extends Member> 
+	implements Comparable<ValueMember<?>> {
 	
 	private int index;
 	private String name;
@@ -16,7 +16,7 @@ public abstract class AnnotatedElement<T extends Member>
 	private Value valueAnnotation;
 	private T member;
 
-	public AnnotatedElement(T member, Value valueAnnotation) {
+	public ValueMember(T member, Value valueAnnotation) {
 		
 		this.member = member;
 		this.valueAnnotation = valueAnnotation;
@@ -74,7 +74,7 @@ public abstract class AnnotatedElement<T extends Member>
 	}
 
 	@Override
-	public int compareTo(AnnotatedElement<?> other) {
+	public int compareTo(ValueMember<?> other) {
 		if (this.equals(other)) {
 			return 0;
 		}
@@ -121,10 +121,10 @@ public abstract class AnnotatedElement<T extends Member>
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof AnnotatedElement)) {
+		if (!(obj instanceof ValueMember)) {
 			return false;
 		}
-		AnnotatedElement<?> other = (AnnotatedElement<?>) obj;
+		ValueMember<?> other = (ValueMember<?>) obj;
 		if (index != other.index) {
 			return false;
 		}

@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
 
-public class AnnotatedMethod extends AnnotatedElement<Method> {
+public class ValueMethod extends ValueMember<Method> {
 
-	public AnnotatedMethod(Method method, Value valueAnnotation) {
+	public ValueMethod(Method method, Value valueAnnotation) {
 		super(method, valueAnnotation);
 	}
 
