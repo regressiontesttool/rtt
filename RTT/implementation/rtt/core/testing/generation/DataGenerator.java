@@ -1,13 +1,13 @@
 package rtt.core.testing.generation;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import rtt.annotations.processing2.AnnotatedElement;
+import rtt.annotations.processing2.AnnotationProcessor2;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Element;
@@ -25,7 +25,7 @@ public class DataGenerator {
 	
 	private DataGenerator() {}
 	
-	private Element handleObject(final Object object, Element prototype) throws InvocationTargetException {
+	private Element handleObject(final Object object, Element prototype) throws Exception {
 		if (AnnotationUtil.isNode(object)) {
 			return handleNode(object, prototype);
 		}
@@ -33,7 +33,7 @@ public class DataGenerator {
 		return GeneratorUtil.createValue(object, prototype);
 	}
 	
-	private Element handleNode(final Object object, Element prototype) throws InvocationTargetException {
+	private Element handleNode(final Object object, Element prototype) throws Exception {
 		
 		Element result = null;
 		String address = GeneratorUtil.getObjectAddress(object);
@@ -44,11 +44,33 @@ public class DataGenerator {
 			Node resultNode = GeneratorUtil.createNode(object, prototype);
 			GeneratorUtil.setObjectAddress(object, resultNode.getAddress());
 			
-			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getCompareFields(object)));
-			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getInformationalFields(object)));
+			int childAddress = 1;
 			
-			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getCompareMethods(object)));
-			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getInformationalMethods(object)));
+			Set<AnnotatedElement<?>> annotatedElements = 
+					AnnotationProcessor2.getAnnotatedElements(object);
+			
+			Element element = null;
+			for (AnnotatedElement<?> annotatedElement : annotatedElements) {
+				element = new Element();
+				element.setAddress(resultNode.getAddress() + "." + childAddress);
+				element.setGeneratorName(annotatedElement.getName());
+				element.setGeneratorType(annotatedElement.getType());
+				element.setInformational(resultNode.isInformational() 
+						|| annotatedElement.isInformational());
+				
+				try {
+					resultNode.getElement().add(handleResult(
+							annotatedElement.getResult(object), element));
+				} catch (Exception e) {
+					RTTLogging.throwException(e);
+				}				
+			}
+			
+//			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getCompareFields(object)));
+//			resultNode.getElement().addAll(processFields(object, resultNode, AnnotationUtil.getInformationalFields(object)));
+//			
+//			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getCompareMethods(object)));
+//			resultNode.getElement().addAll(processMethods(object, resultNode, AnnotationUtil.getInformationalMethods(object)));
 			
 			result = resultNode;
 		}
@@ -56,76 +78,76 @@ public class DataGenerator {
 		return result;
 	}
 	
-	private List<Element> processFields(final Object nodeObject, final Node parentNode, 
-			List<Field> annotatedFields) throws InvocationTargetException {
-		
-		List<Element> resultList = new ArrayList<>();
-		
-		int fieldAddress = parentNode.getElement().size() + 1;
-		Element element = null;
-		
-		for (Field field : annotatedFields) {
-			element = new Element();
-			element.setAddress(parentNode.getAddress() + "." + fieldAddress);
-			element.setGeneratorName(field.getName());
-			element.setGeneratorType(Type.FIELD);
-			element.setInformational(parentNode.isInformational() 
-					|| AnnotationUtil.isInformational(field));
-			
-			try {
-				field.setAccessible(true);
-				resultList.add(handleResult(field.get(nodeObject), element));
-				fieldAddress++;
-			} catch (IllegalAccessException | IllegalArgumentException e) {
-				RTTLogging.throwException(
-						new RuntimeException("Could not access field.", e));
-			}
-		}
-		
-		return resultList;
-	}
+//	private List<Element> processFields(final Object nodeObject, final Node parentNode, 
+//			List<Field> annotatedFields) throws InvocationTargetException {
+//		
+//		List<Element> resultList = new ArrayList<>();
+//		
+//		int fieldAddress = parentNode.getElement().size() + 1;
+//		Element element = null;
+//		
+//		for (Field field : annotatedFields) {
+//			element = new Element();
+//			element.setAddress(parentNode.getAddress() + "." + fieldAddress);
+//			element.setGeneratorName(field.getName());
+//			element.setGeneratorType(Type.FIELD);
+//			element.setInformational(parentNode.isInformational() 
+//					|| AnnotationUtil.isInformational(field));
+//			
+//			try {
+//				field.setAccessible(true);
+//				resultList.add(handleResult(field.get(nodeObject), element));
+//				fieldAddress++;
+//			} catch (IllegalAccessException | IllegalArgumentException e) {
+//				RTTLogging.throwException(
+//						new RuntimeException("Could not access field.", e));
+//			}
+//		}
+//		
+//		return resultList;
+//	}
 	
-	private List<Element> processMethods(final Object nodeObject, final Node parentNode,
-			List<Method> annotatedMethods) throws InvocationTargetException {
-		
-		List<Element> resultList = new ArrayList<>();
-		
-		Element element = null;
-		int methodAddress = parentNode.getElement().size() + 1;
-		
-		for (Method method : annotatedMethods) {
-			if (method.getReturnType() == Void.TYPE) {
-				RTTLogging.warn(ONLY_NONVOID_METHODS);
-				continue;
-			}
-			
-			if (method.getParameterTypes().length > 0) {
-				RTTLogging.warn(ONLY_PARAMETERLESS_METHODS);
-				continue;
-			}
-			
-			element = new Element();
-			element.setAddress(parentNode.getAddress() + "." + methodAddress);
-			element.setGeneratorName(method.getName());
-			element.setGeneratorType(Type.METHOD);
-
-			element.setInformational(parentNode.isInformational() 
-					|| AnnotationUtil.isInformational(method));
-			
-			try {
-				method.setAccessible(true);
-				resultList.add(handleResult(method.invoke(nodeObject), element));
-				methodAddress++;				
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				RTTLogging.throwException(
-						new RuntimeException("Could not invoke method.", e));
-			}
-		}
-		
-		return resultList;
-	}
+//	private List<Element> processMethods(final Object nodeObject, final Node parentNode,
+//			List<Method> annotatedMethods) throws InvocationTargetException {
+//		
+//		List<Element> resultList = new ArrayList<>();
+//		
+//		Element element = null;
+//		int methodAddress = parentNode.getElement().size() + 1;
+//		
+//		for (Method method : annotatedMethods) {
+//			if (method.getReturnType() == Void.TYPE) {
+//				RTTLogging.warn(ONLY_NONVOID_METHODS);
+//				continue;
+//			}
+//			
+//			if (method.getParameterTypes().length > 0) {
+//				RTTLogging.warn(ONLY_PARAMETERLESS_METHODS);
+//				continue;
+//			}
+//			
+//			element = new Element();
+//			element.setAddress(parentNode.getAddress() + "." + methodAddress);
+//			element.setGeneratorName(method.getName());
+//			element.setGeneratorType(Type.METHOD);
+//
+//			element.setInformational(parentNode.isInformational() 
+//					|| AnnotationUtil.isInformational(method));
+//			
+//			try {
+//				method.setAccessible(true);
+//				resultList.add(handleResult(method.invoke(nodeObject), element));
+//				methodAddress++;				
+//			} catch (IllegalArgumentException | IllegalAccessException e) {
+//				RTTLogging.throwException(
+//						new RuntimeException("Could not invoke method.", e));
+//			}
+//		}
+//		
+//		return resultList;
+//	}
 	
-	private Element handleResult(final Object object, Element prototype) throws InvocationTargetException {
+	private Element handleResult(final Object object, Element prototype) throws Exception {
 		if (object != null) {
 			if (object.getClass().isArray()) {				
 				return handleArray(object, prototype);
@@ -139,7 +161,7 @@ public class DataGenerator {
 		return handleObject(object, prototype);
 	}
 	
-	private Element handleArray(final Object array, Element prototype) throws InvocationTargetException {
+	private Element handleArray(final Object array, Element prototype) throws Exception {
 		Node arrayNode = GeneratorUtil.createNode(array, prototype);
 		
 		Element element = null;		
@@ -151,7 +173,7 @@ public class DataGenerator {
 		return arrayNode;
 	}
 
-	private Element handleIterable(final Iterable<?> iterable, Element prototype) throws InvocationTargetException {
+	private Element handleIterable(final Iterable<?> iterable, Element prototype) throws Exception {
 		Node iterableNode = GeneratorUtil.createNode(iterable, prototype);
 		
 		int index = 0;

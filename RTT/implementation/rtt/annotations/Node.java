@@ -65,7 +65,7 @@ public @interface Node {
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Compare {
-		int index() default -1;
+		int index() default 100;
 		String name() default "";
 	}
 
@@ -73,7 +73,7 @@ public @interface Node {
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Informational {
-		int index() default -1;
+		int index() default 100;
 		String name() default "";
 	}
 
