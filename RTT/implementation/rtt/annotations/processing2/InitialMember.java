@@ -46,6 +46,10 @@ public abstract class InitialMember<T extends Member>
 		
 		return false;
 	}
+	
+	public Member getMember() {
+		return member;
+	}
 
 	public Initialize getAnnotation() {
 		return initAnnotation;

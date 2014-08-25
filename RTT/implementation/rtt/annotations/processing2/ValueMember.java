@@ -48,6 +48,10 @@ public abstract class ValueMember<T extends Member>
 		
 		return false;
 	}
+	
+	public Member getMember() {
+		return member;
+	}
 
 	public Value getAnnotation() {
 		return valueAnnotation;
