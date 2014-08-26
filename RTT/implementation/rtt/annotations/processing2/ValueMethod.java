@@ -1,6 +1,7 @@
 package rtt.annotations.processing2;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
@@ -13,17 +14,12 @@ public class ValueMethod extends ValueMember<Method> {
 
 	@Override
 	protected String getSignature(Method method) {
-		StringBuilder builder = new StringBuilder(method.getName());
-		builder.append("-");
-		builder.append(method.getReturnType().getSimpleName());
-		builder.append("-[");
-		for (Class<?> parameter : method.getParameterTypes()) {
-			builder.append(parameter.getSimpleName());
-			builder.append(";");
+		if (Modifier.isPrivate(method.getModifiers())) {
+			return method.getDeclaringClass().getSimpleName()
+					+ "." + method.getName();
 		}
-		builder.append("]");
 		
-		return builder.toString();
+		return method.getName();
 	}
 
 	@Override

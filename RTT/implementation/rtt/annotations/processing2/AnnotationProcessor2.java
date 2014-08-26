@@ -25,8 +25,7 @@ public class AnnotationProcessor2 {
 	
 	public static boolean isNode(Class<?> objectType) {
 		return getAnnotation(objectType, NODE_ANNOTATION) != null;
-	}
-	
+	}	
 	
 	private static Object getAnnotation(Class<?> objectType,
 			Class<? extends Annotation> annotationType) {

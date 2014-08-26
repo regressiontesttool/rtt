@@ -8,13 +8,14 @@ import rtt.core.archive.output.Type;
 public abstract class ValueMember<T extends Member> 
 	implements Comparable<ValueMember<?>> {
 	
+	private Value valueAnnotation;
+	
 	private int index;
 	private String name;
-	private Type type;
 	private boolean informational;
 	
-	private Value valueAnnotation;
 	private T member;
+	private Type type;	
 
 	public ValueMember(T member, Value valueAnnotation) {
 		

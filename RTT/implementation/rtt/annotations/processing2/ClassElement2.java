@@ -107,10 +107,12 @@ public class ClassElement2 {
 				annotatedMethods.add(new ValueMethod(
 						method, method.getAnnotation(VALUE_ANNOTATION)));
 				
-			} else if (!Modifier.isPrivate(method.getModifiers())) {
+			} else {				
+				ValueMember<?> annotatedMethod = searchValueMember(
+						method, annotatedMethods);
 				
-				ValueMember<?> annotatedMethod = searchValueMember(method, annotatedMethods);
 				if (annotatedMethod != null) {
+					annotatedMethods.remove(annotatedMethod);
 					annotatedMethods.add(new ValueMethod(
 							method, annotatedMethod.getAnnotation()));
 				}
@@ -170,7 +172,5 @@ public class ClassElement2 {
 		}
 		
 		return null;
-	}
-	
-	
+	}	
 }
