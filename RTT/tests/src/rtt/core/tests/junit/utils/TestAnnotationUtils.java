@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Member;
 import java.util.Arrays;
 import java.util.Set;
@@ -35,25 +36,38 @@ public class TestAnnotationUtils {
 			Class<?> fromClass, 
 			String... memberNames) {
 		
-		if (memberNames.length > 0) {
-			Arrays.sort(memberNames);
-		}
+		Arrays.sort(memberNames);
+		boolean checkNames = memberNames.length > 0;
+		
+		if (checkNames) {
+			for (String memberName : memberNames) {
+				boolean memberFound = false;
+				for (ValueMember<?> valueMember : members) {
+					if (valueMember.getMember().getName().equals(memberName)) {
+						Member member = valueMember.getMember();
+						if (member.getDeclaringClass().equals(fromClass)) {
+							memberFound = true;
+							break;
+						}
+					}
+				}
 				
-		for (ValueMember<?> valueMember : members) {
-			Member member = valueMember.getMember();
-			boolean checkMethod = true;
-			if (memberNames.length > 0) {
-				checkMethod = Arrays.binarySearch(
-						memberNames, member.getName()) >= 0;
+				if (!memberFound) {
+					String fromClassName = fromClass.getSimpleName();
+					fail("The member '" + memberName + "' from '" + fromClassName + "' could not be found.");
+				}
 			}
-			
-			if (checkMethod && !member.getDeclaringClass().equals(fromClass)) {
-				String fromClassName = fromClass.getSimpleName();
-				String declaringClassName = member.getDeclaringClass().getSimpleName();
-				String memberName = member.getClass().getSimpleName() + " " + member.getName();
+		} else {
+			for (ValueMember<?> valueMember : members) {
+				Member member = valueMember.getMember();
+				if (!member.getDeclaringClass().equals(fromClass)) {
+					String fromClassName = fromClass.getSimpleName();
+					String declaringClassName = member.getDeclaringClass().getSimpleName();
+					String memberName = member.getClass().getSimpleName() + " " + member.getName();
 
-				fail("The member '" + memberName + "' was declared by " + declaringClassName + " and not by " + fromClassName);
-			}
+					fail("The member '" + memberName + "' was declared by " + declaringClassName + " and not by " + fromClassName);
+				}
+			}			
 		}
 	}
 }

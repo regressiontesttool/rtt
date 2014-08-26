@@ -110,7 +110,8 @@ public class MethodProcessingTests {
 	// Test: Overriding permuted methods
 	// Due to annotations within the super class, the extending class
 	// should have also multiple methods detected.
-	// --> methods count = 3 + 3
+	// --> methods count =  3 &  3 (from PermuterdMethodsClass)
+	//                AND  +1 & +1 (from own private methods -> not overwritten)
 	
 	static class ExtendingPermutedClass extends PermutedMethodsClass {
 		private void privateVoidMethod() {}
@@ -163,8 +164,15 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ExtendingPermutedClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 3, 3);
-		TestAnnotationUtils.checkMember(members, ExtendingPermutedClass.class);
+		TestAnnotationUtils.checkMembers(members, 4, 4);
+		TestAnnotationUtils.checkMember(members, PermutedMethodsClass.class, 
+				"privateCompareStringMethod", "privateInfoStringMethod");
+		
+		TestAnnotationUtils.checkMember(members, ExtendingPermutedClass.class,
+				"privateCompareStringMethod", "privateInfoStringMethod",
+				"protectedCompareStringMethod", "protectedInfoStringMethod",
+				"publicCompareStringMethod", "publicInfoStringMethod");
+		
 		
 		invokeMethods(members, ExtendingPermutedClass.class);
 	}
@@ -377,7 +385,9 @@ public class MethodProcessingTests {
 		
 		TestAnnotationUtils.checkMembers(members, 2, 2);
 		TestAnnotationUtils.checkMember(members, ConcreteClass.class,
-				"publicInterfaceMethod2", "publicInterfaceCompareMethod2", "publicInterfaceInfoMethod2");
+				"publicInterfaceCompareMethod2", "publicInfoInterfaceMethod2");
+		TestAnnotationUtils.checkMember(members, ImplementingAbstractClass.class,
+				"publicInterfaceCompareMethod1", "publicInfoInterfaceMethod1");
 		
 		invokeMethods(members, ConcreteClass.class);
 	}
