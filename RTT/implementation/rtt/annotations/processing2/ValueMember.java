@@ -1,6 +1,8 @@
 package rtt.annotations.processing2;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
 import rtt.annotations.Node.Value;
 import rtt.core.archive.output.Type;
@@ -8,50 +10,93 @@ import rtt.core.archive.output.Type;
 public abstract class ValueMember<T extends Member> 
 	implements Comparable<ValueMember<?>> {
 	
+	private static final class ValueField extends ValueMember<Field> {
+		private final Field field;
+
+		private ValueField(Field field) {
+			super(field, Type.FIELD, 
+					field.getAnnotation(VALUE_ANNOTATION));
+			
+			this.field = field;
+		}
+
+		@Override
+		public Object getResult(Object object)
+				throws ReflectiveOperationException {
+			
+			field.setAccessible(true);
+			return field.get(object);
+		}
+	}
+
+	private static final class ValueMethod extends ValueMember<Method> {
+		private final Method method;
+
+		private ValueMethod(Method method) {
+			super(method, Type.METHOD,
+					method.getAnnotation(VALUE_ANNOTATION));
+			
+			this.method = method;
+		}
+
+		@Override
+		public Object getResult(Object object)
+				throws ReflectiveOperationException {
+			
+			method.setAccessible(true);
+			return method.invoke(object);
+		}
+	}
+
+	private static final Class<Value> VALUE_ANNOTATION = Value.class;
 	private Value valueAnnotation;
+	private T member;
 	
 	private int index;
 	private String name;
 	private boolean informational;
 	
-	private T member;
 	private Type type;	
 	private String signature;	
 
-	protected ValueMember(T member, Type type, Value valueAnnotation) {
-		
+	private ValueMember(T member, Type type, Value valueAnnotation) {		
 		this.member = member;
 		this.type = type;
-		this.signature = getSignature(member);
+		
+		this.signature = member.getDeclaringClass().getSimpleName()
+				+ "." + member.getName();		
 		
 		this.valueAnnotation = valueAnnotation;		
 		this.index = valueAnnotation.index();
+		this.informational = valueAnnotation.informational();
 		this.name = valueAnnotation.name();
-		this.informational = valueAnnotation.informational();			
 	}
 	
-	protected abstract String getSignature(T member);
-	protected abstract Object getResult(T member, Object object) 
+	public abstract Object getResult(Object object) 
 			throws ReflectiveOperationException;
 	
-	@SuppressWarnings("unchecked")
-	public boolean equalSignature(Member searchedMember) {
-		if (searchedMember.getClass().isInstance(member)) {
-			String ownSignature = getSignature(this.member);
-			String searchedSignature = getSignature((T) searchedMember);
-			
-			return ownSignature.equals(searchedSignature); 
-		}
-		
-		return false;
+	public static final ValueMember<Field> create(final Field field) {
+		return new ValueField(field);
 	}
 	
-	public Member getMember() {
+	public static final ValueMember<Method> create(final Method method) {
+		return new ValueMethod(method);
+	}
+	
+	public T getMember() {
 		return member;
 	}
-
+	
 	public Value getAnnotation() {
 		return valueAnnotation;
+	}
+	
+	public final boolean isInformational() {
+		return informational;
+	}
+	
+	public final Type getType() {
+		return type;
 	}
 	
 	public final String getSignature() {
@@ -64,18 +109,6 @@ public abstract class ValueMember<T extends Member>
 		}
 		
 		return name;
-	}
-	
-	public final Type getType() {
-		return type;
-	}
-	
-	public final boolean isInformational() {
-		return informational;
-	}
-	
-	public final Object getResult(Object object) throws Exception {
-		return getResult(member, object);
 	}
 
 	@Override

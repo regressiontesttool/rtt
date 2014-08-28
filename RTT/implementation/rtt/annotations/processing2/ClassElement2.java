@@ -15,8 +15,10 @@ import rtt.core.utils.RTTLogging;
 
 public class ClassElement2 {
 	
-	private static final String ONLY_NONVOID_METHODS = "Only methods with a non-void return type allowed.";
-	private static final String ONLY_PARAMETERLESS_METHODS = "Only methods without parameters allowed.";
+	private static final String ONLY_NONVOID_METHODS = 
+			"Only methods with a non-void return type allowed.";
+	private static final String ONLY_PARAMETERLESS_METHODS = 
+			"Only methods without parameters allowed.";
 
 	private static final Class<Value> VALUE_ANNOTATION = Value.class;
 	private static final Class<Initialize> INIT_ANNOTATION = Initialize.class;
@@ -79,8 +81,7 @@ public class ClassElement2 {
 		
 		for (Field field : objectType.getDeclaredFields()){
 			if (field.isAnnotationPresent(VALUE_ANNOTATION)) {
-				annotatedFields.add(new ValueField(
-						field, field.getAnnotation(VALUE_ANNOTATION)));
+				annotatedFields.add(ValueMember.create(field));
 			}
 		}
 	}
@@ -104,32 +105,9 @@ public class ClassElement2 {
 					continue;
 				}
 				
-				annotatedMethods.add(new ValueMethod(
-						method, method.getAnnotation(VALUE_ANNOTATION)));
-				
-			} else {				
-				ValueMember<?> annotatedMethod = searchValueMember(
-						method, annotatedMethods);
-				
-				if (annotatedMethod != null) {
-					annotatedMethods.remove(annotatedMethod);
-					annotatedMethods.add(new ValueMethod(
-							method, annotatedMethod.getAnnotation()));
-				}
+				annotatedMethods.add(ValueMember.create(method));				
 			}
 		}
-	}
-
-	private ValueMember<?> searchValueMember(Member member, 
-			Set<ValueMember<?>> annotatedMethods) {
-		
-		for (ValueMember<?> annotatedMember : annotatedMethods) {
-			if (annotatedMember.equalSignature(member)) {
-				return annotatedMember;
-			}
-		}
-		
-		return null;
 	}
 	
 	private void addInitConstructors(Class<?> objectType,
