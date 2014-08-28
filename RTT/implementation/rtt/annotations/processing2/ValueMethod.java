@@ -9,7 +9,7 @@ import rtt.core.archive.output.Type;
 public class ValueMethod extends ValueMember<Method> {
 
 	public ValueMethod(Method method, Value valueAnnotation) {
-		super(method, valueAnnotation);
+		super(method, Type.METHOD, valueAnnotation);
 	}
 
 	@Override
@@ -23,12 +23,9 @@ public class ValueMethod extends ValueMember<Method> {
 	}
 
 	@Override
-	protected Type getType(Method member) {
-		return Type.METHOD;
-	}
-
-	@Override
-	public Object getResult(Method member, Object object) throws Exception {
+	public Object getResult(Method member, Object object) 
+			throws ReflectiveOperationException {
+		
 		member.setAccessible(true);
 		return member.invoke(object);
 	}	

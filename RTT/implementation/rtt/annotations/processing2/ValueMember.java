@@ -16,27 +16,23 @@ public abstract class ValueMember<T extends Member>
 	
 	private T member;
 	private Type type;	
+	private String signature;	
 
-	public ValueMember(T member, Value valueAnnotation) {
+	protected ValueMember(T member, Type type, Value valueAnnotation) {
 		
 		this.member = member;
-		this.valueAnnotation = valueAnnotation;
+		this.type = type;
+		this.signature = getSignature(member);
 		
+		this.valueAnnotation = valueAnnotation;		
 		this.index = valueAnnotation.index();
-		this.informational = valueAnnotation.informational();		
-		this.type = getType(member);
-		
-		String nameAttribute = valueAnnotation.name().trim();
-		if (nameAttribute != null && !nameAttribute.equals("")) {
-			this.name = nameAttribute;
-		} else {
-			this.name = getSignature(member);
-		}		
+		this.name = valueAnnotation.name();
+		this.informational = valueAnnotation.informational();			
 	}
 	
 	protected abstract String getSignature(T member);
-	protected abstract Type getType(T member);	
-	protected abstract Object getResult(T member, Object object) throws Exception;
+	protected abstract Object getResult(T member, Object object) 
+			throws ReflectiveOperationException;
 	
 	@SuppressWarnings("unchecked")
 	public boolean equalSignature(Member searchedMember) {
@@ -58,7 +54,15 @@ public abstract class ValueMember<T extends Member>
 		return valueAnnotation;
 	}
 	
+	public final String getSignature() {
+		return signature;
+	}
+	
 	public final String getName() {
+		if (name == null || name.equals("")) {
+			return signature;
+		}
+		
 		return name;
 	}
 	
@@ -84,19 +88,19 @@ public abstract class ValueMember<T extends Member>
 			return Integer.compare(this.index, other.index);
 		}
 		
+		if (this.informational != other.informational) {
+			return Boolean.compare(this.informational, other.informational);
+		}
+		
 		if (this.type != other.type) {
 			return type.compareTo(other.type);
+		}				
+		
+		if (!this.name.equals(other.name)) {
+			return this.name.compareTo(other.name);
 		}
 		
-		if (this.informational != other.informational) {
-			if (this.informational == false) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
-		
-		return this.name.compareTo(other.name);
+		return this.signature.compareTo(other.signature);
 	}
 
 	@Override
@@ -105,8 +109,10 @@ public abstract class ValueMember<T extends Member>
 		int result = 1;
 		result = prime * result + index;
 		result = prime * result + (informational ? 1231 : 1237);
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + type.hashCode();
+		result = prime * result + name.hashCode();
+		result = prime * result + signature.hashCode();
+		
 		return result;
 	}
 
@@ -127,17 +133,17 @@ public abstract class ValueMember<T extends Member>
 		}
 		if (informational != other.informational) {
 			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
+		}		
 		if (type != other.type) {
 			return false;
+		}		
+		if (!name.equals(other.name)) {
+			return false;
 		}
+		if (!signature.equals(other.signature)) {
+			return false;
+		}
+		
 		return true;
 	}
 }

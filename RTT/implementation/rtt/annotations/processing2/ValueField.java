@@ -8,21 +8,18 @@ import rtt.core.archive.output.Type;
 public class ValueField extends ValueMember<Field>{
 	
 	public ValueField(Field field, Value valueAnnotation) {
-		super(field, valueAnnotation);
+		super(field, Type.FIELD, valueAnnotation);
 	}
 
 	@Override
 	protected String getSignature(Field member) {
-		return member.getDeclaringClass().getSimpleName() + "." +member.getName();
+		return member.getDeclaringClass().getSimpleName() + "." + member.getName();
 	}
 
 	@Override
-	protected Type getType(Field member) {
-		return Type.FIELD;
-	}
-
-	@Override
-	public Object getResult(Field member, Object object) throws Exception {
+	public Object getResult(Field member, Object object) 
+			throws ReflectiveOperationException {
+		
 		member.setAccessible(true);
 		return member.get(object);
 	}
