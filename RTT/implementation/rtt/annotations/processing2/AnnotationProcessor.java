@@ -7,15 +7,15 @@ import java.util.SortedSet;
 
 import rtt.annotations.Node;
 
-public class AnnotationProcessor2 {
+public class AnnotationProcessor {
 	
-	private static final AnnotationProcessor2 INSTANCE = 
-			new AnnotationProcessor2();
+	private static final AnnotationProcessor INSTANCE = 
+			new AnnotationProcessor();
 	
 	private static final Class<? extends Annotation> NODE_ANNOTATION = Node.class;
-	private Map<Class<?>, ClassElement2> vistedClasses;
+	private Map<Class<?>, ClassElement> vistedClasses;
 	
-	public AnnotationProcessor2() {
+	public AnnotationProcessor() {
 		vistedClasses = new HashMap<>();
 	}
 	
@@ -44,16 +44,16 @@ public class AnnotationProcessor2 {
 	}
 
 	public static SortedSet<ValueMember<?>> getValueMembers(Class<?> objectType) {
-		ClassElement2 classElement = INSTANCE.getElement(objectType);		
+		ClassElement classElement = INSTANCE.getElement(objectType);		
 		return classElement.getValueMembers();
 	}
 	
 	public static SortedSet<InitialMember<?>> getInitMembers(Class<?> objectType) {
-		ClassElement2 classElement = INSTANCE.getElement(objectType);		
+		ClassElement classElement = INSTANCE.getElement(objectType);		
 		return classElement.getInitMembers();
 	}
 	
-	private ClassElement2 getElement(Class<?> objectType) {
+	private ClassElement getElement(Class<?> objectType) {
 		if (objectType == null) {
 			throw new IllegalArgumentException("Object type must not be null.");
 		}
@@ -65,12 +65,12 @@ public class AnnotationProcessor2 {
 		return vistedClasses.get(objectType);
 	}
 
-	private ClassElement2 createClassElement(Class<?> objectType) {
+	private ClassElement createClassElement(Class<?> objectType) {
 		Class<?> superClass = objectType.getSuperclass();
 		if (superClass != null && superClass != Object.class) {
-			return new ClassElement2(objectType, getElement(superClass));
+			return new ClassElement(objectType, getElement(superClass));
 		} else {
-			return new ClassElement2(objectType);
+			return new ClassElement(objectType);
 		}				
 	}	
 }

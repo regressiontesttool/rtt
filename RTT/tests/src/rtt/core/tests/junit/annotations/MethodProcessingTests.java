@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.AnnotationProcessor;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
@@ -70,7 +70,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testPermutedMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				PermutedMethodsClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 3, 3);
@@ -134,7 +134,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendingPermutedMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				ExtendingPermutedClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 4, 4);
@@ -187,7 +187,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendingMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				ExtendingMethodClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 3, 3);
@@ -219,7 +219,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testSecondExtendingMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				SecondExtendingMethodClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 3, 3);
@@ -270,7 +270,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendingAbstractMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				ExtendingAbstractClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 5, 5);
@@ -305,7 +305,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testImplementingMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				ImplementingClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 2, 2);
@@ -344,7 +344,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testImplementingAbstractMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				ConcreteClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 2, 2);
@@ -380,7 +380,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testExtendedInterfaceMethods() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				ExtendedImplementingClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 2, 2);
@@ -414,7 +414,7 @@ public class MethodProcessingTests {
 	
 	@Test
 	public void testDoubleAnnotation() throws Exception {
-		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> members = AnnotationProcessor.getValueMembers(
 				AnnotatedExtendingClass.class);
 		
 		TestAnnotationUtils.countMembers(members, 4, 4);

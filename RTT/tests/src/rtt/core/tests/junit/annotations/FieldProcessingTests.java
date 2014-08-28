@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.AnnotationProcessor;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
@@ -42,7 +42,7 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testPermutedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				PermutedFieldsClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -86,7 +86,7 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testExtendingFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ExtendingFieldClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 6, 6);
@@ -124,7 +124,7 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testImplementingFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ImplementingClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 5, 5);
@@ -176,7 +176,7 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testImplementingAbstractFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ConcreteClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 8, 8);
@@ -225,7 +225,7 @@ public class FieldProcessingTests {
 	
 	@Test
 	public void testExtendedInterfaceFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ExtendedImplementingClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 7, 7);

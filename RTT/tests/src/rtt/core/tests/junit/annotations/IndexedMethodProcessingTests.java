@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.AnnotationProcessor;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.AscendingIndexAttributeClass;
 import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.EqualIndexAttributeClass;
@@ -42,7 +42,7 @@ public class IndexedMethodProcessingTests {
 	
 	@Test
 	public void testNonIndexedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NoIndexAttributeClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -73,7 +73,7 @@ public class IndexedMethodProcessingTests {
 
 	@Test
 	public void testAscendingIndexedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				AscendingIndexAttributeClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -104,7 +104,7 @@ public class IndexedMethodProcessingTests {
 
 	@Test
 	public void testEqualIndexedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				EqualIndexAttributeClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -135,7 +135,7 @@ public class IndexedMethodProcessingTests {
 
 	@Test
 	public void testExtendingMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
@@ -164,7 +164,7 @@ public class IndexedMethodProcessingTests {
 	
 	@Test
 	public void testExtendingIndexedMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				IndexedExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);

@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.AnnotationProcessor;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
@@ -32,7 +32,7 @@ public class NamedMethodProcessingTests {
 	
 	@Test
 	public void testNonNamedMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NoNameAttributeClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -64,7 +64,7 @@ public class NamedMethodProcessingTests {
 
 	@Test
 	public void testAscendingNamedMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NamedAttributeClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -95,7 +95,7 @@ public class NamedMethodProcessingTests {
 
 	@Test
 	public void testEqualNamedMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				EqualNamedAttributeClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -126,7 +126,7 @@ public class NamedMethodProcessingTests {
 
 	@Test
 	public void testExtendingMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
@@ -155,7 +155,7 @@ public class NamedMethodProcessingTests {
 	
 	@Test
 	public void testExtendingNamedMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NamedExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
@@ -184,7 +184,7 @@ public class NamedMethodProcessingTests {
 
 	@Test
 	public void testExtendingEqualNamedMethods() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				EqualNamedExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);

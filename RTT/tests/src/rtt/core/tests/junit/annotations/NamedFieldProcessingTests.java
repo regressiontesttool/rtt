@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.AnnotationProcessor;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.EqualNamedAttributeClass;
 import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.EqualNamedExtendingClass;
@@ -43,7 +43,7 @@ public class NamedFieldProcessingTests {
 	
 	@Test
 	public void testNonNamedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NoNameAttributeClass.class);
 		
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -75,7 +75,7 @@ public class NamedFieldProcessingTests {
 
 	@Test
 	public void testAscendingNamedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NamedAttributeClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -106,7 +106,7 @@ public class NamedFieldProcessingTests {
 
 	@Test
 	public void testEqualNamedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				EqualNamedAttributeClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
@@ -137,7 +137,7 @@ public class NamedFieldProcessingTests {
 
 	@Test
 	public void testExtendingFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				ExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
@@ -166,7 +166,7 @@ public class NamedFieldProcessingTests {
 	
 	@Test
 	public void testExtendingNamedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				NamedExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
@@ -195,7 +195,7 @@ public class NamedFieldProcessingTests {
 
 	@Test
 	public void testExtendingEqualNamedFields() throws Exception {
-		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
 				EqualNamedExtendingClass.class);
 
 		TestAnnotationUtils.countMembers(valueMembers, 2, 2);

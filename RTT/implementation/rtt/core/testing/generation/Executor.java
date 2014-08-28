@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import rtt.annotations.Node.Initialize;
-import rtt.annotations.processing2.AnnotationProcessor2;
+import rtt.annotations.processing2.AnnotationProcessor;
 import rtt.annotations.processing2.InitialMember;
 import rtt.core.archive.input.Input;
 import rtt.core.exceptions.AnnotationException;
@@ -49,7 +49,7 @@ public class Executor {
 	public Executor(Class<?> initialObjectType) {
 		checkClass(initialObjectType);
 		
-		SortedSet<InitialMember<?>> initMembers = AnnotationProcessor2.getInitMembers(initialObjectType);
+		SortedSet<InitialMember<?>> initMembers = AnnotationProcessor.getInitMembers(initialObjectType);
 		if (initMembers.size() == 0) {
 			RTTLogging.throwException(new IllegalStateException(NO_INIT_MEMBER));
 		}
@@ -86,7 +86,7 @@ public class Executor {
 			RTTLogging.throwException(new IllegalArgumentException(NO_NONSTATIC_MEMBERCLASS));
 		}
 		
-		if (!AnnotationProcessor2.isNode(initialNodeClass)) {
+		if (!AnnotationProcessor.isNode(initialNodeClass)) {
 			RTTLogging.throwException(new AnnotationException(NO_NODE_ANNOTATION));
 		}
 	}

@@ -13,7 +13,7 @@ import rtt.annotations.Node.Initialize;
 import rtt.annotations.Node.Value;
 import rtt.core.utils.RTTLogging;
 
-public class ClassElement2 {
+public class ClassElement {
 	
 	private static final String ONLY_NONVOID_METHODS = 
 			"Only methods with a non-void return type allowed.";
@@ -26,12 +26,12 @@ public class ClassElement2 {
 	private SortedSet<ValueMember<?>> valueMembers;
 	private SortedSet<InitialMember<?>> initMembers;
 	
-	public ClassElement2(Class<?> objectType) {
+	public ClassElement(Class<?> objectType) {
 		valueMembers = createValueMembers(objectType, null);
 		initMembers = createInitMembers(objectType, null);
 	}
 	
-	public ClassElement2(Class<?> objectType, ClassElement2 parent) {
+	public ClassElement(Class<?> objectType, ClassElement parent) {
 		valueMembers = createValueMembers(objectType, parent.valueMembers);
 		initMembers = createInitMembers(objectType, parent.initMembers);
 	}
