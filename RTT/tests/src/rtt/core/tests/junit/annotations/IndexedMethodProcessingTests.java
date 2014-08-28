@@ -1,8 +1,8 @@
 package rtt.core.tests.junit.annotations;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -12,6 +12,11 @@ import org.junit.Test;
 import rtt.annotations.Node.Value;
 import rtt.annotations.processing2.AnnotationProcessor2;
 import rtt.annotations.processing2.ValueMember;
+import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.AscendingIndexAttributeClass;
+import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.EqualIndexAttributeClass;
+import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.ExtendingClass;
+import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.IndexedExtendingClass;
+import rtt.core.tests.junit.annotations.IndexedFieldProcessingTests.NoIndexAttributeClass;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
@@ -20,35 +25,12 @@ public class IndexedMethodProcessingTests {
 	@Before
 	public void setUp() throws Exception {}
 	
-	private void invokeMembers(Set<ValueMember<?>> members, Class<?> classType) {
-		try {
-			Object object = classType.newInstance();
-			for (ValueMember<?> member : members) {
-				member.getResult(object);
-				System.out.println(member.getSignature());
-			}
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
-	private void checkOrder(Set<ValueMember<?>> valueMembers, String... signatures) {
-		assertEquals(signatures.length, valueMembers.size());
-		
-		int index = 0;
-		Iterator<ValueMember<?>> iterator = valueMembers.iterator();
-		while (iterator.hasNext()) {
-			assertEquals(signatures[index], iterator.next().getSignature());
-			index++;
-		}		
-	}
-	
 	// --------------------------------------------------------------
 	// Test: annotated fields without index attribute
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 	
-	static class NoIndexAttributeClass {		
+	public static class NoIndexAttributeClass {		
 		@Value(informational=true) private String infoC() { return ""; };
 		@Value(informational=true) protected String infoB() { return ""; };
 		@Value(informational=true) public String infoA() { return ""; };
@@ -63,14 +45,15 @@ public class IndexedMethodProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				NoIndexAttributeClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		checkOrder(valueMembers, 
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.checkOrder(valueMembers, 
 				"NoIndexAttributeClass.compareA", 
 				"NoIndexAttributeClass.compareB", 
 				"NoIndexAttributeClass.compareC",
 				"NoIndexAttributeClass.infoA", 
 				"NoIndexAttributeClass.infoB", 
 				"NoIndexAttributeClass.infoC");
+		TestAnnotationUtils.executeMembers(valueMembers, NoIndexAttributeClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -78,14 +61,14 @@ public class IndexedMethodProcessingTests {
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 
-	static class AscendingIndexAttributeClass {		
-		@Value(index=3) public String compareA() { return ""; };
-		@Value(index=2) protected String compareB() { return ""; };
-		@Value(index=1) private String compareC() { return ""; };		
+	public static class AscendingIndexAttributeClass {		
+		@Value(index=6) public String compareA() { return ""; };
+		@Value(index=5) protected String compareB() { return ""; };
+		@Value(index=4) private String compareC() { return ""; };		
 
-		@Value(informational=true, index=6) public String infoA() { return ""; };
-		@Value(informational=true, index=5) protected String infoB() { return ""; };
-		@Value(informational=true, index=4) private String infoC() { return ""; };		
+		@Value(informational=true, index=3) public String infoA() { return ""; };
+		@Value(informational=true, index=2) protected String infoB() { return ""; };
+		@Value(informational=true, index=1) private String infoC() { return ""; };		
 	}
 
 	@Test
@@ -93,14 +76,15 @@ public class IndexedMethodProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				AscendingIndexAttributeClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		checkOrder(valueMembers, 
-				"AscendingIndexAttributeClass.compareC", 
-				"AscendingIndexAttributeClass.compareB", 
-				"AscendingIndexAttributeClass.compareA",				 
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.checkOrder(valueMembers, 
 				"AscendingIndexAttributeClass.infoC", 
-				"AscendingIndexAttributeClass.infoB",
-				"AscendingIndexAttributeClass.infoA");
+				"AscendingIndexAttributeClass.infoB", 
+				"AscendingIndexAttributeClass.infoA",				 
+				"AscendingIndexAttributeClass.compareC", 
+				"AscendingIndexAttributeClass.compareB",
+				"AscendingIndexAttributeClass.compareA");
+		TestAnnotationUtils.executeMembers(valueMembers, AscendingIndexAttributeClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -108,7 +92,7 @@ public class IndexedMethodProcessingTests {
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 
-	static class EqualIndexAttributeClass {		
+	public static class EqualIndexAttributeClass {		
 		@Value(index=3) private String compareC() { return ""; };
 		@Value(index=3) protected String compareB() { return ""; };
 		@Value(index=3) public String compareA() { return ""; };				
@@ -123,14 +107,15 @@ public class IndexedMethodProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				EqualIndexAttributeClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		checkOrder(valueMembers,
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.checkOrder(valueMembers,
 				"EqualIndexAttributeClass.infoA", 
 				"EqualIndexAttributeClass.infoB",
 				"EqualIndexAttributeClass.infoC",
 				"EqualIndexAttributeClass.compareA", 
 				"EqualIndexAttributeClass.compareB", 
 				"EqualIndexAttributeClass.compareC");
+		TestAnnotationUtils.executeMembers(valueMembers, EqualIndexAttributeClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -138,27 +123,28 @@ public class IndexedMethodProcessingTests {
 	//	 --> compare fields count = 2 
 	//	 --> informational fields count = 2
 
-	static class SuperClass {		
-		@Value public String compareField() { return ""; };
-		@Value(informational=true) public String infoField() { return ""; };		
+	public static class SuperClass {		
+		@Value public String compareMethod() { return ""; };
+		@Value(informational=true) public String infoMethod() { return ""; };		
 	}
 
-	static class ExtendingClass extends SuperClass {		
-		@Value public String compareField() { return ""; };
-		@Value(informational=true) public String infoField() { return ""; };
+	public static class ExtendingClass extends SuperClass {		
+		@Value public String compareMethod() { return ""; };
+		@Value(informational=true) public String infoMethod() { return ""; };
 	}
 
 	@Test
-	public void testExtendingFields() throws Exception {
+	public void testExtendingMethods() throws Exception {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				ExtendingClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 2, 2);
-		checkOrder(valueMembers,
-				"ExtendingClass.compareField",
-				"SuperClass.compareField",
-				"ExtendingClass.infoField",
-				"SuperClass.infoField");
+		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
+		TestAnnotationUtils.checkOrder(valueMembers,
+				"ExtendingClass.compareMethod",
+				"SuperClass.compareMethod",
+				"ExtendingClass.infoMethod",
+				"SuperClass.infoMethod");
+		TestAnnotationUtils.executeMembers(valueMembers, ExtendingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -166,26 +152,27 @@ public class IndexedMethodProcessingTests {
 	//	 --> compare fields count = 2 
 	//	 --> informational fields count = 2
 	
-	static class IndexedSuperClass {		
-		@Value(index=22) public String compareField() { return ""; };
-		@Value(informational=true, index=21) public String infoField() { return ""; };		
+	public static class IndexedSuperClass {		
+		@Value(index=22) public String compareMethod() { return ""; };
+		@Value(informational=true, index=21) public String infoMethod() { return ""; };		
 	}
 	
-	static class IndexedExtendingClass extends IndexedSuperClass {		
-		@Value(index=12) public String compareField() { return ""; };
-		@Value(informational=true, index=11) public String infoField() { return ""; };
+	public static class IndexedExtendingClass extends IndexedSuperClass {		
+		@Value(index=12) public String compareMethod() { return ""; };
+		@Value(informational=true, index=11) public String infoMethod() { return ""; };
 	}
 	
 	@Test
-	public void testExtendingIndexedFields() throws Exception {
+	public void testExtendingIndexedMethods() throws Exception {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				IndexedExtendingClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 2, 2);
-		checkOrder(valueMembers,
-				"IndexedExtendingClass.infoField",
-				"IndexedExtendingClass.compareField",
-				"IndexedSuperClass.infoField",
-				"IndexedSuperClass.compareField");
+		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
+		TestAnnotationUtils.checkOrder(valueMembers,
+				"IndexedExtendingClass.infoMethod",
+				"IndexedExtendingClass.compareMethod",
+				"IndexedSuperClass.infoMethod",
+				"IndexedSuperClass.compareMethod");
+		TestAnnotationUtils.executeMembers(valueMembers, IndexedExtendingClass.class);
 	}
 }

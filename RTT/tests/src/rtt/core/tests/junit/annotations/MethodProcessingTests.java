@@ -1,19 +1,11 @@
 package rtt.core.tests.junit.annotations;
 
-import static org.junit.Assert.fail;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
-import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing.AnnotationProcessor;
 import rtt.annotations.processing2.AnnotationProcessor2;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
@@ -24,31 +16,12 @@ public class MethodProcessingTests {
 	@Before
 	public void setUp() throws Exception {}
 	
-	private void invokeMethods(Set<ValueMember<?>> members, Class<?> classType) {
-		try {
-			Object object = classType.newInstance();
-			List<Object> params = new ArrayList<>();
-			for (ValueMember<?> valueMember : members) {
-				params.clear();
-				Method method = (Method) valueMember.getMember();
-				for (Class<?> param : Arrays.asList(method.getParameterTypes())) {
-					params.add(param.newInstance());
-				}
-				
-				method.setAccessible(true);
-				method.invoke(object, params.toArray());
-			}
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
 	// --------------------------------------------------------------
 	// Test: permuted methods
 	//	Only non-void and parameter-less methods should be detected
 	//	 --> count = 3 + 3
 	
-	static class PermutedMethodsClass {
+	public static class PermutedMethodsClass {
 		
 		private void privateVoidMethod() {}
 		protected void protectedVoidMethod() {}
@@ -100,10 +73,10 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				PermutedMethodsClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.countMembers(members, 3, 3);
 		TestAnnotationUtils.checkMember(members, PermutedMethodsClass.class);
 		
-		invokeMethods(members, PermutedMethodsClass.class);
+		TestAnnotationUtils.executeMembers(members, PermutedMethodsClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -113,7 +86,7 @@ public class MethodProcessingTests {
 	// --> methods count =  3 &  3 (from PermuterdMethodsClass)
 	//                AND  +1 & +1 (from own private methods -> not overwritten)
 	
-	static class ExtendingPermutedClass extends PermutedMethodsClass {
+	public static class ExtendingPermutedClass extends PermutedMethodsClass {
 		private void privateVoidMethod() {}
 		protected void protectedVoidMethod() {}
 		public void publicVoidMethod() {}
@@ -164,7 +137,7 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ExtendingPermutedClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 4, 4);
+		TestAnnotationUtils.countMembers(members, 4, 4);
 		TestAnnotationUtils.checkMember(members, PermutedMethodsClass.class, 
 				"privateCompareStringMethod", "privateInfoStringMethod",
 				"protectedCompareStringMethod", "protectedInfoStringMethod",
@@ -174,7 +147,7 @@ public class MethodProcessingTests {
 				"privateCompareStringMethod", "privateInfoStringMethod");
 		
 		
-		invokeMethods(members, ExtendingPermutedClass.class);
+		TestAnnotationUtils.executeMembers(members, ExtendingPermutedClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -184,7 +157,7 @@ public class MethodProcessingTests {
 	// --> methods count = 1 (private super class method)
 	//                   + 2 (protected & public extending class methods) 
 	
-	static class SuperMethodClass {		
+	public static class SuperMethodClass {		
 		private String privateMethod() { return ""; }
 		protected String protectedMethod() { return ""; }
 		public String publicMethod() { return ""; }
@@ -198,7 +171,7 @@ public class MethodProcessingTests {
 		@Value(informational=true) public String publicInfoMethod() { return ""; }
 	}
 	
-	static class ExtendingMethodClass extends SuperMethodClass {
+	public static class ExtendingMethodClass extends SuperMethodClass {
 		private String privateMethod() { return ""; }
 		protected String protectedMethod() { return ""; }
 		public String publicMethod() { return ""; }
@@ -217,10 +190,10 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ExtendingMethodClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.countMembers(members, 3, 3);
 		TestAnnotationUtils.checkMember(members, SuperMethodClass.class);
 		
-		invokeMethods(members, ExtendingMethodClass.class);
+		TestAnnotationUtils.executeMembers(members, ExtendingMethodClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -230,7 +203,7 @@ public class MethodProcessingTests {
 	//   --> methods count = 1 (private super class method)
 	//                     + 2 (protected & public extending class methods) 
 
-	static class SecondExtendingMethodClass extends ExtendingMethodClass {
+	public static class SecondExtendingMethodClass extends ExtendingMethodClass {
 		private String privateMethod() { return ""; }
 		protected String protectedMethod() { return ""; }
 		public String publicMethod() { return ""; }
@@ -249,10 +222,10 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				SecondExtendingMethodClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 3, 3);
+		TestAnnotationUtils.countMembers(members, 3, 3);
 		TestAnnotationUtils.checkMember(members, SuperMethodClass.class);
 		
-		invokeMethods(members, SecondExtendingMethodClass.class);
+		TestAnnotationUtils.executeMembers(members, SecondExtendingMethodClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -284,7 +257,7 @@ public class MethodProcessingTests {
 		@Value(informational=true) public abstract String publicAbstractInfoMethod();
 	}
 	
-	static class ExtendingAbstractClass extends AbstractClass {
+	public static class ExtendingAbstractClass extends AbstractClass {
 		protected String protectedAbstractMethod() { return ""; }
 		public String publicAbstractMethod(){ return ""; }
 
@@ -300,10 +273,10 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ExtendingAbstractClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 5, 5);
+		TestAnnotationUtils.countMembers(members, 5, 5);
 		TestAnnotationUtils.checkMember(members, AbstractClass.class);
 		
-		invokeMethods(members, ExtendingAbstractClass.class);
+		TestAnnotationUtils.executeMembers(members, ExtendingAbstractClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -321,7 +294,7 @@ public class MethodProcessingTests {
 		@Value(informational=true) public String publicInfoInterfaceMethod();
 	}
 	
-	static class ImplementingClass implements MethodInterface {
+	public static class ImplementingClass implements MethodInterface {
 		public String interfaceMethod() { return ""; }
 		public String publicInterfaceMethod() { return ""; }
 		public String compareInterfaceMethod() { return ""; }
@@ -335,10 +308,10 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ImplementingClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 2, 2);
+		TestAnnotationUtils.countMembers(members, 2, 2);
 		TestAnnotationUtils.checkMember(members, MethodInterface.class);
 		
-		invokeMethods(members, ImplementingClass.class);
+		TestAnnotationUtils.executeMembers(members, ImplementingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -363,7 +336,7 @@ public class MethodProcessingTests {
 		public String publicInfoInterfaceMethod1() { return ""; }
 	}
 	
-	static class ConcreteClass extends ImplementingAbstractClass {
+	public static class ConcreteClass extends ImplementingAbstractClass {
 		public String publicInterfaceMethod2() { return ""; }		
 		public String publicInterfaceCompareMethod2() { return ""; }		
 		public String publicInfoInterfaceMethod2() { return ""; }
@@ -374,10 +347,10 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ConcreteClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 2, 2);
+		TestAnnotationUtils.countMembers(members, 2, 2);
 		TestAnnotationUtils.checkMember(members, TopInterface.class);
 		
-		invokeMethods(members, ConcreteClass.class);
+		TestAnnotationUtils.executeMembers(members, ConcreteClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -396,7 +369,7 @@ public class MethodProcessingTests {
 		@Value(informational=true) public String publicInfoInterfaceMethodB();
 	}
 	
-	static class ExtendedImplementingClass implements InterfaceB {
+	public static class ExtendedImplementingClass implements InterfaceB {
 		public String publicInterfaceMethodA() { return ""; }
 		public String publicInterfaceCompareMethodA() { return ""; }
 		public String publicInfoInterfaceMethodA() { return ""; }
@@ -410,13 +383,49 @@ public class MethodProcessingTests {
 		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
 				ExtendedImplementingClass.class);
 		
-		TestAnnotationUtils.checkMembers(members, 2, 2);
+		TestAnnotationUtils.countMembers(members, 2, 2);
 		TestAnnotationUtils.checkMember(members, InterfaceA.class, 
 				"publicInterfaceCompareMethodA", "publicInfoInterfaceMethodA");
 		TestAnnotationUtils.checkMember(members, InterfaceB.class, 
 				"publicInterfaceCompareMethodB", "publicInfoInterfaceMethodB");
 		
-		invokeMethods(members, ExtendedImplementingClass.class);
+		TestAnnotationUtils.executeMembers(members, ExtendedImplementingClass.class);
+	}
+	
+	// --------------------------------------------------------------
+	// Test: value annotation at super *and* extending class should lead
+	//       to recognizing of two methods (but returning the same value)
+	
+	public static class AnnotatedSuperClass {
+		@Value protected String protectedCompareMethod() { return ""; };
+		@Value public String publicCompareMethod() { return ""; };
+		
+		@Value(informational=true) protected String protectedInfoMethod() { return ""; };
+		@Value(informational=true) public String publicInfoMethod() { return ""; };
+	}
+	
+	public static class AnnotatedExtendingClass extends AnnotatedSuperClass {
+		@Value protected String protectedCompareMethod() { return ""; };
+		@Value public String publicCompareMethod() { return ""; };
+		
+		@Value(informational=true) protected String protectedInfoMethod() { return ""; };
+		@Value(informational=true) public String publicInfoMethod() { return ""; };
+	}
+	
+	@Test
+	public void testDoubleAnnotation() throws Exception {
+		Set<ValueMember<?>> members = AnnotationProcessor2.getValueMembers(
+				AnnotatedExtendingClass.class);
+		
+		TestAnnotationUtils.countMembers(members, 4, 4);
+		TestAnnotationUtils.checkMember(members, AnnotatedSuperClass.class, 
+				"protectedCompareMethod", "publicCompareMethod",
+				"protectedInfoMethod", "publicInfoMethod");
+		TestAnnotationUtils.checkMember(members, AnnotatedExtendingClass.class, 
+				"protectedCompareMethod", "publicCompareMethod",
+				"protectedInfoMethod", "publicInfoMethod");
+		
+		TestAnnotationUtils.executeMembers(members, AnnotatedExtendingClass.class);
 	}
 	
 }

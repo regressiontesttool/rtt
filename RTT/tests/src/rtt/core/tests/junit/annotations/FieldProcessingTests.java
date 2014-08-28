@@ -19,17 +19,6 @@ public class FieldProcessingTests {
 	@Before
 	public void setUp() throws Exception {}
 	
-	private void invokeMembers(Set<ValueMember<?>> members, Class<?> classType) {
-		try {
-			Object object = classType.newInstance();
-			for (ValueMember<?> member : members) {
-				member.getResult(object);
-			}
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
 	// --------------------------------------------------------------
 	// Test: permuted fields
 	//	Only non-void and non-parameter fields 
@@ -37,7 +26,7 @@ public class FieldProcessingTests {
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 	
-	static class PermutedFieldsClass {		
+	public static class PermutedFieldsClass {		
 		private String privateStringField = "";
 		protected String protectedStringField = "";
 		public String publicStringField = "";
@@ -56,8 +45,8 @@ public class FieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				PermutedFieldsClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		invokeMembers(valueMembers, PermutedFieldsClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.executeMembers(valueMembers, PermutedFieldsClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -67,7 +56,7 @@ public class FieldProcessingTests {
 	// --> fields count = 3 (from super class)
 	//                  + 3 (from extending class) 
 	
-	static class SuperFieldClass {		
+	public static class SuperFieldClass {		
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
@@ -81,7 +70,7 @@ public class FieldProcessingTests {
 		@Value(informational=true) public String publicInfoField = "";
 	}
 	
-	static class ExtendingFieldClass extends SuperFieldClass {
+	public static class ExtendingFieldClass extends SuperFieldClass {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
@@ -100,8 +89,8 @@ public class FieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				ExtendingFieldClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 6, 6);
-		invokeMembers(valueMembers, ExtendingFieldClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 6, 6);
+		TestAnnotationUtils.executeMembers(valueMembers, ExtendingFieldClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -119,7 +108,7 @@ public class FieldProcessingTests {
 		@Value(informational=true) public String publicInterfaceInfoField = "";
 	}
 	
-	static class ImplementingClass implements FieldInterface {
+	public static class ImplementingClass implements FieldInterface {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
@@ -138,8 +127,8 @@ public class FieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				ImplementingClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 5, 5);
-		invokeMembers(valueMembers, ImplementingClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 5, 5);
+		TestAnnotationUtils.executeMembers(valueMembers, ImplementingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -171,7 +160,7 @@ public class FieldProcessingTests {
 		@Value(informational=true) public String publicInfoField = "";
 	}
 	
-	static class ConcreteClass extends ImplementingAbstractClass {
+	public static class ConcreteClass extends ImplementingAbstractClass {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
@@ -190,8 +179,8 @@ public class FieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				ConcreteClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 8, 8);
-		invokeMembers(valueMembers, ConcreteClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 8, 8);
+		TestAnnotationUtils.executeMembers(valueMembers, ConcreteClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -220,7 +209,7 @@ public class FieldProcessingTests {
 		@Value(informational=true) public String publicInterfaceInfoField = "";
 	}
 	
-	static class ExtendedImplementingClass implements InterfaceB {
+	public static class ExtendedImplementingClass implements InterfaceB {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
@@ -239,8 +228,8 @@ public class FieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				ExtendedImplementingClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 7, 7);
-		invokeMembers(valueMembers, ExtendedImplementingClass.class);		
+		TestAnnotationUtils.countMembers(valueMembers, 7, 7);
+		TestAnnotationUtils.executeMembers(valueMembers, ExtendedImplementingClass.class);		
 	}
 	
 }

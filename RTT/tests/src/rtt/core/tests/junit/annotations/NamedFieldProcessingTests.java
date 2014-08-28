@@ -12,6 +12,12 @@ import org.junit.Test;
 import rtt.annotations.Node.Value;
 import rtt.annotations.processing2.AnnotationProcessor2;
 import rtt.annotations.processing2.ValueMember;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.EqualNamedAttributeClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.EqualNamedExtendingClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.ExtendingClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.NamedAttributeClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.NamedExtendingClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.NoNameAttributeClass;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
@@ -20,35 +26,12 @@ public class NamedFieldProcessingTests {
 	@Before
 	public void setUp() throws Exception {}
 	
-	private void invokeMembers(Set<ValueMember<?>> members, Class<?> classType) {
-		try {
-			Object object = classType.newInstance();
-			for (ValueMember<?> member : members) {
-				member.getResult(object);
-				System.out.println(member.getSignature());
-			}
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
-	private void checkOrder(Set<ValueMember<?>> valueMembers, String... signatures) {
-		assertEquals(signatures.length, valueMembers.size());
-		
-		int index = 0;
-		Iterator<ValueMember<?>> iterator = valueMembers.iterator();
-		while (iterator.hasNext()) {
-			assertEquals(signatures[index], iterator.next().getSignature());
-			index++;
-		}		
-	}
-	
 	// --------------------------------------------------------------
 	// Test: annotated fields without name attribute
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 	
-	static class NoNameAttributeClass {		
+	public static class NoNameAttributeClass {		
 		@Value(informational=true) private String infoC = "";
 		@Value(informational=true) protected String infoB = "";
 		@Value(informational=true) public String infoA = "";
@@ -63,14 +46,16 @@ public class NamedFieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				NoNameAttributeClass.class);
 		
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		checkOrder(valueMembers, 
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.checkOrder(valueMembers, 
 				"NoNameAttributeClass.compareA", 
 				"NoNameAttributeClass.compareB", 
 				"NoNameAttributeClass.compareC",
 				"NoNameAttributeClass.infoA", 
 				"NoNameAttributeClass.infoB", 
 				"NoNameAttributeClass.infoC");
+		
+		TestAnnotationUtils.executeMembers(valueMembers, NoNameAttributeClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -78,7 +63,7 @@ public class NamedFieldProcessingTests {
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 
-	static class NamedAttributeClass {		
+	public static class NamedAttributeClass {		
 		@Value(name="compareZ") public String compareA = "";
 		@Value(name="compareY") protected String compareB = "";
 		@Value(name="compareX") private String compareC = "";		
@@ -93,14 +78,15 @@ public class NamedFieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				NamedAttributeClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		checkOrder(valueMembers, 
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.checkOrder(valueMembers, 
 				"NamedAttributeClass.compareC", 
 				"NamedAttributeClass.compareB", 
 				"NamedAttributeClass.compareA",				 
 				"NamedAttributeClass.infoC", 
 				"NamedAttributeClass.infoB",
 				"NamedAttributeClass.infoA");
+		TestAnnotationUtils.executeMembers(valueMembers, NamedAttributeClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -108,7 +94,7 @@ public class NamedFieldProcessingTests {
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 
-	static class EqualNamedAttributeClass {		
+	public static class EqualNamedAttributeClass {		
 		@Value(name="compare") public String compareA = "";
 		@Value(name="compare") protected String compareB = "";
 		@Value(name="compare") private String compareC = "";		
@@ -123,14 +109,15 @@ public class NamedFieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				EqualNamedAttributeClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 3, 3);
-		checkOrder(valueMembers,
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.checkOrder(valueMembers,
 				"EqualNamedAttributeClass.compareA", 
 				"EqualNamedAttributeClass.compareB", 
 				"EqualNamedAttributeClass.compareC",
 				"EqualNamedAttributeClass.infoA", 
 				"EqualNamedAttributeClass.infoB",
 				"EqualNamedAttributeClass.infoC");
+		TestAnnotationUtils.executeMembers(valueMembers, EqualNamedAttributeClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -138,12 +125,12 @@ public class NamedFieldProcessingTests {
 	//	 --> compare fields count = 2
 	//	 --> informational fields count = 2
 
-	static class SuperClass {		
+	public static class SuperClass {		
 		@Value public String compareField = "";
 		@Value(informational=true) public String infoField = "";		
 	}
 
-	static class ExtendingClass extends SuperClass {		
+	public static class ExtendingClass extends SuperClass {		
 		@Value public String compareField = "";
 		@Value(informational=true) public String infoField = "";
 	}
@@ -153,12 +140,13 @@ public class NamedFieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				ExtendingClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 2, 2);
-		checkOrder(valueMembers,
+		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
+		TestAnnotationUtils.checkOrder(valueMembers,
 				"ExtendingClass.compareField",
 				"SuperClass.compareField",
 				"ExtendingClass.infoField",
 				"SuperClass.infoField");
+		TestAnnotationUtils.executeMembers(valueMembers, ExtendingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -166,12 +154,12 @@ public class NamedFieldProcessingTests {
 	//	 --> compare fields count = 2 
 	//	 --> informational fields count = 2
 	
-	static class NamedSuperClass {		
+	public static class NamedSuperClass {		
 		@Value(name="compareA") public String compareField = "";
 		@Value(informational=true, name="infoA") public String infoField = "";		
 	}
 	
-	static class NamedExtendingClass extends NamedSuperClass {		
+	public static class NamedExtendingClass extends NamedSuperClass {		
 		@Value(name="compareB") public String compareField = "";
 		@Value(informational=true, name="infoB") public String infoField = "";
 	}
@@ -181,12 +169,13 @@ public class NamedFieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				NamedExtendingClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 2, 2);
-		checkOrder(valueMembers,
+		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
+		TestAnnotationUtils.checkOrder(valueMembers,
 				"NamedSuperClass.compareField",
 				"NamedExtendingClass.compareField",
 				"NamedSuperClass.infoField",
 				"NamedExtendingClass.infoField");
+		TestAnnotationUtils.executeMembers(valueMembers, NamedExtendingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -194,12 +183,12 @@ public class NamedFieldProcessingTests {
 	//	 --> compare fields count = 2
 	//	 --> informational fields count = 2
 
-	static class EqualNamedSuperClass {		
+	public static class EqualNamedSuperClass {		
 		@Value(name="field") public String compareField = "";
 		@Value(informational=true, name="field") public String infoField = "";		
 	}
 
-	static class EqualNamedExtendingClass extends EqualNamedSuperClass {		
+	public static class EqualNamedExtendingClass extends EqualNamedSuperClass {		
 		@Value(name="field") public String compareField = "";
 		@Value(informational=true, name="field") public String infoField = "";
 	}
@@ -209,11 +198,12 @@ public class NamedFieldProcessingTests {
 		Set<ValueMember<?>> valueMembers = AnnotationProcessor2.getValueMembers(
 				EqualNamedExtendingClass.class);
 
-		TestAnnotationUtils.checkMembers(valueMembers, 2, 2);
-		checkOrder(valueMembers,
+		TestAnnotationUtils.countMembers(valueMembers, 2, 2);
+		TestAnnotationUtils.checkOrder(valueMembers,
 				"EqualNamedExtendingClass.compareField",
 				"EqualNamedSuperClass.compareField",
 				"EqualNamedExtendingClass.infoField",
 				"EqualNamedSuperClass.infoField");
+		TestAnnotationUtils.executeMembers(valueMembers, EqualNamedExtendingClass.class);
 	}
 }

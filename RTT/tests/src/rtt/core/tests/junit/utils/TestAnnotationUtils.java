@@ -5,16 +5,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Member;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 
 import rtt.annotations.processing2.ValueMember;
 
 public class TestAnnotationUtils {
 	
-	public static void checkMembers(Set<ValueMember<?>> members, 
+	public static void countMembers(Set<ValueMember<?>> members, 
 			int compareCount, int infoCount) {
 		
 		assertNotNull("Members was null.", members);
@@ -29,6 +29,28 @@ public class TestAnnotationUtils {
 		
 		assertEquals(infoCount, realInfoCount);
 		assertEquals(compareCount, members.size() - infoCount);
+	}
+	
+	public static void checkOrder(Set<ValueMember<?>> valueMembers, String... signatures) {
+		assertEquals(signatures.length, valueMembers.size());
+		
+		int index = 0;
+		Iterator<ValueMember<?>> iterator = valueMembers.iterator();
+		while (iterator.hasNext()) {
+			assertEquals(signatures[index], iterator.next().getSignature());
+			index++;
+		}		
+	}
+	
+	public static void executeMembers(Set<ValueMember<?>> members, Class<?> classType) {
+		try {
+			Object object = classType.newInstance();
+			for (ValueMember<?> member : members) {
+				member.getResult(object);
+			}
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 	
 	public static void checkMember(
