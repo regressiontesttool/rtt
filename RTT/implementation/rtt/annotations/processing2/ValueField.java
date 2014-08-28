@@ -13,7 +13,7 @@ public class ValueField extends ValueMember<Field>{
 
 	@Override
 	protected String getSignature(Field member) {
-		return member.toGenericString();
+		return member.getDeclaringClass().getSimpleName() + "." +member.getName();
 	}
 
 	@Override

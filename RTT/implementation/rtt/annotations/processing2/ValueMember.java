@@ -39,7 +39,7 @@ public abstract class ValueMember<T extends Member>
 	protected abstract Object getResult(T member, Object object) throws Exception;
 	
 	@SuppressWarnings("unchecked")
-	public boolean hasMember(Member searchedMember) {
+	public boolean equalSignature(Member searchedMember) {
 		if (searchedMember.getClass().isInstance(member)) {
 			String ownSignature = getSignature(this.member);
 			String searchedSignature = getSignature((T) searchedMember);

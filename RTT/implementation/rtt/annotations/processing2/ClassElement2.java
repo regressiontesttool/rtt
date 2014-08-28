@@ -124,7 +124,7 @@ public class ClassElement2 {
 			Set<ValueMember<?>> annotatedMethods) {
 		
 		for (ValueMember<?> annotatedMember : annotatedMethods) {
-			if (annotatedMember.hasMember(member)) {
+			if (annotatedMember.equalSignature(member)) {
 				return annotatedMember;
 			}
 		}
