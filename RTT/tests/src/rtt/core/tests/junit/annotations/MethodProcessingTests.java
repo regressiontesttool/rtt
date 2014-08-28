@@ -166,12 +166,12 @@ public class MethodProcessingTests {
 		
 		TestAnnotationUtils.checkMembers(members, 4, 4);
 		TestAnnotationUtils.checkMember(members, PermutedMethodsClass.class, 
-				"privateCompareStringMethod", "privateInfoStringMethod");
-		
-		TestAnnotationUtils.checkMember(members, ExtendingPermutedClass.class,
 				"privateCompareStringMethod", "privateInfoStringMethod",
 				"protectedCompareStringMethod", "protectedInfoStringMethod",
 				"publicCompareStringMethod", "publicInfoStringMethod");
+		
+		TestAnnotationUtils.checkMember(members, ExtendingPermutedClass.class,
+				"privateCompareStringMethod", "privateInfoStringMethod");
 		
 		
 		invokeMethods(members, ExtendingPermutedClass.class);
@@ -218,10 +218,7 @@ public class MethodProcessingTests {
 				ExtendingMethodClass.class);
 		
 		TestAnnotationUtils.checkMembers(members, 3, 3);
-		TestAnnotationUtils.checkMember(members, ExtendingMethodClass.class, 
-				"publicCompareMethod", "protectedCompareMethod");
-		TestAnnotationUtils.checkMember(members, SuperMethodClass.class, 
-				"privateCompareMethod");
+		TestAnnotationUtils.checkMember(members, SuperMethodClass.class);
 		
 		invokeMethods(members, ExtendingMethodClass.class);
 	}
@@ -253,10 +250,7 @@ public class MethodProcessingTests {
 				SecondExtendingMethodClass.class);
 		
 		TestAnnotationUtils.checkMembers(members, 3, 3);
-		TestAnnotationUtils.checkMember(members, SecondExtendingMethodClass.class, 
-				"publicCompareMethod", "protectedCompareMethod");
-		TestAnnotationUtils.checkMember(members, SuperMethodClass.class, 
-				"privateCompareMethod");
+		TestAnnotationUtils.checkMember(members, SuperMethodClass.class);
 		
 		invokeMethods(members, SecondExtendingMethodClass.class);
 	}
@@ -307,10 +301,7 @@ public class MethodProcessingTests {
 				ExtendingAbstractClass.class);
 		
 		TestAnnotationUtils.checkMembers(members, 5, 5);
-		TestAnnotationUtils.checkMember(members, ExtendingAbstractClass.class,
-				"publicAbstractCompareMethod", "protectedAbstractCompareMethod");
-		TestAnnotationUtils.checkMember(members, AbstractClass.class,
-				"privateCompareMethod", "publicCompareMethod", "protectedCompareMethod");
+		TestAnnotationUtils.checkMember(members, AbstractClass.class);
 		
 		invokeMethods(members, ExtendingAbstractClass.class);
 	}
@@ -345,7 +336,7 @@ public class MethodProcessingTests {
 				ImplementingClass.class);
 		
 		TestAnnotationUtils.checkMembers(members, 2, 2);
-		TestAnnotationUtils.checkMember(members, ImplementingClass.class);
+		TestAnnotationUtils.checkMember(members, MethodInterface.class);
 		
 		invokeMethods(members, ImplementingClass.class);
 	}
@@ -384,10 +375,7 @@ public class MethodProcessingTests {
 				ConcreteClass.class);
 		
 		TestAnnotationUtils.checkMembers(members, 2, 2);
-		TestAnnotationUtils.checkMember(members, ConcreteClass.class,
-				"publicInterfaceCompareMethod2", "publicInfoInterfaceMethod2");
-		TestAnnotationUtils.checkMember(members, ImplementingAbstractClass.class,
-				"publicInterfaceCompareMethod1", "publicInfoInterfaceMethod1");
+		TestAnnotationUtils.checkMember(members, TopInterface.class);
 		
 		invokeMethods(members, ConcreteClass.class);
 	}
@@ -423,7 +411,10 @@ public class MethodProcessingTests {
 				ExtendedImplementingClass.class);
 		
 		TestAnnotationUtils.checkMembers(members, 2, 2);
-		TestAnnotationUtils.checkMember(members, ExtendedImplementingClass.class);
+		TestAnnotationUtils.checkMember(members, InterfaceA.class, 
+				"publicInterfaceCompareMethodA", "publicInfoInterfaceMethodA");
+		TestAnnotationUtils.checkMember(members, InterfaceB.class, 
+				"publicInterfaceCompareMethodB", "publicInfoInterfaceMethodB");
 		
 		invokeMethods(members, ExtendedImplementingClass.class);
 	}
