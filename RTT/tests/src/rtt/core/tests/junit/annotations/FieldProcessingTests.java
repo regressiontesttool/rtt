@@ -1,16 +1,14 @@
 package rtt.core.tests.junit.annotations;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.Set;
 
-import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing.AnnotationProcessor;
 import rtt.annotations.processing2.AnnotationProcessor2;
 import rtt.annotations.processing2.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
