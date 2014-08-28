@@ -1,4 +1,4 @@
-package rtt.annotations.processing2;
+package rtt.annotations.processing;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;

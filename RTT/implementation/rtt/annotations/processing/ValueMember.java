@@ -1,4 +1,4 @@
-package rtt.annotations.processing2;
+package rtt.annotations.processing;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;

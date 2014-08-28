@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node.Value;
-import rtt.annotations.processing2.AnnotationProcessor;
-import rtt.annotations.processing2.ValueMember;
+import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")

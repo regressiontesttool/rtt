@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
-import rtt.annotations.processing2.ValueMember;
+import rtt.annotations.processing.ValueMember;
 
 public class TestAnnotationUtils {
 	

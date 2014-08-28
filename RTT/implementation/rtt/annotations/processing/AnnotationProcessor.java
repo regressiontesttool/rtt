@@ -1,4 +1,4 @@
-package rtt.annotations.processing2;
+package rtt.annotations.processing;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;

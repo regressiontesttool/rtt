@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.SortedSet;
 
 import rtt.annotations.Node.Initialize;
-import rtt.annotations.processing2.AnnotationProcessor;
-import rtt.annotations.processing2.InitialMember;
+import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing.InitialMember;
 import rtt.core.archive.input.Input;
 import rtt.core.exceptions.AnnotationException;
 import rtt.core.utils.RTTLogging;

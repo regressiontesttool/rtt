@@ -6,8 +6,8 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
-import rtt.annotations.processing2.AnnotationProcessor;
-import rtt.annotations.processing2.ValueMember;
+import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing.ValueMember;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Element;
