@@ -1,9 +1,6 @@
 package rtt.core.tests.junit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -43,10 +40,9 @@ public class DataGeneratorTests {
 		Node initNode = (Node) output.getInitialElement();
 		assertNotNull(initNode);
 		assertEquals("1", initNode.getAddress());
-		assertEquals(initObjectType.getName(), initNode.getFullName());
-		assertEquals(initObjectType.getSimpleName(), initNode.getSimpleName());
+		assertEquals(initObjectType.getName(), initNode.getObjectType());
 		
-		assertEquals(childCount, initNode.getElement().size());
+		assertEquals(childCount, initNode.getElements().size());
 		
 		Output testOutput = DataGenerator.generateOutput(input, params, executor);
 		
@@ -59,13 +55,13 @@ public class DataGeneratorTests {
 	private void countElements(Node node, int compareCount, int infoCount) {
 		
 		int realInfoCount = 0;
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			if (element.isInformational()) {				
 				realInfoCount++;
 			}
 		}
 		
-		int size = node.getElement().size();
+		int size = node.getElements().size();
 		
 		assertEquals(infoCount, realInfoCount);
 		assertEquals(compareCount, size - realInfoCount);
@@ -73,7 +69,7 @@ public class DataGeneratorTests {
 	}
 	
 	private void checkElements(Node node, Class<?> elementType) {
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			if (element.getClass() != elementType) {
 				fail("Expected type was '" + elementType 
 						+ "', but was '" + element.getClass() + "'.");
@@ -83,7 +79,7 @@ public class DataGeneratorTests {
 	
 	private void checkAddresses(Node node) {
 		int i = 1;
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			assertEquals(node.getAddress() + "." + i++, element.getAddress());
 		}
 	}
@@ -168,7 +164,7 @@ public class DataGeneratorTests {
 		checkElements(node, Node.class);
 		checkAddresses(node);
 		
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			Node childNode = (Node) element;
 			
 			checkElements(childNode, Value.class);
@@ -185,11 +181,13 @@ public class DataGeneratorTests {
 		@Initialize public ReferencingClass(InputStream in) {}
 		private ReferencedClass referencedClass = new ReferencedClass();
 		
-		@rtt.annotations.Node.Value protected ReferencedClass referencingMethod1() {
+		@rtt.annotations.Node.Value 
+		protected ReferencedClass referencingMethod1() {
 			return referencedClass;
 		}
 		
-		@rtt.annotations.Node.Value protected ReferencedClass referencingMethod2() {
+		@rtt.annotations.Node.Value 
+		protected ReferencedClass referencingMethod2() {
 			return referencedClass;
 		}
 	}
@@ -205,12 +203,72 @@ public class DataGeneratorTests {
 		countElements(node, 2, 0);
 		checkAddresses(node);
 		
-		assertTrue(node.getElement().get(0) instanceof Node);
-		assertTrue(node.getElement().get(1) instanceof Reference);
+		assertTrue(node.getElements().get(0) instanceof Node);
+		assertEquals("ReferencingClass.referencingMethod1",
+				node.getElements().get(0).getName());
+		assertTrue(node.getElements().get(1) instanceof Reference);
+		assertEquals("ReferencingClass.referencingMethod2",
+				node.getElements().get(1).getName());
 		
-		Node childNode = (Node) node.getElement().get(0);
-		Reference reference = (Reference) node.getElement().get(1);
+		Node childNode = (Node) node.getElements().get(0);
+		Reference reference = (Reference) node.getElements().get(1);
 		
 		assertEquals(childNode.getAddress(), reference.getTo());
+	}
+	
+	@rtt.annotations.Node static class IndexedReferencingClass {
+		@Initialize public IndexedReferencingClass(InputStream in) {}
+		private ReferencedClass referencedClass = new ReferencedClass();
+		
+		@rtt.annotations.Node.Value(index=1) 
+		protected ReferencedClass referencingMethod2() {
+			return referencedClass;
+		}
+		
+		@rtt.annotations.Node.Value(index=2)
+		protected ReferencedClass referencingMethod1() {
+			return referencedClass;
+		}
+	}
+	
+	@Test
+	public void testIndexedReferencing() throws Throwable {
+		Node node = generateInitNode(IndexedReferencingClass.class, 2);
+		countElements(node, 2, 0);
+		checkAddresses(node);
+		
+		assertTrue(node.getElements().get(0) instanceof Node);
+		assertEquals("IndexedReferencingClass.referencingMethod2",
+				node.getElements().get(0).getName());
+		assertTrue(node.getElements().get(1) instanceof Reference);
+		assertEquals("IndexedReferencingClass.referencingMethod1",
+				node.getElements().get(1).getName());
+		
+		Node childNode = (Node) node.getElements().get(0);
+		Reference reference = (Reference) node.getElements().get(1);
+		
+		assertEquals(childNode.getAddress(), reference.getTo());
+	}
+	
+	@rtt.annotations.Node static class NamedValuesClass {
+		@Initialize public NamedValuesClass(InputStream in) {}
+		
+		@rtt.annotations.Node.Value(name="string")
+		private String aString = "aString";
+		
+		@rtt.annotations.Node.Value(name="string")
+		private String anOtherString = "anOtherString";
+	}
+	
+	@Test
+	public void testNamedValues() throws Throwable {
+		Node node = generateInitNode(NamedValuesClass.class, 2);
+		countElements(node, 2, 0);
+		checkAddresses(node);
+		
+		assertEquals("string", node.getElements().get(0).getName());
+		assertEquals("aString", ((Value) node.getElements().get(0)).getValue());
+		assertEquals("string", node.getElements().get(1).getName());
+		assertEquals("anOtherString", ((Value) node.getElements().get(1)).getValue());
 	}
 }

@@ -30,8 +30,8 @@ public class CompareElementTests {
 	public static Element createElement(String name, Type value, boolean informational) {
 		Element element = new Element() {};
 		
-		element.setGeneratorName(name);
-		element.setGeneratorType(value);
+		element.setName(name);
+		element.setElementType(value);
 		element.setInformational(informational);
 		
 		return element;		
@@ -84,13 +84,13 @@ public class CompareElementTests {
 	public void testUnequalTypeAttribute() throws Exception {
 		Element changedElement = createElement(NAME, Type.METHOD, false);
 		
-		testDifference(changedElement, createSampleElement(false), Difference.TYPE);
-		testDifference(createSampleElement(false), changedElement, Difference.TYPE);
+		testDifference(changedElement, createSampleElement(false), Difference.ELEMENT_TYPE);
+		testDifference(createSampleElement(false), changedElement, Difference.ELEMENT_TYPE);
 		testNoDifferences(changedElement, changedElement);
 		
 		changedElement.setInformational(true);
-		testDifference(changedElement, createSampleElement(true), Difference.TYPE);
-		testDifference(createSampleElement(true), changedElement, Difference.TYPE);
+		testDifference(changedElement, createSampleElement(true), Difference.ELEMENT_TYPE);
+		testDifference(createSampleElement(true), changedElement, Difference.ELEMENT_TYPE);
 		testNoDifferences(changedElement, changedElement);
 	}
 	
@@ -111,33 +111,32 @@ public class CompareElementTests {
 	@Test
 	public void testValueElementCompare() throws Exception {
 		Value value = new Value();
-		value.setGeneratorName(NAME);
-		value.setGeneratorType(TYPE);
+		value.setName(NAME);
+		value.setElementType(TYPE);
 		value.setValue("aValue");
 		
-		testDifference(createSampleElement(false), value, Difference.CLASSES);
-		testDifference(value, createSampleElement(false), Difference.CLASSES);		
+		testDifference(createSampleElement(false), value, Difference.ELEMENT_CLASSES);
+		testDifference(value, createSampleElement(false), Difference.ELEMENT_CLASSES);		
 		
 		value.setInformational(true);
-		testDifference(createSampleElement(true), value, Difference.CLASSES);
-		testDifference(value, createSampleElement(true), Difference.CLASSES);
+		testDifference(createSampleElement(true), value, Difference.ELEMENT_CLASSES);
+		testDifference(value, createSampleElement(true), Difference.ELEMENT_CLASSES);
 	}
 	
 	@Test
 	public void testNodeElementCompare() throws Exception {
 		Node node = new Node();
-		node.setGeneratorName(NAME);
-		node.setGeneratorType(TYPE);
-		node.setFullName("aFullName");
-		node.setSimpleName("aSimpleName");		
-		node.getElement().add(createSampleElement(false));
+		node.setName(NAME);
+		node.setElementType(TYPE);
+		node.setObjectType("aClassName");	
+		node.getElements().add(createSampleElement(false));
 		
-		testDifference(createSampleElement(false), node, Difference.CLASSES);
-		testDifference(node, createSampleElement(false), Difference.CLASSES);
+		testDifference(createSampleElement(false), node, Difference.ELEMENT_CLASSES);
+		testDifference(node, createSampleElement(false), Difference.ELEMENT_CLASSES);
 		
 		node.setInformational(true);
-		testDifference(createSampleElement(true), node, Difference.CLASSES);
-		testDifference(node, createSampleElement(true), Difference.CLASSES);
+		testDifference(createSampleElement(true), node, Difference.ELEMENT_CLASSES);
+		testDifference(node, createSampleElement(true), Difference.ELEMENT_CLASSES);
 	}
 
 }

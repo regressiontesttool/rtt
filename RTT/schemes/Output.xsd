@@ -15,8 +15,8 @@
 	
 	<xs:complexType name="element">
 		<xs:attribute name="address" type="xs:string" use="required" />
-		<xs:attribute name="generatorName" type="xs:string" use="required"/>
-		<xs:attribute name="generatorType" type="rtt:type" use="required" />
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="elementType" type="rtt:type" use="required" />
 		<xs:attribute name="informational" type="xs:boolean" default="false" />
 	</xs:complexType>
 	
@@ -43,8 +43,7 @@
 					<xs:element name="element" type="rtt:element" 
 						minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
-				<xs:attribute name="fullName" type="xs:string" />			
-				<xs:attribute name="simpleName" type="xs:string" />	
+				<xs:attribute name="objectType" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

@@ -30,8 +30,8 @@ public class CompareValueInformationalTests {
 	private static Value createValue(String name, Type type, String value, boolean informational) {
 		Value element = new Value();
 		
-		element.setGeneratorName(name);
-		element.setGeneratorType(type);
+		element.setName(name);
+		element.setElementType(type);
 		element.setInformational(informational);
 		element.setValue(value);		
 		
