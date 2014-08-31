@@ -5,5 +5,4 @@ public interface ITestFailure{
 
 	public String getShortMessage();
 	public String getMessage();
-	public String getPath();
 }

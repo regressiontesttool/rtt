@@ -239,7 +239,6 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 				for (ITestFailure failure : failures) {
 					Failure failureEntry = new Failure();
 					failureEntry.setMsg(failure.getShortMessage());
-					failureEntry.setPath(failure.getPath());
 					
 					resultEntry.getFailure().add(failureEntry);
 				}

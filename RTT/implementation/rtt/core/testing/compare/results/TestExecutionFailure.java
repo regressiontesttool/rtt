@@ -5,7 +5,6 @@ public class TestExecutionFailure implements ITestFailure {
 	private Throwable throwable;
 	
 	public TestExecutionFailure(Throwable throwable) {
-		super();
 		this.throwable = throwable;
 	}
 
@@ -18,10 +17,4 @@ public class TestExecutionFailure implements ITestFailure {
 	public String getMessage() {
 		return "Error during test execution: " + throwable.getMessage();
 	}
-
-	@Override
-	public String getPath() {
-		return "";
-	}
-
 }

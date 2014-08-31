@@ -287,7 +287,7 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 	 * @see Configuration
 	 */
 	public boolean setDefaultConfig(String configName) {
-		// CHRISTIAN auskommentiert, wegen ant task fehler (create archive,
+		// TODO auskommentiert, wegen ant task fehler (create archive,
 		// create config)
 		// Configuration config = getConfiguration(configName);
 		//

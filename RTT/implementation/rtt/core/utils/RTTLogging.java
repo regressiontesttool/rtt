@@ -3,11 +3,9 @@ package rtt.core.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rtt.core.manager.Manager;
-
 public class RTTLogging {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(Manager.class);
+	private static final Logger LOG = LoggerFactory.getLogger("RTT");
 	
 	public static void info(String infoMessage) {		
 		LOG.info(infoMessage);

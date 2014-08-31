@@ -13,22 +13,6 @@ import rtt.core.testing.compare.results.TestFailure;
 
 public class OutputCompare {
 	
-	protected static abstract class ExtendedComparator<T extends Node> {
-		
-		protected OutputCompare outputCompare;
-		
-		protected ExtendedComparator(OutputCompare outputCompare) {
-			this.outputCompare = outputCompare;
-		}
-
-		@SuppressWarnings("unchecked")
-		public CompareResult compareNodes(Node referenceNode, Node actualNode) {				
-			return compare((T) referenceNode, (T) actualNode);
-		}
-		
-		protected abstract CompareResult compare(T referenceNode, T actualNode);
-	}
-	
 	public static class CompareResult {
 		
 		public enum Difference {
