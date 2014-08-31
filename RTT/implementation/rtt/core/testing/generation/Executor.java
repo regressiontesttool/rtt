@@ -10,7 +10,7 @@ import java.util.SortedSet;
 
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.processing.AnnotationProcessor;
-import rtt.annotations.processing.InitialMember;
+import rtt.annotations.processing.InitMember;
 import rtt.core.archive.input.Input;
 import rtt.core.exceptions.AnnotationException;
 import rtt.core.utils.RTTLogging;
@@ -28,7 +28,7 @@ public class Executor {
 	
 	private static final String NO_NODE_ANNOTATION = 
 			"The given class doesn't have a @Node annotation.";	
-	private static final String NO_INIT_MEMBER = 
+	private static final String NONE_INIT_MEMBER = 
 			"Could not find a method or constructor annotated with @Node.Initialize.";
 	private static final String NO_SINGLE_INIT_MEMBER = 
 			"Found more than one method or constructor annotated with @Node.Initialize.";
@@ -41,7 +41,7 @@ public class Executor {
 			"The second parameter needs to be an array of strings.";
 	
 	private Class<?> initialObjectType = null;
-	private InitialMember<?> initialMember = null;
+	private InitMember<?> initialMember = null;
 	private List<Class<? extends Throwable>> acceptedExceptions;
 	
 	private Initialize initAnnotation;	
@@ -49,9 +49,9 @@ public class Executor {
 	public Executor(Class<?> initialObjectType) {
 		checkClass(initialObjectType);
 		
-		SortedSet<InitialMember<?>> initMembers = AnnotationProcessor.getInitMembers(initialObjectType);
+		SortedSet<InitMember<?>> initMembers = AnnotationProcessor.getInitMembers(initialObjectType);
 		if (initMembers.size() == 0) {
-			RTTLogging.throwException(new IllegalStateException(NO_INIT_MEMBER));
+			RTTLogging.throwException(new IllegalStateException(NONE_INIT_MEMBER));
 		}
 		
 		if (initMembers.size() > 1) {

@@ -48,7 +48,7 @@ public class AnnotationProcessor {
 		return classElement.getValueMembers();
 	}
 	
-	public static SortedSet<InitialMember<?>> getInitMembers(Class<?> objectType) {
+	public static SortedSet<InitMember<?>> getInitMembers(Class<?> objectType) {
 		ClassElement classElement = INSTANCE.getElement(objectType);		
 		return classElement.getInitMembers();
 	}
