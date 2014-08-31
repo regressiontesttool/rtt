@@ -184,11 +184,13 @@ public class DataGeneratorTests {
 		@Initialize public ReferencingClass(InputStream in) {}
 		private ReferencedClass referencedClass = new ReferencedClass();
 		
-		@rtt.annotations.Node.Value protected ReferencedClass referencingMethod1() {
+		@rtt.annotations.Node.Value 
+		protected ReferencedClass referencingMethod1() {
 			return referencedClass;
 		}
 		
-		@rtt.annotations.Node.Value protected ReferencedClass referencingMethod2() {
+		@rtt.annotations.Node.Value 
+		protected ReferencedClass referencingMethod2() {
 			return referencedClass;
 		}
 	}
@@ -205,7 +207,45 @@ public class DataGeneratorTests {
 		checkAddresses(node);
 		
 		assertTrue(node.getElements().get(0) instanceof Node);
+		assertTrue(node.getElements().get(0).getGeneratorName().equals(
+				"ReferencingClass.referencingMethod1"));
 		assertTrue(node.getElements().get(1) instanceof Reference);
+		assertTrue(node.getElements().get(1).getGeneratorName().equals(
+				"ReferencingClass.referencingMethod2"));
+		
+		Node childNode = (Node) node.getElements().get(0);
+		Reference reference = (Reference) node.getElements().get(1);
+		
+		assertEquals(childNode.getAddress(), reference.getTo());
+	}
+	
+	@rtt.annotations.Node static class IndexedReferencingClass {
+		@Initialize public IndexedReferencingClass(InputStream in) {}
+		private ReferencedClass referencedClass = new ReferencedClass();
+		
+		@rtt.annotations.Node.Value(index=1) 
+		protected ReferencedClass referencingMethod2() {
+			return referencedClass;
+		}
+		
+		@rtt.annotations.Node.Value(index=2)
+		protected ReferencedClass referencingMethod1() {
+			return referencedClass;
+		}
+	}
+	
+	@Test
+	public void testIndexedReferencing() throws Throwable {
+		Node node = generateInitNode(IndexedReferencingClass.class, 2);
+		countElements(node, 2, 0);
+		checkAddresses(node);
+		
+		assertTrue(node.getElements().get(0) instanceof Node);
+		assertTrue(node.getElements().get(0).getGeneratorName().equals(
+				"IndexedReferencingClass.referencingMethod2"));
+		assertTrue(node.getElements().get(1) instanceof Reference);
+		assertTrue(node.getElements().get(1).getGeneratorName().equals(
+				"IndexedReferencingClass.referencingMethod1"));
 		
 		Node childNode = (Node) node.getElements().get(0);
 		Reference reference = (Reference) node.getElements().get(1);
