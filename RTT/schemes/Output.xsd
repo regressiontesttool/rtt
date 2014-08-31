@@ -43,8 +43,7 @@
 					<xs:element name="element" type="rtt:element" 
 						minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
-				<xs:attribute name="fullName" type="xs:string" />			
-				<xs:attribute name="simpleName" type="xs:string" />	
+				<xs:attribute name="className" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
