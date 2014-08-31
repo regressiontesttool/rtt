@@ -1,9 +1,6 @@
 package rtt.core.tests.junit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -207,11 +204,11 @@ public class DataGeneratorTests {
 		checkAddresses(node);
 		
 		assertTrue(node.getElements().get(0) instanceof Node);
-		assertTrue(node.getElements().get(0).getGeneratorName().equals(
-				"ReferencingClass.referencingMethod1"));
+		assertEquals("ReferencingClass.referencingMethod1",
+				node.getElements().get(0).getGeneratorName());
 		assertTrue(node.getElements().get(1) instanceof Reference);
-		assertTrue(node.getElements().get(1).getGeneratorName().equals(
-				"ReferencingClass.referencingMethod2"));
+		assertEquals("ReferencingClass.referencingMethod2",
+				node.getElements().get(1).getGeneratorName());
 		
 		Node childNode = (Node) node.getElements().get(0);
 		Reference reference = (Reference) node.getElements().get(1);
@@ -241,15 +238,37 @@ public class DataGeneratorTests {
 		checkAddresses(node);
 		
 		assertTrue(node.getElements().get(0) instanceof Node);
-		assertTrue(node.getElements().get(0).getGeneratorName().equals(
-				"IndexedReferencingClass.referencingMethod2"));
+		assertEquals("IndexedReferencingClass.referencingMethod2",
+				node.getElements().get(0).getGeneratorName());
 		assertTrue(node.getElements().get(1) instanceof Reference);
-		assertTrue(node.getElements().get(1).getGeneratorName().equals(
-				"IndexedReferencingClass.referencingMethod1"));
+		assertEquals("IndexedReferencingClass.referencingMethod1",
+				node.getElements().get(1).getGeneratorName());
 		
 		Node childNode = (Node) node.getElements().get(0);
 		Reference reference = (Reference) node.getElements().get(1);
 		
 		assertEquals(childNode.getAddress(), reference.getTo());
+	}
+	
+	@rtt.annotations.Node static class NamedValuesClass {
+		@Initialize public NamedValuesClass(InputStream in) {}
+		
+		@rtt.annotations.Node.Value(name="string")
+		private String aString = "aString";
+		
+		@rtt.annotations.Node.Value(name="string")
+		private String anOtherString = "anOtherString";
+	}
+	
+	@Test
+	public void testNamedValues() throws Throwable {
+		Node node = generateInitNode(NamedValuesClass.class, 2);
+		countElements(node, 2, 0);
+		checkAddresses(node);
+		
+		assertEquals("string", node.getElements().get(0).getGeneratorName());
+		assertEquals("aString", ((Value) node.getElements().get(0)).getValue());
+		assertEquals("string", node.getElements().get(1).getGeneratorName());
+		assertEquals("anOtherString", ((Value) node.getElements().get(1)).getValue());
 	}
 }
