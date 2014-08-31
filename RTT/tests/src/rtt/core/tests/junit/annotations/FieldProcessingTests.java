@@ -1,16 +1,16 @@
 package rtt.core.tests.junit.annotations;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import java.lang.reflect.Member;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotations.Node.Compare;
-import rtt.annotations.Node.Informational;
+import rtt.annotations.Node.Value;
 import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
@@ -19,18 +19,6 @@ public class FieldProcessingTests {
 	@Before
 	public void setUp() throws Exception {}
 	
-	private void invokeFields(List<Field> fields, Class<?> classType) {
-		try {
-			Object object = classType.newInstance();
-			for (Field field : fields) {
-				field.setAccessible(true);
-				field.get(object);
-			}
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
 	// --------------------------------------------------------------
 	// Test: permuted fields
 	//	Only non-void and non-parameter fields 
@@ -38,34 +26,27 @@ public class FieldProcessingTests {
 	//	 --> compare fields count = 3 
 	//	 --> informational fields count = 3
 	
-	static class PermutedFieldsClass {		
+	public static class PermutedFieldsClass {		
 		private String privateStringField = "";
 		protected String protectedStringField = "";
 		public String publicStringField = "";
 		
-		@Compare private String privateCompareStringField = "";
-		@Compare protected String protectedCompareStringField = "";
-		@Compare public String publicCompareStringField = "";
+		@Value private String privateCompareStringField = "";
+		@Value protected String protectedCompareStringField = "";
+		@Value public String publicCompareStringField = "";
 		
-		@Informational private String privateInfoStringField = "";
-		@Informational protected String protectedInfoStringField = "";
-		@Informational public String publicInfoStringField = "";
+		@Value(informational=true) private String privateInfoStringField = "";
+		@Value(informational=true) protected String protectedInfoStringField = "";
+		@Value(informational=true) public String publicInfoStringField = "";
 	}
 	
 	@Test
 	public void testPermutedFields() throws Exception {
-		List<Field> compareFields = AnnotationProcessor.getFields(
-				PermutedFieldsClass.class, Compare.class);
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
+				PermutedFieldsClass.class);
 		
-		TestAnnotationUtils.checkElements(compareFields, Compare.class, 3);
-		
-		List<Field> infoFields = AnnotationProcessor.getFields(
-				PermutedFieldsClass.class, Informational.class);
-		
-		TestAnnotationUtils.checkElements(infoFields, Informational.class, 3);
-		
-		invokeFields(compareFields, PermutedFieldsClass.class);
-		invokeFields(infoFields, PermutedFieldsClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 3, 3);
+		TestAnnotationUtils.executeMembers(valueMembers, PermutedFieldsClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -75,44 +56,41 @@ public class FieldProcessingTests {
 	// --> fields count = 3 (from super class)
 	//                  + 3 (from extending class) 
 	
-	static class SuperFieldClass {		
+	public static class SuperFieldClass {		
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
 		
-		@Compare private String privateCompareField = "";
-		@Compare protected String protectedCompareField = "";
-		@Compare public String publicCompareField = "";
+		@Value private String privateCompareField = "";
+		@Value protected String protectedCompareField = "";
+		@Value public String publicCompareField = "";
 		
-		@Informational private String privateInfoField = "";
-		@Informational protected String protectedInfoField = "";
-		@Informational public String publicInfoField = "";
+		@Value(informational=true) private String privateInfoField = "";
+		@Value(informational=true) protected String protectedInfoField = "";
+		@Value(informational=true) public String publicInfoField = "";
 	}
 	
-	static class ExtendingFieldClass extends SuperFieldClass {
+	public static class ExtendingFieldClass extends SuperFieldClass {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
 		
-		@Compare private String privateCompareField = "";
-		@Compare protected String protectedCompareField = "";
-		@Compare public String publicCompareField = "";
+		@Value private String privateCompareField = "";
+		@Value protected String protectedCompareField = "";
+		@Value public String publicCompareField = "";
 		
-		@Informational private String privateInfoField = "";
-		@Informational protected String protectedInfoField = "";
-		@Informational public String publicInfoField = "";
+		@Value(informational=true) private String privateInfoField = "";
+		@Value(informational=true) protected String protectedInfoField = "";
+		@Value(informational=true) public String publicInfoField = "";
 	}
 	
 	@Test
 	public void testExtendingFields() throws Exception {
-		List<Field> compareFields = AnnotationProcessor.getFields(ExtendingFieldClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareFields, Compare.class, 6);
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
+				ExtendingFieldClass.class);
 		
-		List<Field> infoFields = AnnotationProcessor.getFields(ExtendingFieldClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoFields, Informational.class, 6);
-		
-		invokeFields(compareFields, ExtendingFieldClass.class);
-		invokeFields(infoFields, ExtendingFieldClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 6, 6);
+		TestAnnotationUtils.executeMembers(valueMembers, ExtendingFieldClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -123,37 +101,34 @@ public class FieldProcessingTests {
 		String interfaceField = "";
 		public String publicInterfaceField = "";
 		
-		@Compare String interfaceCompareField = "";
-		@Compare public String publicInterfaceCompareField = "";
+		@Value String interfaceCompareField = "";
+		@Value public String publicInterfaceCompareField = "";
 		
-		@Informational String interfaceInfoField = "";
-		@Informational public String publicInterfaceInfoField = "";
+		@Value(informational=true) String interfaceInfoField = "";
+		@Value(informational=true) public String publicInterfaceInfoField = "";
 	}
 	
-	static class ImplementingClass implements FieldInterface {
+	public static class ImplementingClass implements FieldInterface {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
 		
-		@Compare private String privateCompareField = "";
-		@Compare protected String protectedCompareField = "";
-		@Compare public String publicCompareField = "";
+		@Value private String privateCompareField = "";
+		@Value protected String protectedCompareField = "";
+		@Value public String publicCompareField = "";
 		
-		@Informational private String privateInfoField = "";
-		@Informational protected String protectedInfoField = "";
-		@Informational public String publicInfoField = "";	
+		@Value(informational=true) private String privateInfoField = "";
+		@Value(informational=true) protected String protectedInfoField = "";
+		@Value(informational=true) public String publicInfoField = "";	
 	}
 	
 	@Test
 	public void testImplementingFields() throws Exception {
-		List<Field> compareFields = AnnotationProcessor.getFields(ImplementingClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareFields, Compare.class, 5);
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
+				ImplementingClass.class);
 		
-		List<Field> infoFields = AnnotationProcessor.getFields(ImplementingClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoFields, Informational.class, 5);
-		
-		invokeFields(compareFields, ImplementingClass.class);
-		invokeFields(infoFields, ImplementingClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 5, 5);
+		TestAnnotationUtils.executeMembers(valueMembers, ImplementingClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -164,11 +139,11 @@ public class FieldProcessingTests {
 		String interfaceField = "";
 		public String publicInterfaceField = "";
 		
-		@Compare String interfaceCompareField = "";
-		@Compare public String publicInterfaceCompareField = "";
+		@Value String interfaceCompareField = "";
+		@Value public String publicInterfaceCompareField = "";
 		
-		@Informational String interfaceInfoField = "";
-		@Informational public String publicInterfaceInfoField = "";
+		@Value(informational=true) String interfaceInfoField = "";
+		@Value(informational=true) public String publicInterfaceInfoField = "";
 	}
 	
 	static abstract class ImplementingAbstractClass implements TopInterface {
@@ -176,39 +151,36 @@ public class FieldProcessingTests {
 		protected String protectedField = "";
 		public String publicField = "";
 		
-		@Compare private String privateCompareField = "";
-		@Compare protected String protectedCompareField = "";
-		@Compare public String publicCompareField = "";
+		@Value private String privateCompareField = "";
+		@Value protected String protectedCompareField = "";
+		@Value public String publicCompareField = "";
 		
-		@Informational private String privateInfoField = "";
-		@Informational protected String protectedInfoField = "";
-		@Informational public String publicInfoField = "";
+		@Value(informational=true) private String privateInfoField = "";
+		@Value(informational=true) protected String protectedInfoField = "";
+		@Value(informational=true) public String publicInfoField = "";
 	}
 	
-	static class ConcreteClass extends ImplementingAbstractClass {
+	public static class ConcreteClass extends ImplementingAbstractClass {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
 		
-		@Compare private String privateCompareField = "";
-		@Compare protected String protectedCompareField = "";
-		@Compare public String publicCompareField = "";
+		@Value private String privateCompareField = "";
+		@Value protected String protectedCompareField = "";
+		@Value public String publicCompareField = "";
 		
-		@Informational private String privateInfoField = "";
-		@Informational protected String protectedInfoField = "";
-		@Informational public String publicInfoField = "";
+		@Value(informational=true) private String privateInfoField = "";
+		@Value(informational=true) protected String protectedInfoField = "";
+		@Value(informational=true) public String publicInfoField = "";
 	}
 	
 	@Test
 	public void testImplementingAbstractFields() throws Exception {
-		List<Field> compareFields = AnnotationProcessor.getFields(ConcreteClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareFields, Compare.class, 8);
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
+				ConcreteClass.class);
 		
-		List<Field> infoFields = AnnotationProcessor.getFields(ConcreteClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoFields, Informational.class, 8);
-		
-		invokeFields(compareFields, ConcreteClass.class);
-		invokeFields(infoFields, ConcreteClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 8, 8);
+		TestAnnotationUtils.executeMembers(valueMembers, ConcreteClass.class);
 	}
 	
 	// --------------------------------------------------------------
@@ -219,48 +191,45 @@ public class FieldProcessingTests {
 		String interfaceField = "";
 		public String publicInterfaceField = "";
 		
-		@Compare String interfaceCompareField = "";
-		@Compare public String publicInterfaceCompareField = "";
+		@Value String interfaceCompareField = "";
+		@Value public String publicInterfaceCompareField = "";
 		
-		@Informational String interfaceInfoField = "";
-		@Informational public String publicInterfaceInfoField = "";
+		@Value(informational=true) String interfaceInfoField = "";
+		@Value(informational=true) public String publicInterfaceInfoField = "";
 	}
 	
 	interface InterfaceB extends InterfaceA {
 		String interfaceField = "";
 		public String publicInterfaceField = "";
 		
-		@Compare String interfaceCompareField = "";
-		@Compare public String publicInterfaceCompareField = "";
+		@Value String interfaceCompareField = "";
+		@Value public String publicInterfaceCompareField = "";
 		
-		@Informational String interfaceInfoField = "";
-		@Informational public String publicInterfaceInfoField = "";
+		@Value(informational=true) String interfaceInfoField = "";
+		@Value(informational=true) public String publicInterfaceInfoField = "";
 	}
 	
-	static class ExtendedImplementingClass implements InterfaceB {
+	public static class ExtendedImplementingClass implements InterfaceB {
 		private String privateField = "";
 		protected String protectedField = "";
 		public String publicField = "";
 		
-		@Compare private String privateCompareField = "";
-		@Compare protected String protectedCompareField = "";
-		@Compare public String publicCompareField = "";
+		@Value private String privateCompareField = "";
+		@Value protected String protectedCompareField = "";
+		@Value public String publicCompareField = "";
 		
-		@Informational private String privateInfoField = "";
-		@Informational protected String protectedInfoField = "";
-		@Informational public String publicInfoField = "";
+		@Value(informational=true) private String privateInfoField = "";
+		@Value(informational=true) protected String protectedInfoField = "";
+		@Value(informational=true) public String publicInfoField = "";
 	}
 	
 	@Test
 	public void testExtendedInterfaceFields() throws Exception {
-		List<Field> compareFields = AnnotationProcessor.getFields(ExtendedImplementingClass.class, Compare.class);
-		TestAnnotationUtils.checkElements(compareFields, Compare.class, 7);
+		Set<ValueMember<?>> valueMembers = AnnotationProcessor.getValueMembers(
+				ExtendedImplementingClass.class);
 		
-		List<Field> infoFields = AnnotationProcessor.getFields(ExtendedImplementingClass.class, Informational.class);		
-		TestAnnotationUtils.checkElements(infoFields, Informational.class, 7);
-		
-		invokeFields(compareFields, ExtendedImplementingClass.class);
-		invokeFields(infoFields, ExtendedImplementingClass.class);
+		TestAnnotationUtils.countMembers(valueMembers, 7, 7);
+		TestAnnotationUtils.executeMembers(valueMembers, ExtendedImplementingClass.class);		
 	}
 	
 }

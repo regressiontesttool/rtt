@@ -3,23 +3,19 @@ package rtt.core.testing.generation;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.processing.AnnotationProcessor;
+import rtt.annotations.processing.InitMember;
 import rtt.core.archive.input.Input;
 import rtt.core.exceptions.AnnotationException;
-import rtt.core.utils.AnnotationUtil;
 import rtt.core.utils.RTTLogging;
 
 public class Executor {
-	
-	private static final Class<Initialize> INIT_ANNOTATION = Initialize.class;
 	
 	private static final String NO_INTERFACES = 
 			"Interfaces are not allowed for output data generation.";
@@ -31,13 +27,12 @@ public class Executor {
 			"Non-static member classes are currently not supported for output generation.";
 	
 	private static final String NO_NODE_ANNOTATION = 
-			"The given class doesn't have a @Node annotation.";
-	private static final String NO_INIT_ANNOTATION = 
+			"The given class doesn't have a @Node annotation.";	
+	private static final String NONE_INIT_MEMBER = 
 			"Could not find a method or constructor annotated with @Node.Initialize.";
-	private static final String NO_SINGLE_INIT_METHOD = 
-			"Found more than one method annotated with @Node.Initialize.";
-	private static final String NO_SINGLE_INIT_CONSTRUCTOR = 
-			"Found more than one constructor annotated with @Node.Initialize.";
+	private static final String NO_SINGLE_INIT_MEMBER = 
+			"Found more than one method or constructor annotated with @Node.Initialize.";
+	
 	private static final String PARAMETER_COUNT_ERROR = 
 			"The element which is annotated with @Node.Initialize must have $$ parameter(s).";
 	private static final String NO_INPUTSTREAM_PARAMETER = 
@@ -46,6 +41,7 @@ public class Executor {
 			"The second parameter needs to be an array of strings.";
 	
 	private Class<?> initialObjectType = null;
+	private InitMember<?> initialMember = null;
 	private List<Class<? extends Throwable>> acceptedExceptions;
 	
 	private Initialize initAnnotation;	
@@ -53,28 +49,24 @@ public class Executor {
 	public Executor(Class<?> initialObjectType) {
 		checkClass(initialObjectType);
 		
-		Method initMethod = getInitializeMethod(initialObjectType);
-		if (initMethod != null) {
-			initAnnotation = initMethod.getAnnotation(INIT_ANNOTATION);
-			checkParameters(initMethod.getParameterTypes(), initAnnotation.withParams());
-		} else {
-			Constructor<?> initConstructor = getInitializeConstructor(initialObjectType);
-			if (initConstructor != null) {
-				initAnnotation = initConstructor.getAnnotation(INIT_ANNOTATION);
-				checkParameters(initConstructor.getParameterTypes(), initAnnotation.withParams());
-			}
+		SortedSet<InitMember<?>> initMembers = AnnotationProcessor.getInitMembers(initialObjectType);
+		if (initMembers.size() == 0) {
+			RTTLogging.throwException(new IllegalStateException(NONE_INIT_MEMBER));
 		}
 		
-		if (initAnnotation == null) {
-			RTTLogging.throwException(new AnnotationException(NO_INIT_ANNOTATION));
+		if (initMembers.size() > 1) {
+			RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_MEMBER));
 		}
+		
+		this.initialObjectType = initialObjectType;
+		initialMember = initMembers.first();
+		initAnnotation = initialMember.getAnnotation();
+		checkParameters(initialMember.getParameterTypes(), initAnnotation.withParams());
 		
 		acceptedExceptions = new ArrayList<>();
 		for (Class<? extends Throwable> throwable : initAnnotation.acceptedExceptions()) {
 			acceptedExceptions.add(throwable);
-		}
-		
-		this.initialObjectType = initialObjectType;
+		}		
 	}
 
 	private void checkClass(Class<?> initialNodeClass) {
@@ -91,38 +83,12 @@ public class Executor {
 		}
 		
 		if (initialNodeClass.isMemberClass() && !Modifier.isStatic(initialNodeClass.getModifiers())) {
-			RTTLogging.throwException(new IllegalArgumentException(NO_NONSTATIC_MEMBERCLASS));;
+			RTTLogging.throwException(new IllegalArgumentException(NO_NONSTATIC_MEMBERCLASS));
 		}
 		
-		if (!AnnotationUtil.isNode(initialNodeClass)) {
+		if (!AnnotationProcessor.isNode(initialNodeClass)) {
 			RTTLogging.throwException(new AnnotationException(NO_NODE_ANNOTATION));
 		}
-	}
-
-	private Method getInitializeMethod(Class<?> initialNodeClass) {
-		List<Method> annotatedMethods = AnnotationProcessor.getMethods(initialNodeClass, INIT_ANNOTATION);
-		if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
-			if (annotatedMethods.size() > 1) {
-				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_METHOD));
-			}
-			
-			return annotatedMethods.get(0);
-		}
-		
-		return null;
-	}
-	
-	private Constructor<?> getInitializeConstructor(Class<?> initialNodeClass) {		
-		List<Constructor<?>> annotatedConstructors = AnnotationProcessor.getConstructors(initialNodeClass, INIT_ANNOTATION);
-		if (annotatedConstructors != null && !annotatedConstructors.isEmpty()) {
-			if (annotatedConstructors.size() > 1) {
-				RTTLogging.throwException(new IllegalStateException(NO_SINGLE_INIT_CONSTRUCTOR));
-			}
-			
-			return annotatedConstructors.get(0);
-		}
-		
-		return null;
 	}
 	
 	private void checkParameters(Class<?>[] parameterTypes, boolean withParams) {
@@ -141,70 +107,18 @@ public class Executor {
 		}
 	}
 	
-	public Object initialize(Input input, List<String> params) throws InvocationTargetException {
+	public Object initialize(Input input, List<String> params) throws Exception {
 		Object initialObject = null;
 		
 		try (InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes())) {
-			Method initMethod = getInitializeMethod(initialObjectType);
-			if (initMethod != null) {
-				initMethod.setAccessible(true);
-				initialObject = invokeInitMethod(initMethod, inputStream, params);
-			}
-			
-			Constructor<?> initConstructor = getInitializeConstructor(initialObjectType);
-			if (initConstructor != null) {
-				initConstructor.setAccessible(true);
-				initialObject = invokeInitConstructor(initConstructor, inputStream, params);
-			}
-			
-			if (initialObject == null) {
-				throw new RuntimeException(NO_INIT_ANNOTATION);
-			}
+			initialObject = initialMember.getResult(inputStream, params);
 		} catch (IOException e) {
 			RTTLogging.error("Could not access input stream.", e);
+		} catch (Exception e) {
+			RTTLogging.throwException(e);
 		}
 		
 		return initialObject;
-	}	
-	
-	private Object invokeInitMethod(Method initMethod, InputStream inputStream, 
-			List<String> params) throws InvocationTargetException {
-		
-		try {
-			Constructor<?> constructor = initialObjectType.getDeclaredConstructor();			
-			constructor.setAccessible(true);
-			
-			Object executor = constructor.newInstance();
-			if (initAnnotation.withParams()) {
-				initMethod.invoke(executor, inputStream, params);
-			} else {
-				initMethod.invoke(executor, inputStream);
-			}
-			
-			return executor;
-			
-		} catch (IllegalAccessException | IllegalArgumentException methodException) {
-			throw new RuntimeException("Could not access initializing method.", methodException);
-		} catch (NoSuchMethodException | InstantiationException constructorException) {
-			throw new RuntimeException("Could not get parameter-less constructor.", constructorException);
-		}
-	}
-
-	private Object invokeInitConstructor(Constructor<?> initConstructor, 
-			InputStream input, List<String> params) throws InvocationTargetException {
-		
-		try {
-			if (initAnnotation.withParams()) {
-				return initConstructor.newInstance(input, params);
-			} else {
-				return initConstructor.newInstance(input);
-			}
-		} catch (IllegalAccessException | IllegalArgumentException 
-				| InstantiationException constructorException) {
-			
-			throw new RuntimeException("Could not access initializing constructor.", 
-					constructorException);			
-		}
 	}
 	
 	public boolean isAcceptedException(Throwable exception) {
