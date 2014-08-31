@@ -128,9 +128,8 @@ public class CompareElementInformationalTests {
 		Node node = new Node();
 		node.setGeneratorName(NAME);
 		node.setGeneratorType(TYPE);
-		node.setFullName("aFullName");
-		node.setSimpleName("aSimpleName");		
-		node.getElement().add(createSampleElement(false));
+		node.setClassName("aClassName");
+		node.getElements().add(createSampleElement(false));
 		
 		testDifference(createSampleElement(false), node, Difference.CLASSES);
 		testDifference(node, createSampleElement(false), Difference.CLASSES);

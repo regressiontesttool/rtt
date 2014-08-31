@@ -43,10 +43,9 @@ public class DataGeneratorTests {
 		Node initNode = (Node) output.getInitialElement();
 		assertNotNull(initNode);
 		assertEquals("1", initNode.getAddress());
-		assertEquals(initObjectType.getName(), initNode.getFullName());
-		assertEquals(initObjectType.getSimpleName(), initNode.getSimpleName());
+		assertEquals(initObjectType.getName(), initNode.getClassName());
 		
-		assertEquals(childCount, initNode.getElement().size());
+		assertEquals(childCount, initNode.getElements().size());
 		
 		Output testOutput = DataGenerator.generateOutput(input, params, executor);
 		
@@ -59,13 +58,13 @@ public class DataGeneratorTests {
 	private void countElements(Node node, int compareCount, int infoCount) {
 		
 		int realInfoCount = 0;
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			if (element.isInformational()) {				
 				realInfoCount++;
 			}
 		}
 		
-		int size = node.getElement().size();
+		int size = node.getElements().size();
 		
 		assertEquals(infoCount, realInfoCount);
 		assertEquals(compareCount, size - realInfoCount);
@@ -73,7 +72,7 @@ public class DataGeneratorTests {
 	}
 	
 	private void checkElements(Node node, Class<?> elementType) {
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			if (element.getClass() != elementType) {
 				fail("Expected type was '" + elementType 
 						+ "', but was '" + element.getClass() + "'.");
@@ -83,7 +82,7 @@ public class DataGeneratorTests {
 	
 	private void checkAddresses(Node node) {
 		int i = 1;
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			assertEquals(node.getAddress() + "." + i++, element.getAddress());
 		}
 	}
@@ -168,7 +167,7 @@ public class DataGeneratorTests {
 		checkElements(node, Node.class);
 		checkAddresses(node);
 		
-		for (Element element : node.getElement()) {
+		for (Element element : node.getElements()) {
 			Node childNode = (Node) element;
 			
 			checkElements(childNode, Value.class);
@@ -205,11 +204,11 @@ public class DataGeneratorTests {
 		countElements(node, 2, 0);
 		checkAddresses(node);
 		
-		assertTrue(node.getElement().get(0) instanceof Node);
-		assertTrue(node.getElement().get(1) instanceof Reference);
+		assertTrue(node.getElements().get(0) instanceof Node);
+		assertTrue(node.getElements().get(1) instanceof Reference);
 		
-		Node childNode = (Node) node.getElement().get(0);
-		Reference reference = (Reference) node.getElement().get(1);
+		Node childNode = (Node) node.getElements().get(0);
+		Reference reference = (Reference) node.getElements().get(1);
 		
 		assertEquals(childNode.getAddress(), reference.getTo());
 	}

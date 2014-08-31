@@ -20,8 +20,7 @@ public class CompareNodeTests {
 
 	private static final String NAME = "aName";
 	private static final Type TYPE = Type.OBJECT;
-	private static final String FULL_NAME = "aFullName";
-	private static final String SIMPLE_NAME = "aSimpleName";
+	private static final String CLASS_NAME = "aClassName";
 	
 	private OutputCompare comparer;
 	
@@ -30,19 +29,18 @@ public class CompareNodeTests {
 		comparer = new OutputCompare(false);
 	}
 	
-	private static Node createNode(String name, Type type, String fullName, String simpleName, boolean informational) {
+	private static Node createNode(String name, Type type, String className, boolean informational) {
 		Node node = new Node();
 		node.setGeneratorName(name);
 		node.setGeneratorType(type);
 		node.setInformational(informational);
-		node.setFullName(fullName);
-		node.setSimpleName(simpleName);
+		node.setClassName(className);
 		
 		return node;
 	}
 	
 	public static Node createSampleNode(boolean informational) {
-		return createNode(NAME, TYPE, FULL_NAME, SIMPLE_NAME, informational);
+		return createNode(NAME, TYPE, CLASS_NAME, informational);
 	}
 	
 	public enum CreateInfo {
@@ -77,7 +75,7 @@ public class CompareNodeTests {
 				break;
 			}
 			
-			node.getElement().add(childElement);
+			node.getElements().add(childElement);
 		}
 		
 		return node;		
@@ -135,27 +133,12 @@ public class CompareNodeTests {
 	// Attribute tests
 	
 	@Test
-	public void testUnequalFullNameAttribute() throws Exception {
+	public void testUnequalClassNameAttribute() throws Exception {
 		Node changedNode = createSampleNode(false);
-		changedNode.setFullName("anOtherFullName");
+		changedNode.setClassName("anOtherClassName");
 		
-		testDifference(createSampleNode(false), changedNode, Difference.FULLNAME);
-		testDifference(changedNode, createSampleNode(false), Difference.FULLNAME);
-		testNoDifferences(changedNode, changedNode);
-		
-		changedNode.setInformational(true);
-		testNoDifferences(createSampleNode(true), changedNode);
-		testNoDifferences(changedNode, createSampleNode(true));
-		testNoDifferences(changedNode, changedNode);
-	}
-	
-	@Test
-	public void testUnequalSimpleNameAttribute() throws Exception {
-		Node changedNode = createSampleNode(false);
-		changedNode.setSimpleName("anOtherSimpleName");
-		
-		testDifference(createSampleNode(false), changedNode, Difference.SIMPLENAME);
-		testDifference(changedNode, createSampleNode(false), Difference.SIMPLENAME);
+		testDifference(createSampleNode(false), changedNode, Difference.CLASSNAME);
+		testDifference(changedNode, createSampleNode(false), Difference.CLASSNAME);
 		testNoDifferences(changedNode, changedNode);
 		
 		changedNode.setInformational(true);
@@ -198,8 +181,8 @@ public class CompareNodeTests {
 		Node node = createSampleNode(false);
 		Value value = CompareValueTests.createSampleValue(false);
 		value.setValue("anOtherValue");
-		node.getElement().add(value);
-		node.getElement().add(CompareValueTests.createSampleValue(false));
+		node.getElements().add(value);
+		node.getElements().add(CompareValueTests.createSampleValue(false));
 		
 		testDifference(createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), node, Difference.VALUE);
 		testDifference(node, createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.VALUE);
@@ -213,8 +196,8 @@ public class CompareNodeTests {
 		Node node = createSampleNode(false);
 		Value value = CompareValueTests.createSampleValue(true);
 		value.setValue("anOtherValue");
-		node.getElement().add(value);
-		node.getElement().add(CompareValueTests.createSampleValue(true));
+		node.getElements().add(value);
+		node.getElements().add(CompareValueTests.createSampleValue(true));
 		
 		testNoDifferences(createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS), node);
 		testNoDifferences(node, createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS));
@@ -259,7 +242,7 @@ public class CompareNodeTests {
 		Node changedNode = createSampleNode(2, ChildType.ELEMENT, CreateInfo.NONE);
 		Element changedElement = CompareElementTests.createSampleElement(false);
 		changedElement.setGeneratorName("anOtherName");		
-		changedNode.getElement().add(changedElement);
+		changedNode.getElements().add(changedElement);
 		
 		// generator name of child was changed --> Difference.NAME 
 		testDifference(createSampleNode(3, ChildType.ELEMENT, CreateInfo.NONE), changedNode, Difference.NAME);
@@ -278,7 +261,7 @@ public class CompareNodeTests {
 		Node changedNode = createSampleNode(2, ChildType.VALUE, CreateInfo.NONE);
 		Value changedChild = CompareValueTests.createSampleValue(false);
 		changedChild.setValue("anOtherValue");		
-		changedNode.getElement().add(changedChild);
+		changedNode.getElements().add(changedChild);
 		
 		// value of child was changed --> Difference.VALUE 
 		testDifference(createSampleNode(3, ChildType.VALUE, CreateInfo.NONE), changedNode, Difference.VALUE);
@@ -297,7 +280,7 @@ public class CompareNodeTests {
 		Node changedNode = createSampleNode(2, ChildType.REFERENCE, CreateInfo.NONE);
 		Reference changedChild = CompareReferenceTests.createSampleReference(false);
 		changedChild.setTo("2.2.2");		
-		changedNode.getElement().add(changedChild);
+		changedNode.getElements().add(changedChild);
 		
 		// value of child was changed --> Difference.VALUE 
 		testDifference(createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), changedNode, Difference.REFERENCE);
@@ -312,15 +295,15 @@ public class CompareNodeTests {
 	}
 	
 	@Test
-	public void testUnequalChildNode_Fullname() throws Exception {
+	public void testUnequalChildNode_Classname() throws Exception {
 		Node changedNode = createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
 		Node changedChild = createSampleNode(false);
-		changedChild.setFullName("anOtherFullName");
-		changedNode.getElement().add(changedChild);
+		changedChild.setClassName("anOtherClassName");
+		changedNode.getElements().add(changedChild);
 		
 		// full name of child was changed --> Difference.FULLNAME
-		testDifference(createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.FULLNAME);
-		testDifference(changedNode, createSampleNode(3, ChildType.NODE, CreateInfo.NONE), Difference.FULLNAME);
+		testDifference(createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.CLASSNAME);
+		testDifference(changedNode, createSampleNode(3, ChildType.NODE, CreateInfo.NONE), Difference.CLASSNAME);
 		testNoDifferences(changedNode, changedNode);
 		
 		// full name of child was changed, but node was informational --> no difference
@@ -334,7 +317,7 @@ public class CompareNodeTests {
 	public void testUnequalChildNode_ChildCount() throws Exception {
 		Node changedNode = createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
 		Node changedChild = createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
-		changedNode.getElement().add(changedChild);
+		changedNode.getElements().add(changedChild);
 		
 		// count of child of a child differs --> Difference.CHILD_COUNT
 		testDifference(createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.CHILD_COUNT);

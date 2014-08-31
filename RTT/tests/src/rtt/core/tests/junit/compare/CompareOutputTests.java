@@ -93,7 +93,7 @@ public class CompareOutputTests {
 			Element element = CompareElementTests.createElement(
 					"Item " + i, Type.OBJECT, childInfos);
 			
-			initialNode.getElement().add(element);
+			initialNode.getElements().add(element);
 		}
 		
 		return output;
