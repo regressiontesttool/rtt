@@ -70,6 +70,9 @@ public abstract class ValueMember<T extends Member>
 		this.index = valueAnnotation.index();
 		this.informational = valueAnnotation.informational();
 		this.name = valueAnnotation.name();
+		if (this.name == null) {
+			this.name = "";
+		}
 	}
 	
 	public abstract Object getResult(Object object) 
