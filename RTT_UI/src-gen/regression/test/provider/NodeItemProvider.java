@@ -60,48 +60,25 @@ public class NodeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addFullNamePropertyDescriptor(object);
-			addSimpleNamePropertyDescriptor(object);
+			addObjectTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Full Name feature.
+	 * This adds a property descriptor for the Object Type feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addFullNamePropertyDescriptor(Object object) {
+	protected void addObjectTypePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_Node_fullName_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Node_fullName_feature", "_UI_Node_type"),
-				 TestPackage.Literals.NODE__FULL_NAME,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Simple Name feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addSimpleNamePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Node_simpleName_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Node_simpleName_feature", "_UI_Node_type"),
-				 TestPackage.Literals.NODE__SIMPLE_NAME,
+				 getString("_UI_Node_objectType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Node_objectType_feature", "_UI_Node_type"),
+				 TestPackage.Literals.NODE__OBJECT_TYPE,
 				 true,
 				 false,
 				 false,
@@ -160,7 +137,7 @@ public class NodeItemProvider
 	@Override
 	public String getText(Object object) {
 		Node node = (Node) object;
-		return super.getText(object) + node.getSimpleName();
+		return super.getText(object) + node.getObjectType();
 	}
 
 	/**
@@ -175,8 +152,7 @@ public class NodeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Node.class)) {
-			case TestPackage.NODE__FULL_NAME:
-			case TestPackage.NODE__SIMPLE_NAME:
+			case TestPackage.NODE__OBJECT_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case TestPackage.NODE__ELEMENT:

@@ -60,9 +60,9 @@ public class ElementItemProvider
 			super.getPropertyDescriptors(object);
 
 			addAddressPropertyDescriptor(object);
-			addGeneratorNamePropertyDescriptor(object);
-			addGeneratorTypePropertyDescriptor(object);
+			addElementTypePropertyDescriptor(object);
 			addInformationalPropertyDescriptor(object);
+			addNamePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -90,41 +90,19 @@ public class ElementItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Generator Name feature.
+	 * This adds a property descriptor for the Element Type feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addGeneratorNamePropertyDescriptor(Object object) {
+	protected void addElementTypePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_Element_generatorName_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Element_generatorName_feature", "_UI_Element_type"),
-				 TestPackage.Literals.ELEMENT__GENERATOR_NAME,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Generator Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addGeneratorTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Element_generatorType_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Element_generatorType_feature", "_UI_Element_type"),
-				 TestPackage.Literals.ELEMENT__GENERATOR_TYPE,
+				 getString("_UI_Element_elementType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Element_elementType_feature", "_UI_Element_type"),
+				 TestPackage.Literals.ELEMENT__ELEMENT_TYPE,
 				 true,
 				 false,
 				 false,
@@ -156,6 +134,28 @@ public class ElementItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Element_name_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Element_name_feature", "_UI_Element_type"),
+				 TestPackage.Literals.ELEMENT__NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -165,13 +165,13 @@ public class ElementItemProvider
 	public String getText(Object object) {
 		Element element = (Element) object;
 		StringBuilder text = new StringBuilder();
-		if (element.getGeneratorType() != Type.OBJECT) {
+		if (element.getElementType() != Type.OBJECT) {
 			text.append("[");
-			text.append(element.getGeneratorType().name());
+			text.append(element.getElementType().name());
 			text.append("] ");
 		}
 		
-		text.append(element.getGeneratorName());
+		text.append(element.getName());
 		text.append(" = ");
 		
 		return text.toString();
@@ -190,9 +190,9 @@ public class ElementItemProvider
 
 		switch (notification.getFeatureID(Element.class)) {
 			case TestPackage.ELEMENT__ADDRESS:
-			case TestPackage.ELEMENT__GENERATOR_NAME:
-			case TestPackage.ELEMENT__GENERATOR_TYPE:
+			case TestPackage.ELEMENT__ELEMENT_TYPE:
 			case TestPackage.ELEMENT__INFORMATIONAL:
+			case TestPackage.ELEMENT__NAME:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

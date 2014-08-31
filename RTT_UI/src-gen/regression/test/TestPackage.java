@@ -136,22 +136,13 @@ public class TestPackage extends EPackageImpl {
 	public static final int ELEMENT__ADDRESS = 0;
 
 	/**
-	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Element Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ELEMENT__GENERATOR_NAME = 1;
-
-	/**
-	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int ELEMENT__GENERATOR_TYPE = 2;
+	public static final int ELEMENT__ELEMENT_TYPE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Informational</b></em>' attribute.
@@ -160,7 +151,16 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ELEMENT__INFORMATIONAL = 3;
+	public static final int ELEMENT__INFORMATIONAL = 2;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int ELEMENT__NAME = 3;
 
 	/**
 	 * The number of structural features of the '<em>Element</em>' class.
@@ -191,22 +191,13 @@ public class TestPackage extends EPackageImpl {
 	public static final int NODE__ADDRESS = ELEMENT__ADDRESS;
 
 	/**
-	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Element Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE__GENERATOR_NAME = ELEMENT__GENERATOR_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int NODE__GENERATOR_TYPE = ELEMENT__GENERATOR_TYPE;
+	public static final int NODE__ELEMENT_TYPE = ELEMENT__ELEMENT_TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Informational</b></em>' attribute.
@@ -218,6 +209,15 @@ public class TestPackage extends EPackageImpl {
 	public static final int NODE__INFORMATIONAL = ELEMENT__INFORMATIONAL;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int NODE__NAME = ELEMENT__NAME;
+
+	/**
 	 * The feature id for the '<em><b>Element</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -227,22 +227,13 @@ public class TestPackage extends EPackageImpl {
 	public static final int NODE__ELEMENT = ELEMENT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Object Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE__FULL_NAME = ELEMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Simple Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int NODE__SIMPLE_NAME = ELEMENT_FEATURE_COUNT + 2;
+	public static final int NODE__OBJECT_TYPE = ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Node</em>' class.
@@ -251,7 +242,7 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int NODE_FEATURE_COUNT = ELEMENT_FEATURE_COUNT + 3;
+	public static final int NODE_FEATURE_COUNT = ELEMENT_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link regression.test.OutputType <em>Output Type</em>}' class.
@@ -301,22 +292,13 @@ public class TestPackage extends EPackageImpl {
 	public static final int REFERENCE__ADDRESS = ELEMENT__ADDRESS;
 
 	/**
-	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Element Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int REFERENCE__GENERATOR_NAME = ELEMENT__GENERATOR_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int REFERENCE__GENERATOR_TYPE = ELEMENT__GENERATOR_TYPE;
+	public static final int REFERENCE__ELEMENT_TYPE = ELEMENT__ELEMENT_TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Informational</b></em>' attribute.
@@ -326,6 +308,15 @@ public class TestPackage extends EPackageImpl {
 	 * @ordered
 	 */
 	public static final int REFERENCE__INFORMATIONAL = ELEMENT__INFORMATIONAL;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int REFERENCE__NAME = ELEMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>To</b></em>' attribute.
@@ -365,22 +356,13 @@ public class TestPackage extends EPackageImpl {
 	public static final int VALUE__ADDRESS = ELEMENT__ADDRESS;
 
 	/**
-	 * The feature id for the '<em><b>Generator Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Element Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int VALUE__GENERATOR_NAME = ELEMENT__GENERATOR_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Generator Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	public static final int VALUE__GENERATOR_TYPE = ELEMENT__GENERATOR_TYPE;
+	public static final int VALUE__ELEMENT_TYPE = ELEMENT__ELEMENT_TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Informational</b></em>' attribute.
@@ -390,6 +372,15 @@ public class TestPackage extends EPackageImpl {
 	 * @ordered
 	 */
 	public static final int VALUE__INFORMATIONAL = ELEMENT__INFORMATIONAL;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int VALUE__NAME = ELEMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -640,30 +631,18 @@ public class TestPackage extends EPackageImpl {
 	}
 
 	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Element#getGeneratorName <em>Generator Name</em>}'.
+	 * Returns the meta object for the attribute '{@link regression.test.Element#getElementType <em>Element Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Generator Name</em>'.
-	 * @see regression.test.Element#getGeneratorName()
+	 * @return the meta object for the attribute '<em>Element Type</em>'.
+	 * @see regression.test.Element#getElementType()
 	 * @see #getElement()
 	 * @generated
 	 */
-	public EAttribute getElement_GeneratorName() {
+	public EAttribute getElement_ElementType() {
 		return (EAttribute)elementEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Element#getGeneratorType <em>Generator Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Generator Type</em>'.
-	 * @see regression.test.Element#getGeneratorType()
-	 * @see #getElement()
-	 * @generated
-	 */
-	public EAttribute getElement_GeneratorType() {
-		return (EAttribute)elementEClass.getEStructuralFeatures().get(2);
-	}
 
 	/**
 	 * Returns the meta object for the attribute '{@link regression.test.Element#isInformational <em>Informational</em>}'.
@@ -675,8 +654,22 @@ public class TestPackage extends EPackageImpl {
 	 * @generated
 	 */
 	public EAttribute getElement_Informational() {
+		return (EAttribute)elementEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * Returns the meta object for the attribute '{@link regression.test.Element#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see regression.test.Element#getName()
+	 * @see #getElement()
+	 * @generated
+	 */
+	public EAttribute getElement_Name() {
 		return (EAttribute)elementEClass.getEStructuralFeatures().get(3);
 	}
+
 
 	/**
 	 * Returns the meta object for class '{@link regression.test.Node <em>Node</em>}'.
@@ -704,30 +697,18 @@ public class TestPackage extends EPackageImpl {
 	}
 
 	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Node#getFullName <em>Full Name</em>}'.
+	 * Returns the meta object for the attribute '{@link regression.test.Node#getObjectType <em>Object Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Full Name</em>'.
-	 * @see regression.test.Node#getFullName()
+	 * @return the meta object for the attribute '<em>Object Type</em>'.
+	 * @see regression.test.Node#getObjectType()
 	 * @see #getNode()
 	 * @generated
 	 */
-	public EAttribute getNode_FullName() {
+	public EAttribute getNode_ObjectType() {
 		return (EAttribute)nodeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
-	 * Returns the meta object for the attribute '{@link regression.test.Node#getSimpleName <em>Simple Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Simple Name</em>'.
-	 * @see regression.test.Node#getSimpleName()
-	 * @see #getNode()
-	 * @generated
-	 */
-	public EAttribute getNode_SimpleName() {
-		return (EAttribute)nodeEClass.getEStructuralFeatures().get(2);
-	}
 
 	/**
 	 * Returns the meta object for class '{@link regression.test.OutputType <em>Output Type</em>}'.
@@ -868,14 +849,13 @@ public class TestPackage extends EPackageImpl {
 
 		elementEClass = createEClass(ELEMENT);
 		createEAttribute(elementEClass, ELEMENT__ADDRESS);
-		createEAttribute(elementEClass, ELEMENT__GENERATOR_NAME);
-		createEAttribute(elementEClass, ELEMENT__GENERATOR_TYPE);
+		createEAttribute(elementEClass, ELEMENT__ELEMENT_TYPE);
 		createEAttribute(elementEClass, ELEMENT__INFORMATIONAL);
+		createEAttribute(elementEClass, ELEMENT__NAME);
 
 		nodeEClass = createEClass(NODE);
 		createEReference(nodeEClass, NODE__ELEMENT);
-		createEAttribute(nodeEClass, NODE__FULL_NAME);
-		createEAttribute(nodeEClass, NODE__SIMPLE_NAME);
+		createEAttribute(nodeEClass, NODE__OBJECT_TYPE);
 
 		outputTypeEClass = createEClass(OUTPUT_TYPE);
 		createEReference(outputTypeEClass, OUTPUT_TYPE__INITIAL_ELEMENT);
@@ -937,14 +917,13 @@ public class TestPackage extends EPackageImpl {
 
 		initEClass(elementEClass, Element.class, "Element", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getElement_Address(), theXMLTypePackage.getString(), "address", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getElement_GeneratorName(), theXMLTypePackage.getString(), "generatorName", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getElement_GeneratorType(), this.getType(), "generatorType", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getElement_ElementType(), this.getType(), "elementType", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElement_Informational(), theXMLTypePackage.getBoolean(), "informational", "false", 0, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getElement_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(nodeEClass, Node.class, "Node", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getNode_Element(), this.getElement(), null, "element", null, 0, -1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getNode_FullName(), theXMLTypePackage.getString(), "fullName", null, 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getNode_SimpleName(), theXMLTypePackage.getString(), "simpleName", null, 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getNode_ObjectType(), theXMLTypePackage.getString(), "objectType", null, 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(outputTypeEClass, OutputType.class, "OutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getOutputType_InitialElement(), this.getElement(), null, "initialElement", null, 1, 1, OutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1031,18 +1010,11 @@ public class TestPackage extends EPackageImpl {
 			 "name", "address"
 		   });		
 		addAnnotation
-		  (getElement_GeneratorName(), 
+		  (getElement_ElementType(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "generatorName"
-		   });		
-		addAnnotation
-		  (getElement_GeneratorType(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "generatorType"
+			 "name", "elementType"
 		   });		
 		addAnnotation
 		  (getElement_Informational(), 
@@ -1050,6 +1022,13 @@ public class TestPackage extends EPackageImpl {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "informational"
+		   });		
+		addAnnotation
+		  (getElement_Name(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "name"
 		   });		
 		addAnnotation
 		  (nodeEClass, 
@@ -1067,18 +1046,11 @@ public class TestPackage extends EPackageImpl {
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
-		  (getNode_FullName(), 
+		  (getNode_ObjectType(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "fullName"
-		   });		
-		addAnnotation
-		  (getNode_SimpleName(), 
-		   source, 
-		   new String[] {
-			 "kind", "attribute",
-			 "name", "simpleName"
+			 "name", "objectType"
 		   });		
 		addAnnotation
 		  (outputTypeEClass, 
@@ -1212,20 +1184,12 @@ public class TestPackage extends EPackageImpl {
 		public static final EAttribute ELEMENT__ADDRESS = eINSTANCE.getElement_Address();
 
 		/**
-		 * The meta object literal for the '<em><b>Generator Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Element Type</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EAttribute ELEMENT__GENERATOR_NAME = eINSTANCE.getElement_GeneratorName();
-
-		/**
-		 * The meta object literal for the '<em><b>Generator Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute ELEMENT__GENERATOR_TYPE = eINSTANCE.getElement_GeneratorType();
+		public static final EAttribute ELEMENT__ELEMENT_TYPE = eINSTANCE.getElement_ElementType();
 
 		/**
 		 * The meta object literal for the '<em><b>Informational</b></em>' attribute feature.
@@ -1234,6 +1198,14 @@ public class TestPackage extends EPackageImpl {
 		 * @generated
 		 */
 		public static final EAttribute ELEMENT__INFORMATIONAL = eINSTANCE.getElement_Informational();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		public static final EAttribute ELEMENT__NAME = eINSTANCE.getElement_Name();
 
 		/**
 		 * The meta object literal for the '{@link regression.test.Node <em>Node</em>}' class.
@@ -1254,20 +1226,12 @@ public class TestPackage extends EPackageImpl {
 		public static final EReference NODE__ELEMENT = eINSTANCE.getNode_Element();
 
 		/**
-		 * The meta object literal for the '<em><b>Full Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Object Type</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		public static final EAttribute NODE__FULL_NAME = eINSTANCE.getNode_FullName();
-
-		/**
-		 * The meta object literal for the '<em><b>Simple Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public static final EAttribute NODE__SIMPLE_NAME = eINSTANCE.getNode_SimpleName();
+		public static final EAttribute NODE__OBJECT_TYPE = eINSTANCE.getNode_ObjectType();
 
 		/**
 		 * The meta object literal for the '{@link regression.test.OutputType <em>Output Type</em>}' class.

@@ -58,7 +58,7 @@ public class FailureContent extends AbstractLogContent {
 
 	@Override
 	public String getText() {
-		return "Parser Results";
+		return "Failure";
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class FailureContent extends AbstractLogContent {
 
 	@Override
 	public String getTitle() {
-		return "Parser Failure";
+		return failure.getMsg();
 	}
 
 }

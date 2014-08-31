@@ -26,8 +26,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are supported:
  * <ul>
  *   <li>{@link regression.test.Node#getElement <em>Element</em>}</li>
- *   <li>{@link regression.test.Node#getFullName <em>Full Name</em>}</li>
- *   <li>{@link regression.test.Node#getSimpleName <em>Simple Name</em>}</li>
+ *   <li>{@link regression.test.Node#getObjectType <em>Object Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -48,44 +47,24 @@ public class Node extends Element {
 	protected EList<Element> element;
 
 	/**
-	 * The default value of the '{@link #getFullName() <em>Full Name</em>}' attribute.
+	 * The default value of the '{@link #getObjectType() <em>Object Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFullName()
+	 * @see #getObjectType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String FULL_NAME_EDEFAULT = null;
+	protected static final String OBJECT_TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFullName() <em>Full Name</em>}' attribute.
+	 * The cached value of the '{@link #getObjectType() <em>Object Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFullName()
+	 * @see #getObjectType()
 	 * @generated
 	 * @ordered
 	 */
-	protected String fullName = FULL_NAME_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getSimpleName() <em>Simple Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSimpleName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String SIMPLE_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getSimpleName() <em>Simple Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSimpleName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String simpleName = SIMPLE_NAME_EDEFAULT;
+	protected String objectType = OBJECT_TYPE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -129,71 +108,37 @@ public class Node extends Element {
 	}
 
 	/**
-	 * Returns the value of the '<em><b>Full Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Object Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Full Name</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Object Type</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Full Name</em>' attribute.
-	 * @see #setFullName(String)
-	 * @see regression.test.TestPackage#getNode_FullName()
+	 * @return the value of the '<em>Object Type</em>' attribute.
+	 * @see #setObjectType(String)
+	 * @see regression.test.TestPackage#getNode_ObjectType()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='attribute' name='fullName'"
+	 *        extendedMetaData="kind='attribute' name='objectType'"
 	 * @generated
 	 */
-	public String getFullName() {
-		return fullName;
+	public String getObjectType() {
+		return objectType;
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.Node#getFullName <em>Full Name</em>}' attribute.
+	 * Sets the value of the '{@link regression.test.Node#getObjectType <em>Object Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Full Name</em>' attribute.
-	 * @see #getFullName()
+	 * @param value the new value of the '<em>Object Type</em>' attribute.
+	 * @see #getObjectType()
 	 * @generated
 	 */
-	public void setFullName(String newFullName) {
-		String oldFullName = fullName;
-		fullName = newFullName;
+	public void setObjectType(String newObjectType) {
+		String oldObjectType = objectType;
+		objectType = newObjectType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__FULL_NAME, oldFullName, fullName));
-	}
-
-	/**
-	 * Returns the value of the '<em><b>Simple Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Simple Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Simple Name</em>' attribute.
-	 * @see #setSimpleName(String)
-	 * @see regression.test.TestPackage#getNode_SimpleName()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='attribute' name='simpleName'"
-	 * @generated
-	 */
-	public String getSimpleName() {
-		return simpleName;
-	}
-
-	/**
-	 * Sets the value of the '{@link regression.test.Node#getSimpleName <em>Simple Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Simple Name</em>' attribute.
-	 * @see #getSimpleName()
-	 * @generated
-	 */
-	public void setSimpleName(String newSimpleName) {
-		String oldSimpleName = simpleName;
-		simpleName = newSimpleName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__SIMPLE_NAME, oldSimpleName, simpleName));
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.NODE__OBJECT_TYPE, oldObjectType, objectType));
 	}
 
 	/**
@@ -220,10 +165,8 @@ public class Node extends Element {
 		switch (featureID) {
 			case TestPackage.NODE__ELEMENT:
 				return getElement();
-			case TestPackage.NODE__FULL_NAME:
-				return getFullName();
-			case TestPackage.NODE__SIMPLE_NAME:
-				return getSimpleName();
+			case TestPackage.NODE__OBJECT_TYPE:
+				return getObjectType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -241,11 +184,8 @@ public class Node extends Element {
 				getElement().clear();
 				getElement().addAll((Collection<? extends Element>)newValue);
 				return;
-			case TestPackage.NODE__FULL_NAME:
-				setFullName((String)newValue);
-				return;
-			case TestPackage.NODE__SIMPLE_NAME:
-				setSimpleName((String)newValue);
+			case TestPackage.NODE__OBJECT_TYPE:
+				setObjectType((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -262,11 +202,8 @@ public class Node extends Element {
 			case TestPackage.NODE__ELEMENT:
 				getElement().clear();
 				return;
-			case TestPackage.NODE__FULL_NAME:
-				setFullName(FULL_NAME_EDEFAULT);
-				return;
-			case TestPackage.NODE__SIMPLE_NAME:
-				setSimpleName(SIMPLE_NAME_EDEFAULT);
+			case TestPackage.NODE__OBJECT_TYPE:
+				setObjectType(OBJECT_TYPE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -282,10 +219,8 @@ public class Node extends Element {
 		switch (featureID) {
 			case TestPackage.NODE__ELEMENT:
 				return element != null && !element.isEmpty();
-			case TestPackage.NODE__FULL_NAME:
-				return FULL_NAME_EDEFAULT == null ? fullName != null : !FULL_NAME_EDEFAULT.equals(fullName);
-			case TestPackage.NODE__SIMPLE_NAME:
-				return SIMPLE_NAME_EDEFAULT == null ? simpleName != null : !SIMPLE_NAME_EDEFAULT.equals(simpleName);
+			case TestPackage.NODE__OBJECT_TYPE:
+				return OBJECT_TYPE_EDEFAULT == null ? objectType != null : !OBJECT_TYPE_EDEFAULT.equals(objectType);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -300,10 +235,8 @@ public class Node extends Element {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (fullName: ");
-		result.append(fullName);
-		result.append(", simpleName: ");
-		result.append(simpleName);
+		result.append(" (objectType: ");
+		result.append(objectType);
 		result.append(')');
 		return result.toString();
 	}

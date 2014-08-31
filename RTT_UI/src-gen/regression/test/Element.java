@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * The following features are supported:
  * <ul>
  *   <li>{@link regression.test.Element#getAddress <em>Address</em>}</li>
- *   <li>{@link regression.test.Element#getGeneratorName <em>Generator Name</em>}</li>
- *   <li>{@link regression.test.Element#getGeneratorType <em>Generator Type</em>}</li>
+ *   <li>{@link regression.test.Element#getElementType <em>Element Type</em>}</li>
  *   <li>{@link regression.test.Element#isInformational <em>Informational</em>}</li>
+ *   <li>{@link regression.test.Element#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -52,53 +52,33 @@ public class Element extends EObjectImpl implements EObject {
 	protected String address = ADDRESS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getGeneratorName() <em>Generator Name</em>}' attribute.
+	 * The default value of the '{@link #getElementType() <em>Element Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGeneratorName()
+	 * @see #getElementType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String GENERATOR_NAME_EDEFAULT = null;
+	protected static final Type ELEMENT_TYPE_EDEFAULT = Type.OBJECT;
 
 	/**
-	 * The cached value of the '{@link #getGeneratorName() <em>Generator Name</em>}' attribute.
+	 * The cached value of the '{@link #getElementType() <em>Element Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getGeneratorName()
+	 * @see #getElementType()
 	 * @generated
 	 * @ordered
 	 */
-	protected String generatorName = GENERATOR_NAME_EDEFAULT;
+	protected Type elementType = ELEMENT_TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getGeneratorType() <em>Generator Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getGeneratorType()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final Type GENERATOR_TYPE_EDEFAULT = Type.OBJECT;
-
-	/**
-	 * The cached value of the '{@link #getGeneratorType() <em>Generator Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getGeneratorType()
-	 * @generated
-	 * @ordered
-	 */
-	protected Type generatorType = GENERATOR_TYPE_EDEFAULT;
-
-	/**
-	 * This is true if the Generator Type attribute has been set.
+	 * This is true if the Element Type attribute has been set.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean generatorTypeESet;
+	protected boolean elementTypeESet;
 
 	/**
 	 * The default value of the '{@link #isInformational() <em>Informational</em>}' attribute.
@@ -128,6 +108,26 @@ public class Element extends EObjectImpl implements EObject {
 	 * @ordered
 	 */
 	protected boolean informationalESet;
+
+	/**
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String name = NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -183,112 +183,78 @@ public class Element extends EObjectImpl implements EObject {
 	}
 
 	/**
-	 * Returns the value of the '<em><b>Generator Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Generator Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Generator Name</em>' attribute.
-	 * @see #setGeneratorName(String)
-	 * @see regression.test.TestPackage#getElement_GeneratorName()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='attribute' name='generatorName'"
-	 * @generated
-	 */
-	public String getGeneratorName() {
-		return generatorName;
-	}
-
-	/**
-	 * Sets the value of the '{@link regression.test.Element#getGeneratorName <em>Generator Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Generator Name</em>' attribute.
-	 * @see #getGeneratorName()
-	 * @generated
-	 */
-	public void setGeneratorName(String newGeneratorName) {
-		String oldGeneratorName = generatorName;
-		generatorName = newGeneratorName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ELEMENT__GENERATOR_NAME, oldGeneratorName, generatorName));
-	}
-
-	/**
-	 * Returns the value of the '<em><b>Generator Type</b></em>' attribute.
+	 * Returns the value of the '<em><b>Element Type</b></em>' attribute.
 	 * The literals are from the enumeration {@link regression.test.Type}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generator Type</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Element Type</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Generator Type</em>' attribute.
+	 * @return the value of the '<em>Element Type</em>' attribute.
 	 * @see regression.test.Type
-	 * @see #isSetGeneratorType()
-	 * @see #unsetGeneratorType()
-	 * @see #setGeneratorType(Type)
-	 * @see regression.test.TestPackage#getElement_GeneratorType()
+	 * @see #isSetElementType()
+	 * @see #unsetElementType()
+	 * @see #setElementType(Type)
+	 * @see regression.test.TestPackage#getElement_ElementType()
 	 * @model unsettable="true" required="true"
-	 *        extendedMetaData="kind='attribute' name='generatorType'"
+	 *        extendedMetaData="kind='attribute' name='elementType'"
 	 * @generated
 	 */
-	public Type getGeneratorType() {
-		return generatorType;
+	public Type getElementType() {
+		return elementType;
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.Element#getGeneratorType <em>Generator Type</em>}' attribute.
+	 * Sets the value of the '{@link regression.test.Element#getElementType <em>Element Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Generator Type</em>' attribute.
+	 * @param value the new value of the '<em>Element Type</em>' attribute.
 	 * @see regression.test.Type
-	 * @see #isSetGeneratorType()
-	 * @see #unsetGeneratorType()
-	 * @see #getGeneratorType()
+	 * @see #isSetElementType()
+	 * @see #unsetElementType()
+	 * @see #getElementType()
 	 * @generated
 	 */
-	public void setGeneratorType(Type newGeneratorType) {
-		Type oldGeneratorType = generatorType;
-		generatorType = newGeneratorType == null ? GENERATOR_TYPE_EDEFAULT : newGeneratorType;
-		boolean oldGeneratorTypeESet = generatorTypeESet;
-		generatorTypeESet = true;
+	public void setElementType(Type newElementType) {
+		Type oldElementType = elementType;
+		elementType = newElementType == null ? ELEMENT_TYPE_EDEFAULT : newElementType;
+		boolean oldElementTypeESet = elementTypeESet;
+		elementTypeESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ELEMENT__GENERATOR_TYPE, oldGeneratorType, generatorType, !oldGeneratorTypeESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ELEMENT__ELEMENT_TYPE, oldElementType, elementType, !oldElementTypeESet));
 	}
 
 	/**
-	 * Unsets the value of the '{@link regression.test.Element#getGeneratorType <em>Generator Type</em>}' attribute.
+	 * Unsets the value of the '{@link regression.test.Element#getElementType <em>Element Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #isSetGeneratorType()
-	 * @see #getGeneratorType()
-	 * @see #setGeneratorType(Type)
+	 * @see #isSetElementType()
+	 * @see #getElementType()
+	 * @see #setElementType(Type)
 	 * @generated
 	 */
-	public void unsetGeneratorType() {
-		Type oldGeneratorType = generatorType;
-		boolean oldGeneratorTypeESet = generatorTypeESet;
-		generatorType = GENERATOR_TYPE_EDEFAULT;
-		generatorTypeESet = false;
+	public void unsetElementType() {
+		Type oldElementType = elementType;
+		boolean oldElementTypeESet = elementTypeESet;
+		elementType = ELEMENT_TYPE_EDEFAULT;
+		elementTypeESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, TestPackage.ELEMENT__GENERATOR_TYPE, oldGeneratorType, GENERATOR_TYPE_EDEFAULT, oldGeneratorTypeESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, TestPackage.ELEMENT__ELEMENT_TYPE, oldElementType, ELEMENT_TYPE_EDEFAULT, oldElementTypeESet));
 	}
 
 	/**
-	 * Returns whether the value of the '{@link regression.test.Element#getGeneratorType <em>Generator Type</em>}' attribute is set.
+	 * Returns whether the value of the '{@link regression.test.Element#getElementType <em>Element Type</em>}' attribute is set.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return whether the value of the '<em>Generator Type</em>' attribute is set.
-	 * @see #unsetGeneratorType()
-	 * @see #getGeneratorType()
-	 * @see #setGeneratorType(Type)
+	 * @return whether the value of the '<em>Element Type</em>' attribute is set.
+	 * @see #unsetElementType()
+	 * @see #getElementType()
+	 * @see #setElementType(Type)
 	 * @generated
 	 */
-	public boolean isSetGeneratorType() {
-		return generatorTypeESet;
+	public boolean isSetElementType() {
+		return elementTypeESet;
 	}
 
 	/**
@@ -365,6 +331,40 @@ public class Element extends EObjectImpl implements EObject {
 	}
 
 	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Name</em>' attribute.
+	 * @see #setName(String)
+	 * @see regression.test.TestPackage#getElement_Name()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 *        extendedMetaData="kind='attribute' name='name'"
+	 * @generated
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the value of the '{@link regression.test.Element#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
+	 */
+	public void setName(String newName) {
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ELEMENT__NAME, oldName, name));
+	}
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -374,12 +374,12 @@ public class Element extends EObjectImpl implements EObject {
 		switch (featureID) {
 			case TestPackage.ELEMENT__ADDRESS:
 				return getAddress();
-			case TestPackage.ELEMENT__GENERATOR_NAME:
-				return getGeneratorName();
-			case TestPackage.ELEMENT__GENERATOR_TYPE:
-				return getGeneratorType();
+			case TestPackage.ELEMENT__ELEMENT_TYPE:
+				return getElementType();
 			case TestPackage.ELEMENT__INFORMATIONAL:
 				return isInformational();
+			case TestPackage.ELEMENT__NAME:
+				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -395,14 +395,14 @@ public class Element extends EObjectImpl implements EObject {
 			case TestPackage.ELEMENT__ADDRESS:
 				setAddress((String)newValue);
 				return;
-			case TestPackage.ELEMENT__GENERATOR_NAME:
-				setGeneratorName((String)newValue);
-				return;
-			case TestPackage.ELEMENT__GENERATOR_TYPE:
-				setGeneratorType((Type)newValue);
+			case TestPackage.ELEMENT__ELEMENT_TYPE:
+				setElementType((Type)newValue);
 				return;
 			case TestPackage.ELEMENT__INFORMATIONAL:
 				setInformational((Boolean)newValue);
+				return;
+			case TestPackage.ELEMENT__NAME:
+				setName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -419,14 +419,14 @@ public class Element extends EObjectImpl implements EObject {
 			case TestPackage.ELEMENT__ADDRESS:
 				setAddress(ADDRESS_EDEFAULT);
 				return;
-			case TestPackage.ELEMENT__GENERATOR_NAME:
-				setGeneratorName(GENERATOR_NAME_EDEFAULT);
-				return;
-			case TestPackage.ELEMENT__GENERATOR_TYPE:
-				unsetGeneratorType();
+			case TestPackage.ELEMENT__ELEMENT_TYPE:
+				unsetElementType();
 				return;
 			case TestPackage.ELEMENT__INFORMATIONAL:
 				unsetInformational();
+				return;
+			case TestPackage.ELEMENT__NAME:
+				setName(NAME_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -442,12 +442,12 @@ public class Element extends EObjectImpl implements EObject {
 		switch (featureID) {
 			case TestPackage.ELEMENT__ADDRESS:
 				return ADDRESS_EDEFAULT == null ? address != null : !ADDRESS_EDEFAULT.equals(address);
-			case TestPackage.ELEMENT__GENERATOR_NAME:
-				return GENERATOR_NAME_EDEFAULT == null ? generatorName != null : !GENERATOR_NAME_EDEFAULT.equals(generatorName);
-			case TestPackage.ELEMENT__GENERATOR_TYPE:
-				return isSetGeneratorType();
+			case TestPackage.ELEMENT__ELEMENT_TYPE:
+				return isSetElementType();
 			case TestPackage.ELEMENT__INFORMATIONAL:
 				return isSetInformational();
+			case TestPackage.ELEMENT__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -464,12 +464,12 @@ public class Element extends EObjectImpl implements EObject {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (address: ");
 		result.append(address);
-		result.append(", generatorName: ");
-		result.append(generatorName);
-		result.append(", generatorType: ");
-		if (generatorTypeESet) result.append(generatorType); else result.append("<unset>");
+		result.append(", elementType: ");
+		if (elementTypeESet) result.append(elementType); else result.append("<unset>");
 		result.append(", informational: ");
 		if (informationalESet) result.append(informational); else result.append("<unset>");
+		result.append(", name: ");
+		result.append(name);
 		result.append(')');
 		return result.toString();
 	}

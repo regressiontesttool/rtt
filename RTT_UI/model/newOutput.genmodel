@@ -20,14 +20,13 @@
     </genClasses>
     <genClasses image="false" ecoreClass="newOuput.ecore#//Element">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/address"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/generatorName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/generatorType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/elementType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/informational"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/name"/>
     </genClasses>
     <genClasses ecoreClass="newOuput.ecore#//Node">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//Node/element"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/fullName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/simpleName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/objectType"/>
     </genClasses>
     <genClasses ecoreClass="newOuput.ecore#//OutputType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//OutputType/initialElement"/>

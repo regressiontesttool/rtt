@@ -20,17 +20,8 @@ public class TestResultContent extends AbstractLogContent {
 		this.suiteName = result.getTestsuite();
 		this.caseName = result.getTestcase();
 		
-		Failure parserFailure = null;
-		
 		for (Failure failure : result.getFailure()) {
-			if (parserFailure == null) {
-				parserFailure = failure;
-				break;
-			}
-		}
-		
-		if (parserFailure != null) {
-			childs.add(new FailureContent(this, parserFailure));
+			childs.add(new FailureContent(this, failure));
 		}
 		
 		for (Comment comment : result.getComment()) {
