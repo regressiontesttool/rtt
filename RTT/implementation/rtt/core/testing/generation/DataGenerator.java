@@ -52,8 +52,8 @@ public class DataGenerator {
 			for (ValueMember<?> annotatedElement : annotatedElements) {
 				element = new Element();
 				element.setAddress(resultNode.getAddress() + "." + childAddress);
-				element.setGeneratorName(annotatedElement.getName());
-				element.setGeneratorType(annotatedElement.getType());
+				element.setName(annotatedElement.getName());
+				element.setElementType(annotatedElement.getType());
 				element.setInformational(resultNode.isInformational() 
 						|| annotatedElement.isInformational());
 				
@@ -130,8 +130,8 @@ public class DataGenerator {
 		
 		Element initPrototype = new Element();
 		initPrototype.setAddress("1");
-		initPrototype.setGeneratorName("Initial Node");
-		initPrototype.setGeneratorType(Type.OBJECT);
+		initPrototype.setName("Initial Node");
+		initPrototype.setElementType(Type.OBJECT);
 		
 		Object initObject = null;			
 		try {

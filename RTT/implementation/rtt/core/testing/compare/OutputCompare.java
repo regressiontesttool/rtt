@@ -32,13 +32,13 @@ public class OutputCompare {
 	public static class CompareResult {
 		
 		public enum Difference {
-			CLASSES("Object type"),
+			ELEMENT_CLASSES("Element classes"),
+			ELEMENT_TYPE("Element type"),
 			INFORMATIONAL("IsInformational"),
-			NAME("Name"),
-			TYPE("Type"),
+			NAME("Name"),			
 			VALUE("Value"),
 			REFERENCE("Reference"),
-			CLASSNAME("Class name"),
+			OBJECT_TYPE("Object type"),
 			CHILD_COUNT("Sizes of children");			
 			
 			private String description;
@@ -132,7 +132,7 @@ public class OutputCompare {
 		}
 		
 		if (referenceElement.getClass() != actualElement.getClass()) {
-			return CompareResult.create(Difference.CLASSES, 
+			return CompareResult.create(Difference.ELEMENT_CLASSES, 
 					referenceElement, actualElement);
 		}
 		
@@ -169,15 +169,15 @@ public class OutputCompare {
 	}
 	
 	private CompareResult compareElementAttributes(Element referenceElement, Element actualElement) {
-		if (!referenceElement.getGeneratorName().equals(actualElement.getGeneratorName())) {
+		if (!referenceElement.getName().equals(actualElement.getName())) {
 			return CompareResult.create(Difference.NAME, 
-					referenceElement.getGeneratorName(), actualElement.getGeneratorName());
+					referenceElement.getName(), actualElement.getName());
 		}
 		
-		if (!referenceElement.getGeneratorType().equals(actualElement.getGeneratorType())) {
-			return CompareResult.create(Difference.TYPE, 
-					referenceElement.getGeneratorType().name(), 
-					actualElement.getGeneratorType().name());
+		if (!referenceElement.getElementType().equals(actualElement.getElementType())) {
+			return CompareResult.create(Difference.ELEMENT_TYPE, 
+					referenceElement.getElementType().name(), 
+					actualElement.getElementType().name());
 		}
 		
 		if (referenceElement.isInformational() != actualElement.isInformational()) {
@@ -229,9 +229,9 @@ public class OutputCompare {
 	}
 	
 	private CompareResult compareNodeAttributes(Node referenceNode, Node actualNode) {
-		if (!referenceNode.getClassName().equals(actualNode.getClassName())) {
-			return CompareResult.create(Difference.CLASSNAME,
-					referenceNode.getClassName(), actualNode.getClassName());
+		if (!referenceNode.getObjectType().equals(actualNode.getObjectType())) {
+			return CompareResult.create(Difference.OBJECT_TYPE,
+					referenceNode.getObjectType(), actualNode.getObjectType());
 		}
 		
 		return null;

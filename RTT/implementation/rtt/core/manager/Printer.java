@@ -13,9 +13,9 @@ public class Printer {
 			return builder.toString();
 		}		
 		
-		builder.append(element.getGeneratorName());
+		builder.append(element.getName());
 		builder.append(" - ");
-		builder.append(element.getGeneratorType());
+		builder.append(element.getElementType());
 		
 		if (element.isInformational()) {
 			builder.append(" [INFORMATIONAL]");
