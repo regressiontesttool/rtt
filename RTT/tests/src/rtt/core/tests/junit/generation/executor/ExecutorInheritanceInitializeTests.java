@@ -47,27 +47,4 @@ public class ExecutorInheritanceInitializeTests {
 		initializeExecutor(ImplementingConstructorClass.class);
 		initializeExecutor(ImplementingMethodClass.class);
 	}
-	
-	// Test: super class has parser annotation
-	// init constructor & method has super class
-	
-	@Node static class SuperParserConstructorClass {
-		@Node.Initialize public SuperParserConstructorClass(InputStream in) {}
-	}
-	
-	@Node static class SuperParserMethodClass {
-		@Node.Initialize public void initMethod(InputStream in) {}
-	}
-	
-	static class ImplementingSuperConstructorClass extends SuperParserConstructorClass {
-		public ImplementingSuperConstructorClass(InputStream in) {super(in);}
-	}
-	
-	static class ImplementingSuperMethodClass extends SuperParserMethodClass {}
-	
-	@Test
-	public void testInitializeInSuper() throws Throwable {
-		initializeExecutor(ImplementingSuperConstructorClass.class);
-		initializeExecutor(ImplementingSuperMethodClass.class);
-	}
 }

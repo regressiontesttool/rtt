@@ -64,15 +64,9 @@ public @interface Node {
 	@Target( { ElementType.FIELD, ElementType.METHOD })
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Compare {
-		String value() default "";
+	public @interface Value {
+		int index() default 100;
+		String name() default "";
+		boolean informational() default false;
 	}
-
-	@Target( { ElementType.FIELD, ElementType.METHOD })
-	@Inherited
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Informational {
-		String value() default "";
-	}
-
 }

@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotations.Node;
+import rtt.annotations.Node.Initialize;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
@@ -39,12 +40,21 @@ public class ExecutorFailingInitializeTests {
 	public void testNoInitAnnotationAnnotation() throws Throwable {		
 		initializeExecutor(NoInitAnnotation.class);
 	}
+	
+	// Test: Initialize annotation, but no @Node annotation
+	static class NoNodeAnnotation {
+		@Initialize public NoNodeAnnotation(InputStream in) {}
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testNoNodeAnnotation() throws Throwable {
+		initializeExecutor(NoNodeAnnotation.class);
+	}
 
 	// Test: annotated constructor, but no parameter
 
 	@Node static class NoParameterConstructor {
-		@Node.Initialize
-		public NoParameterConstructor() {}
+		@Initialize public NoParameterConstructor() {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -55,8 +65,7 @@ public class ExecutorFailingInitializeTests {
 	// Test: annotated method, but no parameter
 
 	@Node static class NoParameterMethod {
-		@Node.Initialize
-		public void initMethod() {}
+		@Initialize public void initMethod() {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -67,8 +76,7 @@ public class ExecutorFailingInitializeTests {
 	// Test: annotated constructor, but wrong parameter
 
 	@Node static class WrongParameterConstructor {
-		@Node.Initialize
-		public WrongParameterConstructor(Object o) {}
+		@Initialize	public WrongParameterConstructor(Object o) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -79,8 +87,7 @@ public class ExecutorFailingInitializeTests {
 	// Test: annotated method, but wrong parameter
 
 	@Node static class WrongParameterMethod {
-		@Node.Initialize
-		public void initMethod(Object o) {}
+		@Initialize	public void initMethod(Object o) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -93,8 +100,7 @@ public class ExecutorFailingInitializeTests {
 	@Node static class ParameterlessConstructor {
 		public ParameterlessConstructor(Object o) {}
 
-		@Node.Initialize
-		public void initMethod(InputStream in) {}
+		@Initialize	public void initMethod(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -105,8 +111,7 @@ public class ExecutorFailingInitializeTests {
 	// Test: too much parameters
 
 	@Node static class TooMuchParameters {
-		@Node.Initialize
-		public void initMe(InputStream in, Object o) {}
+		@Initialize	public void initMe(InputStream in, Object o) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -118,10 +123,8 @@ public class ExecutorFailingInitializeTests {
 
 	@Node static class MultipleInitMethod {
 		public MultipleInitMethod() {}		
-		@Node.Initialize
-		public void initMethod(InputStream in) {}		
-		@Node.Initialize
-		public void secondMethod() {}
+		@Initialize	public void initMethod(InputStream in) {}		
+		@Initialize	public void secondMethod() {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -132,10 +135,8 @@ public class ExecutorFailingInitializeTests {
 	// Test: multiple annotated constructors
 
 	@Node static class MultipleInitConstruct {
-		@Node.Initialize
-		public MultipleInitConstruct() {}
-		@Node.Initialize
-		public MultipleInitConstruct(InputStream in) {}
+		@Initialize	public MultipleInitConstruct() {}
+		@Initialize	public MultipleInitConstruct(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -146,8 +147,7 @@ public class ExecutorFailingInitializeTests {
 	// Test: withParameter constructor
 
 	@Node static class WithParamsConstructorClass {
-		@Node.Initialize(withParams=true)
-		public WithParamsConstructorClass(InputStream in) {}
+		@Initialize(withParams=true) public WithParamsConstructorClass(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -158,8 +158,7 @@ public class ExecutorFailingInitializeTests {
 	// Test: withParameter method
 
 	@Node static class WithParamsMethodClass {
-		@Node.Initialize(withParams=true)
-		public void init(InputStream in) {}
+		@Initialize(withParams=true) public void init(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -167,7 +166,30 @@ public class ExecutorFailingInitializeTests {
 		initializeExecutor(WithParamsMethodClass.class);
 	}
 	
+	// Test: Inheritance of Initialize annotation is not allowed
+	// super class has init constructor or method
+
+	@Node static class SuperParserConstructorClass {
+		@Initialize public SuperParserConstructorClass(InputStream in) {}
+	}
+
+	@Node static class SuperParserMethodClass {
+		@Initialize public void initMethod(InputStream in) {}
+	}
+
+	static class ImplementingSuperConstructorClass extends SuperParserConstructorClass {
+		public ImplementingSuperConstructorClass(InputStream in) {super(in);}
+	}
+
+	static class ImplementingSuperMethodClass extends SuperParserMethodClass {}
+
+	@Test(expected=RuntimeException.class)
+	public void testInitializeConstructorInSuper() throws Throwable {
+		initializeExecutor(ImplementingSuperConstructorClass.class);
+	}
 	
-	
-	
+	@Test(expected=RuntimeException.class)
+	public void testInitializeMethodInSuper() throws Throwable {
+		initializeExecutor(ImplementingSuperMethodClass.class);
+	}
 }

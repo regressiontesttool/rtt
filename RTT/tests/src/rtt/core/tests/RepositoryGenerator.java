@@ -66,7 +66,7 @@ public final class RepositoryGenerator {
 	 * @throws RuntimeException Thrown, if the first input chunk is a negative
 	 * number.
 	 */
-	@Node.Compare public Repository createRepository() throws IOException {
+	@Node.Value public Repository createRepository() throws IOException {
 		// Initialize the repository:
 		Value value = nextChunk();
 		Repository repository = new Repository(value.value, new Repository[2]);
@@ -123,10 +123,10 @@ public final class RepositoryGenerator {
 	
 	@Node public static final class Repository {
 		public Repository[] children = new Repository[0];
-		@Node.Compare public List<Repository> children() {
+		@Node.Value public List<Repository> children() {
 			return Arrays.asList(children);
 		}
-		@Node.Compare public String value = "";
+		@Node.Value public String value = "";
 		public Repository(String value, Repository ...children) {
 			this.value = value;
 			this.children = children;
