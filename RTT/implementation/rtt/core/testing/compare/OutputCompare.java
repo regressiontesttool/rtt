@@ -38,8 +38,7 @@ public class OutputCompare {
 			TYPE("Type"),
 			VALUE("Value"),
 			REFERENCE("Reference"),
-			SIMPLENAME("Simple name"),
-			FULLNAME("Full name"),
+			CLASSNAME("Class name"),
 			CHILD_COUNT("Sizes of children");			
 			
 			private String description;
@@ -215,8 +214,8 @@ public class OutputCompare {
 		
 		CompareResult result = compareNodeAttributes(referenceNode, actualNode);
 		if (!hasDifferences(result)) {
-			List<Element> referenceCompareElements = referenceNode.getElement();
-			List<Element> actualCompareElements = actualNode.getElement();
+			List<Element> referenceCompareElements = referenceNode.getElements();
+			List<Element> actualCompareElements = actualNode.getElements();
 			
 			if (testInformational == false) {
 				referenceCompareElements = getCompareElements(referenceCompareElements);
@@ -230,14 +229,9 @@ public class OutputCompare {
 	}
 	
 	private CompareResult compareNodeAttributes(Node referenceNode, Node actualNode) {
-		if (!referenceNode.getSimpleName().equals(actualNode.getSimpleName())) {
-			return CompareResult.create(Difference.SIMPLENAME,
-					referenceNode.getSimpleName(), actualNode.getSimpleName());
-		}
-		
-		if (!referenceNode.getFullName().equals(actualNode.getFullName())) {
-			return CompareResult.create(Difference.FULLNAME,
-					referenceNode.getFullName(), actualNode.getFullName());
+		if (!referenceNode.getClassName().equals(actualNode.getClassName())) {
+			return CompareResult.create(Difference.CLASSNAME,
+					referenceNode.getClassName(), actualNode.getClassName());
 		}
 		
 		return null;

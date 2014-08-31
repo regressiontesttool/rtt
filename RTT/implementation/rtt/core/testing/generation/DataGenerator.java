@@ -21,7 +21,9 @@ public class DataGenerator {
 	
 	private DataGenerator() {}
 	
-	private Element handleObject(final Object object, Element prototype) throws Exception {
+	private Element handleObject(final Object object, 
+				Element prototype) throws Exception {
+		
 		if (AnnotationProcessor.isNode(object)) {
 			return handleNode(object, prototype);
 		}
@@ -29,7 +31,8 @@ public class DataGenerator {
 		return GeneratorUtil.createValue(object, prototype);
 	}
 	
-	private Element handleNode(final Object object, Element prototype) throws Exception {
+	private Element handleNode(final Object object, 
+				Element prototype) throws Exception {
 		
 		Element result = null;
 		String address = GeneratorUtil.getObjectAddress(object);
@@ -55,7 +58,7 @@ public class DataGenerator {
 						|| annotatedElement.isInformational());
 				
 				try {
-					resultNode.getElement().add(handleResult(
+					resultNode.getElements().add(handleResult(
 							annotatedElement.getResult(object), element));
 					childAddress++;
 				} catch (Exception e) {
@@ -69,76 +72,9 @@ public class DataGenerator {
 		return result;
 	}
 	
-//	private List<Element> processFields(final Object nodeObject, final Node parentNode, 
-//			List<Field> annotatedFields) throws InvocationTargetException {
-//		
-//		List<Element> resultList = new ArrayList<>();
-//		
-//		int fieldAddress = parentNode.getElement().size() + 1;
-//		Element element = null;
-//		
-//		for (Field field : annotatedFields) {
-//			element = new Element();
-//			element.setAddress(parentNode.getAddress() + "." + fieldAddress);
-//			element.setGeneratorName(field.getName());
-//			element.setGeneratorType(Type.FIELD);
-//			element.setInformational(parentNode.isInformational() 
-//					|| AnnotationUtil.isInformational(field));
-//			
-//			try {
-//				field.setAccessible(true);
-//				resultList.add(handleResult(field.get(nodeObject), element));
-//				fieldAddress++;
-//			} catch (IllegalAccessException | IllegalArgumentException e) {
-//				RTTLogging.throwException(
-//						new RuntimeException("Could not access field.", e));
-//			}
-//		}
-//		
-//		return resultList;
-//	}
-	
-//	private List<Element> processMethods(final Object nodeObject, final Node parentNode,
-//			List<Method> annotatedMethods) throws InvocationTargetException {
-//		
-//		List<Element> resultList = new ArrayList<>();
-//		
-//		Element element = null;
-//		int methodAddress = parentNode.getElement().size() + 1;
-//		
-//		for (Method method : annotatedMethods) {
-//			if (method.getReturnType() == Void.TYPE) {
-//				RTTLogging.warn(ONLY_NONVOID_METHODS);
-//				continue;
-//			}
-//			
-//			if (method.getParameterTypes().length > 0) {
-//				RTTLogging.warn(ONLY_PARAMETERLESS_METHODS);
-//				continue;
-//			}
-//			
-//			element = new Element();
-//			element.setAddress(parentNode.getAddress() + "." + methodAddress);
-//			element.setGeneratorName(method.getName());
-//			element.setGeneratorType(Type.METHOD);
-//
-//			element.setInformational(parentNode.isInformational() 
-//					|| AnnotationUtil.isInformational(method));
-//			
-//			try {
-//				method.setAccessible(true);
-//				resultList.add(handleResult(method.invoke(nodeObject), element));
-//				methodAddress++;				
-//			} catch (IllegalArgumentException | IllegalAccessException e) {
-//				RTTLogging.throwException(
-//						new RuntimeException("Could not invoke method.", e));
-//			}
-//		}
-//		
-//		return resultList;
-//	}
-	
-	private Element handleResult(final Object object, Element prototype) throws Exception {
+	private Element handleResult(final Object object, 
+				Element prototype) throws Exception {
+		
 		if (object != null) {
 			if (object.getClass().isArray()) {				
 				return handleArray(object, prototype);
@@ -152,19 +88,23 @@ public class DataGenerator {
 		return handleObject(object, prototype);
 	}
 	
-	private Element handleArray(final Object array, Element prototype) throws Exception {
+	private Element handleArray(final Object array, 
+				Element prototype) throws Exception {
+		
 		Node arrayNode = GeneratorUtil.createNode(array, prototype);
 		
 		Element element = null;		
 		for (int index = 0; index < Array.getLength(array); index++) {
 			element = GeneratorUtil.createChildElement(arrayNode, index);			
-			arrayNode.getElement().add(handleResult(Array.get(array, index), element));
+			arrayNode.getElements().add(handleResult(Array.get(array, index), element));
 		}
 		
 		return arrayNode;
 	}
 
-	private Element handleIterable(final Iterable<?> iterable, Element prototype) throws Exception {
+	private Element handleIterable(final Iterable<?> iterable, 
+				Element prototype) throws Exception {
+		
 		Node iterableNode = GeneratorUtil.createNode(iterable, prototype);
 		
 		int index = 0;
@@ -172,7 +112,7 @@ public class DataGenerator {
 		
 		for (Object object : iterable) {
 			element = GeneratorUtil.createChildElement(iterableNode, index);
-			iterableNode.getElement().add(handleResult(object, element));
+			iterableNode.getElements().add(handleResult(object, element));
 			index++;
 		}
 		
@@ -180,7 +120,8 @@ public class DataGenerator {
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
-			Executor executor) throws Throwable {		
+			Executor executor) throws Throwable {
+		
 		if (input == null || params == null || executor == null) {
 			throw new IllegalArgumentException("One argument was null.");
 		}

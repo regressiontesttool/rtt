@@ -55,7 +55,9 @@ public class GeneratorUtil {
 	
 	// --------------------------------------------------------------------------
 	
-	private static <E extends Element> E copyElement(final Element source, final E destination) {
+	private static <E extends Element> E copyElement(final Element source, 
+			final E destination) {
+		
 		destination.setAddress(source.getAddress());
 		destination.setGeneratorName(source.getGeneratorName());
 		destination.setGeneratorType(source.getGeneratorType());
@@ -68,8 +70,7 @@ public class GeneratorUtil {
 		Class<?> objectType = object.getClass();
 		
 		Node node = copyElement(prototype, new Node());		
-		node.setFullName(objectType.getName());
-		node.setSimpleName(objectType.getSimpleName());
+		node.setClassName(objectType.getName());
 		
 		return node;
 	}
