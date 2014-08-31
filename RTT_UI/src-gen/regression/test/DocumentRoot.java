@@ -31,8 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link regression.test.DocumentRoot#getMixed <em>Mixed</em>}</li>
  *   <li>{@link regression.test.DocumentRoot#getXMLNSPrefixMap <em>XMLNS Prefix Map</em>}</li>
  *   <li>{@link regression.test.DocumentRoot#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
- *   <li>{@link regression.test.DocumentRoot#getLexerOutput <em>Lexer Output</em>}</li>
- *   <li>{@link regression.test.DocumentRoot#getParserOutput <em>Parser Output</em>}</li>
+ *   <li>{@link regression.test.DocumentRoot#getOutput <em>Output</em>}</li>
  * </ul>
  * </p>
  *
@@ -160,22 +159,22 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 	}
 
 	/**
-	 * Returns the value of the '<em><b>Lexer Output</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Output</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Lexer Output</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Output</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Lexer Output</em>' containment reference.
-	 * @see #setLexerOutput(LexerOutputType)
-	 * @see regression.test.TestPackage#getDocumentRoot_LexerOutput()
+	 * @return the value of the '<em>Output</em>' containment reference.
+	 * @see #setOutput(OutputType)
+	 * @see regression.test.TestPackage#getDocumentRoot_Output()
 	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='lexerOutput' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='element' name='output' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	public LexerOutputType getLexerOutput() {
-		return (LexerOutputType)getMixed().get(TestPackage.Literals.DOCUMENT_ROOT__LEXER_OUTPUT, true);
+	public OutputType getOutput() {
+		return (OutputType)getMixed().get(TestPackage.Literals.DOCUMENT_ROOT__OUTPUT, true);
 	}
 
 	/**
@@ -183,60 +182,20 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetLexerOutput(LexerOutputType newLexerOutput, NotificationChain msgs) {
-		return ((FeatureMap.Internal)getMixed()).basicAdd(TestPackage.Literals.DOCUMENT_ROOT__LEXER_OUTPUT, newLexerOutput, msgs);
+	public NotificationChain basicSetOutput(OutputType newOutput, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(TestPackage.Literals.DOCUMENT_ROOT__OUTPUT, newOutput, msgs);
 	}
 
 	/**
-	 * Sets the value of the '{@link regression.test.DocumentRoot#getLexerOutput <em>Lexer Output</em>}' containment reference.
+	 * Sets the value of the '{@link regression.test.DocumentRoot#getOutput <em>Output</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Lexer Output</em>' containment reference.
-	 * @see #getLexerOutput()
+	 * @param value the new value of the '<em>Output</em>' containment reference.
+	 * @see #getOutput()
 	 * @generated
 	 */
-	public void setLexerOutput(LexerOutputType newLexerOutput) {
-		((FeatureMap.Internal)getMixed()).set(TestPackage.Literals.DOCUMENT_ROOT__LEXER_OUTPUT, newLexerOutput);
-	}
-
-	/**
-	 * Returns the value of the '<em><b>Parser Output</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Parser Output</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Parser Output</em>' containment reference.
-	 * @see #setParserOutput(ParserOutputType)
-	 * @see regression.test.TestPackage#getDocumentRoot_ParserOutput()
-	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='parserOutput' namespace='##targetNamespace'"
-	 * @generated
-	 */
-	public ParserOutputType getParserOutput() {
-		return (ParserOutputType)getMixed().get(TestPackage.Literals.DOCUMENT_ROOT__PARSER_OUTPUT, true);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetParserOutput(ParserOutputType newParserOutput, NotificationChain msgs) {
-		return ((FeatureMap.Internal)getMixed()).basicAdd(TestPackage.Literals.DOCUMENT_ROOT__PARSER_OUTPUT, newParserOutput, msgs);
-	}
-
-	/**
-	 * Sets the value of the '{@link regression.test.DocumentRoot#getParserOutput <em>Parser Output</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Parser Output</em>' containment reference.
-	 * @see #getParserOutput()
-	 * @generated
-	 */
-	public void setParserOutput(ParserOutputType newParserOutput) {
-		((FeatureMap.Internal)getMixed()).set(TestPackage.Literals.DOCUMENT_ROOT__PARSER_OUTPUT, newParserOutput);
+	public void setOutput(OutputType newOutput) {
+		((FeatureMap.Internal)getMixed()).set(TestPackage.Literals.DOCUMENT_ROOT__OUTPUT, newOutput);
 	}
 
 	/**
@@ -253,10 +212,8 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 				return ((InternalEList<?>)getXMLNSPrefixMap()).basicRemove(otherEnd, msgs);
 			case TestPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
 				return ((InternalEList<?>)getXSISchemaLocation()).basicRemove(otherEnd, msgs);
-			case TestPackage.DOCUMENT_ROOT__LEXER_OUTPUT:
-				return basicSetLexerOutput(null, msgs);
-			case TestPackage.DOCUMENT_ROOT__PARSER_OUTPUT:
-				return basicSetParserOutput(null, msgs);
+			case TestPackage.DOCUMENT_ROOT__OUTPUT:
+				return basicSetOutput(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -278,10 +235,8 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 			case TestPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
 				if (coreType) return getXSISchemaLocation();
 				else return getXSISchemaLocation().map();
-			case TestPackage.DOCUMENT_ROOT__LEXER_OUTPUT:
-				return getLexerOutput();
-			case TestPackage.DOCUMENT_ROOT__PARSER_OUTPUT:
-				return getParserOutput();
+			case TestPackage.DOCUMENT_ROOT__OUTPUT:
+				return getOutput();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -303,11 +258,8 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 			case TestPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
 				((EStructuralFeature.Setting)getXSISchemaLocation()).set(newValue);
 				return;
-			case TestPackage.DOCUMENT_ROOT__LEXER_OUTPUT:
-				setLexerOutput((LexerOutputType)newValue);
-				return;
-			case TestPackage.DOCUMENT_ROOT__PARSER_OUTPUT:
-				setParserOutput((ParserOutputType)newValue);
+			case TestPackage.DOCUMENT_ROOT__OUTPUT:
+				setOutput((OutputType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -330,11 +282,8 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 			case TestPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
 				getXSISchemaLocation().clear();
 				return;
-			case TestPackage.DOCUMENT_ROOT__LEXER_OUTPUT:
-				setLexerOutput((LexerOutputType)null);
-				return;
-			case TestPackage.DOCUMENT_ROOT__PARSER_OUTPUT:
-				setParserOutput((ParserOutputType)null);
+			case TestPackage.DOCUMENT_ROOT__OUTPUT:
+				setOutput((OutputType)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -354,10 +303,8 @@ public class DocumentRoot extends EObjectImpl implements EObject {
 				return xMLNSPrefixMap != null && !xMLNSPrefixMap.isEmpty();
 			case TestPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
 				return xSISchemaLocation != null && !xSISchemaLocation.isEmpty();
-			case TestPackage.DOCUMENT_ROOT__LEXER_OUTPUT:
-				return getLexerOutput() != null;
-			case TestPackage.DOCUMENT_ROOT__PARSER_OUTPUT:
-				return getParserOutput() != null;
+			case TestPackage.DOCUMENT_ROOT__OUTPUT:
+				return getOutput() != null;
 		}
 		return super.eIsSet(featureID);
 	}

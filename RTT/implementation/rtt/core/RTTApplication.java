@@ -156,7 +156,7 @@ public class RTTApplication implements IApplication {
 		
 		// open manager
 		Manager manager = new Manager(archivePath.toFile(), true, classLoader);
-		manager.loadArchive(configName);
+		manager.loadArchive(archivePath.toFile(), configName);
 		
 		if (actionType.equalsIgnoreCase(GENERATE)) {
 			manager.generateTests(suiteName);

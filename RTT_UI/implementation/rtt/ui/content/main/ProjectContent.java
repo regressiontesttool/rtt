@@ -60,7 +60,7 @@ public class ProjectContent extends AbstractContent {
 		IFile archiveFile = project.getArchiveFile();
 		
 		// if archive exists update data
-		if (archiveFile.exists()) {
+		if (archiveFile != null && archiveFile.exists()) {
 			
 			// check if childs contains config and suitedirectory 
 			if (!childs.contains(configDirectory) 

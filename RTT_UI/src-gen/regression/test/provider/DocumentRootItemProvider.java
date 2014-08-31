@@ -77,8 +77,7 @@ public class DocumentRootItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.DOCUMENT_ROOT__LEXER_OUTPUT);
-			childrenFeatures.add(TestPackage.Literals.DOCUMENT_ROOT__PARSER_OUTPUT);
+			childrenFeatures.add(TestPackage.Literals.DOCUMENT_ROOT__OUTPUT);
 		}
 		return childrenFeatures;
 	}
@@ -130,8 +129,7 @@ public class DocumentRootItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(DocumentRoot.class)) {
-			case TestPackage.DOCUMENT_ROOT__LEXER_OUTPUT:
-			case TestPackage.DOCUMENT_ROOT__PARSER_OUTPUT:
+			case TestPackage.DOCUMENT_ROOT__OUTPUT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -151,13 +149,8 @@ public class DocumentRootItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.DOCUMENT_ROOT__LEXER_OUTPUT,
-				 TestFactory.eINSTANCE.createLexerOutputType()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(TestPackage.Literals.DOCUMENT_ROOT__PARSER_OUTPUT,
-				 TestFactory.eINSTANCE.createParserOutputType()));
+				(TestPackage.Literals.DOCUMENT_ROOT__OUTPUT,
+				 TestFactory.eINSTANCE.createOutputType()));
 	}
 
 	/**
@@ -168,7 +161,7 @@ public class DocumentRootItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return RTTOutputDataEditPlugin.INSTANCE;
+		return NewOutputEditPlugin.INSTANCE;
 	}
 
 }

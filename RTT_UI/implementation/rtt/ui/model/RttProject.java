@@ -78,9 +78,9 @@ public class RttProject {
 		
 		// create archive
 		File archive = archiveFile.getLocation().toFile();				
-		Manager m = new Manager(archive, true);
 		try {
-			m.createArchive();
+			Manager m = new Manager(archive, true);
+			m.createArchive(archive);
 			m.saveArchive(archive);
 		} catch (Exception e) {
 			throw new CoreException(new Status(IStatus.ERROR,
@@ -145,7 +145,6 @@ public class RttProject {
 
 	public void setConfiguration(
 			final String configName, 
-			final String lexerClass, 
 			final String parserClass, 
 			final List<String> cp, 
 			final boolean makeDefault)
@@ -155,7 +154,7 @@ public class RttProject {
 			
 			@Override
 			public ConfigStatus execute(Manager manager) {
-				return manager.setConfiguration(configName, lexerClass, parserClass, cp, makeDefault, true);
+				return manager.setConfiguration(configName, parserClass, cp, makeDefault, true);
 			}
 		});
 	}
@@ -340,8 +339,7 @@ public class RttProject {
 	public Configuration createEmptyConfiguration() {
 		Configuration config = new Configuration();
 		config.setName("");
-		config.setLexerClass("");
-		config.setParserClass("");
+		config.setInitialNode("");
 
 		Classpath classpath = new Classpath();
 		try {

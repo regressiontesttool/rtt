@@ -68,36 +68,28 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	protected TestSwitch<Adapter> modelSwitch =
 		new TestSwitch<Adapter>() {
 			@Override
-			public Adapter caseAttribute(Attribute object) {
-				return createAttributeAdapter();
-			}
-			@Override
-			public Adapter caseClassable(Classable object) {
-				return createClassableAdapter();
-			}
-			@Override
 			public Adapter caseDocumentRoot(DocumentRoot object) {
 				return createDocumentRootAdapter();
 			}
 			@Override
-			public Adapter caseLexerOutputType(LexerOutputType object) {
-				return createLexerOutputTypeAdapter();
+			public Adapter caseElement(Element object) {
+				return createElementAdapter();
 			}
 			@Override
 			public Adapter caseNode(Node object) {
 				return createNodeAdapter();
 			}
 			@Override
-			public Adapter caseParserOutputType(ParserOutputType object) {
-				return createParserOutputTypeAdapter();
+			public Adapter caseOutputType(OutputType object) {
+				return createOutputTypeAdapter();
 			}
 			@Override
-			public Adapter caseToken(Token object) {
-				return createTokenAdapter();
+			public Adapter caseReference(Reference object) {
+				return createReferenceAdapter();
 			}
 			@Override
-			public Adapter caseTree(Tree object) {
-				return createTreeAdapter();
+			public Adapter caseValue(Value object) {
+				return createValueAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -120,34 +112,6 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.Attribute <em>Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see regression.test.Attribute
-	 * @generated
-	 */
-	public Adapter createAttributeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.Classable <em>Classable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see regression.test.Classable
-	 * @generated
-	 */
-	public Adapter createClassableAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link regression.test.DocumentRoot <em>Document Root</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -162,16 +126,16 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.LexerOutputType <em>Lexer Output Type</em>}'.
+	 * Creates a new adapter for an object of class '{@link regression.test.Element <em>Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see regression.test.LexerOutputType
+	 * @see regression.test.Element
 	 * @generated
 	 */
-	public Adapter createLexerOutputTypeAdapter() {
+	public Adapter createElementAdapter() {
 		return null;
 	}
 
@@ -190,44 +154,44 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.ParserOutputType <em>Parser Output Type</em>}'.
+	 * Creates a new adapter for an object of class '{@link regression.test.OutputType <em>Output Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see regression.test.ParserOutputType
+	 * @see regression.test.OutputType
 	 * @generated
 	 */
-	public Adapter createParserOutputTypeAdapter() {
+	public Adapter createOutputTypeAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.Token <em>Token</em>}'.
+	 * Creates a new adapter for an object of class '{@link regression.test.Reference <em>Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see regression.test.Token
+	 * @see regression.test.Reference
 	 * @generated
 	 */
-	public Adapter createTokenAdapter() {
+	public Adapter createReferenceAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link regression.test.Tree <em>Tree</em>}'.
+	 * Creates a new adapter for an object of class '{@link regression.test.Value <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see regression.test.Tree
+	 * @see regression.test.Value
 	 * @generated
 	 */
-	public Adapter createTreeAdapter() {
+	public Adapter createValueAdapter() {
 		return null;
 	}
 

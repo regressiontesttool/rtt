@@ -88,7 +88,6 @@
 			
 			<fileset dir="${rtt.src}">
 				<include name="**/taskdef.properties" />
-				<include name="headliner/treedistance/Makefile" />
 			</fileset>
 			<fileset dir="${rtt.schemes}">
 				<include name="**/*.xsd" />
@@ -96,7 +95,7 @@
 			</fileset>
 			<fileset dir="${rtt.bin}">
 				<include name="**/*.class" />
-				<exclude name="rtt/core/tests/**/*" />
+				<exclude name="rtt/tests/**/*" />
 			</fileset>
 		</jar>
 	</target>
@@ -107,9 +106,8 @@
 	<target name="Create_InterfaceLib" description="description">
 		<jar destfile="${rtt.plugin.interface}" index="false" update="false" compress="false">			
 			<fileset dir="${rtt.bin}">
-				<include name="rtt/annotations/**/*.class" />
-				<exclude name="rtt/annotations/AnnotationProcessor.class" />
-				<exclude name="rtt/annotations/MethodAnnotationProcessor.class" />
+				<include name="rtt/annotations/*.class" />
+				<exclude name="rtt/annotations/processing/**/*" />
 			</fileset>
 		</jar>
 	</target>

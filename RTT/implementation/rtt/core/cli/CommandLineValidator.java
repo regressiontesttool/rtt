@@ -57,8 +57,8 @@ public class CommandLineValidator {
 			return false;
 
 		}
-		if (ops.isNewConfiguration() && !(ops.isLexer() || ops.isParser())) {
-			System.err.println("A new configuration needs a lexer or parser");
+		if (ops.isNewConfiguration() && !ops.isParser()) {
+			System.err.println("A new configuration needs a parser");
 			return false;
 
 		}

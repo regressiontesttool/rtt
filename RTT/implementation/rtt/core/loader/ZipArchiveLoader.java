@@ -14,12 +14,9 @@ public class ZipArchiveLoader extends ArchiveLoader {
 
 	String archivePath;
 
-	public ZipArchiveLoader(String folder, String fileName) {
+	public ZipArchiveLoader() {
 		File.setDefaultArchiveDetector(new DefaultArchiveDetector("zip",
 				new ZipDriver()));
-
-		File archiveFile = new File(folder + File.separator + fileName);
-		setBasePath(archiveFile);
 	}
 
 	@Override

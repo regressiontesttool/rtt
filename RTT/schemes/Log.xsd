@@ -88,14 +88,6 @@
 	<xs:complexType name="failure">
 		<xs:attribute name="path" type="xs:string" />
 		<xs:attribute name="msg" type="xs:string" />
-		<xs:attribute name="type" type="rtt:failureType" />
 	</xs:complexType>
-
-	<xs:simpleType name="failureType">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="PARSER" />
-			<xs:enumeration value="LEXER" />
-		</xs:restriction>
-	</xs:simpleType>
 
 </xs:schema>

@@ -29,6 +29,11 @@ public class RTTLogging {
 		LOG.error(errorMessage, throwable);
 	}
 	
+	public static <T extends Throwable> void throwException(T throwable) throws T {
+		LOG.error(throwable.getMessage());
+		throw throwable;
+	}
+	
 	public static void trace(String traceMessage) {
 		LOG.trace(traceMessage);
 	}

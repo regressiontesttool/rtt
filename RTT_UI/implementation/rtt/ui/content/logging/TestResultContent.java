@@ -2,7 +2,6 @@ package rtt.ui.content.logging;
 
 import rtt.core.archive.logging.Comment;
 import rtt.core.archive.logging.Failure;
-import rtt.core.archive.logging.FailureType;
 import rtt.core.archive.logging.Result;
 import rtt.core.archive.logging.Testrun;
 import rtt.ui.content.main.ContentIcon;
@@ -21,25 +20,8 @@ public class TestResultContent extends AbstractLogContent {
 		this.suiteName = result.getTestsuite();
 		this.caseName = result.getTestcase();
 		
-		Failure lexerFailure = null;
-		Failure parserFailure = null;
-		
 		for (Failure failure : result.getFailure()) {
-			if (failure.getType() == FailureType.LEXER && lexerFailure == null) {
-				lexerFailure = failure;
-			}
-			
-			if (failure.getType() == FailureType.PARSER && parserFailure == null) {
-				parserFailure = failure;
-			}
-		}
-		
-		if (lexerFailure != null) {
-			childs.add(new FailureContent(this, lexerFailure));
-		}
-		
-		if (parserFailure != null) {
-			childs.add(new FailureContent(this, parserFailure));
+			childs.add(new FailureContent(this, failure));
 		}
 		
 		for (Comment comment : result.getComment()) {

@@ -77,20 +77,6 @@ public class InputManager extends AbstractDataManager<History> implements
 		return data;
 	}
 
-	// public final Version getVersion(Integer versionNr) {
-	// List<Version> versions = data.getVersion();
-	//
-	// if (versions != null && versions.isEmpty() == false) {
-	// for (Version version : versions) {
-	// if (version.getNr() == versionNr) {
-	// return version;
-	// }
-	// }
-	// }
-	//
-	// return null;
-	// }
-
 	public boolean addInput(Input newData, boolean force) {
 		Integer versionNr = versionCount;
 		Input oldData = getInput(versionNr);

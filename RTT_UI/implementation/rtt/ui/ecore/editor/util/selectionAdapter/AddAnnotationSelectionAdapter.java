@@ -122,7 +122,6 @@ public class AddAnnotationSelectionAdapter extends ViewerSourceSelectionAdapter 
 			
 		case NODE_INFORMATIONAL:
 		case NODE_COMPARE:
-		case NODE_CHILDREN:
 			return setNodeRelatedAnnotation(element);
 
 		default:
@@ -151,8 +150,7 @@ public class AddAnnotationSelectionAdapter extends ViewerSourceSelectionAdapter 
 		// check if selected element has info, compare or children annotation
 		// if true, then inform user that this is not recommended
 		if (EcoreAnnotation.NODE_INFORMATIONAL.isPresentAt(element)
-				|| EcoreAnnotation.NODE_COMPARE.isPresentAt(element)
-				|| EcoreAnnotation.NODE_CHILDREN.isPresentAt(element)) {
+				|| EcoreAnnotation.NODE_COMPARE.isPresentAt(element)) {
 			
 			EcoreAnnotation nodeAnnotation = EcoreAnnotation.search(element);
 			
@@ -197,7 +195,7 @@ public class AddAnnotationSelectionAdapter extends ViewerSourceSelectionAdapter 
 		if (doSet && validateContainment(element)
 				&& validateParent(element, EcoreAnnotation.NODE)) {
 			
-			if (annotation == EcoreAnnotation.NODE_CHILDREN) {
+			if (annotation == EcoreAnnotation.NODE_COMPARE || annotation == EcoreAnnotation.NODE_INFORMATIONAL) {
 				doSet = validateChildren(element, EcoreAnnotation.NODE);					
 			}
 			
@@ -227,7 +225,8 @@ public class AddAnnotationSelectionAdapter extends ViewerSourceSelectionAdapter 
 		if (element instanceof EReference 
 				&& !((EReference) element).isContainment()) {
 			
-			if (annotation == EcoreAnnotation.NODE_CHILDREN
+			if (annotation == EcoreAnnotation.NODE_COMPARE 
+					|| annotation == EcoreAnnotation.NODE_INFORMATIONAL
 					|| annotation == EcoreAnnotation.PARSER_AST) {
 				
 				// check options or ask user

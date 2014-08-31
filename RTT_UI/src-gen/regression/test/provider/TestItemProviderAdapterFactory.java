@@ -72,52 +72,6 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Attribute} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected AttributeItemProvider attributeItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.Attribute}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createAttributeAdapter() {
-		if (attributeItemProvider == null) {
-			attributeItemProvider = new AttributeItemProvider(this);
-		}
-
-		return attributeItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Classable} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ClassableItemProvider classableItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.Classable}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createClassableAdapter() {
-		if (classableItemProvider == null) {
-			classableItemProvider = new ClassableItemProvider(this);
-		}
-
-		return classableItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link regression.test.DocumentRoot} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -141,26 +95,26 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.LexerOutputType} instances.
+	 * This keeps track of the one adapter used for all {@link regression.test.Element} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LexerOutputTypeItemProvider lexerOutputTypeItemProvider;
+	protected ElementItemProvider elementItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link regression.test.LexerOutputType}.
+	 * This creates an adapter for a {@link regression.test.Element}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createLexerOutputTypeAdapter() {
-		if (lexerOutputTypeItemProvider == null) {
-			lexerOutputTypeItemProvider = new LexerOutputTypeItemProvider(this);
+	public Adapter createElementAdapter() {
+		if (elementItemProvider == null) {
+			elementItemProvider = new ElementItemProvider(this);
 		}
 
-		return lexerOutputTypeItemProvider;
+		return elementItemProvider;
 	}
 
 	/**
@@ -187,72 +141,72 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.ParserOutputType} instances.
+	 * This keeps track of the one adapter used for all {@link regression.test.OutputType} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ParserOutputTypeItemProvider parserOutputTypeItemProvider;
+	protected OutputTypeItemProvider outputTypeItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link regression.test.ParserOutputType}.
+	 * This creates an adapter for a {@link regression.test.OutputType}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createParserOutputTypeAdapter() {
-		if (parserOutputTypeItemProvider == null) {
-			parserOutputTypeItemProvider = new ParserOutputTypeItemProvider(this);
+	public Adapter createOutputTypeAdapter() {
+		if (outputTypeItemProvider == null) {
+			outputTypeItemProvider = new OutputTypeItemProvider(this);
 		}
 
-		return parserOutputTypeItemProvider;
+		return outputTypeItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Token} instances.
+	 * This keeps track of the one adapter used for all {@link regression.test.Reference} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected TokenItemProvider tokenItemProvider;
+	protected ReferenceItemProvider referenceItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link regression.test.Token}.
+	 * This creates an adapter for a {@link regression.test.Reference}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createTokenAdapter() {
-		if (tokenItemProvider == null) {
-			tokenItemProvider = new TokenItemProvider(this);
+	public Adapter createReferenceAdapter() {
+		if (referenceItemProvider == null) {
+			referenceItemProvider = new ReferenceItemProvider(this);
 		}
 
-		return tokenItemProvider;
+		return referenceItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Tree} instances.
+	 * This keeps track of the one adapter used for all {@link regression.test.Value} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected TreeItemProvider treeItemProvider;
+	protected ValueItemProvider valueItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link regression.test.Tree}.
+	 * This creates an adapter for a {@link regression.test.Value}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createTreeAdapter() {
-		if (treeItemProvider == null) {
-			treeItemProvider = new TreeItemProvider(this);
+	public Adapter createValueAdapter() {
+		if (valueItemProvider == null) {
+			valueItemProvider = new ValueItemProvider(this);
 		}
 
-		return treeItemProvider;
+		return valueItemProvider;
 	}
 
 	/**
@@ -354,14 +308,12 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	 * @generated
 	 */
 	public void dispose() {
-		if (attributeItemProvider != null) attributeItemProvider.dispose();
-		if (classableItemProvider != null) classableItemProvider.dispose();
 		if (documentRootItemProvider != null) documentRootItemProvider.dispose();
-		if (lexerOutputTypeItemProvider != null) lexerOutputTypeItemProvider.dispose();
+		if (elementItemProvider != null) elementItemProvider.dispose();
 		if (nodeItemProvider != null) nodeItemProvider.dispose();
-		if (parserOutputTypeItemProvider != null) parserOutputTypeItemProvider.dispose();
-		if (tokenItemProvider != null) tokenItemProvider.dispose();
-		if (treeItemProvider != null) treeItemProvider.dispose();
+		if (outputTypeItemProvider != null) outputTypeItemProvider.dispose();
+		if (referenceItemProvider != null) referenceItemProvider.dispose();
+		if (valueItemProvider != null) valueItemProvider.dispose();
 	}
 
 }

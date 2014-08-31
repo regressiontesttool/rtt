@@ -34,8 +34,7 @@ public class AnnotationViewerFilter extends ViewerFilter {
 					EcoreAnnotation.PARSER_INIT,
 					EcoreAnnotation.NODE,
 					EcoreAnnotation.NODE_INFORMATIONAL,
-					EcoreAnnotation.NODE_COMPARE,
-					EcoreAnnotation.NODE_CHILDREN
+					EcoreAnnotation.NODE_COMPARE
 			};
 		} else {
 			this.annotations = annotations;

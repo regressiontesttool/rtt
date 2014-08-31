@@ -27,13 +27,8 @@ public class ConfigurationContent extends AbstractContent implements IDecoratabl
 	}
 	
 	private void loadContent() {
-		
-		if (config.getLexerClass() != null) {
-			addExecutor(ContentType.LEXERCLASS, config.getLexerClass());
-		}
-
-		if (config.getParserClass() != null) {
-			addExecutor(ContentType.PARSERCLASS, config.getParserClass());
+		if (config.getInitialNode() != null) {
+			addExecutor(ContentType.INITIALNODE, config.getInitialNode());
 		}
 
 		if (config.getClasspath() != null) {

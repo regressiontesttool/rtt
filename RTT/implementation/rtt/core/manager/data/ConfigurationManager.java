@@ -41,14 +41,9 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		SKIPPED;
 		
 		/**
-		 * true, if a new lexer class is set.
+		 * true, if a new initial node class was set.
 		 */
-		public boolean lexerSet = false;
-		
-		/**
-		 * true, if a new parser class is set.
-		 */
-		public boolean parserSet = false;
+		public boolean initialNodeSet = false;
 		
 		/**
 		 * A list containing all new entries to the class path
@@ -113,11 +108,8 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 			
 			state = ConfigStatus.ADDED;
 			
-			String lexerClass = newConfig.getLexerClass();
-			state.lexerSet = lexerClass != null && !lexerClass.trim().isEmpty();
-			
-			String parserClass = newConfig.getParserClass();
-			state.parserSet = parserClass != null && !parserClass.trim().isEmpty();
+			String initialNodeClass = newConfig.getInitialNode();
+			state.initialNodeSet = initialNodeClass != null && !initialNodeClass.trim().isEmpty();
 			
 			Classpath cPath = newConfig.getClasspath();
 			if (cPath != null) {
@@ -130,14 +122,13 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		} else {
 			state = ConfigStatus.UPDATED;
 			
-			state.lexerSet = setLexerName(oldConfig, newConfig.getLexerClass());
-			state.parserSet = setParserName(oldConfig, newConfig.getParserClass());		
+			state.initialNodeSet = setInitialNode(oldConfig, newConfig.getInitialNode());		
 			
 			state.newEntries = addClasspathEntries(oldConfig, newConfig);
 			state.deletedEntries = removeClasspathEntries(oldConfig, newConfig);
 			
 			// if nothing done, return skipped 
-			if (!state.lexerSet && !state.parserSet 
+			if (!state.initialNodeSet 
 					&& state.newEntries.isEmpty() && state.deletedEntries.isEmpty()) {
 				
 				state = ConfigStatus.SKIPPED;
@@ -146,28 +137,14 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 		
 		return state;
 	}
-
-	private boolean setLexerName(Configuration config, String lexerName) {
-		if (config != null && lexerName != null) {
-			String oldClass = config.getLexerClass();
-
-			if (oldClass == null || oldClass.equals("")
-					|| !oldClass.equals(lexerName)) {
-				config.setLexerClass(lexerName);
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
-	private boolean setParserName(Configuration config, String parserName) {
-		if (config != null && parserName != null) {
-			String oldClass = config.getParserClass();
+	private boolean setInitialNode(Configuration config, String initialNode) {
+		if (config != null && initialNode != null) {
+			String oldClass = config.getInitialNode();
 
 			if (oldClass == null || oldClass.equals("")
-					|| !oldClass.equals(parserName)) {
-				config.setParserClass(parserName);
+					|| !oldClass.equals(initialNode)) {
+				config.setInitialNode(initialNode);
 				return true;
 			}
 		}
@@ -343,12 +320,8 @@ public class ConfigurationManager extends AbstractDataManager<Configurations> {
 
 			RTTLogging.info("Config: " + c.getName());
 
-			if (c.getLexerClass() != null) {
-				RTTLogging.info("\tLexer: " + c.getLexerClass());
-			}
-
-			if (c.getParserClass() != null) {
-				RTTLogging.info("\tParser: " + c.getParserClass());
+			if (c.getInitialNode() != null) {
+				RTTLogging.info("\tInitial Node: " + c.getInitialNode());
 			}
 		}
 	}

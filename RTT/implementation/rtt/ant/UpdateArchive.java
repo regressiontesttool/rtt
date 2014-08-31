@@ -20,6 +20,7 @@ import org.apache.tools.ant.types.FileSet;
 
 import rtt.core.manager.Manager;
 import rtt.core.manager.Manager.TestCaseMode;
+import rtt.core.utils.RTTLogging;
 
 
 /**
@@ -105,11 +106,14 @@ public class UpdateArchive extends Task {
 	public String getLog() {return log;}
 	public void setLog(String log) {this.log = log;}
 	
-	public void execute() throws BuildException { 
-		Manager m = new Manager(new File(archive), true);
+	public void execute() throws BuildException {
+		Manager m = null;
+		File archiveFile = new File(archive);
 		try {
-			m.loadArchive();
-			System.out.println("Archive loaded");
+			m = new Manager(archiveFile, true);
+		
+			m.loadArchive(archiveFile);
+			RTTLogging.info("Archive loaded");
 
 			for (Testsuite t : toUpdate) {
 				TestCaseMode mode = t.isOverwrite() ? TestCaseMode.OVERWRITE : TestCaseMode.SKIP;
@@ -123,7 +127,7 @@ public class UpdateArchive extends Task {
 			for (Testcase tc : toRemove)
 				m.removeTest(tc.testsuit, tc.testcase);
 
-			System.out.println("Save archive to: "+ archive);
+			RTTLogging.info("Save archive to: "+ archive);
 			m.saveArchive(new File(archive));
 		} catch (Exception e) {
 			e.printStackTrace();

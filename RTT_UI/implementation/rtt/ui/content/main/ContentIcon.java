@@ -20,7 +20,7 @@ public enum ContentIcon {
 	
 	INPUT("icons/input.gif"),
 	LEXER("icons/lexer.gif"),
-	PARSER("icons/parser.gif"),
+	INITIALNODE("icons/parser.gif"),
 	PROJECT("icons/project.gif"),
 	TESTSUITE("icons/suites_full.gif", "icons/suites_empty.gif"),
 	

@@ -19,7 +19,6 @@ import rtt.ui.utils.RttPluginUtil;
 
 public class OutputDataEditorInput implements IEditorInput {
 	
-	public static final URI LEXER_URI = URI.createURI("rtt/output/lexer.rtt");
 	public static final URI PARSER_URI = URI.createURI("rtt/output/parser.rtt");
 
 	private int version;
@@ -52,8 +51,7 @@ public class OutputDataEditorInput implements IEditorInput {
 			OutputDataManager outputManager = new OutputDataManager(
 					loader, suiteName, caseName, project.getActiveConfiguration(), type);
 			
-			RttPluginUtil.loadResource(resourceSet, LEXER_URI, outputManager.getLexerInputStream(version));
-			RttPluginUtil.loadResource(resourceSet, PARSER_URI, outputManager.getParserInputStream(version));
+			RttPluginUtil.loadResource(resourceSet, PARSER_URI, outputManager.getOutputDataInputStream(version));
 		} catch (RTTException e) {
 			RttLog.log(e);
 		} finally {
@@ -66,28 +64,6 @@ public class OutputDataEditorInput implements IEditorInput {
 	public OutputDataType getType() {
 		return type;
 	}
-	
-	
-	
-
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (obj.getClass() != this.getClass()) {
-//			return false;
-//		}
-//
-//		if (obj instanceof OutputDataEditorInput) {
-//			OutputDataEditorInput input = (OutputDataEditorInput) obj;
-//			
-//			return projectName.equals(input.projectName) && 
-//					configName.equals(input.configName) &&
-//					suiteName.equals(input.suiteName) &&
-//					caseName.equals(input.caseName) &&
-//					type.equals(input.type);			
-//		}
-//
-//		return false;
-//	}
 
 	@Override
 	public int hashCode() {

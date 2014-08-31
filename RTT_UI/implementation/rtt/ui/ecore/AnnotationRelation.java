@@ -11,7 +11,7 @@ public class AnnotationRelation {
 	
 	public static final AnnotationRelation NODE_RELATIONS =
 			new AnnotationRelation(EcoreAnnotation.NODE, 
-					EcoreAnnotation.NODE_CHILDREN, EcoreAnnotation.NODE_COMPARE,
+					EcoreAnnotation.NODE_COMPARE,
 					EcoreAnnotation.NODE_INFORMATIONAL);
 	
 	public AnnotationRelation(EcoreAnnotation topAnnotation, 

@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -30,7 +32,7 @@ import regression.test.TestPackage;
  * @generated
  */
 public class NodeItemProvider
-	extends ClassableItemProvider
+	extends ElementItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -58,48 +60,25 @@ public class NodeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addIsNullPropertyDescriptor(object);
-			addMethodPropertyDescriptor(object);
+			addObjectTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Is Null feature.
+	 * This adds a property descriptor for the Object Type feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addIsNullPropertyDescriptor(Object object) {
+	protected void addObjectTypePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_Node_isNull_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Node_isNull_feature", "_UI_Node_type"),
-				 TestPackage.Literals.NODE__IS_NULL,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Method feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addMethodPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Node_method_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Node_method_feature", "_UI_Node_type"),
-				 TestPackage.Literals.NODE__METHOD,
+				 getString("_UI_Node_objectType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Node_objectType_feature", "_UI_Node_type"),
+				 TestPackage.Literals.NODE__OBJECT_TYPE,
 				 true,
 				 false,
 				 false,
@@ -120,8 +99,7 @@ public class NodeItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(TestPackage.Literals.NODE__ATTRIBUTE);
-			childrenFeatures.add(TestPackage.Literals.NODE__NODE);
+			childrenFeatures.add(TestPackage.Literals.NODE__ELEMENT);
 		}
 		return childrenFeatures;
 	}
@@ -159,19 +137,7 @@ public class NodeItemProvider
 	@Override
 	public String getText(Object object) {
 		Node node = (Node) object;
-		StringBuffer buffer = new StringBuffer();
-		
-		buffer.append(node.getMethod());
-		buffer.append(" = ");
-		
-		if (node.isIsNull()) {
-			buffer.append("<null>");
-		} else {
-			buffer.append(super.getText(object));	
-		}
-		
-		return buffer.length() > 0 ? buffer.toString() :
-				getString("_UI_Node_type");
+		return super.getText(object) + node.getObjectType();
 	}
 
 	/**
@@ -186,12 +152,10 @@ public class NodeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Node.class)) {
-			case TestPackage.NODE__IS_NULL:
-			case TestPackage.NODE__METHOD:
+			case TestPackage.NODE__OBJECT_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case TestPackage.NODE__ATTRIBUTE:
-			case TestPackage.NODE__NODE:
+			case TestPackage.NODE__ELEMENT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -211,13 +175,23 @@ public class NodeItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.NODE__ATTRIBUTE,
-				 TestFactory.eINSTANCE.createAttribute()));
+				(TestPackage.Literals.NODE__ELEMENT,
+				 TestFactory.eINSTANCE.createElement()));
 
 		newChildDescriptors.add
 			(createChildParameter
-				(TestPackage.Literals.NODE__NODE,
+				(TestPackage.Literals.NODE__ELEMENT,
 				 TestFactory.eINSTANCE.createNode()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(TestPackage.Literals.NODE__ELEMENT,
+				 TestFactory.eINSTANCE.createReference()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(TestPackage.Literals.NODE__ELEMENT,
+				 TestFactory.eINSTANCE.createValue()));
 	}
 
 }

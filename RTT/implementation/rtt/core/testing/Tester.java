@@ -3,8 +3,7 @@ package rtt.core.testing;
 import java.util.List;
 
 import rtt.core.archive.configuration.Configuration;
-import rtt.core.archive.output.LexerOutput;
-import rtt.core.archive.output.ParserOutput;
+import rtt.core.archive.output.Output;
 import rtt.core.archive.testsuite.Testcase;
 import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
@@ -12,11 +11,9 @@ import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
-import rtt.core.testing.compare.LexerOutputCompare;
-import rtt.core.testing.compare.ParserOutputCompare;
-import rtt.core.testing.compare.results.LexerTestFailure;
-import rtt.core.testing.compare.results.ParserTestFailure;
+import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestExecutionFailure;
+import rtt.core.testing.compare.results.TestFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
 import rtt.core.utils.RTTLogging;
@@ -74,79 +71,39 @@ public class Tester {
 		}
 		
 		boolean testSuccess = true;
-		boolean somethingTested = false;
 		
-		if (!config.getLexerClass().equals("")) {
-			// test lexer
-			try {
-				
-				LexerOutput testData = testManager.getLexerOutput(versionData.getTestID()); 
-				LexerOutput refData = refManager.getLexerOutput(versionData.getReferenceID()); 
-				
-				LexerTestFailure lexerFailure = testLexer(testData, refData);
-				
-				if (lexerFailure != null) {
-					result.addFailure(lexerFailure);
-					testSuccess = false;
+		try {
+			Output testData = testManager.getOutputData(versionData.getTestID());
+			Output refData = refManager.getOutputData(versionData.getReferenceID()); 
+			
+			List<TestFailure> failures = compareOutput(testData, refData);
+			
+			if (failures != null && !failures.isEmpty()) {
+				for (TestFailure testFailure : failures) {
+					result.addFailure(testFailure);
 				}
-
-				somethingTested = true;
-			} catch (RTTException e) {
-				RTTLogging.debug(e.getMessage(), e);
-				result.addFailure(new TestExecutionFailure(e));
 				testSuccess = false;
 			}
+		} catch (RTTException e) {
+			RTTLogging.debug(e.getMessage(), e);
+			result.addFailure(new TestExecutionFailure(e));
+			testSuccess = false;
 		}
-		
-		if (!config.getParserClass().equals("")) {
-			// test parser
-			try {
-				ParserOutput testData = testManager.getParserOutput(versionData.getTestID());
-				ParserOutput refData = refManager.getParserOutput(versionData.getReferenceID()); 
-				
-				List<ParserTestFailure> parserFailure = testParser(testData, refData);
-				
-				if (parserFailure != null && parserFailure.size() > 0) {
-					for (ParserTestFailure parserTestFailure : parserFailure) {
-						result.addFailure(parserTestFailure);
-					}
-					testSuccess = false;
-				}
 
-				somethingTested = true;
-			} catch (RTTException e) {
-				RTTLogging.debug(e.getMessage(), e);
-				result.addFailure(new TestExecutionFailure(e));
-				testSuccess = false;
-			}
-		}		
-		
-		if (somethingTested) {
-			if (testSuccess) {
-				result.setType(ResultType.SUCCESS);
-			} else {
-				result.setType(ResultType.FAILURE);
-			}
+		if (testSuccess) {
+			result.setType(ResultType.SUCCESS);
+		} else {
+			result.setType(ResultType.FAILURE);
 		}
 
 		return result;
 	}
 
-	private LexerTestFailure testLexer(LexerOutput testData, LexerOutput refData)
-			throws RTTException {
-		
-		checkData(testData, refData);
-		RTTLogging.info("Testing Lexic Results");
-		return LexerOutputCompare.compareLexerOutput(testData, refData, false);
-	}
-
-	private List<ParserTestFailure> testParser(ParserOutput testData,
-			ParserOutput refData) throws RTTException {
+	private List<TestFailure> compareOutput(Output testData, Output refData) throws RTTException {
 		
 		checkData(testData, refData);
 		RTTLogging.info("Testing Syntactic Results");
-		return ParserOutputCompare.compareParserOuput(testData, refData, false,
-				matching);
+		return OutputCompare.compareOutput(testData, refData, false);
 	}
 
 	private void checkData(Object testData, Object refData) throws RTTException {

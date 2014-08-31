@@ -24,7 +24,6 @@ import rtt.core.archive.testsuite.VersionData;
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
 import rtt.core.loader.ArchiveLoader;
-import rtt.core.loader.ZipArchiveLoader;
 import rtt.core.manager.data.ConfigurationManager.ConfigStatus;
 import rtt.core.manager.data.LogManager;
 import rtt.core.manager.data.TestsuiteManager;
@@ -36,8 +35,7 @@ import rtt.core.testing.compare.results.ITestFailure;
 import rtt.core.testing.compare.results.TestResult;
 import rtt.core.testing.compare.results.TestResult.ResultType;
 import rtt.core.testing.generation.DataGenerator;
-import rtt.core.testing.generation.LexerExecutor;
-import rtt.core.testing.generation.ParserExecutor;
+import rtt.core.testing.generation.Executor;
 import rtt.core.utils.GenerationInformation;
 import rtt.core.utils.GenerationInformation.GenerationResult;
 import rtt.core.utils.GenerationInformation.GenerationType;
@@ -85,12 +83,14 @@ public class Manager {
 	Archive currentArchive;
 	LogManager currentLog;
 	private String baseDir;
+	
+	private ArchiveLoader loader;
 
 	public static boolean verbose = true;
 
-	public Manager(File archivePath, boolean verbose) {
-
+	public Manager(File archivePath, boolean verbose) throws RTTException {
 		this.archivePath = archivePath;
+		this.loader = ArchiveLoader.create(archivePath);
 
 		// because sometimes, it is not the same
 		Thread.currentThread().setContextClassLoader(
@@ -99,22 +99,35 @@ public class Manager {
 		Manager.verbose = verbose;
 	}
 	
-	public Manager(File archive, boolean verbose, ClassLoader classLoader) {
+	public Manager(File archive, boolean verbose, ClassLoader classLoader) throws RTTException {
 		this(archive, verbose);
 		Thread.currentThread().setContextClassLoader(classLoader);
 	}
-
-	public void createArchive() throws Exception {
-		currentArchive = new Archive(getArchiveLoader(archivePath));
+	
+	private void initArchive(File archive) {
+		loader.setBasePath(archive);
+		baseDir = loader.getBasePath();
+		
+		currentArchive = new Archive(loader);
 		currentLog = currentArchive.getLogManager();
-
-		currentLog.addEntry(EntryType.ARCHIVE, "Archive created.", "");
-
-		currentArchive.save();
 	}
+	
+	public void loadArchive(File archive) throws RTTException {
+		if (!archive.exists()) {
+			throw new RTTException(Type.NO_ARCHIVE, archive + " not found.");
+		}
+		
+		initArchive(archive);
 
-	public void loadArchive(String config) throws RTTException {
-		loadArchive();
+		try {
+			currentArchive.load();
+		} catch (Exception e) {
+			throw new RTTException(Type.NO_ARCHIVE, "Could not load archive.", e);
+		}
+	}
+	
+	public void loadArchive(File archive, String config) throws RTTException {
+		loadArchive(archive);
 		boolean hasChanged = currentArchive.setActiveConfiguration(config);
 
 		if (hasChanged) {
@@ -122,41 +135,18 @@ public class Manager {
 		}
 	}
 
-	public void loadArchive() throws RTTException {
-		currentArchive = new Archive(getArchiveLoader(archivePath));
-		currentLog = currentArchive.getLogManager();
-
-		try {
-			currentArchive.load();
-		} catch (Exception e) {
-			throw new RTTException(Type.NO_ARCHIVE, "Could not load archive.", e);
+	public void createArchive(File archive) throws Exception {
+		File parentFolder = archive.getParentFile();
+		if (!parentFolder.exists()) {
+			parentFolder.mkdirs();
 		}
+		
+		initArchive(archive);
 
-	}
+		currentLog.addEntry(EntryType.ARCHIVE, "Archive created.", "");
 
-	private ArchiveLoader getArchiveLoader(File path) throws RTTException {
-		if (!(path.isDirectory() || path.getPath().endsWith("zip")))
-			throw new RTTException(Type.NO_ARCHIVE, path.getAbsolutePath()
-					+ " is no supported Archive");
-
-		File aPath = path.getAbsoluteFile();
-		if (aPath == null) {
-			throw new RTTException(Type.NO_ARCHIVE, "Absolute file of '"
-					+ path.getAbsolutePath() + "' returned null.");
-		}
-
-		try {
-			ArchiveLoader loader = new ZipArchiveLoader(aPath.getParent(),
-					aPath.getName());
-			this.baseDir = loader.getBasePath();
-
-			return loader;
-		} catch (Exception e) {
-			throw new RTTException(Type.NO_ARCHIVE,
-					"Could not start archive loader", e);
-		}
-
-	}
+		currentArchive.save();
+	}	
 
 	private boolean isInitialized() {
 		return (currentArchive != null);
@@ -200,8 +190,7 @@ public class Manager {
 	 * A {@link ConfigStatus} object will be returned to indicate which actions are taken by this function. See {@link ConfigStatus#ADDED}, {@link ConfigStatus#UPDATED} and {@link ConfigStatus#SKIPPED}.
 	 * 
 	 * @param configName the name of the configuration
-	 * @param lexerName the name of lexer class
-	 * @param parserName the name of parser class
+	 * @param initialNode the name of initial node
 	 * @param cpEntries a list of entries, which should be added to the class path.
 	 * @param defaultConfig indicates, if new configuration should be the default configuration of this archive
 	 * @param overwrite indicates, if an existing configuration should be overwritten
@@ -210,9 +199,8 @@ public class Manager {
 	 * @see ConfigStatus#UPDATED
 	 * @see ConfigStatus#SKIPPED
 	 */
-	public ConfigStatus setConfiguration(String configName, String lexerName,
-			String parserName, List<String> cpEntries, boolean defaultConfig,
-			boolean overwrite) {
+	public ConfigStatus setConfiguration(String configName, String initialNode, 
+			List<String> cpEntries, boolean defaultConfig, boolean overwrite) {
 		
 		List<Detail> infos = new LinkedList<Detail>();
 		
@@ -222,8 +210,7 @@ public class Manager {
 		cPath.getPath().addAll(cpEntries);
 		config.setClasspath(cPath);
 		
-		config.setLexerClass(lexerName);
-		config.setParserClass(parserName);
+		config.setInitialNode(initialNode);
 		
 		ConfigStatus state = currentArchive.setConfiguration(config, overwrite);
 		
@@ -241,28 +228,11 @@ public class Manager {
 			message = "Configuration not changed: ";
 			break;
 		}
-		
-		if (state.lexerSet) {
+
+		if (state.initialNodeSet) {
 			Detail detail = new Detail();
-			detail.setMsg("Lexer class:");
-			if (lexerName == null || lexerName.trim().isEmpty()) {
-				detail.setSuffix("<None>");
-			} else {
-				detail.setSuffix(lexerName);
-			}			
-			detail.setPriority(0);
-			
-			infos.add(detail);
-		}
-		
-		if (state.parserSet) {
-			Detail detail = new Detail();
-			detail.setMsg("Parser class:");
-			if (parserName == null || parserName.trim().isEmpty()) {
-				detail.setSuffix("<None>");
-			} else {
-				detail.setSuffix(parserName);
-			}			
+			detail.setMsg("Initial Node:");
+			detail.setSuffix(initialNode);		
 			detail.setPriority(0);
 			
 			infos.add(detail);
@@ -494,8 +464,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		LexerExecutor lexer = DataGenerator.locateLexerExecutor(config, baseDir);
-		ParserExecutor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		Executor executor = DataGenerator.locateInitialNode(config, baseDir);
 		
 		RTTLogging.info("**** Generate reference data ****");
 		
@@ -507,7 +476,7 @@ public class Manager {
 					config, OutputDataType.REFERENCE);
 
 			// create new reference data
-			GenerationResult result = refManager.createData(lexer, parser,
+			GenerationResult result = refManager.createData(executor,
 					tcase.getInputID(), tcase.getParameter());
 			
 			StringBuilder infoMessage = new StringBuilder();
@@ -589,8 +558,7 @@ public class Manager {
 		
 		RTTLogging.info("Test suite: " + suiteName + " - Configuration: " + config.getName());
 		
-		LexerExecutor lexer = DataGenerator.locateLexerExecutor(config, baseDir);
-		ParserExecutor parser = DataGenerator.locateParserExecutor(config, baseDir);
+		Executor executor = DataGenerator.locateInitialNode(config, baseDir);
 		
 		Tester tester = new Tester(currentArchive.getLoader(), matching);
 		List<TestResult> testResults = new ArrayList<TestResult>();
@@ -605,7 +573,7 @@ public class Manager {
 					tcase.getName(), config, OutputDataType.TEST);
 			
 			// Create new test data ...
-			GenerationResult genResult = testManager.createData(lexer, parser, tcase.getInputID(), tcase.getParameter());
+			GenerationResult genResult = testManager.createData(executor, tcase.getInputID(), tcase.getParameter());
 			genInfos.addResult(genResult);
 			
 			StringBuilder infoMessage = new StringBuilder();

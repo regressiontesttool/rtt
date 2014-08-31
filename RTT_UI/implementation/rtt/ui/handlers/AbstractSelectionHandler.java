@@ -113,7 +113,7 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
 		}
 		
 		Throwable throwable = exception;
-		if (exception instanceof ExecutionException) {
+		if (exception.getCause() != null) {
 			throwable = exception.getCause();
 		}
 		

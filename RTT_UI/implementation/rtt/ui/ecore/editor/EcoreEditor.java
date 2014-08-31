@@ -430,12 +430,6 @@ public class EcoreEditor extends EditorPart
 		compareButton.addSelectionListener(new AddAnnotationSelectionAdapter(
 				this, EcoreAnnotation.NODE_COMPARE));
 		
-		final Button childrenButton = new Button(nodePanel, SWT.NONE);
-		childrenButton.setEnabled(false);
-		childrenButton.setText("Children");
-		childrenButton.addSelectionListener(new AddAnnotationSelectionAdapter(
-				this, EcoreAnnotation.NODE_CHILDREN));
-		
 		parserPanel = new Composite(leftButtonPanel, SWT.NONE);
 		parserPanel.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -477,7 +471,6 @@ public class EcoreEditor extends EditorPart
 				
 				infoButton.setEnabled(EcoreAnnotation.NODE_INFORMATIONAL.canSetTo(object));
 				compareButton.setEnabled(EcoreAnnotation.NODE_COMPARE.canSetTo(object));
-				childrenButton.setEnabled(EcoreAnnotation.NODE_CHILDREN.canSetTo(object));
 				
 				astButton.setEnabled(EcoreAnnotation.PARSER_AST.canSetTo(object));
 				initButton.setEnabled(EcoreAnnotation.PARSER_INIT.canSetTo(object));
