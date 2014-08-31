@@ -30,8 +30,8 @@ public class CompareReferenceInformationalTests {
 	private static Reference createReference(String name, Type type, String value, boolean informational) {
 		Reference element = new Reference();
 		
-		element.setGeneratorName(name);
-		element.setGeneratorType(type);
+		element.setName(name);
+		element.setElementType(type);
 		element.setInformational(informational);
 		element.setTo(value);		
 		

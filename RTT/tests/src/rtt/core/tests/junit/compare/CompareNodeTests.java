@@ -31,10 +31,10 @@ public class CompareNodeTests {
 	
 	private static Node createNode(String name, Type type, String className, boolean informational) {
 		Node node = new Node();
-		node.setGeneratorName(name);
-		node.setGeneratorType(type);
+		node.setName(name);
+		node.setElementType(type);
 		node.setInformational(informational);
-		node.setClassName(className);
+		node.setObjectType(className);
 		
 		return node;
 	}
@@ -135,10 +135,10 @@ public class CompareNodeTests {
 	@Test
 	public void testUnequalClassNameAttribute() throws Exception {
 		Node changedNode = createSampleNode(false);
-		changedNode.setClassName("anOtherClassName");
+		changedNode.setObjectType("anOtherClassName");
 		
-		testDifference(createSampleNode(false), changedNode, Difference.CLASSNAME);
-		testDifference(changedNode, createSampleNode(false), Difference.CLASSNAME);
+		testDifference(createSampleNode(false), changedNode, Difference.OBJECT_TYPE);
+		testDifference(changedNode, createSampleNode(false), Difference.OBJECT_TYPE);
 		testNoDifferences(changedNode, changedNode);
 		
 		changedNode.setInformational(true);
@@ -226,7 +226,7 @@ public class CompareNodeTests {
 	public void testUneqalChildrenTypes() throws Exception {
 		// just different types ELEMENT != VALUE --> Difference.CLASSES
 		testDifference(createSampleNode(2, ChildType.ELEMENT, CreateInfo.NONE), 
-				createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.CLASSES);
+				createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.ELEMENT_CLASSES);
 		
 		// different types (ELEMENT != VALUE) && different informational states --> CHILD_COUNT
 		testDifference(createSampleNode(2, ChildType.ELEMENT, CreateInfo.CHILDS), 
@@ -241,7 +241,7 @@ public class CompareNodeTests {
 	public void testUnequalChildElement_Name() throws Exception {
 		Node changedNode = createSampleNode(2, ChildType.ELEMENT, CreateInfo.NONE);
 		Element changedElement = CompareElementTests.createSampleElement(false);
-		changedElement.setGeneratorName("anOtherName");		
+		changedElement.setName("anOtherName");		
 		changedNode.getElements().add(changedElement);
 		
 		// generator name of child was changed --> Difference.NAME 
@@ -298,12 +298,12 @@ public class CompareNodeTests {
 	public void testUnequalChildNode_Classname() throws Exception {
 		Node changedNode = createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
 		Node changedChild = createSampleNode(false);
-		changedChild.setClassName("anOtherClassName");
+		changedChild.setObjectType("anOtherClassName");
 		changedNode.getElements().add(changedChild);
 		
 		// full name of child was changed --> Difference.FULLNAME
-		testDifference(createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.CLASSNAME);
-		testDifference(changedNode, createSampleNode(3, ChildType.NODE, CreateInfo.NONE), Difference.CLASSNAME);
+		testDifference(createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.OBJECT_TYPE);
+		testDifference(changedNode, createSampleNode(3, ChildType.NODE, CreateInfo.NONE), Difference.OBJECT_TYPE);
 		testNoDifferences(changedNode, changedNode);
 		
 		// full name of child was changed, but node was informational --> no difference

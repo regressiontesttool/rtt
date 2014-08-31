@@ -40,7 +40,7 @@ public class DataGeneratorTests {
 		Node initNode = (Node) output.getInitialElement();
 		assertNotNull(initNode);
 		assertEquals("1", initNode.getAddress());
-		assertEquals(initObjectType.getName(), initNode.getClassName());
+		assertEquals(initObjectType.getName(), initNode.getObjectType());
 		
 		assertEquals(childCount, initNode.getElements().size());
 		
@@ -205,10 +205,10 @@ public class DataGeneratorTests {
 		
 		assertTrue(node.getElements().get(0) instanceof Node);
 		assertEquals("ReferencingClass.referencingMethod1",
-				node.getElements().get(0).getGeneratorName());
+				node.getElements().get(0).getName());
 		assertTrue(node.getElements().get(1) instanceof Reference);
 		assertEquals("ReferencingClass.referencingMethod2",
-				node.getElements().get(1).getGeneratorName());
+				node.getElements().get(1).getName());
 		
 		Node childNode = (Node) node.getElements().get(0);
 		Reference reference = (Reference) node.getElements().get(1);
@@ -239,10 +239,10 @@ public class DataGeneratorTests {
 		
 		assertTrue(node.getElements().get(0) instanceof Node);
 		assertEquals("IndexedReferencingClass.referencingMethod2",
-				node.getElements().get(0).getGeneratorName());
+				node.getElements().get(0).getName());
 		assertTrue(node.getElements().get(1) instanceof Reference);
 		assertEquals("IndexedReferencingClass.referencingMethod1",
-				node.getElements().get(1).getGeneratorName());
+				node.getElements().get(1).getName());
 		
 		Node childNode = (Node) node.getElements().get(0);
 		Reference reference = (Reference) node.getElements().get(1);
@@ -266,9 +266,9 @@ public class DataGeneratorTests {
 		countElements(node, 2, 0);
 		checkAddresses(node);
 		
-		assertEquals("string", node.getElements().get(0).getGeneratorName());
+		assertEquals("string", node.getElements().get(0).getName());
 		assertEquals("aString", ((Value) node.getElements().get(0)).getValue());
-		assertEquals("string", node.getElements().get(1).getGeneratorName());
+		assertEquals("string", node.getElements().get(1).getName());
 		assertEquals("anOtherString", ((Value) node.getElements().get(1)).getValue());
 	}
 }
