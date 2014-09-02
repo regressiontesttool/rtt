@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.core.archive.output.Element;
+import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.Type;
@@ -88,10 +89,10 @@ public class CompareOutputTests {
 	private Output createOutput(boolean initInfo, int childCount, boolean childInfos) {
 		Output output = createOutput(InitElement.NODE, initInfo);
 		
-		Node initialNode = (Node) output.getInitialElement();
+		Element initialNode = output.getInitialElement();
 		for (int i = 0; i < childCount; i++) {
 			Element element = CompareElementTests.createElement(
-					"Item " + i, Type.OBJECT, childInfos);
+					"Item " + i, GeneratorType.OBJECT, childInfos);
 			
 			initialNode.getElements().add(element);
 		}

@@ -4,13 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.core.archive.output.Element;
-import rtt.core.archive.output.Node;
-import rtt.core.archive.output.Reference;
-import rtt.core.archive.output.Value;
+import rtt.core.archive.output.ElementType;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
-import rtt.core.tests.junit.compare.CompareNodeTests.ChildType;
-import rtt.core.tests.junit.compare.CompareNodeTests.CreateInfo;
 import rtt.core.tests.junit.utils.CompareUtils;
 
 public class CompareNodeInformationalTests {
@@ -20,6 +16,34 @@ public class CompareNodeInformationalTests {
 	@Before
 	public void setUp() throws Exception {
 		comparer = new OutputCompare(true);
+	}
+	
+	public static Element createSampleNode(boolean informational) {
+		return CompareElementTests.createSampleElement(ElementType.NODE, informational);
+	}
+	
+	public enum CreateInfo {
+		NONE,
+		PARENT,
+		CHILDS,
+		PARENT_AND_CHILDS;
+	}
+	
+	public static Element createSampleNode(int childCount, ElementType type, CreateInfo status) {
+		
+		boolean parentIsInfo = ((status == CreateInfo.PARENT) || (status == CreateInfo.PARENT_AND_CHILDS));
+		boolean childIsInfo = ((status == CreateInfo.CHILDS) || (status == CreateInfo.PARENT_AND_CHILDS));
+		
+		Element node = createSampleNode(parentIsInfo);	
+		
+		for(int i = 0; i < childCount; i++) {
+			Element childElement = CompareElementTests.
+					createSampleElement(type, childIsInfo);
+			
+			node.getElements().add(childElement);
+		}
+		
+		return node;		
 	}
 	
 	private void testThrowsException(Element referenceElement, Element actualElement, Class<? extends Throwable> expectedException) {
@@ -37,28 +61,54 @@ public class CompareNodeInformationalTests {
 	@Test
 	public void testNullNodes() throws Exception {
 		testThrowsException(null, null, IllegalArgumentException.class);		
-		testThrowsException(CompareNodeTests.createSampleNode(false), null, IllegalArgumentException.class);
-		testThrowsException(null, CompareNodeTests.createSampleNode(false), IllegalArgumentException.class);
+		testThrowsException(createSampleNode(false), null, IllegalArgumentException.class);
+		testThrowsException(null, createSampleNode(false), IllegalArgumentException.class);
 		
 		testThrowsException(null, null, IllegalArgumentException.class);		
-		testThrowsException(CompareNodeTests.createSampleNode(true), null, IllegalArgumentException.class);
-		testThrowsException(null, CompareNodeTests.createSampleNode(true), IllegalArgumentException.class);
+		testThrowsException(createSampleNode(true), null, IllegalArgumentException.class);
+		testThrowsException(null, createSampleNode(true), IllegalArgumentException.class);
+	}
+	
+	@Test
+	public void testEqualNodes() throws Exception {
+		testNoDifferences(createSampleNode(false), createSampleNode(false));
+		testNoDifferences(createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE), 
+				createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE));
+		testNoDifferences(createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.NONE));
+		testNoDifferences(createSampleNode(4, ElementType.NODE, CreateInfo.NONE), 
+				createSampleNode(4, ElementType.NODE, CreateInfo.NONE));
+		
+		testNoDifferences(createSampleNode(true), createSampleNode(true));
+		testNoDifferences(createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), 
+				createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT));
+		testNoDifferences(createSampleNode(2, ElementType.VALUE, CreateInfo.PARENT), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.PARENT));
+		testNoDifferences(createSampleNode(4, ElementType.NODE, CreateInfo.PARENT), 
+				createSampleNode(4, ElementType.NODE, CreateInfo.PARENT));
+		
+		testNoDifferences(createSampleNode(3, ElementType.REFERENCE, CreateInfo.CHILDS), 
+				createSampleNode(3, ElementType.REFERENCE, CreateInfo.CHILDS));
+		testNoDifferences(createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS));
+		testNoDifferences(createSampleNode(4, ElementType.NODE, CreateInfo.CHILDS), 
+				createSampleNode(4, ElementType.NODE, CreateInfo.CHILDS));
 	}
 	
 	// Attribute tests
 	
 	@Test
-	public void testUnequalFullNameAttribute() throws Exception {
-		Node changedNode = CompareNodeTests.createSampleNode(false);
-		changedNode.setObjectType("anOtherClassName");
+	public void testUnequalClassNameAttribute() throws Exception {
+		Element changedNode = createSampleNode(false);
+		changedNode.setValue("anOtherClassName");
 		
-		testDifference(CompareNodeTests.createSampleNode(false), changedNode, Difference.OBJECT_TYPE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(false), Difference.OBJECT_TYPE);
+		testDifference(createSampleNode(false), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(false), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 		
 		changedNode.setInformational(true);
-		testDifference(CompareNodeTests.createSampleNode(true), changedNode, Difference.OBJECT_TYPE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(true), Difference.OBJECT_TYPE);
+		testDifference(createSampleNode(true), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(true), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
@@ -67,176 +117,182 @@ public class CompareNodeInformationalTests {
 	@Test
 	public void testChildDiffsForInformationalNode() throws Exception {
 		// child diffs because of unequal child count
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), 
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.PARENT), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.VALUE, CreateInfo.PARENT), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.PARENT), Difference.CHILD_COUNT);
 		
 		// child diffs because of unequal child classes
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT), 
-				CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), Difference.ELEMENT_CLASSES);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), 
+				createSampleNode(3, ElementType.VALUE, CreateInfo.PARENT), Difference.ELEMENT_TYPE);
 		
 		// child diffs because of unequal child informational types
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT_AND_CHILDS), 
-				CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT), Difference.INFORMATIONAL);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT_AND_CHILDS), 
+				createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), Difference.INFORMATIONAL);
 	}
 	
 	@Test
 	public void testValueChild() throws Exception {
 		// unequal informational states of child value(s)
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE),
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS), Difference.INFORMATIONAL);
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS),
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.INFORMATIONAL);
+		testDifference(createSampleNode(2, ElementType.VALUE, CreateInfo.NONE),
+				createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS), Difference.INFORMATIONAL);
+		testDifference(createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS),
+				createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), Difference.INFORMATIONAL);
 	}
 	
 	@Test
 	public void testChildValues() throws Exception {
-		testNoDifferences(CompareNodeTests.createSampleNode(1, ChildType.VALUE, CreateInfo.NONE),
-				CompareNodeTests.createSampleNode(1, ChildType.VALUE, CreateInfo.NONE));
+		testNoDifferences(createSampleNode(1, ElementType.VALUE, CreateInfo.NONE),
+				createSampleNode(1, ElementType.VALUE, CreateInfo.NONE));
 		
-		Node node = CompareNodeTests.createSampleNode(false);
-		Value value = CompareValueTests.createSampleValue(false);
+		Element node = createSampleNode(false);
+		Element value = CompareElementTests.createSampleElement(ElementType.VALUE, false);
 		value.setValue("anOtherValue");
 		node.getElements().add(value);
-		node.getElements().add(CompareValueTests.createSampleValue(false));
+		node.getElements().add(CompareElementTests.createSampleElement(ElementType.VALUE, false));
 		
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), node, Difference.VALUE);
-		testDifference(node, CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.VALUE);
+		testDifference(createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), node, Difference.VALUE);
+		testDifference(node, createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), Difference.VALUE);
 	}
 	
 	@Test
 	public void testChildValuesInformational() throws Exception {		
-		testNoDifferences(CompareNodeTests.createSampleNode(1, ChildType.VALUE, CreateInfo.CHILDS), 
-				CompareNodeTests.createSampleNode(1, ChildType.VALUE, CreateInfo.CHILDS));
+		testNoDifferences(createSampleNode(1, ElementType.VALUE, CreateInfo.CHILDS), 
+				createSampleNode(1, ElementType.VALUE, CreateInfo.CHILDS));
 		
-		Node node = CompareNodeTests.createSampleNode(false);
-		Value value = CompareValueTests.createSampleValue(true);
+		Element node = createSampleNode(false);
+		Element value = CompareElementTests.createSampleElement(ElementType.VALUE, true);
 		value.setValue("anOtherValue");
 		node.getElements().add(value);
-		node.getElements().add(CompareValueTests.createSampleValue(true));
+		node.getElements().add(CompareElementTests.createSampleElement(ElementType.VALUE, true));
 		
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS), node, Difference.VALUE);
-		testDifference(node, CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.CHILDS), Difference.VALUE);
-	}
+		testDifference(createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS), node, Difference.VALUE);
+		testDifference(node, createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS), Difference.VALUE);
+	}	
+
+	
 	@Test
 	public void testUnequalChildrenCount() throws Exception {
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.NONE), 
-				CompareNodeTests.createSampleNode(2, ChildType.ELEMENT, CreateInfo.NONE), Difference.CHILD_COUNT);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.NONE), 
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.CHILD_COUNT);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.NONE), 
-				CompareNodeTests.createSampleNode(2, ChildType.NODE, CreateInfo.NONE), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.NONE), 
+				createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.VALUE, CreateInfo.NONE), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.NODE, CreateInfo.NONE), 
+				createSampleNode(2, ElementType.NODE, CreateInfo.NONE), Difference.CHILD_COUNT);
 		
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT), 
-				CompareNodeTests.createSampleNode(2, ChildType.ELEMENT, CreateInfo.PARENT), Difference.CHILD_COUNT);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), 
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.PARENT), Difference.CHILD_COUNT);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.PARENT), 
-				CompareNodeTests.createSampleNode(2, ChildType.NODE, CreateInfo.PARENT), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), 
+				createSampleNode(2, ElementType.REFERENCE, CreateInfo.PARENT), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.VALUE, CreateInfo.PARENT), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.PARENT), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.NODE, CreateInfo.PARENT), 
+				createSampleNode(2, ElementType.NODE, CreateInfo.PARENT), Difference.CHILD_COUNT);
 	}
 	
 	
 	@Test
 	public void testUneqalChildrenTypes() throws Exception {
-		// just different types ELEMENT != VALUE --> Difference.CLASSES
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.ELEMENT, CreateInfo.NONE), 
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.ELEMENT_CLASSES);
+		// just different types REFERENCE != VALUE --> Difference.CLASSES
+		testDifference(createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), Difference.ELEMENT_TYPE);
 		
-		// different types (ELEMENT != VALUE) --> CLASSES, due to ignored informational state
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.ELEMENT, CreateInfo.CHILDS), 
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE), Difference.ELEMENT_CLASSES);
+		// different types (REFERENCE != VALUE) && different informational states --> ELEMENT_TYPE
+		testDifference(createSampleNode(2, ElementType.REFERENCE, CreateInfo.CHILDS), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), Difference.ELEMENT_TYPE);
 		
-		// different types (ELEMENT != VALUE) --> CLASSES, due to ignored informational state
-		testDifference(CompareNodeTests.createSampleNode(2, ChildType.ELEMENT, CreateInfo.PARENT), 
-				CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.PARENT), Difference.ELEMENT_CLASSES);
+		// different types (REFERENCE != VALUE), but both informational --> ELEMENT_TYPE
+		testDifference(createSampleNode(2, ElementType.REFERENCE, CreateInfo.PARENT), 
+				createSampleNode(2, ElementType.VALUE, CreateInfo.PARENT), Difference.ELEMENT_TYPE);
 	}	
 	
 	@Test
 	public void testUnequalChildElement_Name() throws Exception {
-		Node changedNode = CompareNodeTests.createSampleNode(2, ChildType.ELEMENT, CreateInfo.NONE);
-		Element changedElement = CompareElementTests.createSampleElement(false);
+		Element changedNode = createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE);
+		Element changedElement = CompareElementTests.createSampleElement(ElementType.REFERENCE, false);
 		changedElement.setName("anOtherName");		
 		changedNode.getElements().add(changedElement);
 		
 		// generator name of child was changed --> Difference.NAME 
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.NONE), changedNode, Difference.NAME);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.NONE), Difference.NAME);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.NONE), changedNode, Difference.NAME);
+		testDifference(changedNode, createSampleNode(3, ElementType.REFERENCE, CreateInfo.NONE), Difference.NAME);
 		testNoDifferences(changedNode, changedNode);
 		
-		// generator name of child was changed, but node is informational --> no difference
+		// generator name of child was changed and informational are compared --> Difference.NAME
 		changedNode.setInformational(true);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT), changedNode, Difference.NAME);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.ELEMENT, CreateInfo.PARENT), Difference.NAME);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), changedNode, Difference.NAME);
+		testDifference(changedNode, createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), Difference.NAME);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
 	@Test
 	public void testUnequalChildValue() throws Exception {
-		Node changedNode = CompareNodeTests.createSampleNode(2, ChildType.VALUE, CreateInfo.NONE);
-		Value changedChild = CompareValueTests.createSampleValue(false);
+		Element changedNode = createSampleNode(2, ElementType.VALUE, CreateInfo.NONE);
+		Element changedChild = CompareElementTests.createSampleElement(ElementType.VALUE, false);
 		changedChild.setValue("anOtherValue");		
 		changedNode.getElements().add(changedChild);
 		
 		// value of child was changed --> Difference.VALUE 
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.NONE), changedNode, Difference.VALUE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.NONE), Difference.VALUE);
+		testDifference(createSampleNode(3, ElementType.VALUE, CreateInfo.NONE), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(3, ElementType.VALUE, CreateInfo.NONE), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 		
+		// value of child was changed and informational are compared --> Difference.VALUE
 		changedNode.setInformational(true);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), changedNode, Difference.VALUE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.VALUE, CreateInfo.PARENT), Difference.VALUE);
+		testDifference(createSampleNode(3, ElementType.VALUE, CreateInfo.PARENT), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(3, ElementType.VALUE, CreateInfo.PARENT), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
 	@Test
 	public void testUnequalChildReference() throws Exception {
-		Node changedNode = CompareNodeTests.createSampleNode(2, ChildType.REFERENCE, CreateInfo.NONE);
-		Reference changedChild = CompareReferenceTests.createSampleReference(false);
-		changedChild.setTo("2.2.2");		
+		Element changedNode = createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE);
+		Element changedChild = CompareElementTests.createSampleElement(ElementType.REFERENCE, false);
+		changedChild.setValue("2.2.2");		
 		changedNode.getElements().add(changedChild);
 		
 		// value of child was changed --> Difference.VALUE 
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), changedNode, Difference.REFERENCE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.NONE), Difference.REFERENCE);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.NONE), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(3, ElementType.REFERENCE, CreateInfo.NONE), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 		
+		// value of child was changed and informational are compared --> Difference.VALUE
 		changedNode.setInformational(true);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.PARENT), changedNode, Difference.REFERENCE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.REFERENCE, CreateInfo.PARENT), Difference.REFERENCE);
+		testDifference(createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(3, ElementType.REFERENCE, CreateInfo.PARENT), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
 	@Test
 	public void testUnequalChildNode_Classname() throws Exception {
-		Node changedNode = CompareNodeTests.createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
-		Node changedChild = CompareNodeTests.createSampleNode(false);
-		changedChild.setObjectType("anOtherClassName");
+		Element changedNode = createSampleNode(2, ElementType.NODE, CreateInfo.NONE);
+		Element changedChild = createSampleNode(false);
+		changedChild.setValue("anOtherClassName");
 		changedNode.getElements().add(changedChild);
 		
-		// full name of child was changed --> Difference.FULLNAME
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.OBJECT_TYPE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.NONE), Difference.OBJECT_TYPE);
+		// full name of child was changed -->  Difference.VALUE
+		testDifference(createSampleNode(3, ElementType.NODE, CreateInfo.NONE), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(3, ElementType.NODE, CreateInfo.NONE), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 		
+		// full name of child was changed and informational are compared --> Difference.VALUE
 		changedNode.setInformational(true);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.PARENT), changedNode, Difference.OBJECT_TYPE);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.PARENT), Difference.OBJECT_TYPE);
+		testDifference(createSampleNode(3, ElementType.NODE, CreateInfo.PARENT), changedNode, Difference.VALUE);
+		testDifference(changedNode, createSampleNode(3, ElementType.NODE, CreateInfo.PARENT), Difference.VALUE);
 		testNoDifferences(changedNode, changedNode);
 	}
 	
 	@Test
 	public void testUnequalChildNode_ChildCount() throws Exception {
-		Node changedNode = CompareNodeTests.createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
-		Node changedChild = CompareNodeTests.createSampleNode(2, ChildType.NODE, CreateInfo.NONE);
+		Element changedNode = createSampleNode(2, ElementType.NODE, CreateInfo.NONE);
+		Element changedChild = createSampleNode(2, ElementType.NODE, CreateInfo.NONE);
 		changedNode.getElements().add(changedChild);
 		
 		// count of child of a child differs --> Difference.CHILD_COUNT
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.NONE), changedNode, Difference.CHILD_COUNT);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.NONE), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.NODE, CreateInfo.NONE), changedNode, Difference.CHILD_COUNT);
+		testDifference(changedNode, createSampleNode(3, ElementType.NODE, CreateInfo.NONE), Difference.CHILD_COUNT);
 		testNoDifferences(changedNode, changedNode);
 		
+		// count of child of a child differs and informational are compared --> Difference.CHILD_COUNT
 		changedNode.setInformational(true);
-		testDifference(CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.PARENT), changedNode, Difference.CHILD_COUNT);
-		testDifference(changedNode, CompareNodeTests.createSampleNode(3, ChildType.NODE, CreateInfo.PARENT), Difference.CHILD_COUNT);
+		testDifference(createSampleNode(3, ElementType.NODE, CreateInfo.PARENT), changedNode, Difference.CHILD_COUNT);
+		testDifference(changedNode, createSampleNode(3, ElementType.NODE, CreateInfo.PARENT), Difference.CHILD_COUNT);
 		testNoDifferences(changedNode, changedNode);
 	}
 }
