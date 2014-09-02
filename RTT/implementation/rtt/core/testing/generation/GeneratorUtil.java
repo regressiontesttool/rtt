@@ -1,59 +1,12 @@
 package rtt.core.testing.generation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-
-import rtt.annotations.Node.Address;
 import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Reference;
 import rtt.core.archive.output.Type;
 import rtt.core.archive.output.Value;
-import rtt.core.utils.RTTLogging;
 
 public class GeneratorUtil {	
-
-	private static final Class<? extends Annotation> ADDRESS_ANNOTATION = Address.class;
-	
-	private static Field getAddressFieldFromObject(Class<?> objectType) {
-		for (Field field : objectType.getDeclaredFields()) {
-			if (field.isAnnotationPresent(ADDRESS_ANNOTATION) 
-					&& field.getType() == String.class) {
-				
-				return field;
-			}
-		}
-		
-		return null;
-	}
-	
-	public static String getObjectAddress(Object object) {
-		Field addressField = getAddressFieldFromObject(object.getClass());		
-		if (addressField != null) {
-			try {
-				addressField.setAccessible(true);
-				return (String) addressField.get(object);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				RTTLogging.error("Can not access address field", e);
-			}
-		}
-		
-		return null;
-	}
-	
-	public static void setObjectAddress(Object object, String address) {
-		Field addressField = getAddressFieldFromObject(object.getClass());
-		if (addressField != null) {
-			try {
-				addressField.setAccessible(true);
-				addressField.set(object, address);
-			} catch (Exception e) {
-				RTTLogging.error("Could not access address field", e);
-			}
-		}
-	}
-	
-	// --------------------------------------------------------------------------
 	
 	private static <E extends Element> E copyElement(final Element source, 
 			final E destination) {
