@@ -1,9 +1,7 @@
 package rtt.core.testing.generation;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +15,7 @@ import rtt.core.archive.output.Element;
 import rtt.core.archive.output.Node;
 import rtt.core.archive.output.Output;
 import rtt.core.archive.output.Type;
+import rtt.core.archive.output.Value;
 import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
@@ -25,11 +24,24 @@ public class DataGenerator {
 	private Map<Object, String> objectAddresses;
 	
 	private DataGenerator() {
-		objectAddresses = new Hashtable<>();
+		objectAddresses = new Hashtable<>();		
 	}
 	
+	private Element createInitElement(final Object initObject) {
+		Element initPrototype = new Element();
+		initPrototype.setAddress("1");
+		initPrototype.setName("Initial Node");
+		initPrototype.setElementType(Type.OBJECT);
+		
+		if (AnnotationProcessor.isNode(initObject)) {
+			return GeneratorUtil.createNode(initObject, initPrototype);
+		} else {
+			return GeneratorUtil.createValue(initObject, initPrototype);
+		}
+	}	
+	
 	private Element handleObject(final Object object, 
-				Element prototype) throws Exception {
+				Element prototype) throws ReflectiveOperationException {
 		
 		if (AnnotationProcessor.isNode(object)) {
 			return handleNode(object, prototype);
@@ -39,7 +51,7 @@ public class DataGenerator {
 	}
 	
 	private Element handleNode(final Object object, 
-				Element prototype) throws Exception {
+				Element prototype) throws ReflectiveOperationException {
 		
 		Element result = null;
 		
@@ -68,13 +80,9 @@ public class DataGenerator {
 				element.setInformational(resultNode.isInformational() 
 						|| annotatedElement.isInformational());
 				
-				try {
-					resultNode.getElements().add(handleResult(
-							annotatedElement.getResult(object), element));
-					childAddress++;
-				} catch (Exception e) {
-					RTTLogging.throwException(e);
-				}				
+				resultNode.getElements().add(handleResult(
+						annotatedElement.getResult(object), element));
+				childAddress++;			
 			}
 			
 			result = resultNode;
@@ -84,7 +92,7 @@ public class DataGenerator {
 	}
 	
 	private Element handleResult(final Object object, 
-				Element prototype) throws Exception {
+				Element prototype) throws ReflectiveOperationException {
 		
 		if (object != null) {
 			if (object.getClass().isArray()) {				
@@ -100,7 +108,7 @@ public class DataGenerator {
 	}
 	
 	private Element handleArray(final Object array, 
-				Element prototype) throws Exception {
+				Element prototype) throws ReflectiveOperationException {
 		
 		Node arrayNode = GeneratorUtil.createNode(array, prototype);
 		
@@ -114,7 +122,7 @@ public class DataGenerator {
 	}
 
 	private Element handleIterable(final Iterable<?> iterable, 
-				Element prototype) throws Exception {
+				Element prototype) throws ReflectiveOperationException {
 		
 		Node iterableNode = GeneratorUtil.createNode(iterable, prototype);
 		
@@ -139,30 +147,40 @@ public class DataGenerator {
 		
 		Output outputData = new Output();
 		
-		Element initPrototype = new Element();
-		initPrototype.setAddress("1");
-		initPrototype.setName("Initial Node");
-		initPrototype.setElementType(Type.OBJECT);
-		
-		Object initObject = null;			
-		try {
+		Object initObject = null;
+		try {			
 			RTTLogging.debug("Initial object type: " + 
 					executor.getInitialObjectType().getSimpleName());				
-			initObject = executor.initialize(input, params);
-			
-		} catch (InvocationTargetException invocationException) {
-			Throwable cause = invocationException.getCause();
-			if (executor.isAcceptedException(cause)) {
+			initObject = executor.initialize(input, params);			
+		} catch (ReflectiveOperationException exception) {
+			Throwable cause = exception.getCause();
+			if (!executor.isAcceptedException(cause)) {
+				throw cause;
+			} else {
 				throw new UnsupportedOperationException(
 						"Accepted exception are currently not supported.", cause);
-			} else {
-				throw cause;
 			}
 		}
 		
 		RTTLogging.debug("Generating output data ...");
 		DataGenerator generator = new DataGenerator();
-		outputData.setInitialElement(generator.handleObject(initObject, initPrototype));
+		Element initElement = generator.createInitElement(initObject);
+		
+		if (initElement instanceof Node) {
+			try {
+				generator.handleNode(initObject, initElement);
+			} catch (ReflectiveOperationException exception) {
+				Throwable cause = exception.getCause();
+				if (!executor.isAcceptedException(cause)) {
+					throw cause;
+				} else {
+					throw new UnsupportedOperationException(
+							"Accepted exception are currently not supported.", cause);
+				}
+			}
+		}	
+		
+		outputData.setInitialElement(initElement);		
 
 		return outputData;
 	}
