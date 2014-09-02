@@ -12,10 +12,9 @@ import rtt.annotations.processing.ValueMember;
 import rtt.core.archive.configuration.Configuration;
 import rtt.core.archive.input.Input;
 import rtt.core.archive.output.Element;
-import rtt.core.archive.output.Node;
+import rtt.core.archive.output.ElementType;
+import rtt.core.archive.output.GeneratorType;
 import rtt.core.archive.output.Output;
-import rtt.core.archive.output.Type;
-import rtt.core.archive.output.Value;
 import rtt.core.utils.ExecutorLoader;
 import rtt.core.utils.RTTLogging;
 
@@ -27,115 +26,120 @@ public class DataGenerator {
 		objectAddresses = new Hashtable<>();		
 	}
 	
-	private Element createInitElement(final Object initObject) {
-		Element initPrototype = new Element();
-		initPrototype.setAddress("1");
-		initPrototype.setName("Initial Node");
-		initPrototype.setElementType(Type.OBJECT);
+	private Element createElement(String address, String name, 
+			GeneratorType generatedBy, boolean informational) {
 		
-		if (AnnotationProcessor.isNode(initObject)) {
-			return GeneratorUtil.createNode(initObject, initPrototype);
-		} else {
-			return GeneratorUtil.createValue(initObject, initPrototype);
-		}
-	}	
-	
-	private Element handleObject(final Object object, 
-				Element prototype) throws ReflectiveOperationException {
+		Element element = new Element();
+		element.setAddress(address);
+		element.setName(name);
+		element.setInformational(informational);
+		element.setGeneratedBy(generatedBy);
 		
-		if (AnnotationProcessor.isNode(object)) {
-			return handleNode(object, prototype);
-		}
-		
-		return GeneratorUtil.createValue(object, prototype);
+		return element;
 	}
 	
-	private Element handleNode(final Object object, 
-				Element prototype) throws ReflectiveOperationException {
+	private void handleNode(final Object object, Element element) 
+			throws ReflectiveOperationException {	
 		
-		Element result = null;
+		Set<ValueMember<?>> annotatedElements = 
+				AnnotationProcessor.getValueMembers(object.getClass());
 		
+		Element childElement = null;
 		String address = null;
-		if (objectAddresses.containsKey(object)) {
-			address = objectAddresses.get(object);
-		}		
+		int childAddress = 1;
 		
-		if (address != null && !address.equals("")) {
-			result = GeneratorUtil.createReference(address, prototype);
-		} else {
-			Node resultNode = GeneratorUtil.createNode(object, prototype);
-			objectAddresses.put(object, resultNode.getAddress());
+		for (ValueMember<?> annotatedElement : annotatedElements) {
+			address = element.getAddress() + "." + childAddress;			
+			childElement = createElement(address, 
+					annotatedElement.getName(), 
+					annotatedElement.getType(), 
+					element.isInformational() || annotatedElement.isInformational());
 			
-			int childAddress = 1;
-			
-			Set<ValueMember<?>> annotatedElements = 
-					AnnotationProcessor.getValueMembers(object.getClass());
-			
-			Element element = null;
-			for (ValueMember<?> annotatedElement : annotatedElements) {
-				element = new Element();
-				element.setAddress(resultNode.getAddress() + "." + childAddress);
-				element.setName(annotatedElement.getName());
-				element.setElementType(annotatedElement.getType());
-				element.setInformational(resultNode.isInformational() 
-						|| annotatedElement.isInformational());
-				
-				resultNode.getElements().add(handleResult(
-						annotatedElement.getResult(object), element));
-				childAddress++;			
-			}
-			
-			result = resultNode;
+			element.getElements().add(childElement);
+			handleResult(annotatedElement.getResult(object), childElement);
+
+			childAddress++;			
 		}
-		
-		return result;
 	}
 	
-	private Element handleResult(final Object object, 
-				Element prototype) throws ReflectiveOperationException {
+	private void handleResult(final Object object, Element element) 
+			throws ReflectiveOperationException {
 		
 		if (object != null) {
-			if (object.getClass().isArray()) {				
-				return handleArray(object, prototype);
+			if (objectAddresses.containsKey(object)) {
+				element.setElementType(ElementType.REFERENCE);
+				element.setValue(objectAddresses.get(object));
+			} else {
+				Class<?> objectType = object.getClass();
+
+				if (object.getClass().isArray()) {
+					element.setElementType(ElementType.NODE);
+					element.setValue(objectType.getSimpleName());
+					handleArray(object, element);
+					
+				} else if (object instanceof Iterable<?>) {
+					element.setElementType(ElementType.NODE);
+					element.setValue(objectType.getName());
+					handleIterable((Iterable<?>) object, element);
+					
+				} else if (object instanceof Map<?, ?>) {
+					element.setElementType(ElementType.NODE);
+					element.setValue(objectType.getName());					
+//					handleMap((Map<?, ?>) object, element);
+					
+				} else if (AnnotationProcessor.isNode(object)) {
+					objectAddresses.put(object, element.getAddress());
+					
+					element.setElementType(ElementType.NODE);
+					element.setValue(objectType.getName());
+
+					handleNode(object, element);
+				} else {
+					element.setElementType(ElementType.VALUE);
+					element.setValue(object.toString());
+				}
 			}
-			
-			if (object instanceof Iterable<?>) {
-				return handleIterable((Iterable<?>) object, prototype);
-			}
-		}	
-		
-		return handleObject(object, prototype);
-	}
-	
-	private Element handleArray(final Object array, 
-				Element prototype) throws ReflectiveOperationException {
-		
-		Node arrayNode = GeneratorUtil.createNode(array, prototype);
-		
-		Element element = null;		
-		for (int index = 0; index < Array.getLength(array); index++) {
-			element = GeneratorUtil.createChildElement(arrayNode, index);			
-			arrayNode.getElements().add(handleResult(Array.get(array, index), element));
 		}
-		
-		return arrayNode;
 	}
 
-	private Element handleIterable(final Iterable<?> iterable, 
-				Element prototype) throws ReflectiveOperationException {
+	private void handleArray(final Object array, Element element) 
+			throws ReflectiveOperationException {	
 		
-		Node iterableNode = GeneratorUtil.createNode(iterable, prototype);
+		Element childElement = null;
+		String address = null;
+		String name = null;
 		
-		int index = 0;
-		Element element = null;
+		for (int index = 1; index < Array.getLength(array); index++) {
+			address = element.getAddress() + "." + index;
+			name = element.getName() + "[" + index + "]";
+			
+			childElement = createElement(address, name, 
+					GeneratorType.OBJECT, element.isInformational());
+			element.getElements().add(childElement);
+			
+			handleResult(Array.get(array, index - 1), childElement);
+		}
+	}
+
+	private void handleIterable(final Iterable<?> iterable, Element element) 
+			throws ReflectiveOperationException {
+
+		Element childElement = null;
+		String address = null;
+		String name = null;
+		int index = 1;
 		
 		for (Object object : iterable) {
-			element = GeneratorUtil.createChildElement(iterableNode, index);
-			iterableNode.getElements().add(handleResult(object, element));
+			address = element.getAddress() + "." + index;
+			name = element.getName() + "[" + index + "]";
+			
+			childElement = createElement(address, name, 
+					GeneratorType.OBJECT, element.isInformational());
+			element.getElements().add(childElement);
+			
+			handleResult(object, childElement);
 			index++;
 		}
-		
-		return iterableNode;
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
@@ -164,19 +168,18 @@ public class DataGenerator {
 		
 		RTTLogging.debug("Generating output data ...");
 		DataGenerator generator = new DataGenerator();
-		Element initElement = generator.createInitElement(initObject);
 		
-		if (initElement instanceof Node) {
-			try {
-				generator.handleNode(initObject, initElement);
-			} catch (ReflectiveOperationException exception) {
-				Throwable cause = exception.getCause();
-				if (!executor.isAcceptedException(cause)) {
-					throw cause;
-				} else {
-					throw new UnsupportedOperationException(
-							"Accepted exception are currently not supported.", cause);
-				}
+		Element initElement = generator.createElement(
+				"1", "Initial Node", GeneratorType.OBJECT, false);
+		try {
+			generator.handleResult(initObject, initElement);
+		} catch (ReflectiveOperationException exception) {
+			Throwable cause = exception.getCause();
+			if (!executor.isAcceptedException(cause)) {
+				throw cause;
+			} else {
+				throw new UnsupportedOperationException(
+						"Accepted exception are currently not supported.", cause);
 			}
 		}	
 		
