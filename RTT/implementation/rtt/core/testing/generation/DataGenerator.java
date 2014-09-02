@@ -3,7 +3,10 @@ package rtt.core.testing.generation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import rtt.annotations.processing.AnnotationProcessor;
@@ -19,7 +22,11 @@ import rtt.core.utils.RTTLogging;
 
 public class DataGenerator {
 	
-	private DataGenerator() {}
+	private Map<Object, String> objectAddresses;
+	
+	private DataGenerator() {
+		objectAddresses = new Hashtable<>();
+	}
 	
 	private Element handleObject(final Object object, 
 				Element prototype) throws Exception {
@@ -35,13 +42,17 @@ public class DataGenerator {
 				Element prototype) throws Exception {
 		
 		Element result = null;
-		String address = GeneratorUtil.getObjectAddress(object);
+		
+		String address = null;
+		if (objectAddresses.containsKey(object)) {
+			address = objectAddresses.get(object);
+		}		
 		
 		if (address != null && !address.equals("")) {
 			result = GeneratorUtil.createReference(address, prototype);
 		} else {
 			Node resultNode = GeneratorUtil.createNode(object, prototype);
-			GeneratorUtil.setObjectAddress(object, resultNode.getAddress());
+			objectAddresses.put(object, resultNode.getAddress());
 			
 			int childAddress = 1;
 			
