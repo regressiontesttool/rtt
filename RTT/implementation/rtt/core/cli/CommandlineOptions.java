@@ -27,11 +27,11 @@ import uk.co.flamingpenguin.jewel.cli.Option;
  *         [--export -e value] : exports log to given directory
  *         [--generate -g] : Generates input for new testCases
  *         [--help -h] : Shows this help
- *         [--information -i] : Shows Information about the archive
+ *         [--information] : Shows Information about the archive
  *         [--newConfiguration -n value] : adds a new configuration
  *         [--output -o value] : output (for merging/saving/etc)
  *         [--overwrite -y] : in case of adding a new file, config or archive, already existing ones will be overwriten
- *         [--parser -p value] : defines the parser class (only for new configuration)
+ *         [--initial -i value] : defines the initial node (only for new configuration)
  *         [--regenerate -r] : Regenerates testCases
  *         [--removeTest value] : removes the specified test (-s is needed)
  *         [--removeTestsuite value] : removes the specified testsuite
@@ -55,7 +55,7 @@ public interface CommandlineOptions {
 	// boolean getLog();
 	// boolean isLog();
 
-	@Option(shortName = "i", description = "Shows Information about the archive")
+	@Option(description = "Shows Information about the archive")
 	boolean getInformation();
 
 	boolean isInformation();
@@ -121,10 +121,10 @@ public interface CommandlineOptions {
 
 	boolean isNewConfiguration();
 
-	@Option(shortName = "p", description = "defines the parser class (only for new configuration)")
-	String getParser();
+	@Option(shortName = "i", description = "defines the initial node class (only for new configuration)")
+	String getInitial();
 
-	boolean isParser();
+	boolean isInitial();
 
 	@Option(shortName = "x", description = "semicolon seperated list of dependencies (only for new configuration)")
 	String getClasspath();

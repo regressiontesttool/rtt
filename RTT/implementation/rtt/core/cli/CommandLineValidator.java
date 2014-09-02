@@ -57,8 +57,8 @@ public class CommandLineValidator {
 			return false;
 
 		}
-		if (ops.isNewConfiguration() && !ops.isParser()) {
-			System.err.println("A new configuration needs a parser");
+		if (ops.isNewConfiguration() && !ops.isInitial()) {
+			System.err.println("A new configuration needs an initial node");
 			return false;
 
 		}

@@ -30,7 +30,7 @@ import rtt.core.utils.RTTLogging;
  * 	archive="path-to-archive"&gt;
  * 	&lt;configuration
  * 		name="configuration-name"
- * 		parser="parser-class"&gt;
+ * 		initial="initial-node-class"&gt;
  * 		&lt;classpathElement path="classpath-directory"/&gt;
  * 	&lt;/configuration&gt;
  * &lt;/updateConfigurations&gt;
@@ -44,7 +44,7 @@ import rtt.core.utils.RTTLogging;
 public class UpdateConfiguration extends Task {
 	public static class Configuration extends Task {
 		private String name = null;
-		private String parser = null;
+		private String initialNode = null;
 		private boolean owrite = false;
 		private List<ClassPathElement> cpes =
 			new LinkedList<ClassPathElement>();
@@ -55,8 +55,8 @@ public class UpdateConfiguration extends Task {
 		public void setOverwrite(boolean owrite) {this.owrite = owrite;}
 		public String getName() {return name;}
 		public void setName(String name) {this.name = name;}
-		public String getParser() {return parser;}
-		public void setParser(String parser) {this.parser = parser;}
+		public String getInitial() {return initialNode;}
+		public void setInitial(String initialNode) {this.initialNode = initialNode;}
 		public List<ClassPathElement> getClassPathElements() {return cpes;}
 		public void addClassPathElement(ClassPathElement cpe) {
 			this.cpes.add(cpe);
@@ -95,7 +95,7 @@ public class UpdateConfiguration extends Task {
 				
 				m.setConfiguration(
 						c.getName(),
-						c.getParser(),
+						c.getInitial(),
 						cpEntries,
 						false,
 						c.isOverwrite()) ;
