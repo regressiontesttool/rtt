@@ -49,10 +49,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Node {
 	
-	@Target({ElementType.FIELD})
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Address {}
-	
 	@Target( { ElementType.METHOD, ElementType.CONSTRUCTOR })
 	@Inherited
 	@Retention(RetentionPolicy.RUNTIME)
