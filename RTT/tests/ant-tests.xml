@@ -70,7 +70,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -116,7 +116,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>		
@@ -157,7 +157,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -210,7 +210,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -219,7 +219,7 @@
 			<configuration
 				overwrite="true"
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -228,7 +228,7 @@
 			<configuration
 				overwrite="true"
 				name="c1"
-				parser="RepositoryGenerator">
+				initial="RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -237,7 +237,7 @@
 			<configuration
 				overwrite="true"
 				name="c1"
-				parser="RepositoryGenerator">
+				initial="RepositoryGenerator">
 				<classpathElement path="."/>
 			</configuration>
 		</updateConfigurations>
@@ -246,7 +246,7 @@
 			<configuration
 				overwrite="true"
 				name="c1"
-				parser="RepositoryGenerator">
+				initial="RepositoryGenerator">
 				<classpathElement path="."/>
 			</configuration>
 		</updateConfigurations>
@@ -254,7 +254,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c2"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -262,7 +262,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c2"
-				parser="parser">
+				initial="parser">
 				<classpathElement path="."/>
 			</configuration>
 		</updateConfigurations>
@@ -271,7 +271,7 @@
 			<configuration
 				overwrite="true"
 				name="c2"
-				parser="parser">
+				initial="parser">
 				<classpathElement path="."/>
 			</configuration>
 		</updateConfigurations>
@@ -329,7 +329,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -389,7 +389,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -453,7 +453,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
@@ -511,7 +511,7 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				parser="rtt.core.tests.RepositoryGenerator">
+				initial="rtt.core.tests.RepositoryGenerator">
 				<classpathElement path="../binary"/>
 			</configuration>
 		</updateConfigurations>
