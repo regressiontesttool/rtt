@@ -5,7 +5,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import rtt.annotations.Node.Value;
-import rtt.core.archive.output.Type;
+import rtt.core.archive.output.GeneratorType;
 
 public abstract class ValueMember<T extends Member> 
 	implements Comparable<ValueMember<?>> {
@@ -14,7 +14,7 @@ public abstract class ValueMember<T extends Member>
 		private final Field field;
 
 		private ValueField(Field field) {
-			super(field, Type.FIELD, 
+			super(field, GeneratorType.FIELD, 
 					field.getAnnotation(VALUE_ANNOTATION));
 			
 			this.field = field;
@@ -33,7 +33,7 @@ public abstract class ValueMember<T extends Member>
 		private final Method method;
 
 		private ValueMethod(Method method) {
-			super(method, Type.METHOD,
+			super(method, GeneratorType.METHOD,
 					method.getAnnotation(VALUE_ANNOTATION));
 			
 			this.method = method;
@@ -56,10 +56,10 @@ public abstract class ValueMember<T extends Member>
 	private String name;
 	private boolean informational;
 	
-	private Type type;	
+	private GeneratorType type;	
 	private String signature;	
 
-	private ValueMember(T member, Type type, Value valueAnnotation) {		
+	private ValueMember(T member, GeneratorType type, Value valueAnnotation) {		
 		this.member = member;
 		this.type = type;
 		
@@ -98,7 +98,7 @@ public abstract class ValueMember<T extends Member>
 		return informational;
 	}
 	
-	public final Type getType() {
+	public final GeneratorType getType() {
 		return type;
 	}
 	

@@ -5,7 +5,7 @@
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
 	
-	<xs:simpleType name="type">
+	<xs:simpleType name="generatorType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OBJECT" />
 			<xs:enumeration value="FIELD" />
@@ -13,41 +13,27 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:simpleType name="elementType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VALUE" />
+			<xs:enumeration value="REFERENCE" />
+			<xs:enumeration value="NODE" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:complexType name="element">
+		<xs:sequence>
+			<xs:element name="element" type="rtt:element" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>	
 		<xs:attribute name="address" type="xs:string" use="required" />
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="elementType" type="rtt:type" use="required" />
+		<xs:attribute name="elementType" type="rtt:elementType" default="VALUE" />
+		<xs:attribute name="generatedBy" type="rtt:generatorType" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
 		<xs:attribute name="informational" type="xs:boolean" default="false" />
 	</xs:complexType>
 	
-	<xs:complexType name="value">
-		<xs:complexContent>
-			<xs:extension base="rtt:element">
-				<xs:attribute name="value" type="xs:string" use="required" />
-			</xs:extension>		
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:complexType name="reference">
-		<xs:complexContent>
-			<xs:extension base="rtt:element">
-				<xs:attribute name="to" type="xs:string" use="required"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:complexType name="node">
-		<xs:complexContent>
-			<xs:extension base="rtt:element">
-				<xs:sequence>
-					<xs:element name="element" type="rtt:element" 
-						minOccurs="0" maxOccurs="unbounded"/>
-				</xs:sequence>
-				<xs:attribute name="objectType" type="xs:string" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-		
 	<xs:element name="output" >
 		<xs:complexType>
 			<xs:sequence>

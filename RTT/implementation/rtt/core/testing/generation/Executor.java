@@ -107,15 +107,14 @@ public class Executor {
 		}
 	}
 	
-	public Object initialize(Input input, List<String> params) throws Exception {
+	public Object initialize(Input input, List<String> params) throws ReflectiveOperationException {
 		Object initialObject = null;
 		
 		try (InputStream inputStream = new ByteArrayInputStream(input.getValue().getBytes())) {
 			initialObject = initialMember.getResult(inputStream, params);
 		} catch (IOException e) {
-			RTTLogging.error("Could not access input stream.", e);
-		} catch (Exception e) {
-			RTTLogging.throwException(e);
+			RTTLogging.throwException(
+					new RuntimeException("RTT could not access input stream.", e));
 		}
 		
 		return initialObject;

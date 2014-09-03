@@ -9,17 +9,11 @@ import rtt.core.tests.junit.compare.CompareElementTests;
 import rtt.core.tests.junit.compare.CompareNodeInformationalTests;
 import rtt.core.tests.junit.compare.CompareNodeTests;
 import rtt.core.tests.junit.compare.CompareOutputTests;
-import rtt.core.tests.junit.compare.CompareReferenceInformationalTests;
-import rtt.core.tests.junit.compare.CompareReferenceTests;
-import rtt.core.tests.junit.compare.CompareValueInformationalTests;
-import rtt.core.tests.junit.compare.CompareValueTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({ CompareOutputTests.class, 
 	CompareElementTests.class, CompareElementInformationalTests.class,
-	CompareValueTests.class, CompareValueInformationalTests.class,
-	CompareNodeTests.class, CompareNodeInformationalTests.class,
-	CompareReferenceTests.class, CompareReferenceInformationalTests.class})
+	CompareNodeTests.class, CompareNodeInformationalTests.class})
 public class AllOutputCompareTests {
 
 }

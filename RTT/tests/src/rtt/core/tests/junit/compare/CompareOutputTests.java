@@ -1,6 +1,6 @@
 package rtt.core.tests.junit.compare;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 import java.util.List;
@@ -9,9 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import rtt.core.archive.output.Element;
-import rtt.core.archive.output.Node;
+import rtt.core.archive.output.ElementType;
 import rtt.core.archive.output.Output;
-import rtt.core.archive.output.Type;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestFailure;
 
@@ -19,13 +18,7 @@ import rtt.core.testing.compare.results.TestFailure;
 public class CompareOutputTests {
 
 	@Before
-	public void setUp() throws Exception {
-		
-	}
-	
-	private enum InitElement {
-		ELEMENT, VALUE, REFERENCE, NODE;
-	}
+	public void setUp() throws Exception {}
 	
 	private void testThrowsException(Output reference, Output actual, 
 			boolean checkInfos, Class<? extends Throwable> expectedException) {
@@ -63,22 +56,9 @@ public class CompareOutputTests {
 		}
 	}
 	
-	private Output createOutput(InitElement initType, boolean initInfo) {		
-		Element initialElement = null;
-		switch (initType) {
-		case ELEMENT:
-			initialElement = CompareElementTests.createSampleElement(initInfo);
-			break;
-		case NODE:
-			initialElement = CompareNodeTests.createSampleNode(initInfo);
-			break;
-		case REFERENCE:
-			initialElement = CompareReferenceTests.createSampleReference(initInfo);
-			break;
-		case VALUE:
-			initialElement = CompareValueTests.createSampleValue(initInfo);
-			break;		
-		}
+	private Output createOutput(ElementType initType, boolean informational) {		
+		Element initialElement = CompareElementTests.
+				createSampleElement(initType, informational);
 		
 		Output output = new Output();		
 		output.setInitialElement(initialElement);
@@ -86,12 +66,14 @@ public class CompareOutputTests {
 	}
 	
 	private Output createOutput(boolean initInfo, int childCount, boolean childInfos) {
-		Output output = createOutput(InitElement.NODE, initInfo);
+		Output output = createOutput(ElementType.NODE, initInfo);
 		
-		Node initialNode = (Node) output.getInitialElement();
+		Element initialNode = output.getInitialElement();
+		Element element = null;
 		for (int i = 0; i < childCount; i++) {
-			Element element = CompareElementTests.createElement(
-					"Item " + i, Type.OBJECT, childInfos);
+			element = CompareElementTests.createSampleElement(
+					ElementType.VALUE, childInfos);
+			element.setName("Item " + i);
 			
 			initialNode.getElements().add(element);
 		}
@@ -123,7 +105,7 @@ public class CompareOutputTests {
 		Output nonEmptyOutput = new Output();
 		
 		nonEmptyOutput.setInitialElement(
-				CompareElementTests.createSampleElement(false));
+				CompareElementTests.createSampleElement(ElementType.VALUE, false));
 		
 		testDifference(emptyOutput, nonEmptyOutput, true);
 		testDifference(emptyOutput, nonEmptyOutput, false);
@@ -132,7 +114,7 @@ public class CompareOutputTests {
 		testDifference(nonEmptyOutput, emptyOutput, false);
 		
 		nonEmptyOutput.setInitialElement(
-				CompareElementTests.createSampleElement(true));
+				CompareElementTests.createSampleElement(ElementType.VALUE, true));
 		
 		testDifference(emptyOutput, nonEmptyOutput, true);
 		testDifference(emptyOutput, nonEmptyOutput, false);
@@ -142,21 +124,9 @@ public class CompareOutputTests {
 	}
 	
 	@Test
-	public void testEqualOutputs_InitElement() throws Exception {
-		Output refOutput = createOutput(InitElement.ELEMENT, false);
-		Output actualOutput = createOutput(InitElement.ELEMENT, false);
-		
-		testNoDifferences(refOutput, actualOutput, true);
-		testNoDifferences(refOutput, actualOutput, false);
-		
-		testNoDifferences(actualOutput, refOutput, true);
-		testNoDifferences(actualOutput, refOutput, false);
-	}
-	
-	@Test
-	public void testEqualOutputs_InitValues() throws Exception {
-		Output refOutput = createOutput(InitElement.VALUE, false);
-		Output actualOutput = createOutput(InitElement.VALUE, false);
+	public void testEqualOutputs_InitValue() throws Exception {
+		Output refOutput = createOutput(ElementType.VALUE, false);
+		Output actualOutput = createOutput(ElementType.VALUE, false);
 		
 		testNoDifferences(refOutput, actualOutput, true);
 		testNoDifferences(refOutput, actualOutput, false);
@@ -167,8 +137,8 @@ public class CompareOutputTests {
 	
 	@Test
 	public void testEqualOutputs_InitReference() throws Exception {
-		Output refOutput = createOutput(InitElement.REFERENCE, false);
-		Output actualOutput = createOutput(InitElement.REFERENCE, false);
+		Output refOutput = createOutput(ElementType.REFERENCE, false);
+		Output actualOutput = createOutput(ElementType.REFERENCE, false);
 		
 		testNoDifferences(refOutput, actualOutput, true);
 		testNoDifferences(refOutput, actualOutput, false);
@@ -179,8 +149,8 @@ public class CompareOutputTests {
 	
 	@Test
 	public void testEqualOutputs_InitNode() throws Exception {
-		Output refOutput = createOutput(InitElement.NODE, false);
-		Output actualOutput = createOutput(InitElement.NODE, false);
+		Output refOutput = createOutput(ElementType.NODE, false);
+		Output actualOutput = createOutput(ElementType.NODE, false);
 		
 		testNoDifferences(refOutput, actualOutput, true);
 		testNoDifferences(refOutput, actualOutput, false);
