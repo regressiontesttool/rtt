@@ -6,36 +6,35 @@
   <foreignModel>../../RTT/schemes/Output.xsd</foreignModel>
   <genPackages prefix="Test" basePackage="regression" resource="XML" disposableProviderFactory="true"
       ecorePackage="newOuput.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="newOuput.ecore#//Type">
-      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//Type/OBJECT"/>
-      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//Type/FIELD"/>
-      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//Type/METHOD"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="newOuput.ecore#//ElementType">
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//ElementType/VALUE"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//ElementType/REFERENCE"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//ElementType/NODE"/>
     </genEnums>
-    <genDataTypes ecoreDataType="newOuput.ecore#//TypeObject"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="newOuput.ecore#//GeneratorType">
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/OBJECT"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/FIELD"/>
+      <genEnumLiterals ecoreEnumLiteral="newOuput.ecore#//GeneratorType/METHOD"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="newOuput.ecore#//ElementTypeObject"/>
+    <genDataTypes ecoreDataType="newOuput.ecore#//GeneratorTypeObject"/>
     <genClasses ecoreClass="newOuput.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/xSISchemaLocation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//DocumentRoot/output"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="newOuput.ecore#//Element">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/address"/>
+    <genClasses ecoreClass="newOuput.ecore#//Element">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//Element/element"/>
+      <genFeatures property="Readonly" createChild="false" propertyCategory="" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/address"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/elementType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/generatedBy"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/informational"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/name"/>
-    </genClasses>
-    <genClasses ecoreClass="newOuput.ecore#//Node">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//Node/element"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Node/objectType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Element/value"/>
     </genClasses>
     <genClasses ecoreClass="newOuput.ecore#//OutputType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference newOuput.ecore#//OutputType/initialElement"/>
-    </genClasses>
-    <genClasses ecoreClass="newOuput.ecore#//Reference">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Reference/to"/>
-    </genClasses>
-    <genClasses ecoreClass="newOuput.ecore#//Value">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute newOuput.ecore#//Value/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

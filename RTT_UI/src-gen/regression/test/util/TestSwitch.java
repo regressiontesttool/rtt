@@ -78,30 +78,9 @@ public class TestSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case TestPackage.NODE: {
-				Node node = (Node)theEObject;
-				T result = caseNode(node);
-				if (result == null) result = caseElement(node);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case TestPackage.OUTPUT_TYPE: {
 				OutputType outputType = (OutputType)theEObject;
 				T result = caseOutputType(outputType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case TestPackage.REFERENCE: {
-				Reference reference = (Reference)theEObject;
-				T result = caseReference(reference);
-				if (result == null) result = caseElement(reference);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case TestPackage.VALUE: {
-				Value value = (Value)theEObject;
-				T result = caseValue(value);
-				if (result == null) result = caseElement(value);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -140,21 +119,6 @@ public class TestSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Node</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Node</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseNode(Node object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Output Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -166,36 +130,6 @@ public class TestSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseOutputType(OutputType object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseReference(Reference object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Value</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Value</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseValue(Value object) {
 		return null;
 	}
 

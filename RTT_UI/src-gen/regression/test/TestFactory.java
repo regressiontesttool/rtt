@@ -67,10 +67,7 @@ public class TestFactory extends EFactoryImpl {
 		switch (eClass.getClassifierID()) {
 			case TestPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case TestPackage.ELEMENT: return createElement();
-			case TestPackage.NODE: return createNode();
 			case TestPackage.OUTPUT_TYPE: return createOutputType();
-			case TestPackage.REFERENCE: return createReference();
-			case TestPackage.VALUE: return createValue();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -84,10 +81,14 @@ public class TestFactory extends EFactoryImpl {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case TestPackage.TYPE:
-				return createTypeFromString(eDataType, initialValue);
-			case TestPackage.TYPE_OBJECT:
-				return createTypeObjectFromString(eDataType, initialValue);
+			case TestPackage.ELEMENT_TYPE:
+				return createElementTypeFromString(eDataType, initialValue);
+			case TestPackage.GENERATOR_TYPE:
+				return createGeneratorTypeFromString(eDataType, initialValue);
+			case TestPackage.ELEMENT_TYPE_OBJECT:
+				return createElementTypeObjectFromString(eDataType, initialValue);
+			case TestPackage.GENERATOR_TYPE_OBJECT:
+				return createGeneratorTypeObjectFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -101,10 +102,14 @@ public class TestFactory extends EFactoryImpl {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case TestPackage.TYPE:
-				return convertTypeToString(eDataType, instanceValue);
-			case TestPackage.TYPE_OBJECT:
-				return convertTypeObjectToString(eDataType, instanceValue);
+			case TestPackage.ELEMENT_TYPE:
+				return convertElementTypeToString(eDataType, instanceValue);
+			case TestPackage.GENERATOR_TYPE:
+				return convertGeneratorTypeToString(eDataType, instanceValue);
+			case TestPackage.ELEMENT_TYPE_OBJECT:
+				return convertElementTypeObjectToString(eDataType, instanceValue);
+			case TestPackage.GENERATOR_TYPE_OBJECT:
+				return convertGeneratorTypeObjectToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -135,16 +140,6 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Node createNode() {
-		Node node = new Node();
-		return node;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public OutputType createOutputType() {
 		OutputType outputType = new OutputType();
 		return outputType;
@@ -155,28 +150,8 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Reference createReference() {
-		Reference reference = new Reference();
-		return reference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Value createValue() {
-		Value value = new Value();
-		return value;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Type createTypeFromString(EDataType eDataType, String initialValue) {
-		Type result = Type.get(initialValue);
+	public ElementType createElementTypeFromString(EDataType eDataType, String initialValue) {
+		ElementType result = ElementType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
@@ -186,7 +161,7 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertTypeToString(EDataType eDataType, Object instanceValue) {
+	public String convertElementTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
@@ -195,8 +170,10 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Type createTypeObjectFromString(EDataType eDataType, String initialValue) {
-		return createTypeFromString(TestPackage.Literals.TYPE, initialValue);
+	public GeneratorType createGeneratorTypeFromString(EDataType eDataType, String initialValue) {
+		GeneratorType result = GeneratorType.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
 	}
 
 	/**
@@ -204,8 +181,44 @@ public class TestFactory extends EFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertTypeObjectToString(EDataType eDataType, Object instanceValue) {
-		return convertTypeToString(TestPackage.Literals.TYPE, instanceValue);
+	public String convertGeneratorTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ElementType createElementTypeObjectFromString(EDataType eDataType, String initialValue) {
+		return createElementTypeFromString(TestPackage.Literals.ELEMENT_TYPE, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertElementTypeObjectToString(EDataType eDataType, Object instanceValue) {
+		return convertElementTypeToString(TestPackage.Literals.ELEMENT_TYPE, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public GeneratorType createGeneratorTypeObjectFromString(EDataType eDataType, String initialValue) {
+		return createGeneratorTypeFromString(TestPackage.Literals.GENERATOR_TYPE, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertGeneratorTypeObjectToString(EDataType eDataType, Object instanceValue) {
+		return convertGeneratorTypeToString(TestPackage.Literals.GENERATOR_TYPE, instanceValue);
 	}
 
 	/**

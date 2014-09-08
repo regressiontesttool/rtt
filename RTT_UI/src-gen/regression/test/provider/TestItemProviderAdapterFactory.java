@@ -118,29 +118,6 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Node} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected NodeItemProvider nodeItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.Node}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createNodeAdapter() {
-		if (nodeItemProvider == null) {
-			nodeItemProvider = new NodeItemProvider(this);
-		}
-
-		return nodeItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link regression.test.OutputType} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -161,52 +138,6 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 		}
 
 		return outputTypeItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Reference} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ReferenceItemProvider referenceItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.Reference}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createReferenceAdapter() {
-		if (referenceItemProvider == null) {
-			referenceItemProvider = new ReferenceItemProvider(this);
-		}
-
-		return referenceItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link regression.test.Value} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ValueItemProvider valueItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link regression.test.Value}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createValueAdapter() {
-		if (valueItemProvider == null) {
-			valueItemProvider = new ValueItemProvider(this);
-		}
-
-		return valueItemProvider;
 	}
 
 	/**
@@ -310,10 +241,7 @@ public class TestItemProviderAdapterFactory extends TestAdapterFactory implement
 	public void dispose() {
 		if (documentRootItemProvider != null) documentRootItemProvider.dispose();
 		if (elementItemProvider != null) elementItemProvider.dispose();
-		if (nodeItemProvider != null) nodeItemProvider.dispose();
 		if (outputTypeItemProvider != null) outputTypeItemProvider.dispose();
-		if (referenceItemProvider != null) referenceItemProvider.dispose();
-		if (valueItemProvider != null) valueItemProvider.dispose();
 	}
 
 }

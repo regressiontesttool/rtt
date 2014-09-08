@@ -151,21 +151,6 @@ public class OutputTypeItemProvider
 			(createChildParameter
 				(TestPackage.Literals.OUTPUT_TYPE__INITIAL_ELEMENT,
 				 TestFactory.eINSTANCE.createElement()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(TestPackage.Literals.OUTPUT_TYPE__INITIAL_ELEMENT,
-				 TestFactory.eINSTANCE.createNode()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(TestPackage.Literals.OUTPUT_TYPE__INITIAL_ELEMENT,
-				 TestFactory.eINSTANCE.createReference()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(TestPackage.Literals.OUTPUT_TYPE__INITIAL_ELEMENT,
-				 TestFactory.eINSTANCE.createValue()));
 	}
 
 	/**
