@@ -7,19 +7,19 @@ import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**
- * This is the central singleton for the NewOutput edit plugin.
+ * This is the central singleton for the Rtt-Output edit plugin.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public final class NewOutputEditPlugin extends EMFPlugin {
+public final class RttOutputEditPlugin extends EMFPlugin {
 	/**
 	 * Keep track of the singleton.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static final NewOutputEditPlugin INSTANCE = new NewOutputEditPlugin();
+	public static final RttOutputEditPlugin INSTANCE = new RttOutputEditPlugin();
 
 	/**
 	 * Keep track of the singleton.
@@ -35,7 +35,7 @@ public final class NewOutputEditPlugin extends EMFPlugin {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NewOutputEditPlugin() {
+	public RttOutputEditPlugin() {
 		super
 		  (new ResourceLocator [] {
 		   });

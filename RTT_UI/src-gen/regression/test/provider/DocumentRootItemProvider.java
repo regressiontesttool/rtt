@@ -161,7 +161,7 @@ public class DocumentRootItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return NewOutputEditPlugin.INSTANCE;
+		return RttOutputEditPlugin.INSTANCE;
 	}
 
 }

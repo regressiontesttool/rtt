@@ -86,7 +86,7 @@ public class ElementItemProvider
 				 getString("_UI_Element_address_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_Element_address_feature", "_UI_Element_type"),
 				 TestPackage.Literals.ELEMENT__ADDRESS,
-				 false,
+				 true,
 				 false,
 				 false,
 				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
@@ -326,7 +326,7 @@ public class ElementItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return NewOutputEditPlugin.INSTANCE;
+		return RttOutputEditPlugin.INSTANCE;
 	}
 
 }

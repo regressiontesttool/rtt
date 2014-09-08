@@ -161,7 +161,7 @@ public class OutputTypeItemProvider
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return NewOutputEditPlugin.INSTANCE;
+		return RttOutputEditPlugin.INSTANCE;
 	}
 
 }

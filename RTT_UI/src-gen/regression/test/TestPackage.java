@@ -444,6 +444,7 @@ public class TestPackage extends EPackageImpl {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
 	}
 
+
 	/**
 	 * Returns the meta object for class '{@link regression.test.Element <em>Element</em>}'.
 	 * <!-- begin-user-doc -->
@@ -564,6 +565,7 @@ public class TestPackage extends EPackageImpl {
 		return outputTypeEClass;
 	}
 
+
 	/**
 	 * Returns the meta object for the containment reference '{@link regression.test.OutputType#getInitialElement <em>Initial Element</em>}'.
 	 * <!-- begin-user-doc -->
@@ -576,6 +578,7 @@ public class TestPackage extends EPackageImpl {
 	public EReference getOutputType_InitialElement() {
 		return (EReference)outputTypeEClass.getEStructuralFeatures().get(0);
 	}
+
 
 	/**
 	 * Returns the meta object for enum '{@link regression.test.ElementType <em>Element Type</em>}'.

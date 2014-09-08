@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/rtt.ui/src-gen" editDirectory="/rtt.ui/src-gen"
-    modelPluginID="rtt.ui" modelName="RTT Output Data" rootImplementsInterface=""
-    suppressInterfaces="true" featureMapWrapperInterface="" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="6.0" copyrightFields="false">
-  <foreignModel>rtt-output.ecore</foreignModel>
+    modelPluginID="rtt.ui" modelName="Rtt-Output" suppressInterfaces="true" importerID="org.eclipse.xsd.ecore.importer"
+    complianceLevel="7.0" copyrightFields="false" importOrganizing="true">
+  <foreignModel>../../RTT/schemes/Output.xsd</foreignModel>
   <genPackages prefix="Test" basePackage="regression" resource="XML" disposableProviderFactory="true"
       ecorePackage="rtt-output.ecore#/">
-    <genClasses ecoreClass="rtt-output.ecore#//Attribute">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Attribute/informational"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Attribute/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Attribute/value"/>
-    </genClasses>
-    <genClasses ecoreClass="rtt-output.ecore#//Classable">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Classable/fullName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Classable/simpleName"/>
-    </genClasses>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="rtt-output.ecore#//ElementType">
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//ElementType/VALUE"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//ElementType/REFERENCE"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//ElementType/NODE"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="rtt-output.ecore#//GeneratorType">
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/OBJECT"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/FIELD"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/METHOD"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="rtt-output.ecore#//ElementTypeObject"/>
+    <genDataTypes ecoreDataType="rtt-output.ecore#//GeneratorTypeObject"/>
     <genClasses ecoreClass="rtt-output.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rtt-output.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rtt-output.ecore#//DocumentRoot/xSISchemaLocation"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//DocumentRoot/lexerOutput"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//DocumentRoot/parserOutput"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//DocumentRoot/output"/>
     </genClasses>
-    <genClasses ecoreClass="rtt-output.ecore#//LexerOutputType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//LexerOutputType/token"/>
+    <genClasses ecoreClass="rtt-output.ecore#//Element">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//Element/element"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Element/address"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Element/elementType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Element/generatedBy"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Element/informational"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Element/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Element/value"/>
     </genClasses>
-    <genClasses ecoreClass="rtt-output.ecore#//Node">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//Node/attributes"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//Node/childNodes"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Node/isNull"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Node/method"/>
-    </genClasses>
-    <genClasses ecoreClass="rtt-output.ecore#//ParserOutputType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//ParserOutputType/tree"/>
-    </genClasses>
-    <genClasses ecoreClass="rtt-output.ecore#//Token">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//Token/attributes"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rtt-output.ecore#//Token/isEof"/>
-    </genClasses>
-    <genClasses ecoreClass="rtt-output.ecore#//Tree">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//Tree/node"/>
+    <genClasses ecoreClass="rtt-output.ecore#//OutputType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rtt-output.ecore#//OutputType/initialElement"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
