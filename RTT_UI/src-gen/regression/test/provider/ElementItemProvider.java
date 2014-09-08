@@ -263,10 +263,16 @@ public class ElementItemProvider
 		
 		text.append(element.getName());
 		
-		if (element.getElementType() == ElementType.REFERENCE) {
+		switch (element.getElementType()) {
+		case NODE:
+			text.append(" : ");
+			break;
+		case REFERENCE:
 			text.append(" refers to ");
-		} else {
+			break;
+		case VALUE:
 			text.append(" = ");
+			break;		
 		}
 		
 		text.append(element.getValue());
