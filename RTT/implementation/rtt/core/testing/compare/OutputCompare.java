@@ -91,7 +91,7 @@ public class OutputCompare {
 		Element actualInitElement = actualOutput.getInitialElement();		
 		
 		if (refInitElement != null && actualInitElement != null) {
-			OutputCompare comparer = new OutputCompare(testInformational);
+			OutputCompare comparer = new OutputCompare(testInformational);			
 			CompareResult result = comparer.compareElements(
 					refInitElement, actualInitElement);
 			
@@ -134,7 +134,7 @@ public class OutputCompare {
 		
 		if (testInformational(referenceElement)) {
 			String valueOfRefer = String.valueOf(referenceElement.getValue());
-			String valueOfActual = String.valueOf(actualElement.getValue());			
+			String valueOfActual = String.valueOf(actualElement.getValue());
 			
 			if (!valueOfRefer.equals(valueOfActual)) {
 				return CompareResult.create(Difference.VALUE, valueOfRefer, valueOfActual);
