@@ -118,8 +118,8 @@ public class OutputCompare {
 		
 		if (!referenceElement.getGeneratedBy().equals(actualElement.getGeneratedBy())) {
 			return CompareResult.create(Difference.GENERATOR_TYPE, 
-					referenceElement.getElementType().name(), 
-					actualElement.getElementType().name());
+					referenceElement.getGeneratedBy().name(), 
+					actualElement.getGeneratedBy().name());
 		}
 		
 		if (!referenceElement.getName().equals(actualElement.getName())) {
