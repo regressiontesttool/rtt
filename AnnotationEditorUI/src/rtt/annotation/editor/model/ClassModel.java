@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node;
+import rtt.annotations.Node.Value;
 
 
 @SuppressWarnings("rawtypes")
@@ -19,6 +20,11 @@ public class ClassModel extends ModelElement {
 		public PackageElement(ClassModel parent, String name) {
 			super(parent);
 			super.setName(name);
+		}
+		
+		@Value
+		private List<ClassElement> getElements() {
+			return getParent().getClasses(getName());
 		}
 	}
 
@@ -51,7 +57,6 @@ public class ClassModel extends ModelElement {
 		return new PackageElement(this, packageName);
 	}
 
-	@Node.Child
 	public Map<PackageElement, List<ClassElement>> getClassElements() {
 		return classElements;
 	}
@@ -66,6 +71,7 @@ public class ClassModel extends ModelElement {
 		return null;
 	}
 	
+	@Value
 	public Set<PackageElement> getPackages() {
 		return classElements.keySet();
 	}

@@ -1,8 +1,6 @@
 package rtt.annotation.editor;
 
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 

@@ -13,9 +13,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import rtt.annotation.editor.data.asm.visitor.AnnotationFieldVisitor;
 import rtt.annotation.editor.data.asm.visitor.AddAnnotationChanger;
 import rtt.annotation.editor.data.asm.visitor.AnnotationClassVisitor;
+import rtt.annotation.editor.data.asm.visitor.AnnotationFieldVisitor;
 import rtt.annotation.editor.data.asm.visitor.AnnotationMethodVisitor;
 import rtt.annotation.editor.data.asm.visitor.RemoveAnnotationChanger;
 import rtt.annotation.editor.model.ClassElement;

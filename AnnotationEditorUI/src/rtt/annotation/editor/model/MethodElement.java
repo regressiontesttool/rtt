@@ -1,17 +1,17 @@
 package rtt.annotation.editor.model;
 
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node;
+import rtt.annotations.Node.Value;
 
 @Node
 public class MethodElement extends Annotatable<ClassElement> {
 	
-	private String type = null;
+	@Value private String type = null;
 	
 	protected MethodElement(ClassElement parent) {
 		super(parent);
 	}
 	
-	@Node.Compare
 	public String getType() {
 		return type;
 	}

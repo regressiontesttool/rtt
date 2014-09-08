@@ -3,7 +3,8 @@ package rtt.annotation.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node;
+import rtt.annotations.Node.Value;
 
 @Node
 public class ClassElement extends Annotatable<ClassModel> {
@@ -25,14 +26,14 @@ public class ClassElement extends Annotatable<ClassModel> {
 		}
 	}
 	
-	private String packageName = null;	
-	private ClassType type = ClassType.CONCRETE;
+	@Value private String packageName = null;	
+	@Value private ClassType type = ClassType.CONCRETE;
 	
-	private ClassElementReference superClass = null;
-	private List<ClassElementReference> interfaces;
+	@Value private ClassElementReference superClass = null;
+	@Value private List<ClassElementReference> interfaces;
 	
-	private List<FieldElement> fields;
-	private List<MethodElement> methods;
+	@Value private List<FieldElement> fields;
+	@Value private List<MethodElement> methods;
 	
 	protected ClassElement(ClassModel parent) {
 		super(parent);
@@ -40,7 +41,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		methods = new ArrayList<MethodElement>();
 	}
 	
-	@Node.Compare
 	public String getPackageName() {
 		return packageName;
 	}
@@ -49,7 +49,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		this.packageName = packageName;
 	}
 	
-	@Node.Compare
 	public ClassType getType() {
 		return type;
 	}
@@ -58,7 +57,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		this.type = type;
 	}	
 	
-	@Node.Compare
 	public List<ClassElementReference> getInterfaces() {
 		return interfaces;
 	}
@@ -71,7 +69,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return interfaces != null && !interfaces.isEmpty();
 	}
 	
-	@Node.Compare
 	public ElementReference<ClassElement> getSuperClass() {
 		return superClass;
 	}
@@ -126,7 +123,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return false;
 	}
 	
-	@Node.Child
 	public List<FieldElement> getFields() {
 		return fields;
 	}
@@ -149,7 +145,6 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return null;
 	}
 
-	@Node.Child
 	public List<MethodElement> getMethods() {
 		return methods;
 	}
@@ -225,9 +220,5 @@ public class ClassElement extends Annotatable<ClassModel> {
 		}
 
 		return true;
-	}
-
-	
-
-		
+	}		
 }

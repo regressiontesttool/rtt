@@ -8,14 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.osgi.framework.Bundle;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.data.asm.visitor.ImportClassElementVisitor;
+import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
-import rtt.annotations.Parser;
+import rtt.annotations.Node;
 
-@Parser
+@Node
 public class RTTParser {
 	
 	ClassModel model;
@@ -24,36 +28,45 @@ public class RTTParser {
 		model = ClassModelFactory.getFactory().createClassModel();
 	}
 	
-	@Parser.Initialize
+	@Node.Initialize
 	public void initialize(InputStream in) throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(in));
 		List<String> fileNames = new ArrayList<String>();
 		
-		String line = reader.readLine();
+		String line = bufferedreader.readLine();
 		while (line != null) {
 			if (!line.equals("") && !fileNames.contains(line)) {
 				fileNames.add(line);
 			}
-			line = reader.readLine();
+			line = bufferedreader.readLine();
 		}
 		
-		reader.close();	
+		bufferedreader.close();	
 		
 		Bundle bundle = Platform.getBundle(AnnotationEditorPlugin.PLUGIN_ID);
 		if (bundle == null) {
 			throw new IllegalStateException("Bundle not found");
 		}
 		
+		ClassModelFactory factory = ClassModelFactory.getFactory();
+		model = factory.createClassModel();
+		
 		for (String fileName : fileNames) {
 			URL resourceURL = bundle.getEntry(fileName);
-			System.out.println("Reading: " + resourceURL);
-
-//			Importer importer = new ASMImporter();
-//			importer.importClass(resourceURL.openStream(), model);
+			System.out.println("Reading: " + resourceURL);			
+			
+			ClassReader reader = new ClassReader(resourceURL.openStream());
+			
+			ClassElement element = factory.createClassElement(model);
+			ClassVisitor visitor = new ImportClassElementVisitor(element, factory);
+			
+			reader.accept(visitor, ClassReader.SKIP_CODE);
+			
+			model.addClassElement(element);
 		}		
 	}
 	
-	@Parser.AST
+	@Node.Value
 	public ClassModel getModel() {
 		return model;
 	}

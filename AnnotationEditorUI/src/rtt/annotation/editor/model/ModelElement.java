@@ -1,12 +1,12 @@
 package rtt.annotation.editor.model;
 
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node.Value;
 
 
 public abstract class ModelElement<T extends ModelElement<?>> {
 	
-	private String name = null;
-	private T parent = null;
+	@Value private String name = null;
+	@Value private T parent = null;
 
 	private boolean changed = false;
 	
@@ -14,7 +14,6 @@ public abstract class ModelElement<T extends ModelElement<?>> {
 		this.parent = parent;
 	}
 	
-	@Node.Compare
 	public final String getName() {
 		return name;
 	}
@@ -23,7 +22,6 @@ public abstract class ModelElement<T extends ModelElement<?>> {
 		this.name = name;
 	}	
 	
-	@Node.Compare
 	public T getParent() {
 		return parent;
 	}

@@ -1,18 +1,18 @@
 package rtt.annotation.editor.model;
 
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node;
+import rtt.annotations.Node.Value;
 
 
 @Node
 public class FieldElement extends Annotatable<ClassElement> {	
 
-	private String type;
+	@Value private String type;
 
 	protected FieldElement(ClassElement parent) {
 		super(parent);		
 	}
 
-	@Node.Compare
 	public String getType() {
 		return type;
 	}
