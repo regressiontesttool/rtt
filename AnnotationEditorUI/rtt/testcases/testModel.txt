@@ -1,5 +1,5 @@
-/bin/rtt/annotation/test/model/TestInterfaceA.class
-/bin/rtt/annotation/test/model/TestInterfaceB.class
-/bin/rtt/annotation/test/model/TestInterfaceAB.class
-/bin/rtt/annotation/test/model/TestAbstractClassA.class
-/bin/rtt/annotation/test/model/TestConcreteClassAB.class
+/bin/rtt/annotation/testing/TestInterfaceA.class
+/bin/rtt/annotation/testing/TestInterfaceB.class
+/bin/rtt/annotation/testing/TestInterfaceAB.class
+/bin/rtt/annotation/testing/TestAbstractClassA.class
+/bin/rtt/annotation/testing/TestConcreteClassAB.class
