@@ -4,6 +4,15 @@
 <xs:schema xmlns:rtt="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	attributeFormDefault="unqualified" elementFormDefault="qualified"
 	targetNamespace="regression.test.tool">
+
+	<xs:element name="output" >
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="initialElement" type="rtt:element" 
+					minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 	
 	<xs:simpleType name="generatorType">
 		<xs:restriction base="xs:string">
@@ -13,7 +22,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="elementType">
+	<xs:simpleType name="elementType" >
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="VALUE" />
 			<xs:enumeration value="REFERENCE" />
@@ -22,24 +31,26 @@
 	</xs:simpleType>
 	
 	<xs:complexType name="element">
+		
 		<xs:sequence>
-			<xs:element name="element" type="rtt:element" minOccurs="0"
+			<xs:element name="element" 
+				type="rtt:element" 
+				minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>	
-		<xs:attribute name="address" type="xs:string" use="required" />
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="elementType" type="rtt:elementType" default="VALUE" />
-		<xs:attribute name="generatedBy" type="rtt:generatorType" use="required" />
-		<xs:attribute name="value" type="xs:string" use="required" />
-		<xs:attribute name="informational" type="xs:boolean" default="false" />
+		
+		<xs:attribute name="address" 
+			type="xs:string" use="required" />
+		<xs:attribute name="name"
+			type="xs:string" use="required"/>
+		<xs:attribute name="value"
+			type="xs:string" use="required" />
+		<xs:attribute name="informational" 
+			type="xs:boolean" default="false" />
+		<xs:attribute name="elementType" 
+			type="rtt:elementType" default="VALUE" />
+		<xs:attribute name="generatedBy" 
+			type="rtt:generatorType" default="OBJECT" />		
+		
 	</xs:complexType>
-	
-	<xs:element name="output" >
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="initialElement" type="rtt:element" 
-					minOccurs="1" maxOccurs="1"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
 </xs:schema>
