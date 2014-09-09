@@ -18,15 +18,18 @@ public class AddAnnotationChanger extends AnnotationChanger {
 
 	protected AnnotationVisitor checkAnnotation(IAnnotationVisitor visitor, String desc, boolean visible) {
 		switch(AnnotationDescriptor.findAnnotation(desc)) {
-			case COMPARE:
-				hasCompareAnnotation = true;
-				break;
-			case INFORMATIONAL:
-				hasInfoAnnotation = true;
-				break;
-			case NODE:
-				hasNodeAnnotation = true;
-				break;
+//			case COMPARE:
+//				hasCompareAnnotation = true;
+//				break;
+//			case INFORMATIONAL:
+//				hasInfoAnnotation = true;
+//				break;
+		case VALUE:
+			hasCompareAnnotation = true;
+			break;
+		case NODE:
+			hasNodeAnnotation = true;
+			break;
 		}
 		
 		return visitor.getVisitor(desc, visible);
@@ -43,14 +46,19 @@ public class AddAnnotationChanger extends AnnotationChanger {
 	}
 	
 	private AnnotationDescriptor getDescriptor(Annotation annotation) {
-		if (annotation == Annotation.COMPARE && !hasCompareAnnotation) {
-			hasCompareAnnotation = true;
-			return AnnotationDescriptor.COMPARE;
-		}
+//		if (annotation == Annotation.COMPARE && !hasCompareAnnotation) {
+//			hasCompareAnnotation = true;
+//			return AnnotationDescriptor.COMPARE;
+//		}
+//		
+//		if (annotation == Annotation.INFORMATIONAL && !hasInfoAnnotation) {
+//			hasInfoAnnotation = true;
+//			return AnnotationDescriptor.INFORMATIONAL;
+//		}
 		
-		if (annotation == Annotation.INFORMATIONAL && !hasInfoAnnotation) {
-			hasInfoAnnotation = true;
-			return AnnotationDescriptor.INFORMATIONAL;
+		if (annotation == Annotation.VALUE && !hasCompareAnnotation) {
+			hasCompareAnnotation = true;
+			return AnnotationDescriptor.VALUE;
 		}
 		
 		if (annotation == Annotation.NODE && !hasNodeAnnotation) {
