@@ -4,13 +4,14 @@ import org.objectweb.asm.Type;
 
 import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotations.Node;
+import rtt.annotations.Node.Initialize;
 import rtt.annotations.Node.Value;
 
 public enum AnnotationDescriptor {
 	
-	NODE (Annotation.NODE, Type.getDescriptor(Node.class)),
-	COMPARE (Annotation.COMPARE, Type.getDescriptor(Value.class)),
-	INFORMATIONAL (Annotation.INFORMATIONAL, Type.getDescriptor(Value.class));
+	NODE (Annotation.NODE, Type.getDescriptor(Node.class)),	
+	VALUE (Annotation.VALUE, Type.getDescriptor(Value.class)),
+	INITIALIZE (Annotation.INITIALIZE, Type.getDescriptor(Initialize.class));
 	
 	private String descriptor;
 	private Annotation annotation;
