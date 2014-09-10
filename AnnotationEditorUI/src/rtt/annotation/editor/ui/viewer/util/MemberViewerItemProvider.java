@@ -1,15 +1,20 @@
 package rtt.annotation.editor.ui.viewer.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.ui.AnnotationEditor;
 
-public class ElementViewerItemProvider extends ViewerItemProvider {
+public class MemberViewerItemProvider extends ViewerItemProvider {
 	
+	private static final List<MethodElement> EMPTY_METHODS = Collections.emptyList();
+	private static final List<FieldElement> EMPTY_FIELDS = Collections.emptyList();
+
 	private final class MethodElementItem extends
 			ModelElementViewerItem<MethodElement> {
 		private MethodElementItem(ViewerItem parent, MethodElement element) {
@@ -33,13 +38,13 @@ public class ElementViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(MethodElement element) {
-			if (element.getAnnotation() == Annotation.COMPARE) {
-				return ItemColor.COMPARE;
-			}
-			
-			if (element.getAnnotation() == Annotation.INFORMATIONAL) {
-				return ItemColor.INFORMATIONAL;
-			}
+//			if (element.getAnnotation() == Annotation.COMPARE) {
+//				return ItemColor.COMPARE;
+//			}
+//			
+//			if (element.getAnnotation() == Annotation.INFORMATIONAL) {
+//				return ItemColor.INFORMATIONAL;
+//			}
 			
 			return super.getItemColor(element);
 		}
@@ -76,13 +81,13 @@ public class ElementViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(FieldElement element) {
-			if (element.getAnnotation() == Annotation.COMPARE) {
-				return ItemColor.COMPARE;
-			}
-			
-			if (element.getAnnotation() == Annotation.INFORMATIONAL) {
-				return ItemColor.INFORMATIONAL;
-			}
+//			if (element.getAnnotation() == Annotation.COMPARE) {
+//				return ItemColor.COMPARE;
+//			}
+//			
+//			if (element.getAnnotation() == Annotation.INFORMATIONAL) {
+//				return ItemColor.INFORMATIONAL;
+//			}
 			
 			return super.getItemColor(element);
 		}
@@ -102,27 +107,46 @@ public class ElementViewerItemProvider extends ViewerItemProvider {
 	ViewerItem fieldTree;
 	ViewerItem methodTree;
 	
-	public ElementViewerItemProvider() {
+	private AnnotationEditor editor;
+	
+	public MemberViewerItemProvider(AnnotationEditor editor) {
 		fieldTree = new TextViewerItem(null, "Fields");
 		methodTree = new TextViewerItem(null, "Methods");
 		
 		items.add(fieldTree);
 		items.add(methodTree);
+		
+		this.editor = editor;
 	}
 	
 	@Override
 	public List<ViewerItem> setInput(Object input, ViewerItem parent) {
 		ClassElement classElement = (ClassElement) input;
 		
-		updateFieldItems(classElement.getFields(), parent);
-		updateMethodItems(classElement.getMethods(), parent);
+		List<FieldElement> fields = EMPTY_FIELDS;
+		List<MethodElement> methods = EMPTY_METHODS;
+		
+		switch (editor.getSelectedAnnotation()) {
+		case INITIALIZE:
+			methods = classElement.getInitializableMethods();
+			break;
+		case VALUE:
+			fields = classElement.getValuableFields();
+			methods = classElement.getValuableMethods();
+			break;
+		default:
+			break;		
+		}
+		
+		updateFieldItems(fields, parent);
+		updateMethodItems(methods, parent);		
 
 		return items;
 	}
 
-	private void updateFieldItems(List<FieldElement> fields, ViewerItem parent) {		
+	private void updateFieldItems(List<FieldElement> fields, ViewerItem parent) {	
 		fieldTree.setParent(parent);
-		fieldTree.clear();	
+		fieldTree.clear();
 		
 		for (FieldElement field : fields) {
 			fieldTree.add(new FieldElementItem(fieldTree, field));		

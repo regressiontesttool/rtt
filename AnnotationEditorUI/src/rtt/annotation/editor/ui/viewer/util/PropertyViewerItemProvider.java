@@ -130,7 +130,7 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 					return ItemColor.ANNOTATED_EXTEND;
 				}
 				
-				if (element.hasMemberAnnotation()) {
+				if (element.hasAnnotatedValueMember()) {
 					return ItemColor.ANNOTATED_MEMBER;
 				}						
 				

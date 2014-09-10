@@ -1,5 +1,7 @@
 package rtt.annotation.editor.data.asm.visitor;
 
+import java.io.InputStream;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
@@ -91,7 +93,7 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 			FieldVisitor fv = super.visitField(access, name, desc, signature, value);
 			FieldVisitor importVisitor = new ImportFieldElementVisitor(field, fv);
 			
-			element.addField(field);
+			element.addValuableField(field);
 			return importVisitor;
 		}			
 		
@@ -107,25 +109,53 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 			String signature, String[] exceptions) {
 		
 		Type methodType = Type.getType(desc);
-		if (!hasVoidReturnType(methodType) && !hasArguments(methodType)) {
-			final MethodElement method = factory.createMethodElement(element, name);
-			method.setType(methodType.getReturnType().getClassName());
-			
-			MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-			MethodVisitor importVisitor = new ImportMethodElementVisitor(method, mv);
-			
-			element.addMethod(method);
-			return importVisitor;
-		}			
+		final MethodElement method = factory.createMethodElement(element, name);		
+		method.setType(methodType.getReturnType().getClassName());
 		
-		return super.visitMethod(access, name, desc, signature, exceptions);
+		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+		MethodVisitor importVisitor = new ImportMethodElementVisitor(method, mv);		
+		
+		if (isValuableMethod(methodType)) {
+			element.addValuableMethod(method);
+			return importVisitor;
+		} else if (isInitializableMethod(methodType)) {
+			element.addInitializableMethod(method);
+			return importVisitor;
+		}
+		
+		return mv;
 	}
 	
-	private boolean hasVoidReturnType(Type methodType) {
-		return Type.VOID_TYPE.equals(methodType.getReturnType());
+	private boolean isValuableMethod(Type methodType) {
+		return hasNonVoidReturnType(methodType) && methodType.getArgumentTypes().length == 0;
 	}
 
-	private boolean hasArguments(Type methodType) {
-		return methodType.getArgumentTypes().length > 0;
+	private boolean isInitializableMethod(Type methodType) {
+		if (hasNonVoidReturnType(methodType)) {
+			return false;
+		}
+		
+		int argumentCount = methodType.getArgumentTypes().length;
+		if (argumentCount < 1 || argumentCount > 2) {
+			return false;
+		}
+		
+		Type firstArgument = methodType.getArgumentTypes()[0];
+		if (!firstArgument.equals(Type.getType(InputStream.class))) {
+			return false;
+		}
+		
+		if (argumentCount == 2) {
+			Type secondArgument = methodType.getArgumentTypes()[1];
+			if (!secondArgument.equals(Type.getType(String[].class))) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	private boolean hasNonVoidReturnType(Type methodType) {
+		return !methodType.getReturnType().equals(Type.VOID_TYPE);
 	}
 }

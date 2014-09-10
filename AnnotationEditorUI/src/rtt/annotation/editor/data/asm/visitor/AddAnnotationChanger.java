@@ -8,8 +8,8 @@ import rtt.annotation.editor.model.Annotatable;
 
 public class AddAnnotationChanger extends AnnotationChanger {
 	
-	private boolean hasCompareAnnotation = false;
-	private boolean hasInfoAnnotation = false;
+	private boolean hasValueAnnotation = false;
+	private boolean hasInitializeAnnotation = false;
 	private boolean hasNodeAnnotation = false;
 	
 	public AddAnnotationChanger(Annotatable<?> annotatable) {
@@ -17,20 +17,20 @@ public class AddAnnotationChanger extends AnnotationChanger {
 	}
 
 	protected AnnotationVisitor checkAnnotation(IAnnotationVisitor visitor, String desc, boolean visible) {
-		switch(AnnotationDescriptor.findAnnotation(desc)) {
-//			case COMPARE:
-//				hasCompareAnnotation = true;
-//				break;
-//			case INFORMATIONAL:
-//				hasInfoAnnotation = true;
-//				break;
-		case VALUE:
-			hasCompareAnnotation = true;
-			break;
-		case NODE:
-			hasNodeAnnotation = true;
-			break;
-		}
+		AnnotationDescriptor descriptor = AnnotationDescriptor.findAnnotation(desc);
+		if (descriptor != null) {
+			switch(AnnotationDescriptor.findAnnotation(desc)) {
+			case NODE:
+				hasNodeAnnotation = true;
+				break;
+			case VALUE:
+				hasValueAnnotation = true;
+				break;
+			case INITIALIZE:
+				hasInitializeAnnotation = true;
+				break;		
+			}
+		}		
 		
 		return visitor.getVisitor(desc, visible);
 	}
@@ -45,19 +45,14 @@ public class AddAnnotationChanger extends AnnotationChanger {
 		}
 	}
 	
-	private AnnotationDescriptor getDescriptor(Annotation annotation) {
-//		if (annotation == Annotation.COMPARE && !hasCompareAnnotation) {
-//			hasCompareAnnotation = true;
-//			return AnnotationDescriptor.COMPARE;
-//		}
-//		
-//		if (annotation == Annotation.INFORMATIONAL && !hasInfoAnnotation) {
-//			hasInfoAnnotation = true;
-//			return AnnotationDescriptor.INFORMATIONAL;
-//		}
+	private AnnotationDescriptor getDescriptor(Annotation annotation) {		
+		if (annotation == Annotation.INITIALIZE && !hasInitializeAnnotation) {
+			hasInitializeAnnotation = true;
+			return AnnotationDescriptor.INITIALIZE;
+		}
 		
-		if (annotation == Annotation.VALUE && !hasCompareAnnotation) {
-			hasCompareAnnotation = true;
+		if (annotation == Annotation.VALUE && !hasValueAnnotation) {
+			hasValueAnnotation = true;
 			return AnnotationDescriptor.VALUE;
 		}
 		
