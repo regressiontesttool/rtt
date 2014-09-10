@@ -38,13 +38,13 @@ public class MemberViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(MethodElement element) {
-//			if (element.getAnnotation() == Annotation.COMPARE) {
-//				return ItemColor.COMPARE;
-//			}
-//			
-//			if (element.getAnnotation() == Annotation.INFORMATIONAL) {
-//				return ItemColor.INFORMATIONAL;
-//			}
+			if (element.getAnnotation() == Annotation.VALUE) {
+				return ItemColor.VALUE;
+			}
+			
+			if (element.getAnnotation() == Annotation.INITIALIZE) {
+				return ItemColor.INITIALIZE;
+			}
 			
 			return super.getItemColor(element);
 		}
@@ -81,13 +81,13 @@ public class MemberViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(FieldElement element) {
-//			if (element.getAnnotation() == Annotation.COMPARE) {
-//				return ItemColor.COMPARE;
-//			}
-//			
-//			if (element.getAnnotation() == Annotation.INFORMATIONAL) {
-//				return ItemColor.INFORMATIONAL;
-//			}
+			if (element.getAnnotation() == Annotation.VALUE) {
+				return ItemColor.VALUE;
+			}
+
+			if (element.getAnnotation() == Annotation.INITIALIZE) {
+				return ItemColor.INITIALIZE;
+			}
 			
 			return super.getItemColor(element);
 		}
