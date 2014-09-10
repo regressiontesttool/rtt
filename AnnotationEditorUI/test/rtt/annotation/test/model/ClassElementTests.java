@@ -50,13 +50,13 @@ public class ClassElementTests {
 	}
 	
 	private boolean checkFieldsSize(int size) {
-		return element.getFields() != null 
-				&& element.getFields().size() == size;
+		return element.getValuableFields() != null 
+				&& element.getValuableFields().size() == size;
 	}
 
 	private boolean checkMethodsSize(int size) {
-		return element.getMethods() != null 
-				&& element.getMethods().size() == size;
+		return element.getValuableMethods() != null 
+				&& element.getValuableMethods().size() == size;
 	}
 	
 	@Test
@@ -99,18 +99,18 @@ public class ClassElementTests {
 		
 		FieldElement field = factory.createFieldElement(element, fieldName);
 		
-		int oldSize = element.getFields().size();		
-		element.addField(field);
-		int newSize = element.getFields().size();
+		int oldSize = element.getValuableFields().size();		
+		element.addValuableField(field);
+		int newSize = element.getValuableFields().size();
 		assertEquals("Field list size", oldSize + 1, newSize);
 		
-		assertTrue("Field list contains", element.getFields().contains(field));
+		assertTrue("Field list contains", element.getValuableFields().contains(field));
 		
 		FieldElement field2 = factory.createFieldElement(element, fieldName);
 		
 		oldSize = newSize;
-		element.addField(field2);
-		newSize = element.getFields().size();
+		element.addValuableField(field2);
+		newSize = element.getValuableFields().size();
 		assertEquals("Field list size", oldSize, newSize);
 	}
 	
@@ -120,18 +120,18 @@ public class ClassElementTests {
 		
 		MethodElement method = factory.createMethodElement(element, methodName);
 		
-		int oldSize = element.getMethods().size();
-		element.addMethod(method);
-		int newSize = element.getMethods().size();
+		int oldSize = element.getValuableMethods().size();
+		element.addValuableMethod(method);
+		int newSize = element.getValuableMethods().size();
 		assertEquals("Method list size", oldSize + 1, newSize);
 		
-		assertTrue("Method List contains", element.getMethods().contains(method));
+		assertTrue("Method List contains", element.getValuableMethods().contains(method));
 		
 		MethodElement method2 = factory.createMethodElement(element, methodName);
 		
 		oldSize = newSize;
-		element.addMethod(method2);
-		newSize = element.getMethods().size();
+		element.addValuableMethod(method2);
+		newSize = element.getValuableMethods().size();
 		assertEquals("Method list size", oldSize, newSize);
 	}
 	

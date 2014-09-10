@@ -1,11 +1,11 @@
 package rtt.annotation.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModelFactory;
 
@@ -23,7 +23,7 @@ public class ClassElementAnnotationTests {
 	@Test
 	public void testEmptyAnnotation() throws Exception {
 		assertFalse("Annotation", element.hasAnnotation());
-		assertNull("Annotation", element.getAnnotation());
+		assertEquals("Annotation", Annotation.NONE, element.getAnnotation());
 	}
 	
 	@Test

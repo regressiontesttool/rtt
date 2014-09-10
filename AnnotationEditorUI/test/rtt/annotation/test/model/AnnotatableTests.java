@@ -47,16 +47,16 @@ public class AnnotatableTests {
 	
 	@Test
 	public void testCompareAnnotation() throws Exception {
-		annotatable.setAnnotation(Annotation.COMPARE);
+		annotatable.setAnnotation(Annotation.VALUE);
 		assertTrue(annotatable.hasAnnotation());
-		assertEquals(Annotation.COMPARE, annotatable.getAnnotation());
+		assertEquals(Annotation.VALUE, annotatable.getAnnotation());
 	}
 	
 	@Test
 	public void testInformationalAnnotation() throws Exception {
-		annotatable.setAnnotation(Annotation.INFORMATIONAL);
+		annotatable.setAnnotation(Annotation.INITIALIZE);
 		assertTrue(annotatable.hasAnnotation());
-		assertEquals(Annotation.INFORMATIONAL, annotatable.getAnnotation());
+		assertEquals(Annotation.INITIALIZE, annotatable.getAnnotation());
 	}
 	
 	@Test
