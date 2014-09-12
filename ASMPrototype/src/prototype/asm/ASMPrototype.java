@@ -6,12 +6,14 @@ import java.util.Random;
 
 import org.objectweb.asm.Type;
 
+import annotation.MyAnnotation;
 import prototype.asm.model.ClassElement;
 import prototype.asm.model.ClassElement.Annotation;
 import prototype.asm.model.ClassModel;
 import prototype.asm.model.ClassModel.PackageElement;
-import rtt.annotations.Parser.Node;
+import rtt.annotations.Node;
 
+@MyAnnotation(index=2, informational=true)
 public class ASMPrototype {
 	
 	public static final String NODE_DESC = Type.getDescriptor(Node.class);

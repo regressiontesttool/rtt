@@ -4,61 +4,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import prototype.asm.model.ClassElement;
-import prototype.asm.model.ClassElement.Annotation;
 import prototype.asm.model.ClassModel;
 import prototype.asm.model.ClassModel.PackageElement;
+import annotation.MyAnnotation;
 
 final class WriteFileWalker extends AbstractFileWalker {
-	
-	private static final class WriteAnnotationClassVisitor extends ClassVisitor {
-
-		private ClassElement element;
-		private boolean hasNodeAnnotation = false;
-		
-		public WriteAnnotationClassVisitor(ClassVisitor cv) {
-			super(Opcodes.ASM5, cv);
-		}
-		
-		@Override
-		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-			if (desc.equals(ASMPrototype.NODE_DESC)) {
-				hasNodeAnnotation  = true;
-				
-				if (element.getAnnotation() == Annotation.EMPTY) {
-					return null;
-				}
-			}		
-			
-			return cv.visitAnnotation(desc, visible);
-		}
-		
-		public WriteAnnotationClassVisitor setElement(ClassElement element) {
-			this.element = element;
-			return this;
-		}
-		
-		@Override
-		public void visitEnd() {
-			if (!hasNodeAnnotation && element.getAnnotation() == Annotation.NODE) {
-				AnnotationVisitor av = cv.visitAnnotation(ASMPrototype.NODE_DESC, true);
-				if (av != null) {
-					av.visitEnd();
-				}
-			}
-			
-			cv.visitEnd();
-		}		
-	}
 	
 	public WriteFileWalker(ClassModel model) {
 		super(model);
@@ -67,15 +35,129 @@ final class WriteFileWalker extends AbstractFileWalker {
 	@Override
 	protected void processData(Path file) throws IOException {
 		ClassReader reader = new ClassReader(Files.readAllBytes(file));
-		ClassElement element = findClass(reader.getClassName()); 
+		final ClassElement element = findClass(reader.getClassName()); 
 		if (element != null && element.hasChanged()) {
-			ClassWriter writer = new ClassWriter(reader, 0);
+			final ClassWriter writer = new ClassWriter(reader, 0);
 			System.out.println("Change: " + file.toString());
 			
-			ClassVisitor removeVisitor = new RemoveClassAnnotationVisitor(element, writer);
-			ClassVisitor addVisitor = new AddClassAnnotationVisitor(element, removeVisitor);
+			final ClassVisitor myClassVisitor = new ClassNode(Opcodes.ASM5) {
+				public void visitEnd() {
+					boolean annotationPresent = false;
+					
+					if (this.visibleAnnotations != null) {
+						Iterator<AnnotationNode> iterator = this.visibleAnnotations.iterator();
+						while (iterator.hasNext()) {
+							AnnotationNode annotation = iterator.next();
+							if (annotation.desc.equals(Type.getDescriptor(MyAnnotation.class))) {
+								annotationPresent = true;
+								if (element.hasAnnotation() == false) {
+									iterator.remove();
+								}
+							}
+						}
+					}					
+					
+					if (!annotationPresent && element.hasAnnotation()) {
+						AnnotationNode annotation = new AnnotationNode(Type.getDescriptor(MyAnnotation.class));
+						annotation.visit("name", "HelloWorld");
+						annotation.visit("index", 499);
+						annotation.visit("informational", true);
+						
+						if (this.visibleAnnotations == null) {
+							this.visibleAnnotations = new ArrayList<>();
+						}
+						
+						this.visibleAnnotations.add(annotation);
+					}
+					
+					accept(writer);					
+				};
+			};
 			
-			reader.accept(addVisitor, ClassReader.SKIP_CODE);
+			final ClassVisitor myMethodClassVisitor = new ClassNode(Opcodes.ASM5) {
+				@Override
+				public FieldVisitor visitField(int access, String name,
+						String desc, String signature, Object value) {
+					return new FieldNode(Opcodes.ASM5, access, name, desc, signature, value) {
+						@Override
+						public void visitEnd() {
+							boolean annotationPresent = false;
+							if (this.visibleAnnotations != null) {
+								Iterator<AnnotationNode> iterator = this.visibleAnnotations.iterator();
+								while (iterator.hasNext()) {
+									AnnotationNode annotation = iterator.next();
+									if (annotation.desc.equals(Type.getDescriptor(MyAnnotation.class))) {
+										annotationPresent = true;
+										if (element.hasAnnotation() == false) {
+											iterator.remove();
+										}
+									}
+								}
+							}
+							
+							if (!annotationPresent && element.hasAnnotation()) {
+								AnnotationNode annotation = new AnnotationNode(Type.getDescriptor(MyAnnotation.class));
+								annotation.visit("name", "HelloWorld");
+								annotation.visit("index", 499);
+								annotation.visit("informational", true);
+								
+								if (this.visibleAnnotations == null) {
+									this.visibleAnnotations = new ArrayList<>();
+								}
+								
+								this.visibleAnnotations.add(annotation);
+							}
+							
+							accept(myClassVisitor);
+						}
+					};
+				}				
+				
+				@Override
+				public MethodVisitor visitMethod(int access, String name,
+						String desc, String signature, String[] exceptions) {
+					return new MethodNode(Opcodes.ASM5, access, name, desc, signature, exceptions) {
+						@Override
+						public void visitEnd() {
+							boolean annotationPresent = false;
+							if (this.visibleAnnotations != null) {
+								Iterator<AnnotationNode> iterator = this.visibleAnnotations.iterator();
+								while (iterator.hasNext()) {
+									AnnotationNode annotation = iterator.next();
+									if (annotation.desc.equals(Type.getDescriptor(MyAnnotation.class))) {
+										annotationPresent = true;
+										if (element.hasAnnotation() == false) {
+											iterator.remove();
+										}
+									}
+								}
+							}
+							
+							if (!annotationPresent && element.hasAnnotation()) {
+								AnnotationNode annotation = new AnnotationNode(Type.getDescriptor(MyAnnotation.class));
+								annotation.visit("name", "HelloWorld");
+								annotation.visit("index", 499);
+								annotation.visit("informational", true);
+								
+								if (this.visibleAnnotations == null) {
+									this.visibleAnnotations = new ArrayList<>();
+								}
+								
+								this.visibleAnnotations.add(annotation);
+							}
+							
+							accept(myClassVisitor);
+						}
+					};
+				}
+				
+				@Override
+				public void visitEnd() {
+					accept(myClassVisitor);
+				}
+			};			
+			
+			reader.accept(myMethodClassVisitor, ClassReader.SKIP_CODE);
 			
 			Files.write(file, writer.toByteArray(), StandardOpenOption.WRITE);
 		}
