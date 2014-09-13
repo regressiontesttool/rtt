@@ -6,14 +6,14 @@ import java.util.Random;
 
 import org.objectweb.asm.Type;
 
-import annotation.MyAnnotation;
-import prototype.asm.model.ClassElement;
-import prototype.asm.model.ClassElement.Annotation;
-import prototype.asm.model.ClassModel;
-import prototype.asm.model.ClassModel.PackageElement;
+import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.FieldElement;
+import rtt.annotation.editor.model.MethodElement;
 import rtt.annotations.Node;
 
-@MyAnnotation(index=2, informational=true)
 public class ASMPrototype {
 	
 	public static final String NODE_DESC = Type.getDescriptor(Node.class);
@@ -33,20 +33,68 @@ public class ASMPrototype {
 	}
 
 	private static void printModel(ClassModel model, boolean randomNodes) {
-		for (PackageElement packageElement : model.getClasses().keySet()) {
+		for (PackageElement packageElement : model.getPackages()) {
 			System.out.println("Package: " + packageElement.getName());
-			for (ClassElement element : model.getClasses(packageElement)) {
-				String text = element.getClassName();
-				text += " - " + element.getAnnotation();
+			for (ClassElement element : model.getClasses(packageElement.getName())) {
+				StringBuilder text = new StringBuilder(element.getName());				
 				
-				if (randomNodes && r.nextInt(5) == 0) {
-					if (element.hasAnnotation()) {
-						element.setAnnotation(Annotation.EMPTY);
-					} else {
-						element.setAnnotation(Annotation.NODE);
-					}					
-					element.setChanged(true);
-					text += "(*) = " + element.getAnnotation();
+				if (element.getSuperClass() != null) {
+					text.append(" extends ");
+					text.append(element.getSuperClass().getName());
+				}
+				
+				text.append(" - ");
+				text.append(element.getAnnotation());
+				
+				if (randomNodes) {
+					int random = r.nextInt(100);
+					
+					if (random > 0 && random < 30) {
+						if (element.hasAnnotation()) {
+							element.setAnnotation(Annotation.NONE);
+						} else {
+							element.setAnnotation(Annotation.NODE);
+						}					
+						element.setChanged(true);
+						text.append("(*) = ");
+						text.append(element.getAnnotation());
+					}
+					
+					if (random > 20 && random < 50) {
+						text.append(" change fields: ");
+						for (FieldElement field : element.getValuableFields()) {
+							text.append(field.getName());
+							if (field.hasAnnotation()) {
+								field.setAnnotation(Annotation.NONE);
+							} else {
+								Annotation annotation = Annotation.VALUE;
+								annotation.setAttribute("index", 100);
+								field.setAnnotation(annotation);
+							}
+							field.setChanged(true);
+							text.append(" = ");
+							text.append(field.getAnnotation());
+							text.append(", ");
+						}
+					}
+					
+					if (random > 40 && random < 60) {
+						text.append(" change methods: ");
+						for (MethodElement method : element.getValuableMethods()) {
+							text.append(method.getName());
+							if (method.hasAnnotation()) {
+								method.setAnnotation(Annotation.NONE);
+							} else {
+								Annotation annotation = Annotation.VALUE;
+								annotation.setAttribute("name", "aNameForMethod");
+								method.setAnnotation(annotation);
+							}
+							method.setChanged(true);
+							text.append(" = ");
+							text.append(method.getAnnotation());
+							text.append(", ");
+						}
+					}
 				}
 				
 				System.out.println(text);				
