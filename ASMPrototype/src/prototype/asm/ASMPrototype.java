@@ -4,25 +4,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 
-import org.objectweb.asm.Type;
-
 import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotations.Node;
 
 public class ASMPrototype {
 	
-	public static final String NODE_DESC = Type.getDescriptor(Node.class);
+	private static final String JAR_FILE = "jar/test.jar";
 	public static final Random r = new Random();
 
 	public static void main(String[] args) throws Exception {
 		
-		Path zipPath = Paths.get("jar/asm-changed.jar").toAbsolutePath();
-		Path newZipPath = Paths.get("jar/asm-changed.jar").toAbsolutePath();
+		Path zipPath = Paths.get(JAR_FILE).toAbsolutePath();
+		Path newZipPath = Paths.get(JAR_FILE).toAbsolutePath();
 		
 		JarASMTransform transform = new JarASMTransform();
 		transform.importModel(zipPath);
