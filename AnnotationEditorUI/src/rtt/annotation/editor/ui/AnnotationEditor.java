@@ -320,7 +320,7 @@ public class AnnotationEditor extends EditorPart {
 	private void createNodeButtons(Composite composite) {
 		setNodeButton = new Button(composite, SWT.NONE);
 		setNodeButton.setEnabled(false);
-		setNodeButton.setText("Node");
+		setNodeButton.setText(Annotation.NODE.getPrettyName());
 		setNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter() {
 			@Override public Viewer getViewer() { return nodeViewer; }
 			@Override public Annotation getAnnotation() { return Annotation.NODE; }			
@@ -369,7 +369,7 @@ public class AnnotationEditor extends EditorPart {
 		
 		valueAnnotationButton = new Button(annotationSelectionComposite, SWT.RADIO);
 		valueAnnotationButton.setEnabled(false);
-		valueAnnotationButton.setText("Value");
+		valueAnnotationButton.setText(Annotation.VALUE.getPrettyName());
 		valueAnnotationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -384,7 +384,7 @@ public class AnnotationEditor extends EditorPart {
 		
 		initializeAnnotationButton = new Button(annotationSelectionComposite, SWT.RADIO);
 		initializeAnnotationButton.setEnabled(false);
-		initializeAnnotationButton.setText("Initialize");
+		initializeAnnotationButton.setText(Annotation.INITIALIZE.getPrettyName());
 		initializeAnnotationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
