@@ -96,8 +96,6 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		
 		setAnnotation(node.visibleAnnotations, classElement);
 		
-		System.out.println("Class: " + node.name);
-		
 		if (node.fields != null && !node.fields.isEmpty()) {
 			addFields(node.fields, classElement);
 		}
