@@ -13,7 +13,7 @@ import rtt.annotation.editor.model.MethodElement;
 
 public class ASMPrototype {
 	
-	private static final String JAR_FILE = "jar/test.jar";
+	private static final String JAR_FILE = "jar/asm-changed.jar";
 	public static final Random r = new Random();
 
 	public static void main(String[] args) throws Exception {
