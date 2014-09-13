@@ -10,7 +10,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import rtt.annotation.editor.data.asm.ASMConverter;
-import rtt.annotation.editor.data.asm.AnnotationDescriptor;
+import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassElementReference;
@@ -74,7 +74,7 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		AnnotationDescriptor descriptor = AnnotationDescriptor.findAnnotation(desc);
+		ASMAnnotationConverter descriptor = ASMAnnotationConverter.findByDescriptor(desc);
 		if (descriptor != null) {
 			element.setAnnotation(descriptor.getAnnotation());
 		}
@@ -127,7 +127,8 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 	}
 	
 	private boolean isValuableMethod(Type methodType) {
-		return hasNonVoidReturnType(methodType) && methodType.getArgumentTypes().length == 0;
+		return hasNonVoidReturnType(methodType) && 
+				methodType.getArgumentTypes().length == 0;
 	}
 
 	private boolean isInitializableMethod(Type methodType) {

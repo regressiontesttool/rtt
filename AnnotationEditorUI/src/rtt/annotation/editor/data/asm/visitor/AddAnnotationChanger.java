@@ -3,7 +3,7 @@ package rtt.annotation.editor.data.asm.visitor;
 import org.objectweb.asm.AnnotationVisitor;
 
 import rtt.annotation.editor.controller.rules.Annotation;
-import rtt.annotation.editor.data.asm.AnnotationDescriptor;
+import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.Annotatable;
 
 public class AddAnnotationChanger extends AnnotationChanger {
@@ -17,9 +17,9 @@ public class AddAnnotationChanger extends AnnotationChanger {
 	}
 
 	protected AnnotationVisitor checkAnnotation(IAnnotationVisitor visitor, String desc, boolean visible) {
-		AnnotationDescriptor descriptor = AnnotationDescriptor.findAnnotation(desc);
+		ASMAnnotationConverter descriptor = ASMAnnotationConverter.findByDescriptor(desc);
 		if (descriptor != null) {
-			switch(AnnotationDescriptor.findAnnotation(desc)) {
+			switch(ASMAnnotationConverter.findByDescriptor(desc)) {
 			case NODE:
 				hasNodeAnnotation = true;
 				break;
@@ -36,7 +36,7 @@ public class AddAnnotationChanger extends AnnotationChanger {
 	}
 
 	protected void addAnnotation(IAnnotationVisitor visitor) {
-		AnnotationDescriptor descriptor = getDescriptor(annotatable.getAnnotation());
+		ASMAnnotationConverter descriptor = getDescriptor(annotatable.getAnnotation());
 		if (descriptor != null) {
 			AnnotationVisitor av = visitor.getVisitor(descriptor.getDescriptor(), true);
 			if (av != null) {
@@ -45,20 +45,20 @@ public class AddAnnotationChanger extends AnnotationChanger {
 		}
 	}
 	
-	private AnnotationDescriptor getDescriptor(Annotation annotation) {		
+	private ASMAnnotationConverter getDescriptor(Annotation annotation) {		
 		if (annotation == Annotation.INITIALIZE && !hasInitializeAnnotation) {
 			hasInitializeAnnotation = true;
-			return AnnotationDescriptor.INITIALIZE;
+			return ASMAnnotationConverter.INITIALIZE;
 		}
 		
 		if (annotation == Annotation.VALUE && !hasValueAnnotation) {
 			hasValueAnnotation = true;
-			return AnnotationDescriptor.VALUE;
+			return ASMAnnotationConverter.VALUE;
 		}
 		
 		if (annotation == Annotation.NODE && !hasNodeAnnotation) {
 			hasNodeAnnotation = true;
-			return AnnotationDescriptor.NODE;
+			return ASMAnnotationConverter.NODE;
 		}
 		
 		return null;

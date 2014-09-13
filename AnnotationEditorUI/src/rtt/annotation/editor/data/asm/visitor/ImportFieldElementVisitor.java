@@ -4,7 +4,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.data.asm.AnnotationDescriptor;
+import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.FieldElement;
 
 final class ImportFieldElementVisitor extends FieldVisitor {
@@ -18,7 +18,7 @@ final class ImportFieldElementVisitor extends FieldVisitor {
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc,
 			boolean visible) {
-		AnnotationDescriptor descriptor = AnnotationDescriptor.findAnnotation(desc);
+		ASMAnnotationConverter descriptor = ASMAnnotationConverter.findByDescriptor(desc);
 		if (descriptor != null) {
 			field.setAnnotation(descriptor.getAnnotation());
 		}
