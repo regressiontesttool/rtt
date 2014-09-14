@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
@@ -38,13 +39,18 @@ public class MemberViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(MethodElement element) {
-			if (element.getAnnotation() == Annotation.VALUE) {
-				return ItemColor.VALUE;
+			RTTAnnotation annotation = element.getAnnotation();
+			if (annotation != null) {
+				if (annotation.getType() == AnnotationType.VALUE) {
+					return ItemColor.VALUE;
+				}
+				
+				if (annotation.getType() == AnnotationType.INITIALIZE) {
+					return ItemColor.INITIALIZE;
+				}
 			}
 			
-			if (element.getAnnotation() == Annotation.INITIALIZE) {
-				return ItemColor.INITIALIZE;
-			}
+			
 			
 			return super.getItemColor(element);
 		}
@@ -81,12 +87,15 @@ public class MemberViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(FieldElement element) {
-			if (element.getAnnotation() == Annotation.VALUE) {
-				return ItemColor.VALUE;
-			}
-
-			if (element.getAnnotation() == Annotation.INITIALIZE) {
-				return ItemColor.INITIALIZE;
+			RTTAnnotation annotation = element.getAnnotation();
+			if (annotation != null) {
+				if (annotation.getType() == AnnotationType.VALUE) {
+					return ItemColor.VALUE;
+				}
+				
+				if (annotation.getType() == AnnotationType.INITIALIZE) {
+					return ItemColor.INITIALIZE;
+				}
 			}
 			
 			return super.getItemColor(element);

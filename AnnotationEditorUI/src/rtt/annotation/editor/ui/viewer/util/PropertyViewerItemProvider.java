@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ElementReference;
@@ -59,8 +59,8 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 	}
 
 	private ViewerItem createAnnotatableItem(Annotatable<?> annotatable, ViewerItem parent) {
-		Annotation annotation = annotatable.getAnnotation();
-		ViewerItem properties = new TextViewerItem(parent, "Annotation", annotation.getPrettyName());
+		RTTAnnotation annotation = annotatable.getAnnotation();
+		ViewerItem properties = new TextViewerItem(parent, "Annotation", annotation.getName());
 		for (Entry<String, Object> attributes : annotation.getAttributes().entrySet()) {
 			properties.add(new TextViewerItem(properties, attributes.getKey(), 
 					String.valueOf(attributes.getValue())));

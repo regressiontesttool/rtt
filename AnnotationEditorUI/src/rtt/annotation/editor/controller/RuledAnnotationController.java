@@ -1,7 +1,7 @@
 package rtt.annotation.editor.controller;
 
-import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.controller.rules.IAnnotationRule;
+import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.model.Annotatable;
 
 public abstract class RuledAnnotationController<T extends Annotatable<?>>
@@ -18,7 +18,7 @@ public abstract class RuledAnnotationController<T extends Annotatable<?>>
 	};
 	
 	@Override
-	public boolean isAllowed(Annotation annotation, T element) {
-		return rule.isAllowed(annotation, element);
+	public final boolean canExecute(Mode mode, AnnotationType type, T element) {
+		return rule.canExecute(mode, type, element);
 	}
 }

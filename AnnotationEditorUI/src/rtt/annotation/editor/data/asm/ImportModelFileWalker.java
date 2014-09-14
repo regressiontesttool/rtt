@@ -16,7 +16,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
@@ -30,9 +30,9 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 	
 	protected static final class RTTAnnotationVisitor extends AnnotationVisitor {
 
-		private Annotation annotation;
+		private RTTAnnotation annotation;
 
-		public RTTAnnotationVisitor(Annotation annotation) {
+		public RTTAnnotationVisitor(RTTAnnotation annotation) {
 			super(Opcodes.ASM5);
 			this.annotation = annotation;
 		}
@@ -120,13 +120,11 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		
 		if (annotations != null && !annotations.isEmpty()) {
 			for (AnnotationNode annotationNode : annotations) {
-				ASMAnnotationConverter converter = 
-						ASMAnnotationConverter.findByDescriptor(annotationNode.desc);
+				RTTAnnotation annotation = ASMAnnotationConverter.
+						getAnnotation(annotationNode.desc);
 				
-				if (converter != null) {
-					Annotation annotation = converter.getAnnotation();
-					annotationNode.accept(new RTTAnnotationVisitor(annotation));
-					
+				if (annotation != null) {
+					annotationNode.accept(new RTTAnnotationVisitor(annotation));					
 					annotatable.setAnnotation(annotation);
 				}
 			}

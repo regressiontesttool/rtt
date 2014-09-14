@@ -36,7 +36,9 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.editor.controller.ControllerRegistry;
-import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.controller.IAnnotationController.Mode;
+import rtt.annotation.editor.controller.rules.RTTAnnotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
 import rtt.annotation.editor.data.asm.ASMConverter;
@@ -58,7 +60,10 @@ public class AnnotationEditor extends EditorPart {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (element instanceof Annotatable<?>) {
-				return ((Annotatable<?>) element).getAnnotation() == Annotation.NODE;
+				RTTAnnotation annotation = ((Annotatable<?>) element).getAnnotation();
+				
+				return annotation != null && 
+						annotation.getType().equals(AnnotationType.NODE);
 			}
 			
 			if (element instanceof ModelElementViewerItem<?>) {
@@ -75,6 +80,12 @@ public class AnnotationEditor extends EditorPart {
 
 	private abstract class SetAnnotationSelectionAdapter extends SelectionAdapter {
 		
+		private Mode mode;
+		
+		public SetAnnotationSelectionAdapter(Mode mode) {
+			this.mode = mode;
+		}
+		
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Viewer viewer = getViewer();
@@ -82,7 +93,9 @@ public class AnnotationEditor extends EditorPart {
 					getModelElement(viewer.getSelection());
 			
 			if (modelElement instanceof Annotatable<?>) {
-				ControllerRegistry.apply(getAnnotation(), (Annotatable<?>) modelElement);
+				ControllerRegistry.execute(mode, 
+						RTTAnnotation.create(getAnnotation()), 
+						(Annotatable<?>) modelElement);			
 				
 				// TODO implement improved change detection
 				dirty = true;
@@ -97,7 +110,7 @@ public class AnnotationEditor extends EditorPart {
 		}
 
 		public abstract Viewer getViewer();
-		public abstract Annotation getAnnotation();
+		public abstract AnnotationType getAnnotation();
 	}
 
 	private static final int MIN_COLUMN_WIDTH = 200;
@@ -115,7 +128,7 @@ public class AnnotationEditor extends EditorPart {
 	private ViewerFilter nodeFilter;	
 	
 	private ClassModel model;
-	private Annotation selectedAnnotation = Annotation.VALUE;
+	private AnnotationType selectedAnnotation = AnnotationType.VALUE;
 	
 	private Button valueAnnotationButton;
 	private Button initializeAnnotationButton;
@@ -135,7 +148,7 @@ public class AnnotationEditor extends EditorPart {
 		nodeFilter = new NodeFilter();
 	}
 	
-	public Annotation getSelectedAnnotation() {
+	public AnnotationType getSelectedAnnotation() {
 		return selectedAnnotation;
 	}
 
@@ -272,8 +285,10 @@ public class AnnotationEditor extends EditorPart {
 				
 				if (element instanceof Annotatable<?>) {
 					Annotatable<?> annotatable = (Annotatable<?>) element;
-					setNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NODE, annotatable));
-					removeNodeButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, annotatable));					
+					setNodeButton.setEnabled(ControllerRegistry.canExecute(
+							Mode.SET, AnnotationType.NODE, annotatable));
+					removeNodeButton.setEnabled(ControllerRegistry.canExecute(
+							Mode.UNSET, AnnotationType.NODE, annotatable));					
 				}
 				
 				propertyViewer.getControl().setEnabled(element != null);
@@ -320,18 +335,18 @@ public class AnnotationEditor extends EditorPart {
 	private void createNodeButtons(Composite composite) {
 		setNodeButton = new Button(composite, SWT.NONE);
 		setNodeButton.setEnabled(false);
-		setNodeButton.setText(Annotation.NODE.getPrettyName());
-		setNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter() {
+		setNodeButton.setText(AnnotationType.NODE.getName());
+		setNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.SET) {
 			@Override public Viewer getViewer() { return nodeViewer; }
-			@Override public Annotation getAnnotation() { return Annotation.NODE; }			
+			@Override public AnnotationType getAnnotation() { return AnnotationType.NODE; }		
 		});
 		
 		removeNodeButton = new Button(composite, SWT.NONE);
 		removeNodeButton.setEnabled(false);
 		removeNodeButton.setText("Remove");
-		removeNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter() {
+		removeNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.UNSET) {
 			@Override public Viewer getViewer() { return nodeViewer; }
-			@Override public Annotation getAnnotation() { return Annotation.NONE; }
+			@Override public AnnotationType getAnnotation() { return AnnotationType.NODE; }
 		});
 	}
 	
@@ -369,30 +384,30 @@ public class AnnotationEditor extends EditorPart {
 		
 		valueAnnotationButton = new Button(annotationSelectionComposite, SWT.RADIO);
 		valueAnnotationButton.setEnabled(false);
-		valueAnnotationButton.setText(Annotation.VALUE.getPrettyName());
+		valueAnnotationButton.setText(AnnotationType.VALUE.getName());
 		valueAnnotationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedAnnotation = Annotation.VALUE;
+				selectedAnnotation = AnnotationType.VALUE;
 				memberViewer.setInput(memberViewer.getInput());
 				memberViewer.expandToLevel(SECOND_LEVEL);
 				
-				setAnnotationButton.setText(selectedAnnotation.getPrettyName());
+				setAnnotationButton.setText(selectedAnnotation.getName());
 			}
 		});
 		valueAnnotationButton.setSelection(true);		
 		
 		initializeAnnotationButton = new Button(annotationSelectionComposite, SWT.RADIO);
 		initializeAnnotationButton.setEnabled(false);
-		initializeAnnotationButton.setText(Annotation.INITIALIZE.getPrettyName());
+		initializeAnnotationButton.setText(AnnotationType.INITIALIZE.getName());
 		initializeAnnotationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedAnnotation = Annotation.INITIALIZE;
+				selectedAnnotation = AnnotationType.INITIALIZE;
 				memberViewer.setInput(memberViewer.getInput());
 				memberViewer.expandToLevel(SECOND_LEVEL);
 				
-				setAnnotationButton.setText(selectedAnnotation.getPrettyName());
+				setAnnotationButton.setText(selectedAnnotation.getName());
 			}
 		});
 	}
@@ -418,8 +433,10 @@ public class AnnotationEditor extends EditorPart {
 				
 				if (selectedObject instanceof Annotatable<?>) {
 					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
-					setAnnotationButton.setEnabled(ControllerRegistry.canApply(selectedAnnotation, annotatable));
-					removeAnnotationButton.setEnabled(ControllerRegistry.canApply(Annotation.NONE, annotatable));
+					setAnnotationButton.setEnabled(ControllerRegistry.canExecute(
+							Mode.SET, selectedAnnotation, annotatable));
+					removeAnnotationButton.setEnabled(ControllerRegistry.canExecute(
+							Mode.UNSET,selectedAnnotation, annotatable));
 				}
 			}
 		});
@@ -448,18 +465,18 @@ public class AnnotationEditor extends EditorPart {
 	private void createAnnotationButtons(Composite composite) {
 		setAnnotationButton = new Button(composite, SWT.NONE);
 		setAnnotationButton.setEnabled(false);
-		setAnnotationButton.setText(selectedAnnotation.getPrettyName());
-		setAnnotationButton.addSelectionListener(new SetAnnotationSelectionAdapter() {
+		setAnnotationButton.setText(selectedAnnotation.getName());
+		setAnnotationButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.SET) {
 			@Override public Viewer getViewer() { return memberViewer; }
-			@Override public Annotation getAnnotation() { return selectedAnnotation; }
+			@Override public AnnotationType getAnnotation() { return selectedAnnotation; }
 		});
 		
 		removeAnnotationButton = new Button(composite, SWT.NONE);
 		removeAnnotationButton.setEnabled(false);
 		removeAnnotationButton.setText("Remove");
-		removeAnnotationButton.addSelectionListener(new SetAnnotationSelectionAdapter() {
+		removeAnnotationButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.UNSET) {
 			@Override public Viewer getViewer() { return memberViewer; }
-			@Override public Annotation getAnnotation() { return Annotation.NONE; }
+			@Override public AnnotationType getAnnotation() { return selectedAnnotation; }
 		});
 	}
 	

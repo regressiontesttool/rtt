@@ -3,6 +3,8 @@ package rtt.annotation.editor.controller.rules;
 import java.util.ArrayList;
 import java.util.List;
 
+import rtt.annotation.editor.controller.IAnnotationController.Mode;
+import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.model.Annotatable;
 
 public class CombinedAnnotationRule<T extends Annotatable<?>> extends AbstractAnnotationRule<T> {
@@ -24,13 +26,15 @@ public class CombinedAnnotationRule<T extends Annotatable<?>> extends AbstractAn
 	}
 
 	@Override
-	public final boolean checkRule(Annotation annotation, T element) {
+	protected boolean checkRule(Mode mode,
+			AnnotationType type, T element) {
+
 		if (rules.isEmpty()) {
 			return false;
 		}
 		
 		for (IAnnotationRule<T> rule : rules) {
-			if (rule.isAllowed(annotation, element) == false) {
+			if (rule.canExecute(mode, type, element) == false) {
 				return false;
 			}
 		}

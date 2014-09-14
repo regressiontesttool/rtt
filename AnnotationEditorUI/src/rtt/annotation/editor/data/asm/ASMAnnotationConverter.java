@@ -1,42 +1,35 @@
 package rtt.annotation.editor.data.asm;
 
+import java.lang.annotation.Annotation;
+
 import org.objectweb.asm.Type;
 
-import rtt.annotation.editor.controller.rules.Annotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation;
+import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.Node.Value;
 
 public enum ASMAnnotationConverter {
 	
-	NODE (Annotation.NODE, Type.getDescriptor(Node.class)),	
-	VALUE (Annotation.VALUE, Type.getDescriptor(Value.class)),
-	INITIALIZE (Annotation.INITIALIZE, Type.getDescriptor(Initialize.class));
+	NODE (AnnotationType.NODE, Type.getDescriptor(Node.class)),	
+	VALUE (AnnotationType.VALUE, Type.getDescriptor(Value.class)),
+	INITIALIZE (AnnotationType.INITIALIZE, Type.getDescriptor(Initialize.class));
 	
 	private String descriptor;
-	private Annotation annotation;
+	private AnnotationType annotation;
 
-	private ASMAnnotationConverter(Annotation annotation, String description) {
+	private ASMAnnotationConverter(AnnotationType annotationType, String description) {
 		this.descriptor = description;
-		this.annotation = annotation;
+		this.annotation = annotationType;
 	}
 	
 	public String getDescriptor() {
 		return descriptor;
 	}
 	
-	public Annotation getAnnotation() {
+	public AnnotationType getAnnotation() {
 		return annotation;
-	}
-
-	public static ASMAnnotationConverter findByDescriptor(String descriptor) {
-		for (ASMAnnotationConverter annotationDescriptor : values()) {
-			if (annotationDescriptor.descriptor.equals(descriptor)) {
-				return annotationDescriptor;
-			}
-		}
-		
-		return null;
 	}
 	
 	public static ASMAnnotationConverter findByAnnotation (Annotation annotation) {
@@ -48,6 +41,16 @@ public enum ASMAnnotationConverter {
 		
 		return null;
 	}
+	
+	public static RTTAnnotation getAnnotation(String descriptor) {
+		for (ASMAnnotationConverter annotationDescriptor : values()) {
+			if (annotationDescriptor.descriptor.equals(descriptor)) {
+				return RTTAnnotation.create(annotationDescriptor.annotation);
+			}
+		}
+		
+		return null;
+	} 
 
 	public boolean equalsAnnotation(Annotation annotation) {
 		return annotation.equals(this.annotation);

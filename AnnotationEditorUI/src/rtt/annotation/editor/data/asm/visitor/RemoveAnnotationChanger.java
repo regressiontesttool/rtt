@@ -2,6 +2,7 @@ package rtt.annotation.editor.data.asm.visitor;
 
 import org.objectweb.asm.AnnotationVisitor;
 
+import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.Annotatable;
 
@@ -12,8 +13,8 @@ public class RemoveAnnotationChanger extends AnnotationChanger {
 	}
 	
 	protected AnnotationVisitor checkAnnotation(IAnnotationVisitor visitor, String desc, boolean visible) {
-		ASMAnnotationConverter descriptor = ASMAnnotationConverter.findByDescriptor(desc);
-		if (descriptor != null && !descriptor.equalsAnnotation(annotatable.getAnnotation())) {
+		RTTAnnotation annotation = ASMAnnotationConverter.getAnnotation(desc);
+		if (annotation != null && !annotation.equals(annotatable.getAnnotation())) {
 			return null;
 		}
 		
