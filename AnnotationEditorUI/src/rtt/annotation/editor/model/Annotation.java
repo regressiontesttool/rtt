@@ -3,7 +3,7 @@ package rtt.annotation.editor.model;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class RTTAnnotation {
+public class Annotation {
 	
 	public enum AnnotationType {
 		NODE("Node"), VALUE("Value"), INITIALIZE("Initialize");
@@ -22,7 +22,7 @@ public class RTTAnnotation {
 	private AnnotationType type;
 	private Map<String, Object> attributes;	
 
-	private RTTAnnotation(AnnotationType type) {
+	private Annotation(AnnotationType type) {
 		this.type = type;
 		this.attributes = new Hashtable<>();
 	}
@@ -43,8 +43,8 @@ public class RTTAnnotation {
 		attributes.put(name, value);
 	}
 	
-	public static RTTAnnotation create(AnnotationType type) {
-		RTTAnnotation annotation = new RTTAnnotation(type);
+	public static Annotation create(AnnotationType type) {
+		Annotation annotation = new Annotation(type);
 		
 		switch (type) {
 		case VALUE:
