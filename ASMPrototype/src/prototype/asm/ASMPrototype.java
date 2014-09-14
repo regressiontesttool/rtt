@@ -41,8 +41,10 @@ public class ASMPrototype {
 					text.append(element.getSuperClass().getName());
 				}
 				
-				text.append(" - ");
-				text.append(element.getAnnotation());
+				if (element.getAnnotation() != null) {
+					text.append(" - ");
+					text.append(element.getName());
+				}
 				
 				if (randomNodes) {
 					int random = r.nextInt(100);
@@ -54,8 +56,9 @@ public class ASMPrototype {
 							element.setAnnotation(RTTAnnotation.create(AnnotationType.NODE));
 						}					
 						element.setChanged(true);
-						text.append("(*) = ");
-						text.append(element.getAnnotation());
+						if (element.getAnnotation() != null) {
+							text.append(" (annotation changed) ");
+						}
 					}
 					
 					if (random > 20 && random < 50) {
@@ -71,7 +74,7 @@ public class ASMPrototype {
 							}
 							field.setChanged(true);
 							text.append(" = ");
-							text.append(field.getAnnotation());
+							text.append(field.getAnnotation() != null ? field.getAnnotation().getName() : "null");
 							text.append(", ");
 						}
 					}
@@ -89,7 +92,7 @@ public class ASMPrototype {
 							}
 							method.setChanged(true);
 							text.append(" = ");
-							text.append(method.getAnnotation());
+							text.append(method.getAnnotation() != null ? method.getAnnotation().getName() : "null");
 							text.append(", ");
 						}
 					}

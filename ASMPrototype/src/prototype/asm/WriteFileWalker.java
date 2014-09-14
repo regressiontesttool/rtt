@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -124,7 +125,7 @@ final class WriteFileWalker extends AbstractFileWalker {
 		
 		for (FieldNode fieldNode : fields) {
 			if (fieldNode.name.equals(fieldName) && 
-					fieldNode.desc.equals(fieldType)) {				
+					Type.getType(fieldNode.desc).getClassName().equals(fieldType)) {				
 				return fieldNode;
 			}
 		}
