@@ -51,7 +51,7 @@ public class ControllerRegistry {
 			Mode mode, RTTAnnotation annotation, T element) {
 		
 		IAnnotationController<T> controller = INSTANCE.findController(element);
-		if (controller != null) {
+		if (controller != null && controller.canExecute(mode, annotation.getType(), element)) {
 			boolean wasExecuted = controller.execute(mode, annotation, element);
 			element.setChanged(wasExecuted);
 			

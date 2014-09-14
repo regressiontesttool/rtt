@@ -1,14 +1,28 @@
 package rtt.annotation.editor.controller.impl;
 
 import rtt.annotation.editor.controller.RuledAnnotationController;
-import rtt.annotation.editor.controller.rules.NoAnnotationRule;
+import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public class ClassElementAnnotationController extends RuledAnnotationController<ClassElement> {
 	
+	private static class ClassElementRule extends AbstractAnnotationRule<ClassElement> {
+		
+		@Override
+		protected boolean checkSet(AnnotationType type, ClassElement element) {
+			return type == AnnotationType.NODE && !element.hasAnnotation();
+		}
+		
+		@Override
+		protected boolean checkUnset(AnnotationType type, ClassElement element) {
+			return element.hasAnnotation();
+		}
+	}
+	
 	public ClassElementAnnotationController() {
-		setRule(new NoAnnotationRule<ClassElement>());
+		setRule(new ClassElementRule());
 	}
 	
 	@Override

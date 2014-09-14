@@ -3,7 +3,6 @@ package rtt.annotation.editor.controller.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
@@ -24,21 +23,34 @@ public class CombinedAnnotationRule<T extends Annotatable<?>> extends AbstractAn
 	public boolean hasElements() {
 		return !rules.isEmpty();		
 	}
-
+	
 	@Override
-	protected boolean checkRule(Mode mode,
-			AnnotationType type, T element) {
-
+	protected boolean checkSet(AnnotationType type, T element) {
 		if (rules.isEmpty()) {
 			return false;
 		}
 		
 		for (IAnnotationRule<T> rule : rules) {
-			if (rule.canExecute(mode, type, element) == false) {
+			if (rule.canSet(type, element) == false) {
 				return false;
 			}
 		}
 		
-		return true;
+		return false;
+	}
+	
+	@Override
+	protected boolean checkUnset(AnnotationType type, T element) {
+		if (rules.isEmpty()) {
+			return false;
+		}
+		
+		for (IAnnotationRule<T> rule : rules) {
+			if (rule.canUnset(type, element) == false) {
+				return false;
+			}
+		}
+		
+		return false;
 	}
 }
