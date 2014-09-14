@@ -1,4 +1,4 @@
-package rtt.annotation.editor.data.asm.visitor;
+package rtt.annotation.test.rtt;
 
 import java.io.InputStream;
 

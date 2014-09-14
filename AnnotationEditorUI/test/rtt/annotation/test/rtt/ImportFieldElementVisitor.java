@@ -1,4 +1,4 @@
-package rtt.annotation.editor.data.asm.visitor;
+package rtt.annotation.test.rtt;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
