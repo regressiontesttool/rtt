@@ -7,12 +7,12 @@ import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.controller.impl.ClassElementAnnotationController;
 import rtt.annotation.editor.controller.impl.FieldElementAnnotationController;
 import rtt.annotation.editor.controller.impl.MethodElementAnnotationController;
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
-import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public class ControllerRegistry {
 	
@@ -47,13 +47,17 @@ public class ControllerRegistry {
 		return false;
 	}
 
-	public static <T extends Annotatable<?>> void execute(
+	public static <T extends Annotatable<?>> boolean execute(
 			Mode mode, RTTAnnotation annotation, T element) {
 		
 		IAnnotationController<T> controller = INSTANCE.findController(element);
 		if (controller != null) {
-			controller.execute(mode, annotation, element);
-			element.setChanged(true);
+			boolean wasExecuted = controller.execute(mode, annotation, element);
+			element.setChanged(wasExecuted);
+			
+			return wasExecuted;
 		}
+		
+		return false;
 	}	
 }

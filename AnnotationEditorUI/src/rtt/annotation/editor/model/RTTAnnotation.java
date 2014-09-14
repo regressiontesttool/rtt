@@ -1,4 +1,4 @@
-package rtt.annotation.editor.controller.rules;
+package rtt.annotation.editor.model;
 
 import java.util.Hashtable;
 import java.util.Map;

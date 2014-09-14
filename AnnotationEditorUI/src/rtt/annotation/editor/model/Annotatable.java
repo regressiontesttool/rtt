@@ -1,6 +1,5 @@
 package rtt.annotation.editor.model;
 
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
 
 public abstract class Annotatable<T extends ModelElement<?>> extends ModelElement<T> {
 	

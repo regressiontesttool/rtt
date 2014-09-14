@@ -4,9 +4,9 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.FieldElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 final class ImportFieldElementVisitor extends FieldVisitor {
 	private final FieldElement field;

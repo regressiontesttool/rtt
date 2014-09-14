@@ -37,8 +37,6 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
-import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
 import rtt.annotation.editor.data.asm.ASMConverter;
@@ -46,6 +44,8 @@ import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
+import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.ui.viewer.util.MemberViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementViewerItem;
 import rtt.annotation.editor.ui.viewer.util.NodeViewerItemProvider;

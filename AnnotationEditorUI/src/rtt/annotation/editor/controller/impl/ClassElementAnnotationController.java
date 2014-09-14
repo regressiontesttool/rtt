@@ -2,8 +2,8 @@ package rtt.annotation.editor.controller.impl;
 
 import rtt.annotation.editor.controller.RuledAnnotationController;
 import rtt.annotation.editor.controller.rules.NoAnnotationRule;
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 public class ClassElementAnnotationController extends RuledAnnotationController<ClassElement> {
 	

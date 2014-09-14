@@ -9,7 +9,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.data.asm.ASMConverter;
 import rtt.annotation.editor.model.ClassElement;
@@ -18,6 +17,7 @@ import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 public final class ImportClassElementVisitor extends ClassVisitor {
 	

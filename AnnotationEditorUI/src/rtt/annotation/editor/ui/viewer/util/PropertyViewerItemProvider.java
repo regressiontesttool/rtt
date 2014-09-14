@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import rtt.annotation.editor.controller.rules.RTTAnnotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.ModelElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 public class PropertyViewerItemProvider extends ViewerItemProvider {
 	

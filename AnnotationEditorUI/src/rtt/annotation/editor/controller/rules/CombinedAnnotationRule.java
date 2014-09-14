@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
-import rtt.annotation.editor.controller.rules.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.model.Annotatable;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public class CombinedAnnotationRule<T extends Annotatable<?>> extends AbstractAnnotationRule<T> {
 	
