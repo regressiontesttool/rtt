@@ -1,14 +1,14 @@
 package rtt.annotation.editor.model;
 
+import java.util.Observable;
+
 import rtt.annotations.Node.Value;
 
 
-public abstract class ModelElement<T extends ModelElement<?>> {
+public abstract class ModelElement<T extends ModelElement<?>> extends Observable {
 	
 	@Value private String name = null;
 	@Value private T parent = null;
-
-	private boolean changed = false;
 	
 	protected ModelElement(T parent) {
 		this.parent = parent;
@@ -30,14 +30,12 @@ public abstract class ModelElement<T extends ModelElement<?>> {
 		this.parent = parent;
 	}
 	
-	public final boolean hasChanged() {
-		return changed;
-	}
-	
-	public final void setChanged(boolean changed) {
-		this.changed = changed;
+	public final void setChanged() {
+		super.setChanged();
 		if (parent != null) {
-			parent.setChanged(changed);
+			parent.setChanged();
+		} else {
+			notifyObservers();
 		}
 	}
 
