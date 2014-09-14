@@ -26,7 +26,8 @@ public final class MethodElementAnnotationController extends RuledAnnotationCont
 						return false;
 					}
 					
-					return element.getParameters().get(0).equals(InputStream.class);					
+					String firstParameter = InputStream.class.getName();					
+					return element.getParameters().get(0).equals(firstParameter);					
 				}
 			}
 			

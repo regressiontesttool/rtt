@@ -2,6 +2,7 @@ package rtt.annotation.editor.data.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -161,6 +162,11 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 				if (isValuableMethod(methodType)) {
 					classElement.addValuableMethod(method);
 				} else if (isInitializableMethod(methodType)) {
+					Type[] arguments = Type.getArgumentTypes(methodNode.desc);
+					for (Type argument : arguments) {
+						method.getParameters().add(argument.getClassName());
+					}				
+					
 					classElement.addInitializableMethod(method);
 				}
 			}			
