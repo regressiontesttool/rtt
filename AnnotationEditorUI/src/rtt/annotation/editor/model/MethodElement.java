@@ -1,5 +1,8 @@
 package rtt.annotation.editor.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
@@ -7,9 +10,11 @@ import rtt.annotations.Node.Value;
 public class MethodElement extends Annotatable<ClassElement> {
 	
 	@Value private String type = null;
+	@Value private List<String> parameters;
 	
 	protected MethodElement(ClassElement parent) {
 		super(parent);
+		parameters = new ArrayList<>();
 	}
 	
 	public String getType() {
@@ -18,5 +23,9 @@ public class MethodElement extends Annotatable<ClassElement> {
 	
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public List<String> getParameters() {
+		return parameters;
 	}
 }

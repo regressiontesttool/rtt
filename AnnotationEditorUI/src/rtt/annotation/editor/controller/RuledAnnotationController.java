@@ -1,8 +1,8 @@
 package rtt.annotation.editor.controller;
 
-import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.controller.rules.IAnnotationRule;
 import rtt.annotation.editor.model.Annotatable;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public abstract class RuledAnnotationController<T extends Annotatable<?>>
 	implements IAnnotationController<T> {
@@ -18,7 +18,14 @@ public abstract class RuledAnnotationController<T extends Annotatable<?>>
 	};
 	
 	@Override
-	public boolean isAllowed(Annotation annotation, T element) {
-		return rule.isAllowed(annotation, element);
-	}
+	public final boolean canExecute(Mode mode, AnnotationType type, T element) {
+		switch (mode) {
+		case SET:
+			return rule.canSet(type, element);				
+		case UNSET:
+			return rule.canUnset(type, element);
+		default:
+			throw new RuntimeException("Unknown mode '" + mode + "'");
+		}
+	}	
 }

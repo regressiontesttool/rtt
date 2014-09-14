@@ -3,14 +3,16 @@ package rtt.annotation.editor.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.controller.impl.ClassElementAnnotationController;
 import rtt.annotation.editor.controller.impl.FieldElementAnnotationController;
 import rtt.annotation.editor.controller.impl.MethodElementAnnotationController;
-import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public class ControllerRegistry {
 	
@@ -33,21 +35,29 @@ public class ControllerRegistry {
 		
 		return null;
 	}
-
-	public static <T extends Annotatable<?>> void apply(Annotation annotation, T element) {
-		IAnnotationController<T> controller = INSTANCE.findController(element);
-		if (controller != null) {
-			controller.setAnnotation(annotation, element);
-			element.setChanged(true);
-		}
-	}
 	
-	public static <T extends Annotatable<?>> boolean canApply(Annotation annotation, T element) {
+	public static <T extends Annotatable<?>> boolean canExecute(
+			Mode mode, AnnotationType annotationType, T element) {
+		
 		IAnnotationController<T> controller = INSTANCE.findController(element);
 		if (controller != null) {
-			return controller.isAllowed(annotation, element);
+			return controller.canExecute(mode, annotationType, element);
 		}
 		
 		return false;
 	}
+
+	public static <T extends Annotatable<?>> boolean execute(
+			Mode mode, RTTAnnotation annotation, T element) {
+		
+		IAnnotationController<T> controller = INSTANCE.findController(element);
+		if (controller != null && controller.canExecute(mode, annotation.getType(), element)) {
+			boolean wasExecuted = controller.execute(mode, annotation, element);
+			element.setChanged(wasExecuted);
+			
+			return wasExecuted;
+		}
+		
+		return false;
+	}	
 }

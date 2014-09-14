@@ -1,6 +1,5 @@
 package rtt.annotation.editor.model;
 
-import rtt.annotation.editor.controller.rules.Annotation;
 
 public abstract class Annotatable<T extends ModelElement<?>> extends ModelElement<T> {
 	
@@ -8,21 +7,17 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 		super(parent);
 	}
 
-	private Annotation annotation = Annotation.NONE;
+	private RTTAnnotation annotation;
 	
-	public final void setAnnotation(Annotation annotation) {
-		if (annotation == null) {
-			throw new IllegalArgumentException("Annotation can not be null.");
-		}
-		
+	public final void setAnnotation(RTTAnnotation annotation) {		
 		this.annotation = annotation;
 	}
 	
-	public final Annotation getAnnotation() {
+	public final RTTAnnotation getAnnotation() {
 		return annotation;
 	}
 	
 	public final boolean hasAnnotation()  {
-		return annotation != Annotation.NONE;
+		return annotation != null;
 	}
 }

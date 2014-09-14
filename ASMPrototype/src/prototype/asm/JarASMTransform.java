@@ -11,7 +11,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
-import prototype.asm.model.ClassModel;
+import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.ClassModelFactory;
 
 public class JarASMTransform {
 	
@@ -24,7 +25,7 @@ public class JarASMTransform {
 		env.put("create", "false");
 		
 		URI zipUri = URI.create("jar:" + zipPath.toUri());
-		model = ClassModel.create();
+		model = ClassModelFactory.getFactory().createClassModel();
 		
 		try (FileSystem zipFs = FileSystems.newFileSystem(zipUri, env)) {
 			Files.walkFileTree(zipFs.getPath("/"), new ReadFileWalker(model));

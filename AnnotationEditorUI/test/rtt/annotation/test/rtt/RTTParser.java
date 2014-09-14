@@ -13,7 +13,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.osgi.framework.Bundle;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
-import rtt.annotation.editor.data.asm.visitor.ImportClassElementVisitor;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;

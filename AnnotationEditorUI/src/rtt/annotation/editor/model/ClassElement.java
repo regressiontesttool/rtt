@@ -15,14 +15,14 @@ public class ClassElement extends Annotatable<ClassModel> {
 		ENUMERATION("Enum"), 
 		CONCRETE("Concrete");
 		
-		private String text;
+		private String prettyName;
 
 		private ClassType(String text) {
-			this.text = text;
+			this.prettyName = text;
 		}
 		
 		public String getText() {
-			return text;
+			return prettyName;
 		}
 	}
 	
@@ -32,13 +32,15 @@ public class ClassElement extends Annotatable<ClassModel> {
 	@Value private ClassElementReference superClass = null;
 	@Value private List<ClassElementReference> interfaces;
 	
-	@Value private List<FieldElement> fields;
-	@Value private List<MethodElement> methods;
+	@Value private List<FieldElement> valuablefields;
+	@Value private List<MethodElement> valuableMethods;
+	@Value private List<MethodElement> initializableMethods;
 	
 	protected ClassElement(ClassModel parent) {
 		super(parent);
-		fields = new ArrayList<FieldElement>();
-		methods = new ArrayList<MethodElement>();
+		valuablefields = new ArrayList<>();
+		valuableMethods = new ArrayList<>();
+		initializableMethods = new ArrayList<>();
 	}
 	
 	public String getPackageName() {
@@ -102,18 +104,18 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return hasExtendedAnnotation;
 	}
 	
-	public boolean hasMemberAnnotation() {
+	public boolean hasAnnotatedValueMember() {
 		
-		if (fields != null && !fields.isEmpty()) {
-			for (FieldElement element : fields) {
+		if (valuablefields != null && !valuablefields.isEmpty()) {
+			for (FieldElement element : valuablefields) {
 				if (element.hasAnnotation()) {
 					return true;
 				}
 			}
 		}
 		
-		if (methods != null && !methods.isEmpty()) {
-			for (MethodElement element : methods) {
+		if (valuableMethods != null && !valuableMethods.isEmpty()) {
+			for (MethodElement element : valuableMethods) {
 				if (element.hasAnnotation()) {
 					return true;
 				}
@@ -123,19 +125,19 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return false;
 	}
 	
-	public List<FieldElement> getFields() {
-		return fields;
+	public List<FieldElement> getValuableFields() {
+		return valuablefields;
 	}
 	
-	public void addField(FieldElement field) {
-		if (!fields.contains(field)) {
-			fields.add(field);
+	public void addValuableField(FieldElement field) {
+		if (!valuablefields.contains(field)) {
+			valuablefields.add(field);
 			field.setParent(this);
 		}
 	}
 	
-	public FieldElement getField(String name, String className) {
-		for (FieldElement field : fields) {
+	public FieldElement getValuableField(String name, String className) {
+		for (FieldElement field : valuablefields) {
 			if (name.equals(field.getName()) 
 					&& className.equals(field.getType())) {
 				return field;
@@ -145,22 +147,43 @@ public class ClassElement extends Annotatable<ClassModel> {
 		return null;
 	}
 
-	public List<MethodElement> getMethods() {
-		return methods;
+	public List<MethodElement> getValuableMethods() {
+		return valuableMethods;
 	}
 	
-	public void addMethod(MethodElement method) {
-		if (!methods.contains(method)) {
-			methods.add(method);
+	public List<MethodElement> getInitializableMethods() {
+		return initializableMethods;
+	}
+	
+	public void addValuableMethod(MethodElement method) {
+		if (!valuableMethods.contains(method)) {
+			valuableMethods.add(method);
 			method.setParent(this);
 		}
 	}
 	
-	public MethodElement getMethod(String name, String className) {
-		for (MethodElement method : methods) {
+	public void addInitializableMethod(MethodElement method) {
+		if (!initializableMethods.contains(method)) {
+			initializableMethods.add(method);
+			method.setParent(this);
+		}
+	}
+	
+	public MethodElement getValuableMethod(String name, String className) {
+		for (MethodElement method : valuableMethods) {
 			if (name.equals(method.getName()) 
 					&& className.equals(method.getType())) {
 				
+				return method;
+			}
+		}
+		
+		return null;
+	}
+	
+	public MethodElement getInitializableMethod(String name) {
+		for (MethodElement method : initializableMethods) {
+			if (name.equals(method.getName())) {				
 				return method;
 			}
 		}

@@ -1,17 +1,27 @@
 package rtt.annotation.editor.controller.rules;
 
 import rtt.annotation.editor.model.Annotatable;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public abstract class AbstractAnnotationRule<T extends Annotatable<?>> implements IAnnotationRule<T> {
-
+	
 	@Override
-	public final boolean isAllowed(Annotation annotation, T element) {
+	public final boolean canSet(AnnotationType type, T element) {
 		if (element == null) {
 			throw new IllegalArgumentException("The given object was null.");
 		}
-		
-		return checkRule(annotation, element);
+		return checkSet(type, element);
+	}
+	
+	protected abstract boolean checkSet(AnnotationType type, T element);
+
+	@Override
+	public final boolean canUnset(AnnotationType type, T element) {
+		if (element == null) {
+			throw new IllegalArgumentException("The given object was null.");
+		}
+		return checkUnset(type, element);
 	}
 
-	protected abstract boolean checkRule(Annotation annotation, T element);
+	protected abstract boolean checkUnset(AnnotationType type, T element);
 }

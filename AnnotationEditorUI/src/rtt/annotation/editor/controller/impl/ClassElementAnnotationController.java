@@ -1,22 +1,41 @@
 package rtt.annotation.editor.controller.impl;
 
 import rtt.annotation.editor.controller.RuledAnnotationController;
-import rtt.annotation.editor.controller.rules.Annotation;
-import rtt.annotation.editor.controller.rules.NoAnnotationRule;
+import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
 import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 
 public class ClassElementAnnotationController extends RuledAnnotationController<ClassElement> {
 	
+	private static class ClassElementRule extends AbstractAnnotationRule<ClassElement> {
+		
+		@Override
+		protected boolean checkSet(AnnotationType type, ClassElement element) {
+			return type == AnnotationType.NODE && !element.hasAnnotation();
+		}
+		
+		@Override
+		protected boolean checkUnset(AnnotationType type, ClassElement element) {
+			return element.hasAnnotation();
+		}
+	}
+	
 	public ClassElementAnnotationController() {
-		setRule(new NoAnnotationRule<ClassElement>());
+		setRule(new ClassElementRule());
 	}
 	
 	@Override
-	public boolean setAnnotation(Annotation annotation,
-			ClassElement element) {
-		
-		element.setAnnotation(annotation);
-		return true;
-	}
-	
+	public boolean execute(Mode mode, RTTAnnotation annotation, ClassElement element) {
+		switch (mode) {
+		case SET:
+			element.setAnnotation(annotation);
+			return true;
+		case UNSET:
+			element.setAnnotation(null);
+			return true;
+		default:
+			throw new RuntimeException("Unknown mode '" + mode + "'");
+		}
+	}	
 }

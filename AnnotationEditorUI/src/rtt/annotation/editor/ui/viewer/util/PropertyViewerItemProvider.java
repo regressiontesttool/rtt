@@ -2,6 +2,7 @@ package rtt.annotation.editor.ui.viewer.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
@@ -9,6 +10,7 @@ import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.ModelElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 public class PropertyViewerItemProvider extends ViewerItemProvider {
 	
@@ -57,20 +59,14 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 	}
 
 	private ViewerItem createAnnotatableItem(Annotatable<?> annotatable, ViewerItem parent) {
-		return new ModelElementViewerItem<Annotatable<?>>(parent, annotatable) {
-			@Override
-			protected String getColumnText(Annotatable<?> element, int columnIndex) {
-				if (columnIndex == ViewerItemProvider.FIRST_COLUMN) {
-					return "Annotation";
-				}
-				
-				if (columnIndex == ViewerItemProvider.SECOND_COLUMN) {
-					return element.getAnnotation().name();
-				}
-
-				return super.getColumnText(element, columnIndex);
-			}
-		};
+		RTTAnnotation annotation = annotatable.getAnnotation();
+		ViewerItem properties = new TextViewerItem(parent, "Annotation", annotation.getName());
+		for (Entry<String, Object> attributes : annotation.getAttributes().entrySet()) {
+			properties.add(new TextViewerItem(properties, attributes.getKey(), 
+					String.valueOf(attributes.getValue())));
+		}
+		
+		return properties;
 	}
 
 	private ViewerItem createClassElementItems(ClassElement element, ViewerItem parent) {
@@ -130,7 +126,7 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 					return ItemColor.ANNOTATED_EXTEND;
 				}
 				
-				if (element.hasMemberAnnotation()) {
+				if (element.hasAnnotatedValueMember()) {
 					return ItemColor.ANNOTATED_MEMBER;
 				}						
 				

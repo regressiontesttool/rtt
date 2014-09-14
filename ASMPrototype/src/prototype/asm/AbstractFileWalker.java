@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import prototype.asm.model.ClassModel;
+import rtt.annotation.editor.model.ClassModel;
 
 public abstract class AbstractFileWalker extends SimpleFileVisitor<Path> {
 	

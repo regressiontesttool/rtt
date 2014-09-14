@@ -4,95 +4,34 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
-import rtt.annotation.editor.data.asm.visitor.AddAnnotationChanger;
-import rtt.annotation.editor.data.asm.visitor.AnnotationClassVisitor;
-import rtt.annotation.editor.data.asm.visitor.AnnotationFieldVisitor;
-import rtt.annotation.editor.data.asm.visitor.AnnotationMethodVisitor;
-import rtt.annotation.editor.data.asm.visitor.RemoveAnnotationChanger;
+import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 final class ExportModelFileWalker extends AbstractFileWalker {
-	
-	private final class WriteFieldsVisitor extends ClassVisitor {
-		private final ClassElement element;
-
-		private WriteFieldsVisitor(ClassVisitor cv, ClassElement element) {
-			super(Opcodes.ASM5, cv);
-			this.element = element;
-		}
-
-		@Override
-		public FieldVisitor visitField(int access, String name,
-				String desc, String signature, Object value) {
-			
-			FieldVisitor fieldVisitor = super.visitField(access, name, desc, signature, value); 
-			
-			if (!isSynthetic(access)) {
-				FieldElement field = element.getField(name, Type.getType(desc).getClassName());
-				if (field != null) {
-					fieldVisitor = AnnotationFieldVisitor.create(fieldVisitor, 
-							new RemoveAnnotationChanger(field), new AddAnnotationChanger(field));
-				}
-			}
-			
-			return fieldVisitor;
-		}
-
-		private boolean isSynthetic(int access) {
-			return (access & Opcodes.ACC_SYNTHETIC) == Opcodes.ACC_SYNTHETIC;
-		}
-	}
-
-	private final class WriteMethodsVisitor extends ClassVisitor {
-		private final ClassElement element;
-
-		private WriteMethodsVisitor(ClassVisitor cv, ClassElement element) {
-			super(Opcodes.ASM5, cv);
-			this.element = element;
-		}
-
-		@Override
-		public MethodVisitor visitMethod(int access, String name,
-				String desc, String signature, String[] exceptions) {
-			MethodVisitor methodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
-			
-			Type methodType = Type.getType(desc);
-			if (!hasVoidReturnType(methodType) && !hasArguments(methodType)) {
-				MethodElement method = element.getMethod(name, methodType.getReturnType().getClassName());
-				if (method != null) {				
-					methodVisitor = AnnotationMethodVisitor.create(methodVisitor, 
-							new RemoveAnnotationChanger(method), new AddAnnotationChanger(method));
-				}
-			}
-			
-			return methodVisitor;
-		}
-
-		private boolean hasVoidReturnType(Type methodType) {
-			return Type.VOID_TYPE.equals(methodType.getReturnType());
-		}
-
-		private boolean hasArguments(Type methodType) {
-			return methodType.getArgumentTypes().length > 0;
-		}
-	}
 
 	public ExportModelFileWalker(ClassModel model) {
 		super(model);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void processData(Path file) throws IOException {
 		ClassReader reader = new ClassReader(Files.readAllBytes(file));
@@ -101,17 +40,144 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		final ClassElement element = ASMConverter.RESOLVER.findClass(className, model);
 		
 		if (element != null && element.hasChanged()) {
-			ClassWriter writer = new ClassWriter(reader, 0);		
-
-			ClassVisitor methodVisitors = new WriteMethodsVisitor(writer, element);
-			ClassVisitor fieldVisitors = new WriteFieldsVisitor(methodVisitors, element);			
+			ClassNode node = new ClassNode();
+			reader.accept(node, ClassReader.SKIP_CODE);
 			
-			ClassVisitor classVisitors = AnnotationClassVisitor.create(fieldVisitors, 
-					new RemoveAnnotationChanger(element), new AddAnnotationChanger(element));
+			// set JRE version to at least 1.5
+			if ((node.version & 0xFF) < Opcodes.V1_5) {
+				node.version = Opcodes.V1_5;
+			}
 			
-			reader.accept(classVisitors, 0);
+			if (node.visibleAnnotations != null) {
+				removeObsoleteAnnotations(node.visibleAnnotations);
+			}
+			
+			if (element.hasAnnotation()) {
+				if (node.visibleAnnotations == null) {
+					node.visibleAnnotations = new ArrayList<>();
+				}
+				
+				addAnnotation(element, node.visibleAnnotations);
+			}
+			
+			processFields(node, element);			
+			processMethods(node, element);		
+			
+			ClassWriter writer = new ClassWriter(reader, 0);			
+			node.accept(writer);
 			
 			Files.write(file, writer.toByteArray(), StandardOpenOption.WRITE);
 		}
+	}
+
+	private void removeObsoleteAnnotations(List<AnnotationNode> annotations) {
+		Iterator<AnnotationNode> iterator = annotations.iterator();
+		while (iterator.hasNext()) {
+			AnnotationNode annotationNode = iterator.next();
+			RTTAnnotation annotation = ASMAnnotationConverter.
+					getAnnotation(annotationNode.desc);
+			
+			if (annotation != null) {
+				iterator.remove();
+			}
+		}
+	}
+	
+	private void addAnnotation(Annotatable<?> element, List<AnnotationNode> annotations) {
+		RTTAnnotation annotation = element.getAnnotation();
+		if (annotation != null) {
+			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getType());
+			AnnotationNode annotationNode = new AnnotationNode(descriptor);
+			for (Entry<String, Object> attribute : annotation.getAttributes().entrySet()) {
+				annotationNode.visit(attribute.getKey(), attribute.getValue());
+			}
+			
+			annotations.add(annotationNode);
+		}		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void processFields(ClassNode node, ClassElement element) {
+		for (FieldElement fieldElement : element.getValuableFields()) {
+			if (fieldElement.hasChanged()) {
+				FieldNode fieldNode = findField(node.fields, fieldElement);
+				
+				if (fieldNode.visibleAnnotations != null) {
+					removeObsoleteAnnotations(fieldNode.visibleAnnotations);
+				}
+				
+				if (fieldElement.hasAnnotation()) {
+					if (fieldNode.visibleAnnotations == null) {
+						fieldNode.visibleAnnotations = new ArrayList<>();
+					}
+					
+					addAnnotation(fieldElement, fieldNode.visibleAnnotations);
+				}
+			}
+		}
+	}
+	
+	private FieldNode findField(List<FieldNode> fields, FieldElement fieldElement) {
+		String className = null;
+		for (FieldNode fieldNode : fields) {
+			className = Type.getType(fieldNode.desc).getClassName();
+			if (fieldElement.getName().equals(fieldNode.name) && 
+					fieldElement.getType().equals(className)) {				
+				return fieldNode;
+			}
+		}
+
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processMethods(ClassNode node, ClassElement element) {
+		for(MethodElement methodElement: element.getValuableMethods()) {
+			if (methodElement.hasChanged()) {
+				MethodNode methodNode = findMethod(node.methods, methodElement);
+				
+				if (methodNode.visibleAnnotations != null) {
+					removeObsoleteAnnotations(methodNode.visibleAnnotations);
+				}
+				
+				if (methodElement.hasAnnotation()) {
+					if (methodNode.visibleAnnotations == null) {
+						methodNode.visibleAnnotations = new ArrayList<>();
+					}
+					
+					addAnnotation(methodElement, methodNode.visibleAnnotations);
+				}
+			}
+		}
+	}
+	
+	private MethodNode findMethod(List<MethodNode> methods, MethodElement method) {
+		String returningClass = null;
+		for (MethodNode methodNode : methods) {
+			returningClass = Type.getReturnType(methodNode.desc).getClassName();
+			if (method.getName().equals(methodNode.name) && 
+					method.getType().equals(returningClass) &&
+					equalParameters(method, methodNode)) {				
+				
+				return methodNode;
+			}
+		}
+		
+		return null;
+	}
+
+	private boolean equalParameters(MethodElement method, MethodNode methodNode) {
+		Type[] parameters = Type.getArgumentTypes(methodNode.desc);
+		if (method.getParameters().size() != parameters.length) {
+			return false;
+		}
+		
+		for(int i = 0; i < parameters.length; i++) {
+			if (!method.getParameters().get(i).equals(parameters[i].getClassName())) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }
