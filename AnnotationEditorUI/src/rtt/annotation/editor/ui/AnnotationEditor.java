@@ -1,14 +1,18 @@
 package rtt.annotation.editor.ui;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -44,8 +48,9 @@ import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.ui.viewer.util.EditableViewerItem;
 import rtt.annotation.editor.ui.viewer.util.MemberViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementViewerItem;
 import rtt.annotation.editor.ui.viewer.util.NodeViewerItemProvider;
@@ -54,13 +59,13 @@ import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
 import rtt.annotation.editor.util.StatusFactory;
 
-public class AnnotationEditor extends EditorPart {
+public class AnnotationEditor extends EditorPart implements Observer {
 
 	private final class NodeFilter extends ViewerFilter {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (element instanceof Annotatable<?>) {
-				RTTAnnotation annotation = ((Annotatable<?>) element).getAnnotation();
+				Annotation annotation = ((Annotatable<?>) element).getAnnotation();
 				
 				return annotation != null && 
 						annotation.getType().equals(AnnotationType.NODE);
@@ -94,12 +99,8 @@ public class AnnotationEditor extends EditorPart {
 			
 			if (modelElement instanceof Annotatable<?>) {
 				ControllerRegistry.execute(mode, 
-						RTTAnnotation.create(getAnnotation()), 
-						(Annotatable<?>) modelElement);			
-				
-				// TODO implement improved change detection
-				dirty = true;
-				firePropertyChange(PROP_DIRTY);
+						Annotation.create(getAnnotation()), 
+						(Annotatable<?>) modelElement);
 			}
 			
 			nodeViewer.refresh();
@@ -140,9 +141,7 @@ public class AnnotationEditor extends EditorPart {
 
 	private boolean dirty = false;
 
-	private IFile inputFile;
-
-	
+	private IFile inputFile;	
 
 	public AnnotationEditor() {
 		nodeFilter = new NodeFilter();
@@ -191,6 +190,7 @@ public class AnnotationEditor extends EditorPart {
 			try {
 				Importer importer = new ASMConverter();
 				model = importer.importModel(inputFile.getLocationURI());
+				model.addObserver(this);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -497,7 +497,7 @@ public class AnnotationEditor extends EditorPart {
 		propertyViewer = new TreeViewer(propertyViewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		propertyViewer.setContentProvider(propertyProvider.getContentProvider());
 		
-		Tree propertyTree = propertyViewer.getTree();
+		final Tree propertyTree = propertyViewer.getTree();
 		propertyTree.setHeaderVisible(true);
 		propertyTree.setLinesVisible(true);		
 		propertyTree.setEnabled(false);
@@ -513,6 +513,29 @@ public class AnnotationEditor extends EditorPart {
 		
 		TreeViewerColumn valueViewerColumn = new TreeViewerColumn(propertyViewer, SWT.NONE);
 		valueViewerColumn.setLabelProvider(propertyProvider.getLabelProvider(ViewerItemProvider.SECOND_COLUMN));
+		valueViewerColumn.setEditingSupport(new EditingSupport(propertyViewer) {
+			
+			@Override
+			protected void setValue(Object element, Object value) {
+				((EditableViewerItem) element).setValue(value);
+				propertyViewer.update(element, null);
+			}
+			
+			@Override
+			protected Object getValue(Object element) {
+				return ((EditableViewerItem) element).getValue();
+			}
+			
+			@Override
+			protected CellEditor getCellEditor(Object element) {
+				return ((EditableViewerItem) element).getCellEditor(propertyTree);
+			}
+			
+			@Override
+			protected boolean canEdit(Object element) {
+				return element instanceof EditableViewerItem;
+			}
+		});
 		TreeColumn valueColumn = valueViewerColumn.getColumn();
 		tcl_propertyViewerComposite.setColumnData(valueColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
 		valueColumn.setText("Value");
@@ -524,7 +547,10 @@ public class AnnotationEditor extends EditorPart {
 	}
 	
 	@Override
-	public void dispose() {
+	public void dispose() {		
+		if (model != null) {
+			model.deleteObserver(this);
+		}
 
 		if (nodeProvider != null) {
 			nodeProvider.dispose();
@@ -542,5 +568,11 @@ public class AnnotationEditor extends EditorPart {
 		}
 		
 		super.dispose();
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		dirty = true;
+		firePropertyChange(PROP_DIRTY);		
 	}
 }
