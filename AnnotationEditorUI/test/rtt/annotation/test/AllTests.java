@@ -8,7 +8,10 @@ import rtt.annotation.test.model.AllModelTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ClassElementAnnotationTests.class,
-		CombinedAnnotationRuleTests.class, AllModelTests.class })
+		FieldElementAnnotationTests.class,
+		MethodElementValueAnnotationTests.class, 
+		MethodElementInitializeAnnotationTests.class,
+		AllModelTests.class })
 public class AllTests {
 
 }
