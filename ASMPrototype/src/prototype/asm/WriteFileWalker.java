@@ -17,13 +17,13 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.RTTAnnotation;
 
 final class WriteFileWalker extends AbstractFileWalker {
 	
@@ -148,23 +148,26 @@ final class WriteFileWalker extends AbstractFileWalker {
 	private void removeObsoleteAnnotations(List<AnnotationNode> visibleAnnotations) {
 		Iterator<AnnotationNode> iterator = visibleAnnotations.iterator();
 		while (iterator.hasNext()) {
-			AnnotationNode annotation = iterator.next();
-			ASMAnnotationConverter converter = ASMAnnotationConverter.findByDescriptor(annotation.desc);
-			if (converter != null) {
+			AnnotationNode annotationNode = iterator.next();
+			RTTAnnotation annotation = ASMAnnotationConverter.getAnnotation(
+					annotationNode.desc);
+			
+			if (annotation != null) {
 				iterator.remove();
 			}
 		}
 	}
 	
 	private void addAnnotation(Annotatable<?> element, List<AnnotationNode> visibleAnnotations) {
-		Annotation annotation = element.getAnnotation();
-		ASMAnnotationConverter converter = ASMAnnotationConverter.findByAnnotation(annotation);
-		
-		AnnotationNode annotationNode = new AnnotationNode(converter.getDescriptor());
-		for (Entry<String, Object> attribute : annotation.getAttributes().entrySet()) {
-			annotationNode.visit(attribute.getKey(), attribute.getValue());
-		}
-		
-		visibleAnnotations.add(annotationNode);
+		RTTAnnotation annotation = element.getAnnotation();
+		if (annotation != null) {
+			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getType());
+			AnnotationNode annotationNode = new AnnotationNode(descriptor);
+			for (Entry<String, Object> attribute : annotation.getAttributes().entrySet()) {
+				annotationNode.visit(attribute.getKey(), attribute.getValue());
+			}
+			
+			visibleAnnotations.add(annotationNode);
+		}		
 	}	
 }

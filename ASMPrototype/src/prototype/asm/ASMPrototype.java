@@ -4,10 +4,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 
-import rtt.annotation.editor.controller.rules.Annotation;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
+import rtt.annotation.editor.model.RTTAnnotation;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 
@@ -48,9 +49,9 @@ public class ASMPrototype {
 					
 					if (random > 0 && random < 30) {
 						if (element.hasAnnotation()) {
-							element.setAnnotation(Annotation.NONE);
+							element.setAnnotation(null);
 						} else {
-							element.setAnnotation(Annotation.NODE);
+							element.setAnnotation(RTTAnnotation.create(AnnotationType.NODE));
 						}					
 						element.setChanged(true);
 						text.append("(*) = ");
@@ -62,9 +63,9 @@ public class ASMPrototype {
 						for (FieldElement field : element.getValuableFields()) {
 							text.append(field.getName());
 							if (field.hasAnnotation()) {
-								field.setAnnotation(Annotation.NONE);
+								field.setAnnotation(null);
 							} else {
-								Annotation annotation = Annotation.VALUE;
+								RTTAnnotation annotation = RTTAnnotation.create(AnnotationType.VALUE);
 								annotation.setAttribute("index", 100);
 								field.setAnnotation(annotation);
 							}
@@ -80,9 +81,9 @@ public class ASMPrototype {
 						for (MethodElement method : element.getValuableMethods()) {
 							text.append(method.getName());
 							if (method.hasAnnotation()) {
-								method.setAnnotation(Annotation.NONE);
+								method.setAnnotation(null);
 							} else {
-								Annotation annotation = Annotation.VALUE;
+								RTTAnnotation annotation = RTTAnnotation.create(AnnotationType.VALUE);
 								annotation.setAttribute("name", "aNameForMethod");
 								method.setAnnotation(annotation);
 							}
