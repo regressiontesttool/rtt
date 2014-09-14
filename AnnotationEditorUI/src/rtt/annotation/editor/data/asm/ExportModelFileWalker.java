@@ -23,7 +23,7 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.Annotation;
 
 final class ExportModelFileWalker extends AbstractFileWalker {
 
@@ -74,7 +74,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		Iterator<AnnotationNode> iterator = annotations.iterator();
 		while (iterator.hasNext()) {
 			AnnotationNode annotationNode = iterator.next();
-			RTTAnnotation annotation = ASMAnnotationConverter.
+			Annotation annotation = ASMAnnotationConverter.
 					getAnnotation(annotationNode.desc);
 			
 			if (annotation != null) {
@@ -84,7 +84,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	}
 	
 	private void addAnnotation(Annotatable<?> element, List<AnnotationNode> annotations) {
-		RTTAnnotation annotation = element.getAnnotation();
+		Annotation annotation = element.getAnnotation();
 		if (annotation != null) {
 			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getType());
 			AnnotationNode annotationNode = new AnnotationNode(descriptor);

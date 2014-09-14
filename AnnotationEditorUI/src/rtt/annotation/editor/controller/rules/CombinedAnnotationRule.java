@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotation.editor.model.Annotatable;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public class CombinedAnnotationRule<T extends Annotatable<?>> extends AbstractAnnotationRule<T> {
 	

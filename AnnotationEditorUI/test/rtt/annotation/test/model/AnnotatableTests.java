@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public class AnnotatableTests {
 	
@@ -34,28 +34,28 @@ public class AnnotatableTests {
 	
 	@Test
 	public void testNodeAnnotation() throws Exception {
-		annotatable.setAnnotation(RTTAnnotation.create(AnnotationType.NODE));
+		annotatable.setAnnotation(Annotation.create(AnnotationType.NODE));
 		assertTrue(annotatable.hasAnnotation());
 		assertEquals(AnnotationType.NODE, annotatable.getAnnotation().getType());
 	}
 	
 	@Test
 	public void testCompareAnnotation() throws Exception {
-		annotatable.setAnnotation(RTTAnnotation.create(AnnotationType.VALUE));
+		annotatable.setAnnotation(Annotation.create(AnnotationType.VALUE));
 		assertTrue(annotatable.hasAnnotation());
 		assertEquals(AnnotationType.VALUE, annotatable.getAnnotation().getType());
 	}
 	
 	@Test
 	public void testInformationalAnnotation() throws Exception {
-		annotatable.setAnnotation(RTTAnnotation.create(AnnotationType.INITIALIZE));
+		annotatable.setAnnotation(Annotation.create(AnnotationType.INITIALIZE));
 		assertTrue(annotatable.hasAnnotation());
 		assertEquals(AnnotationType.INITIALIZE, annotatable.getAnnotation().getType());
 	}
 	
 	@Test
 	public void testUnsetAnnotation() throws Exception {
-		annotatable.setAnnotation(RTTAnnotation.create(AnnotationType.NODE));
+		annotatable.setAnnotation(Annotation.create(AnnotationType.NODE));
 		annotatable.setAnnotation(null);
 		assertFalse(annotatable.hasAnnotation());
 		assertNull(annotatable.getAnnotation());

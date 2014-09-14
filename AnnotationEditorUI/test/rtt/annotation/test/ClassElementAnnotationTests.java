@@ -9,8 +9,8 @@ import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModelFactory;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public class ClassElementAnnotationTests {
 
@@ -35,7 +35,7 @@ public class ClassElementAnnotationTests {
 				ControllerRegistry.canExecute(Mode.SET, AnnotationType.NODE, classElement));
 		assertTrue("Adding a Node annotation should be possible, but was not.",
 				ControllerRegistry.execute(Mode.SET, 
-				RTTAnnotation.create(AnnotationType.NODE), classElement));
+				Annotation.create(AnnotationType.NODE), classElement));
 		
 		assertTrue("Annotation was not set", classElement.hasAnnotation());
 		assertEquals("Annotation", AnnotationType.NODE, classElement.getAnnotation().getType());
@@ -47,7 +47,7 @@ public class ClassElementAnnotationTests {
 				ControllerRegistry.canExecute(Mode.SET, AnnotationType.VALUE, classElement));
 		assertFalse("Adding a Value annotation should not be possible, but was.",
 				ControllerRegistry.execute(Mode.SET, 
-						RTTAnnotation.create(AnnotationType.VALUE), classElement));
+						Annotation.create(AnnotationType.VALUE), classElement));
 		
 		assertFalse(classElement.hasAnnotation());
 		assertNull(classElement.getAnnotation());
@@ -59,7 +59,7 @@ public class ClassElementAnnotationTests {
 				ControllerRegistry.canExecute(Mode.SET, AnnotationType.INITIALIZE, classElement));
 		assertFalse("Adding a Initialize annotation should not be possible, but was.",
 				ControllerRegistry.execute(Mode.SET, 
-						RTTAnnotation.create(AnnotationType.INITIALIZE), classElement));
+						Annotation.create(AnnotationType.INITIALIZE), classElement));
 		
 		assertFalse(classElement.hasAnnotation());
 		assertNull(classElement.getAnnotation());
@@ -67,10 +67,10 @@ public class ClassElementAnnotationTests {
 	
 	@Test
 	public void testSetNodeAnnotationTwice() throws Exception {
-		ControllerRegistry.execute(Mode.SET, RTTAnnotation.create(AnnotationType.NODE), classElement);
+		ControllerRegistry.execute(Mode.SET, Annotation.create(AnnotationType.NODE), classElement);
 		
 		assertFalse(ControllerRegistry.canExecute(Mode.SET, AnnotationType.NODE, classElement));
-		assertFalse(ControllerRegistry.execute(Mode.SET, RTTAnnotation.create(AnnotationType.NODE), classElement));
+		assertFalse(ControllerRegistry.execute(Mode.SET, Annotation.create(AnnotationType.NODE), classElement));
 	}
 
 }

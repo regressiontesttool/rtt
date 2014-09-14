@@ -5,8 +5,8 @@ import java.io.InputStream;
 import rtt.annotation.editor.controller.RuledAnnotationController;
 import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public final class MethodElementAnnotationController extends RuledAnnotationController<MethodElement> {
 	
@@ -46,7 +46,7 @@ public final class MethodElementAnnotationController extends RuledAnnotationCont
 	}
 
 	@Override
-	public boolean execute(Mode mode, RTTAnnotation annotation, MethodElement element) {
+	public boolean execute(Mode mode, Annotation annotation, MethodElement element) {
 		switch (mode) {
 		case SET:
 			element.setAnnotation(annotation);

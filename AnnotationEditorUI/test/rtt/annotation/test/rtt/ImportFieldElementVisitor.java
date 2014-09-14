@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.Annotation;
 
 final class ImportFieldElementVisitor extends FieldVisitor {
 	private final FieldElement field;
@@ -19,7 +19,7 @@ final class ImportFieldElementVisitor extends FieldVisitor {
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc,
 			boolean visible) {
-		RTTAnnotation annotation = ASMAnnotationConverter.getAnnotation(desc);
+		Annotation annotation = ASMAnnotationConverter.getAnnotation(desc);
 		if (annotation != null) {
 			field.setAnnotation(annotation);
 		}

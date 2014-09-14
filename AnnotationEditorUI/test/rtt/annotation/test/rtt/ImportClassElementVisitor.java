@@ -17,7 +17,7 @@ import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.Annotation;
 
 public final class ImportClassElementVisitor extends ClassVisitor {
 	
@@ -75,7 +75,7 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		RTTAnnotation annotation = ASMAnnotationConverter.getAnnotation(desc);
+		Annotation annotation = ASMAnnotationConverter.getAnnotation(desc);
 		if (annotation != null) {
 			element.setAnnotation(annotation);
 		}

@@ -24,15 +24,15 @@ import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.Annotation;
 
 final class ImportModelFileWalker extends AbstractFileWalker {
 	
 	protected static final class RTTAnnotationVisitor extends AnnotationVisitor {
 
-		private RTTAnnotation annotation;
+		private Annotation annotation;
 
-		public RTTAnnotationVisitor(RTTAnnotation annotation) {
+		public RTTAnnotationVisitor(Annotation annotation) {
 			super(Opcodes.ASM5);
 			this.annotation = annotation;
 		}
@@ -120,7 +120,7 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		
 		if (annotations != null && !annotations.isEmpty()) {
 			for (AnnotationNode annotationNode : annotations) {
-				RTTAnnotation annotation = ASMAnnotationConverter.
+				Annotation annotation = ASMAnnotationConverter.
 						getAnnotation(annotationNode.desc);
 				
 				if (annotation != null) {

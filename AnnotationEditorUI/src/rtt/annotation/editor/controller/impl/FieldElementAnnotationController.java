@@ -3,8 +3,8 @@ package rtt.annotation.editor.controller.impl;
 import rtt.annotation.editor.controller.RuledAnnotationController;
 import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
 import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public final class FieldElementAnnotationController extends RuledAnnotationController<FieldElement> {
 	
@@ -27,7 +27,7 @@ public final class FieldElementAnnotationController extends RuledAnnotationContr
 	}
 	
 	@Override
-	public boolean execute(Mode mode, RTTAnnotation annotation, FieldElement element) {
+	public boolean execute(Mode mode, Annotation annotation, FieldElement element) {
 		switch (mode) {
 		case SET:
 			element.setAnnotation(annotation);

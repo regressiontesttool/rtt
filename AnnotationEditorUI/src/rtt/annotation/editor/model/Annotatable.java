@@ -7,13 +7,13 @@ public abstract class Annotatable<T extends ModelElement<?>> extends ModelElemen
 		super(parent);
 	}
 
-	private RTTAnnotation annotation;
+	private Annotation annotation;
 	
-	public final void setAnnotation(RTTAnnotation annotation) {		
+	public final void setAnnotation(Annotation annotation) {		
 		this.annotation = annotation;
 	}
 	
-	public final RTTAnnotation getAnnotation() {
+	public final Annotation getAnnotation() {
 		return annotation;
 	}
 	

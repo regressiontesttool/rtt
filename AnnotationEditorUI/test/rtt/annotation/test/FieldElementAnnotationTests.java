@@ -12,8 +12,8 @@ import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public class FieldElementAnnotationTests {
 
@@ -38,7 +38,7 @@ public class FieldElementAnnotationTests {
 				ControllerRegistry.canExecute(Mode.SET, AnnotationType.NODE, field));
 		assertFalse("Adding a Node annotation should not be possible, but was.",
 				ControllerRegistry.execute(Mode.SET, 
-				RTTAnnotation.create(AnnotationType.NODE), field));
+				Annotation.create(AnnotationType.NODE), field));
 		
 		assertFalse(field.hasAnnotation());
 		assertNull(field.getAnnotation());
@@ -50,7 +50,7 @@ public class FieldElementAnnotationTests {
 				ControllerRegistry.canExecute(Mode.SET, AnnotationType.VALUE, field));
 		assertTrue("Adding a Value annotation should be possible, but was not.",
 				ControllerRegistry.execute(Mode.SET, 
-						RTTAnnotation.create(AnnotationType.VALUE), field));
+						Annotation.create(AnnotationType.VALUE), field));
 		
 		assertTrue("Annotation was not set", field.hasAnnotation());
 		assertEquals("Annotation", AnnotationType.VALUE, field.getAnnotation().getType());
@@ -62,7 +62,7 @@ public class FieldElementAnnotationTests {
 				ControllerRegistry.canExecute(Mode.SET, AnnotationType.INITIALIZE, field));
 		assertFalse("Adding a Initialize annotation should not be possible, but was.",
 				ControllerRegistry.execute(Mode.SET, 
-						RTTAnnotation.create(AnnotationType.INITIALIZE), field));
+						Annotation.create(AnnotationType.INITIALIZE), field));
 		
 		assertFalse(field.hasAnnotation());
 		assertNull(field.getAnnotation());
@@ -70,11 +70,11 @@ public class FieldElementAnnotationTests {
 	
 	@Test
 	public void testSetValueAnnotationTwice() throws Exception {
-		ControllerRegistry.execute(Mode.SET, RTTAnnotation.create(AnnotationType.VALUE), field);
+		ControllerRegistry.execute(Mode.SET, Annotation.create(AnnotationType.VALUE), field);
 		
 		assertFalse(ControllerRegistry.canExecute(Mode.SET, AnnotationType.VALUE, field));
 		assertFalse(ControllerRegistry.execute(Mode.SET, 
-				RTTAnnotation.create(AnnotationType.VALUE), field));
+				Annotation.create(AnnotationType.VALUE), field));
 	}
 
 }
