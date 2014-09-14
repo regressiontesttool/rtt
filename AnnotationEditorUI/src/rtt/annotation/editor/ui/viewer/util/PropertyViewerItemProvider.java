@@ -10,7 +10,7 @@ import rtt.annotation.editor.model.ElementReference;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.model.RTTAnnotation;
+import rtt.annotation.editor.model.Annotation;
 
 public class PropertyViewerItemProvider extends ViewerItemProvider {
 	
@@ -58,12 +58,25 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		return new TextViewerItem(parent, "Name", element.getName());
 	}
 
-	private ViewerItem createAnnotatableItem(Annotatable<?> annotatable, ViewerItem parent) {
-		RTTAnnotation annotation = annotatable.getAnnotation();
+	private ViewerItem createAnnotatableItem(final Annotatable<?> annotatable, ViewerItem parent) {
+		final Annotation annotation = annotatable.getAnnotation();
 		ViewerItem properties = new TextViewerItem(parent, "Annotation", annotation.getName());
 		for (Entry<String, Object> attributes : annotation.getAttributes().entrySet()) {
-			properties.add(new TextViewerItem(properties, attributes.getKey(), 
-					String.valueOf(attributes.getValue())));
+			EditableViewerItem viewerItem = new EditableViewerItem(properties,
+					attributes.getKey(), attributes.getValue()) {
+				
+				@Override
+				public void setValue(Object changedValue) {
+					if (!changedValue.equals(getValue())) {
+						super.setValue(changedValue);
+						annotation.getAttributes().put(
+								getDescription(), getValue());
+						annotatable.setChanged();
+					}					
+				}
+			};
+			
+			properties.add(viewerItem);
 		}
 		
 		return properties;

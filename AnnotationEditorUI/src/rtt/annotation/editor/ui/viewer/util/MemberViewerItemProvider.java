@@ -7,8 +7,8 @@ import java.util.List;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.RTTAnnotation;
-import rtt.annotation.editor.model.RTTAnnotation.AnnotationType;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 import rtt.annotation.editor.ui.AnnotationEditor;
 
 public class MemberViewerItemProvider extends ViewerItemProvider {
@@ -39,7 +39,7 @@ public class MemberViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(MethodElement element) {
-			RTTAnnotation annotation = element.getAnnotation();
+			Annotation annotation = element.getAnnotation();
 			if (annotation != null) {
 				if (annotation.getType() == AnnotationType.VALUE) {
 					return ItemColor.VALUE;
@@ -87,7 +87,7 @@ public class MemberViewerItemProvider extends ViewerItemProvider {
 
 		@Override
 		protected ItemColor getItemColor(FieldElement element) {
-			RTTAnnotation annotation = element.getAnnotation();
+			Annotation annotation = element.getAnnotation();
 			if (annotation != null) {
 				if (annotation.getType() == AnnotationType.VALUE) {
 					return ItemColor.VALUE;
