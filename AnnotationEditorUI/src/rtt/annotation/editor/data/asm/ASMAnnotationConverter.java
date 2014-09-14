@@ -1,7 +1,5 @@
 package rtt.annotation.editor.data.asm;
 
-import java.lang.annotation.Annotation;
-
 import org.objectweb.asm.Type;
 
 import rtt.annotation.editor.model.RTTAnnotation;
@@ -32,10 +30,10 @@ public enum ASMAnnotationConverter {
 		return annotation;
 	}
 	
-	public static ASMAnnotationConverter findByAnnotation (Annotation annotation) {
+	public static String getDescriptor(AnnotationType type) {
 		for (ASMAnnotationConverter annotationDescriptor : values()) {
-			if (annotationDescriptor.annotation.equals(annotation)) {
-				return annotationDescriptor;
+			if (annotationDescriptor.annotation.equals(type)) {
+				return annotationDescriptor.descriptor;
 			}
 		}
 		
@@ -50,9 +48,5 @@ public enum ASMAnnotationConverter {
 		}
 		
 		return null;
-	} 
-
-	public boolean equalsAnnotation(Annotation annotation) {
-		return annotation.equals(this.annotation);
 	}
 }
