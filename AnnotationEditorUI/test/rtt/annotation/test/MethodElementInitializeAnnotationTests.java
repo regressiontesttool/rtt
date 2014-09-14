@@ -26,7 +26,7 @@ public class MethodElementInitializeAnnotationTests {
 	public void setUp() throws Exception {
 		factory = ClassModelFactory.getFactory();
 		method = factory.createMethodElement(null, "aMethod");
-		method.getParameters().add(InputStream.class);
+		method.getParameters().add("java.io.InputStream");
 	}
 	
 	@Test
