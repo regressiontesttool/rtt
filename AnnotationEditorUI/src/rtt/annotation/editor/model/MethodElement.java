@@ -10,7 +10,7 @@ import rtt.annotations.Node.Value;
 public class MethodElement extends Annotatable<ClassElement> {
 	
 	@Value private String type = null;
-	@Value private List<Class<?>> parameters;
+	@Value private List<String> parameters;
 	
 	protected MethodElement(ClassElement parent) {
 		super(parent);
@@ -25,7 +25,7 @@ public class MethodElement extends Annotatable<ClassElement> {
 		this.type = type;
 	}
 
-	public List<Class<?>> getParameters() {
+	public List<String> getParameters() {
 		return parameters;
 	}
 }
