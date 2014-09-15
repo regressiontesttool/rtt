@@ -20,8 +20,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import rtt.core.RTTApplication;
 import rtt.core.archive.configuration.Configuration;
-import rtt.ui.ecore.util.Messages;
 import rtt.ui.model.RttProject;
+import rtt.ui.utils.Messages;
 import rtt.ui.utils.RttPluginUtil;
 
 public class ApplicationRunnable implements IRunnableWithProgress {

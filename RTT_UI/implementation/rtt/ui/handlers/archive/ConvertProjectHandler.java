@@ -3,29 +3,24 @@ package rtt.ui.handlers.archive;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.pde.core.project.IBundleProjectDescription;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.dialogs.ContainerGenerator;
 
 import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.core.RttNature;
-import rtt.ui.ecore.util.Messages;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.perspectives.ProjectPerspectiveFactory;
-import rtt.ui.utils.RttPluginUtil;
+import rtt.ui.utils.Messages;
 import rtt.ui.utils.RttPreferenceStore;
 
 /**

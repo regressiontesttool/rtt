@@ -25,8 +25,8 @@ import rtt.core.manager.Manager;
 import rtt.core.manager.data.history.OutputDataManager;
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
 import rtt.ui.content.main.ContentIcon;
-import rtt.ui.ecore.util.Messages;
 import rtt.ui.model.RttProject;
+import rtt.ui.utils.Messages;
 import rtt.ui.utils.RttLog;
 import rtt.ui.utils.RttPluginUtil;
 

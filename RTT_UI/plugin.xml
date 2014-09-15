@@ -7,10 +7,6 @@
             id="rtt.ui.views.category.standard"
             name="%category.normal.name">
       </category>
-      <category
-            id="rtt.ui.views.category.experimental"
-            name="%category.experimental.name">
-      </category>
       <view
             category="rtt.ui.views.category.standard"
             class="rtt.ui.views.ProjectView"
@@ -115,10 +111,6 @@
             id="rtt.ui.commands.refresh"
             name="%rtt.ui.commands.refresh.name">
       </command>
-      <command
-            id="rtt.ui.commands.ecore.generateAnnotations"
-            name="%rtt.ui.ecore.command.generate">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -215,36 +207,6 @@
                      </iterate>
                   </with>
                </visibleWhen>
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
-         <menu
-               label="%menu.label">
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeMenuSelection">
-                  <iterate
-                        operator="and">
-                     <adapt
-                           type="org.eclipse.core.resources.IFile">
-                     </adapt>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.eclipse.core.resources.extension"
-                           value="genmodel">
-                     </test>
-                  </iterate>
-                  <count
-                        value="1">
-                  </count>
-               </with>
-            </visibleWhen>
-            <command
-                  commandId="rtt.ui.commands.ecore.generateAnnotations"
-                  style="push">
             </command>
          </menu>
       </menuContribution>
@@ -558,12 +520,6 @@
          </class>
       </handler>
       <handler
-            commandId="rtt.ui.commands.ecore.generateAnnotations">
-         <class
-               class="rtt.ui.ecore.handler.GenerateAnnotationsHandler">
-         </class>
-      </handler>
-      <handler
             commandId="rtt.ui.commands.project.convert">
          <class
                class="rtt.ui.handlers.archive.ConvertProjectHandler"></class>
@@ -785,18 +741,6 @@
             id="rtt.ui.editors.reference"
             name="%rtt.ui.editor.name">
       </editor>
-      <editor
-            class="rtt.ui.ecore.editor.EcoreEditor"
-            contributorClass="org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor"
-            default="false"
-            extensions="ecore"
-            icon="icons/sample.gif"
-            id="rtt.ui.editors.annotation.ecore"
-            name="%rtt.ecore.editor.name">
-         <contentTypeBinding
-               contentTypeId="org.eclipse.emf.ecore">
-         </contentTypeBinding>
-      </editor>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
@@ -899,20 +843,6 @@
       <initializer
             class="rtt.ui.preferences.PreferenceInitializer">
       </initializer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.exportWizards">
-      <wizard
-            category="rtt.ui.ecore.wizard.category"
-            class="rtt.ui.ecore.wizard.ExportAnnotationsWizard"
-            icon="icons/RTT-Logo.png"
-            id="rtt.ui.ecore.wizard.exportAnnotations"
-            name="Ecore annotations">
-      </wizard>
-      <category
-            id="rtt.ui.ecore.wizard.category"
-            name="RTT">
-      </category>
    </extension>
 
 </plugin>

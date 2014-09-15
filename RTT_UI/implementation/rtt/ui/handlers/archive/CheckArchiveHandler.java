@@ -13,9 +13,9 @@ import rtt.ui.RttPluginUI;
 import rtt.ui.content.ReloadInfo;
 import rtt.ui.content.ReloadInfo.Content;
 import rtt.ui.content.main.ProjectContent;
-import rtt.ui.ecore.util.Messages;
 import rtt.ui.handlers.AbstractSelectionHandler;
 import rtt.ui.model.RttProject;
+import rtt.ui.utils.Messages;
 import rtt.ui.utils.RttPreferenceStore;
 
 public class CheckArchiveHandler extends AbstractSelectionHandler implements IHandler {

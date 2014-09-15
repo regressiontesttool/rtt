@@ -1,4 +1,4 @@
-package rtt.ui.ecore.util;
+package rtt.ui.utils;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
