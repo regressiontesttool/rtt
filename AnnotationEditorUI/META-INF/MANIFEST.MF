@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: RTT Annotation Editor UI
-Bundle-SymbolicName: AnnotationEditorUI;singleton:=true
+Bundle-Name: Regression Test Tool - Annotation Editor
+Bundle-SymbolicName: rtt.annotation.editor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: libraries/runtime/asm-5.0.3.jar,
  libraries/runtime/asm-tree-5.0.3.jar,
