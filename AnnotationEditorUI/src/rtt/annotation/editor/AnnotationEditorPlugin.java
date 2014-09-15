@@ -51,5 +51,9 @@ public class AnnotationEditorPlugin extends AbstractUIPlugin {
 	public static void log(int severity, String message) {
 		plugin.getLog().log(new Status(severity, PLUGIN_ID, message));
 	}
+	
+	public static void logException(String message, Throwable throwable) {
+		plugin.getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, throwable));
+	}
 
 }

@@ -10,7 +10,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
-import rtt.annotation.editor.data.asm.ASMConverter;
+import rtt.annotation.editor.data.asm.ASMClassModelManager;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassElementReference;
@@ -36,8 +36,8 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 		
 		String completeName = name.replace("/", ".");
 		
-		String className = ASMConverter.RESOLVER.computeClassName(completeName);
-		String packageName = ASMConverter.RESOLVER.computePackageName(completeName);
+		String className = ASMClassModelManager.RESOLVER.computeClassName(completeName);
+		String packageName = ASMClassModelManager.RESOLVER.computePackageName(completeName);
 		
 		element.setName(className);
 		element.setPackageName(packageName);

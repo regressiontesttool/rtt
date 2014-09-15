@@ -16,19 +16,13 @@ import rtt.annotation.editor.data.NameResolver;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 
-public class ASMConverter implements Importer, Exporter {
+public class ASMClassModelManager implements Importer, Exporter {
 	
 	public static final NameResolver RESOLVER = NameResolver.create(".");
 	
-	private ClassModelFactory factory;
-	
-	public ASMConverter() {
-		factory = ClassModelFactory.getFactory();
-	}
-
 	@Override
 	public ClassModel importModel(URI input) throws IOException {
-		ClassModel model = factory.createClassModel();
+		ClassModel model = ClassModelFactory.getFactory().createClassModel();
 		walkFileTree(input, new ImportModelFileWalker(model));
 		
 		RESOLVER.resolveModel(model);
@@ -37,11 +31,7 @@ public class ASMConverter implements Importer, Exporter {
 	}
 
 	@Override
-	public void exportModel(ClassModel model, URI output) throws IOException {
-//		if (Files.notExists(output, LinkOption.NOFOLLOW_LINKS)) {
-//			Files.copy(origin, dest, StandardCopyOption.COPY_ATTRIBUTES);
-//		}
-		
+	public void exportModel(ClassModel model, URI output) throws IOException {	
 		walkFileTree(output, new ExportModelFileWalker(model));
 	}
 	
@@ -54,6 +44,4 @@ public class ASMConverter implements Importer, Exporter {
 			Files.walkFileTree(zipFs.getPath("/"), fileWalker);
 		}
 	}
-	
-	
 }

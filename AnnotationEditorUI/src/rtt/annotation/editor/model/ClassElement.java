@@ -6,8 +6,14 @@ import java.util.List;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
+/**
+ * Represents a java class.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 @Node
-public class ClassElement extends Annotatable<ClassModel> {
+public class ClassElement extends Annotatable {
 	
 	public enum ClassType {
 		INTERFACE("Interface"), 

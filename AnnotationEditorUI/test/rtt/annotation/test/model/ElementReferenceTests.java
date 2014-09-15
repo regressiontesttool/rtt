@@ -9,23 +9,27 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotation.editor.model.ElementReference;
-import rtt.annotation.editor.model.ModelElement;
+import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.ClassElementReference;
+import rtt.annotation.editor.model.ClassModelFactory;
 
 public class ElementReferenceTests {
 
-	private static final String NAME = "TestReferenceName";
+	private static final String CLASSNAME = "TestClassName";
+	private static final String PACKAGENAME = "TestPackageName";
 	
-	private ElementReference<ModelElement<?>> reference;
+	private ClassModelFactory factory;
+	private ClassElementReference reference;	
 
 	@Before
 	public void setUp() throws Exception {
-		this.reference = new ElementReference<ModelElement<?>>(NAME);
+		this.factory = ClassModelFactory.getFactory();
+		this.reference = ClassElementReference.create(CLASSNAME);
 	}
 	
 	@Test
 	public void testEmptyReference() throws Exception {
-		assertEquals(NAME, reference.getName());
+		assertEquals(CLASSNAME, reference.getName());
 		assertFalse(reference.isResolved());
 		assertNull(reference.getReference());
 	}
@@ -39,14 +43,15 @@ public class ElementReferenceTests {
 		assertEquals(createModelElement(), reference.getReference());		
 	}
 	
-	private ModelElement<?> createModelElement() {
-		return new ModelElement<ModelElement<?>>(null) {};
+	private ClassElement createModelElement() {
+		return factory.createClassElement(
+				null, CLASSNAME, PACKAGENAME);
 	}
 	
 	@Test
 	public void testEquals() throws Exception {
-		ElementReference<ModelElement<?>> reference2 = 
-				new ElementReference<ModelElement<?>>(NAME);
+		ClassElementReference reference2 = 
+				ClassElementReference.create(CLASSNAME);
 		
 		assertTrue(reference.equals(reference2));
 		assertTrue(reference2.equals(reference));

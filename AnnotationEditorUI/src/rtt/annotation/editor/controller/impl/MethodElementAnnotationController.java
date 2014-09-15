@@ -4,11 +4,10 @@ import java.io.InputStream;
 
 import rtt.annotation.editor.controller.RuledAnnotationController;
 import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
-import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.Annotation;
 import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.MethodElement;
 
-public final class MethodElementAnnotationController extends RuledAnnotationController<MethodElement> {
+public class MethodElementAnnotationController extends RuledAnnotationController<MethodElement> {
 	
 	private static class MethodElementRule extends AbstractAnnotationRule<MethodElement> {
 
@@ -26,8 +25,12 @@ public final class MethodElementAnnotationController extends RuledAnnotationCont
 						return false;
 					}
 					
-					String firstParameter = InputStream.class.getName();					
-					return element.getParameters().get(0).equals(firstParameter);					
+					String firstParameter = InputStream.class.getName();
+					if (!element.getParameters().get(0).equals(firstParameter)) {
+						return false;
+					}
+					
+					return true;					
 				}
 			}
 			
@@ -42,20 +45,6 @@ public final class MethodElementAnnotationController extends RuledAnnotationCont
 	}
 	
 	public MethodElementAnnotationController() {
-		setRule(new MethodElementRule());
-	}
-
-	@Override
-	public boolean execute(Mode mode, Annotation annotation, MethodElement element) {
-		switch (mode) {
-		case SET:
-			element.setAnnotation(annotation);
-			return true;
-		case UNSET:
-			element.setAnnotation(null);
-			return true;
-		default:
-			throw new RuntimeException("Unknown mode '" + mode + "'");
-		}
+		super(new MethodElementRule());
 	}
 }

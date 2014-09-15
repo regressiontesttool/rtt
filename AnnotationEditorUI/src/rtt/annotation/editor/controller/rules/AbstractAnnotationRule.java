@@ -3,7 +3,8 @@ package rtt.annotation.editor.controller.rules;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.Annotation.AnnotationType;
 
-public abstract class AbstractAnnotationRule<T extends Annotatable<?>> implements IAnnotationRule<T> {
+public abstract class AbstractAnnotationRule<T extends Annotatable> 
+	implements IAnnotationRule<T> {
 	
 	@Override
 	public final boolean canSet(AnnotationType type, T element) {

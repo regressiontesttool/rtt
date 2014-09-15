@@ -17,10 +17,10 @@ import rtt.annotation.editor.model.Annotation.AnnotationType;
 public class ControllerRegistry {
 	
 	public static final ControllerRegistry INSTANCE = new ControllerRegistry();
-	private Map<Class<? extends Annotatable<?>>, IAnnotationController<?>> controller;
+	private Map<Class<? extends Annotatable>, IAnnotationController<?>> controller;
 	
 	protected ControllerRegistry() {
-		controller = new HashMap<Class<? extends Annotatable<?>>, IAnnotationController<?>>();
+		controller = new HashMap<Class<? extends Annotatable>, IAnnotationController<?>>();
 		
 		controller.put(ClassElement.class, new ClassElementAnnotationController());
 		controller.put(FieldElement.class, new FieldElementAnnotationController());		
@@ -28,7 +28,9 @@ public class ControllerRegistry {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Annotatable<?>> IAnnotationController<T> findController(T annotatableType) {
+	protected <T extends Annotatable> IAnnotationController<T> findController(
+			T annotatableType) {
+		
 		if (controller.containsKey(annotatableType.getClass())) {
 			return (IAnnotationController<T>) controller.get(annotatableType.getClass());
 		}
@@ -36,7 +38,7 @@ public class ControllerRegistry {
 		return null;
 	}
 	
-	public static <T extends Annotatable<?>> boolean canExecute(
+	public static <T extends Annotatable> boolean canExecute(
 			Mode mode, AnnotationType annotationType, T element) {
 		
 		IAnnotationController<T> controller = INSTANCE.findController(element);
@@ -47,7 +49,7 @@ public class ControllerRegistry {
 		return false;
 	}
 
-	public static <T extends Annotatable<?>> boolean execute(
+	public static <T extends Annotatable> boolean execute(
 			Mode mode, Annotation annotation, T element) {
 		
 		IAnnotationController<T> controller = INSTANCE.findController(element);

@@ -11,9 +11,9 @@ import rtt.annotation.editor.model.ModelElement;
 
 public class ModelElementTests {
 	
-	private static final class TestModelElement extends ModelElement<ModelElement<?>> {
+	private static final class TestModelElement extends ModelElement {
 
-		protected TestModelElement(ModelElement<?> parent) {
+		protected TestModelElement(ModelElement parent) {
 			super(parent);
 		}		
 	}
@@ -21,8 +21,8 @@ public class ModelElementTests {
 	private String elementName = "element";
 	private String parentName = "parent";
 	
-	private ModelElement<?> element;
-	private ModelElement<?> parent;	
+	private ModelElement element;
+	private ModelElement parent;	
 	
 	@Before
 	public void setUp() throws Exception { 
@@ -47,7 +47,7 @@ public class ModelElementTests {
 	
 	@Test
 	public void testEquals() throws Exception {
-		ModelElement<?> secondElement = new TestModelElement(parent);
+		ModelElement secondElement = new TestModelElement(parent);
 		assertEquals("Parent element", element.getParent(), secondElement.getParent());
 		
 		secondElement.setName(elementName);

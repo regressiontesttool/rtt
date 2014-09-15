@@ -57,14 +57,13 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		
 		String completeName = node.name.replace("/", ".");
 		
-		String className = ASMConverter.RESOLVER.computeClassName(completeName);
-		String packageName = ASMConverter.RESOLVER.computePackageName(completeName);
+		String className = ASMClassModelManager.RESOLVER.computeClassName(completeName);
+		String packageName = ASMClassModelManager.RESOLVER.computePackageName(completeName);
 		
 		ClassModelFactory factory = ClassModelFactory.getFactory();
 		
-		ClassElement classElement = factory.createClassElement(model);
-		classElement.setPackageName(packageName);
-		classElement.setName(className);
+		ClassElement classElement = factory.createClassElement(
+				model, className, packageName);
 		
 		if (checkAccess(node.access, Opcodes.ACC_ABSTRACT)) {
 			classElement.setType(ClassType.ABSTRACT);
@@ -80,7 +79,7 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		
 		if (node.superName != null && !node.superName.equals("java/lang/Object")) {
 			String superName = node.superName.replace("/", ".");
-			classElement.setSuperClass(new ClassElementReference(superName));
+			classElement.setSuperClass(ClassElementReference.create(superName));
 		}
 		
 		if (node.interfaces != null && !node.interfaces.isEmpty()) {
@@ -88,7 +87,7 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 			String interfaceName = null;
 			for (Object interfaceObject : node.interfaces) {
 				interfaceName = ((String) interfaceObject).replace("/", ".");
-				interfaceReferences.add(new ClassElementReference(interfaceName));
+				interfaceReferences.add(ClassElementReference.create(interfaceName));
 			}
 			
 			classElement.setInterfaces(interfaceReferences);
@@ -116,7 +115,7 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 	}
 	
 	private void setAnnotation(List<AnnotationNode> annotations, 
-			Annotatable<?> annotatable) {
+			Annotatable annotatable) {
 		
 		if (annotations != null && !annotations.isEmpty()) {
 			for (AnnotationNode annotationNode : annotations) {

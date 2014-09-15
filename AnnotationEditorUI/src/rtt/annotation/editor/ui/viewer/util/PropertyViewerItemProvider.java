@@ -20,13 +20,13 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 	List<ViewerItem> setInput(Object input, ViewerItem parent) {
 		items.clear();
 		
-		if (input instanceof ModelElement<?>) {
-			ModelElement<?> element = (ModelElement<?>) input;
+		if (input instanceof ModelElement) {
+			ModelElement element = (ModelElement) input;
 			items.add(createModelElementItem(element, parent));
 		}
 		
-		if (input instanceof Annotatable<?>) {
-			Annotatable<?> annotatable = (Annotatable<?>) input;
+		if (input instanceof Annotatable) {
+			Annotatable annotatable = (Annotatable) input;
 			if (annotatable.hasAnnotation()) {
 				items.add(createAnnotatableItem(annotatable, parent));
 			}			
@@ -54,11 +54,11 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		return items;
 	}
 
-	private ViewerItem createModelElementItem(ModelElement<?> element, ViewerItem parent) {
+	private ViewerItem createModelElementItem(ModelElement element, ViewerItem parent) {
 		return new TextViewerItem(parent, "Name", element.getName());
 	}
 
-	private ViewerItem createAnnotatableItem(final Annotatable<?> annotatable, ViewerItem parent) {
+	private ViewerItem createAnnotatableItem(final Annotatable annotatable, ViewerItem parent) {
 		final Annotation annotation = annotatable.getAnnotation();
 		ViewerItem properties = new TextViewerItem(parent, "Annotation", annotation.getName());
 		for (Entry<String, Object> attributes : annotation.getAttributes().entrySet()) {
@@ -164,7 +164,7 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 
 	@Override
 	boolean hasElements(Object parentElement) {
-		return parentElement instanceof ModelElement<?>;
+		return parentElement instanceof ModelElement;
 	}
 
 }

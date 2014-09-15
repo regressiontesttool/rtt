@@ -4,13 +4,24 @@ import java.util.Observable;
 
 import rtt.annotations.Node.Value;
 
-
-public abstract class ModelElement<T extends ModelElement<?>> extends Observable {
+/**
+ * An abstract class for various java elements.
+ *
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ * @see ClassModel
+ * @see Annotatable
+ * @see ClassElement
+ * @see FieldElement
+ * @sse MethodElement
+ *
+ */
+public abstract class ModelElement extends Observable {
 	
 	@Value private String name = null;
-	@Value private T parent = null;
+	@Value private ModelElement parent = null;
 	
-	protected ModelElement(T parent) {
+	protected ModelElement(ModelElement parent) {
 		this.parent = parent;
 	}
 	
@@ -22,11 +33,11 @@ public abstract class ModelElement<T extends ModelElement<?>> extends Observable
 		this.name = name;
 	}	
 	
-	public T getParent() {
+	public ModelElement getParent() {
 		return parent;
 	}
 	
-	public void setParent(T parent) {
+	public void setParent(ModelElement parent) {
 		this.parent = parent;
 	}
 	
@@ -59,7 +70,7 @@ public abstract class ModelElement<T extends ModelElement<?>> extends Observable
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		ModelElement<?> other = (ModelElement<?>) obj;
+		ModelElement other = (ModelElement) obj;
 		if (name == null) {
 			if (other.name != null) {
 				return false;

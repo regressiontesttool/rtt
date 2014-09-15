@@ -30,13 +30,13 @@ public class ClassElementTests {
 	@Before
 	public void setUp() throws Exception { 
 		factory = ClassModelFactory.getFactory();
-		element = factory.createClassElement(null);		
+		element = factory.createClassElement(null, CLASSNAME, PACKAGENAME);		
 	}
 	
 	@Test
 	public void testEmptyElement() throws Exception {
-		assertEquals("Class name", null, element.getName());
-		assertEquals("Package name", null, element.getPackageName());
+		assertEquals("Class name", CLASSNAME, element.getName());
+		assertEquals("Package name", PACKAGENAME, element.getPackageName());
 		assertEquals("Type", ClassType.CONCRETE, element.getType());
 		
 		assertFalse(element.hasInterfaces());
@@ -81,13 +81,13 @@ public class ClassElementTests {
 	}
 	
 	private ClassElementReference createSuperClass(String superClassName) {
-		return new ClassElementReference(superClassName);
+		return ClassElementReference.create(superClassName);
 	}
 	
 	private List<ClassElementReference> createInterfaces(String... interfaces) {
-		List<ClassElementReference> result = new ArrayList<ClassElementReference>();
+		List<ClassElementReference> result = new ArrayList<>();
 		for (String interfaceName : interfaces) {
-			result.add(new ClassElementReference(interfaceName));
+			result.add(ClassElementReference.create(interfaceName));
 		}
 		
 		return result;
@@ -141,13 +141,8 @@ public class ClassElementTests {
 		element.setPackageName(PACKAGENAME);
 		element.setType(ClassType.ABSTRACT);
 		
-		ClassElement element2 = factory.createClassElement(null);
-		assertFalse(checkEqual(element2));
-		
-		element2.setName(CLASSNAME);
-		assertFalse(checkEqual(element2));
-		
-		element2.setPackageName(PACKAGENAME);
+		ClassElement element2 = factory.createClassElement(
+				null, CLASSNAME, PACKAGENAME);
 		assertFalse(checkEqual(element2));
 		
 		element2.setType(ClassType.ABSTRACT);

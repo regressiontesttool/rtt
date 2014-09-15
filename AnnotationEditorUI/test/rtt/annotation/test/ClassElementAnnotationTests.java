@@ -14,13 +14,16 @@ import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public class ClassElementAnnotationTests {
 
+	private static final String CLASSNAME = "aClassName";
+	private static final String PACKAGENAME = "aPackageName";
+	
 	private ClassModelFactory factory;
 	private ClassElement classElement;
 
 	@Before
 	public void setUp() throws Exception {
 		factory = ClassModelFactory.getFactory();
-		classElement = factory.createClassElement(null);
+		classElement = factory.createClassElement(null, CLASSNAME, PACKAGENAME);
 	}
 	
 	@Test

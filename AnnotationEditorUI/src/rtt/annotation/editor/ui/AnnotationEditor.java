@@ -1,6 +1,7 @@
 package rtt.annotation.editor.ui;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -39,17 +40,18 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
+import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.data.Exporter;
 import rtt.annotation.editor.data.Importer;
-import rtt.annotation.editor.data.asm.ASMConverter;
+import rtt.annotation.editor.data.asm.ASMClassModelManager;
 import rtt.annotation.editor.model.Annotatable;
+import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
-import rtt.annotation.editor.model.Annotation;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
 import rtt.annotation.editor.ui.viewer.util.EditableViewerItem;
 import rtt.annotation.editor.ui.viewer.util.MemberViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ModelElementViewerItem;
@@ -57,15 +59,20 @@ import rtt.annotation.editor.ui.viewer.util.NodeViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.PropertyViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
-import rtt.annotation.editor.util.StatusFactory;
 
+/**
+ * The annotation editor.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 public class AnnotationEditor extends EditorPart implements Observer {
 
 	private final class NodeFilter extends ViewerFilter {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (element instanceof Annotatable<?>) {
-				Annotation annotation = ((Annotatable<?>) element).getAnnotation();
+			if (element instanceof Annotatable) {
+				Annotation annotation = ((Annotatable) element).getAnnotation();
 				
 				return annotation != null && 
 						annotation.getType().equals(AnnotationType.NODE);
@@ -73,8 +80,8 @@ public class AnnotationEditor extends EditorPart implements Observer {
 			
 			if (element instanceof ModelElementViewerItem<?>) {
 				ModelElementViewerItem<?> item = (ModelElementViewerItem<?>) element;
-				if (item.getModelElement() instanceof Annotatable<?>) {
-					Annotatable<?> annotatable = (Annotatable<?>) item.getModelElement();
+				if (item.getModelElement() instanceof Annotatable) {
+					Annotatable annotatable = (Annotatable) item.getModelElement();
 					return annotatable.hasAnnotation();
 				}
 			}
@@ -94,13 +101,13 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Viewer viewer = getViewer();
-			ModelElement<?> modelElement = ViewerSelectionUtil.
+			ModelElement modelElement = ViewerSelectionUtil.
 					getModelElement(viewer.getSelection());
 			
-			if (modelElement instanceof Annotatable<?>) {
+			if (modelElement instanceof Annotatable) {
 				ControllerRegistry.execute(mode, 
 						Annotation.create(getAnnotation()), 
-						(Annotatable<?>) modelElement);
+						(Annotatable) modelElement);
 			}
 			
 			nodeViewer.refresh();
@@ -153,23 +160,25 @@ public class AnnotationEditor extends EditorPart implements Observer {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		Exporter exporter = new ASMConverter();
+		Exporter exporter = new ASMClassModelManager();
+		URI fileLocation = inputFile.getLocationURI();
+		
 		try {
-			exporter.exportModel(model, inputFile.getLocationURI());
+			exporter.exportModel(model, fileLocation);
 			dirty = false;
 			firePropertyChange(PROP_DIRTY);
-			
-			inputFile.refreshLocal(IResource.DEPTH_ZERO, monitor);
-			
+			inputFile.refreshLocal(IResource.DEPTH_ZERO, monitor);			
 		} catch (IOException | CoreException e) {
-			e.printStackTrace();
-		}
+			AnnotationEditorPlugin.logException(
+					"Could not save file: " + fileLocation, e);
+		}		
 	}
 
 	@Override
 	public void doSaveAs() {
-		// TODO Auto-generated method stub
-
+//		if (Files.notExists(output, LinkOption.NOFOLLOW_LINKS)) {
+//			Files.copy(origin, dest, StandardCopyOption.COPY_ATTRIBUTES);
+//		}		
 	}
 
 	@Override
@@ -181,18 +190,18 @@ public class AnnotationEditor extends EditorPart implements Observer {
 			inputFile = fileInput.getFile();
 			
 			if (inputFile == null) {
-				throw new PartInitException(
-						StatusFactory.createError("Input file was null."));
+				throw new PartInitException("Input file was null.");
 			}
 			
 			setPartName(getPartName() + " - " + inputFile.getName());
 			
 			try {
-				Importer importer = new ASMConverter();
+				Importer importer = new ASMClassModelManager();
 				model = importer.importModel(inputFile.getLocationURI());
 				model.addObserver(this);
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new PartInitException(
+						"Could not read input file.", e);
 			}
 		}		
 		
@@ -207,7 +216,6 @@ public class AnnotationEditor extends EditorPart implements Observer {
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -278,13 +286,13 @@ public class AnnotationEditor extends EditorPart implements Observer {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				ModelElement<?> element = ViewerSelectionUtil.getModelElement(event.getSelection());
+				ModelElement element = ViewerSelectionUtil.getModelElement(event.getSelection());
 				
 				setNodeButton.setEnabled(false);
 				removeNodeButton.setEnabled(false);
 				
-				if (element instanceof Annotatable<?>) {
-					Annotatable<?> annotatable = (Annotatable<?>) element;
+				if (element instanceof Annotatable) {
+					Annotatable annotatable = (Annotatable) element;
 					setNodeButton.setEnabled(ControllerRegistry.canExecute(
 							Mode.SET, AnnotationType.NODE, annotatable));
 					removeNodeButton.setEnabled(ControllerRegistry.canExecute(
@@ -425,14 +433,15 @@ public class AnnotationEditor extends EditorPart implements Observer {
 				setAnnotationButton.setEnabled(false);
 				removeAnnotationButton.setEnabled(false);
 				
-				ModelElement<?> selectedObject = ViewerSelectionUtil.getModelElement(event.getSelection());
+				ModelElement selectedObject = ViewerSelectionUtil.
+						getModelElement(event.getSelection());
 				
 				propertyViewer.getControl().setEnabled(selectedObject != null);
 				propertyViewer.setInput(selectedObject);				
 				propertyViewer.expandToLevel(TreeViewer.ALL_LEVELS);
 				
-				if (selectedObject instanceof Annotatable<?>) {
-					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
+				if (selectedObject instanceof Annotatable) {
+					Annotatable annotatable = (Annotatable) selectedObject;
 					setAnnotationButton.setEnabled(ControllerRegistry.canExecute(
 							Mode.SET, selectedAnnotation, annotatable));
 					removeAnnotationButton.setEnabled(ControllerRegistry.canExecute(
@@ -550,6 +559,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	public void dispose() {		
 		if (model != null) {
 			model.deleteObserver(this);
+			model = null;
 		}
 
 		if (nodeProvider != null) {

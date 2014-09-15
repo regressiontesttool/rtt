@@ -2,7 +2,7 @@ package rtt.annotation.editor.ui.viewer.util;
 
 import rtt.annotation.editor.model.ModelElement;
 
-public class ModelElementViewerItem<T extends ModelElement<?>> extends ViewerItem {
+public class ModelElementViewerItem<T extends ModelElement> extends ViewerItem {
 
 	private T element;
 

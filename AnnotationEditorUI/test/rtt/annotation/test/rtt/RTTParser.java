@@ -13,6 +13,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.osgi.framework.Bundle;
 
 import rtt.annotation.editor.AnnotationEditorPlugin;
+import rtt.annotation.editor.data.NameResolver;
+import rtt.annotation.editor.data.asm.ASMClassModelManager;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
@@ -55,8 +57,11 @@ public class RTTParser {
 			System.out.println("Reading: " + resourceURL);			
 			
 			ClassReader reader = new ClassReader(resourceURL.openStream());
+			String completeName = reader.getClassName().replace("/", ".");
+			String className = ASMClassModelManager.RESOLVER.computeClassName(completeName);
+			String packageName = ASMClassModelManager.RESOLVER.computePackageName(completeName);
 			
-			ClassElement element = factory.createClassElement(model);
+			ClassElement element = factory.createClassElement(model, className, packageName);
 			ClassVisitor visitor = new ImportClassElementVisitor(element, factory);
 			
 			reader.accept(visitor, ClassReader.SKIP_CODE);

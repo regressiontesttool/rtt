@@ -4,28 +4,22 @@ import rtt.annotation.editor.controller.rules.IAnnotationRule;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.Annotation.AnnotationType;
 
-public abstract class RuledAnnotationController<T extends Annotatable<?>>
-	implements IAnnotationController<T> {
+public abstract class RuledAnnotationController<T extends Annotatable>
+	extends AbstractAnnotationController<T> {
 	
 	IAnnotationRule<T> rule;
 	
-	protected void setRule(IAnnotationRule<T> rule) {
+	public RuledAnnotationController(IAnnotationRule<T> rule) {
 		this.rule = rule;
 	}
 	
-	protected IAnnotationRule<T> getRule() {
-		return rule;
-	};
+	@Override
+	protected final boolean canSetAnnotation(AnnotationType type, T element) {
+		return rule.canSet(type, element);
+	}
 	
 	@Override
-	public final boolean canExecute(Mode mode, AnnotationType type, T element) {
-		switch (mode) {
-		case SET:
-			return rule.canSet(type, element);				
-		case UNSET:
-			return rule.canUnset(type, element);
-		default:
-			throw new RuntimeException("Unknown mode '" + mode + "'");
-		}
+	protected final boolean canUnsetAnnotation(AnnotationType type, T element) {
+		return rule.canUnset(type, element);
 	}	
 }

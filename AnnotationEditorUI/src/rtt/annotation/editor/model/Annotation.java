@@ -3,6 +3,14 @@ package rtt.annotation.editor.model;
 import java.util.Hashtable;
 import java.util.Map;
 
+import rtt.annotations.Node.Value;
+
+/**
+ * This class represents an annotations from RTT.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 public class Annotation {
 	
 	public enum AnnotationType {
@@ -19,7 +27,7 @@ public class Annotation {
 		}
 	}
 	
-	private AnnotationType type;
+	@Value private AnnotationType type;
 	private Map<String, Object> attributes;	
 
 	private Annotation(AnnotationType type) {

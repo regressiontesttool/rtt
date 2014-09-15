@@ -3,9 +3,14 @@ package rtt.annotation.editor.model;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
-
+/**
+ * Represents a java field.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 @Node
-public class FieldElement extends Annotatable<ClassElement> {	
+public class FieldElement extends Annotatable {	
 
 	@Value private String type;
 

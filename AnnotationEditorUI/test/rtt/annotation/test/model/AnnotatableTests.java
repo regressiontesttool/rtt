@@ -1,20 +1,22 @@
 package rtt.annotation.test.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import rtt.annotation.editor.model.Annotatable;
-import rtt.annotation.editor.model.ModelElement;
 import rtt.annotation.editor.model.Annotation;
 import rtt.annotation.editor.model.Annotation.AnnotationType;
 
 public class AnnotatableTests {
 	
-	private static final class TestAnnotatable extends Annotatable<ModelElement<?>> {
+	private static final class TestAnnotatable extends Annotatable {
 
-		protected TestAnnotatable(ModelElement<?> parent) {
+		protected TestAnnotatable(Annotatable parent) {
 			super(parent);
 		}		
 	}

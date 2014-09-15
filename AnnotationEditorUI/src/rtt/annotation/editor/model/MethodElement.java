@@ -6,8 +6,14 @@ import java.util.List;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
+/**
+ * Represents a java method.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 @Node
-public class MethodElement extends Annotatable<ClassElement> {
+public class MethodElement extends Annotatable {
 	
 	@Value private String type = null;
 	@Value private List<String> parameters;

@@ -9,13 +9,24 @@ import java.util.Set;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
-
-@SuppressWarnings("rawtypes")
+/**
+ * A class model contains all {@link ClassElement}s
+ * (within {@link PackageElement}s).
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 @Node
 public class ClassModel extends ModelElement {
 	
+	/**
+	 * Represents a java package.
+	 * 
+	 * @author Christian Oelsner <C.Oelsner@web.de>
+	 *
+	 */
 	@Node
-	public static class PackageElement extends ModelElement<ClassModel> {
+	public static class PackageElement extends ModelElement {
 
 		public PackageElement(ClassModel parent, String name) {
 			super(parent);
@@ -24,21 +35,25 @@ public class ClassModel extends ModelElement {
 		
 		@Value
 		private List<ClassElement> getElements() {
-			return getParent().getClasses(getName());
+			return ((ClassModel) getParent()).getClasses(getName());
 		}
 	}
 
 	private Map<PackageElement, List<ClassElement>> classElements;
 	
-	@SuppressWarnings("unchecked")
 	protected ClassModel() {
 		super(null);
 		classElements = new HashMap<PackageElement, List<ClassElement>>();
 	}
 	
+	/**
+	 * Adds a new {@link ClassElement}.
+	 * @param newElement the new {@link ClassElement}
+	 */
 	public void addClassElement(ClassElement newElement) {
 		if (newElement == null) {
-			throw new IllegalArgumentException("The new class element must not be null.");
+			throw new IllegalArgumentException(
+					"The new class element must not be null.");
 		}
 		
 		PackageElement packageKey = createPackageKey(newElement.getPackageName());

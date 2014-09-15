@@ -88,11 +88,7 @@ public class ClassModelTests {
 	}
 	
 	private ClassElement createClassElement(String name, String packageName) {
-		ClassElement result = factory.createClassElement(classModel);
-		result.setName(name);
-		result.setPackageName(packageName);
-		
-		return result;
+		return factory.createClassElement(classModel, name, packageName);
 	}
 	
 	private boolean checkPackagesSize(int size) {

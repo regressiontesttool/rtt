@@ -1,11 +1,14 @@
 package rtt.annotation.editor.model;
 
-
+/**
+ * A factory for new {@link ModelElement}s.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 public class ClassModelFactory {
 	
-	protected ClassModelFactory() {
-
-	}
+	protected ClassModelFactory() {}
 
 	public static ClassModelFactory getFactory() {
 		return new ClassModelFactory();
@@ -15,8 +18,13 @@ public class ClassModelFactory {
 		return new ClassModel();
 	}
 	
-	public ClassElement createClassElement(ClassModel parent) {
-		ClassElement element = new ClassElement(parent);		
+	public ClassElement createClassElement(ClassModel parent, 
+			String className, String packageName) {
+		
+		ClassElement element = new ClassElement(parent);
+		element.setName(className);
+		element.setPackageName(packageName);
+		
 		return element;
 	}
 	

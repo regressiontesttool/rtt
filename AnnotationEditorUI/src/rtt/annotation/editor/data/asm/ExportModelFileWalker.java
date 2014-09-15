@@ -37,7 +37,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		ClassReader reader = new ClassReader(Files.readAllBytes(file));
 		String className = reader.getClassName().replace("/", ".");
 		
-		final ClassElement element = ASMConverter.RESOLVER.findClass(className, model);
+		final ClassElement element = ASMClassModelManager.RESOLVER.findClass(className, model);
 		
 		if (element != null && element.hasChanged()) {
 			ClassNode node = new ClassNode();
@@ -83,7 +83,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		}
 	}
 	
-	private void addAnnotation(Annotatable<?> element, List<AnnotationNode> annotations) {
+	private void addAnnotation(Annotatable element, List<AnnotationNode> annotations) {
 		Annotation annotation = element.getAnnotation();
 		if (annotation != null) {
 			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getType());

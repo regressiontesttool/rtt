@@ -15,11 +15,11 @@ public class ViewerSelectionUtil {
 		return null;
 	}
 	
-	public static ModelElement<?> getModelElement(ISelection selection) {
+	public static ModelElement getModelElement(ISelection selection) {
 		Object selectedObject = getObject(selection);
 		
-		if (selectedObject instanceof ModelElement<?>) {
-			return (ModelElement<?>) selectedObject;
+		if (selectedObject instanceof ModelElement) {
+			return (ModelElement) selectedObject;
 		}
 		
 		if (selectedObject instanceof ModelElementViewerItem) {

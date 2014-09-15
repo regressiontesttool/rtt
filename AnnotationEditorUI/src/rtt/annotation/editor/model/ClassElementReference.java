@@ -3,16 +3,22 @@ package rtt.annotation.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used to reference {@link ClassElement}s.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ */
 public class ClassElementReference extends ElementReference<ClassElement> {
 
-	public ClassElementReference(String className) {
+	protected ClassElementReference(String className) {
 		super(className);
 	}
 	
 	public boolean isAnnotated() {
 		if (isResolved()) {
-			return getReference().hasAnnotation() 
-					|| getReference().hasExtendedAnnotation();
+			ClassElement refClass = getReference();
+			return refClass.hasAnnotation() || refClass.hasExtendedAnnotation();
 		}
 		
 		return false;

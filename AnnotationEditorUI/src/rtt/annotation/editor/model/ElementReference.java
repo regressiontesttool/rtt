@@ -1,11 +1,19 @@
 package rtt.annotation.editor.model;
 
-public class ElementReference<T extends ModelElement<?>> {
+/**
+ * Used for referencing other {@link ModelElement}s.
+ * 
+ * @author Christian Oelsner <C.Oelsner@web.de>
+ *
+ * @param <T> the type of {@link ModelElement}, 
+ * 	which should be referenced.
+ */
+public class ElementReference<T extends ModelElement> {
 	
 	private String name;
 	private T reference;
 	
-	public ElementReference(String name) {
+	protected ElementReference(String name) {
 		this.name = name;
 	}
 	
