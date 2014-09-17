@@ -30,6 +30,7 @@ import rtt.ui.utils.Messages;
 import rtt.ui.utils.RttLog;
 import rtt.ui.utils.RttPluginUtil;
 
+@SuppressWarnings("restriction")
 public class FailureContent extends AbstractLogContent {
 	
 	private static final String ERROR_MESSAGE = 
@@ -95,7 +96,6 @@ public class FailureContent extends AbstractLogContent {
 				ICompareEditingDomain domain = EMFCompareEditingDomain.create(left, right, null);
 				AdapterFactory adapterFactory = RttPluginUtil.createFactory();
 				
-				@SuppressWarnings("restriction")
 				CompareEditorInput input = new ComparisonScopeEditorInput(
 						new CompareConfiguration(), domain, adapterFactory, comparator, scope);
 				
