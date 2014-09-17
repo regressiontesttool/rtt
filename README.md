@@ -10,4 +10,4 @@ This project contains also a new annotation editor for the Regression Test Tool 
 For further details about the last stable version of RTT, please check the previous project homepage: http://rtt.googlecode.com
 
 If you want to use the current development version of RTT, install the Eclipse plug-in with the following update site:
-https://raw.githubusercontent.com/COelsner/RegressionTestTool/master/RTT_Update
+https://raw.githubusercontent.com/COelsner/rtt/master/RTT_Update
