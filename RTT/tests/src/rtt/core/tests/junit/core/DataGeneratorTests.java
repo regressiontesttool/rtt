@@ -1,4 +1,4 @@
-package rtt.core.tests.junit;
+package rtt.core.tests.junit.core;
 
 import static org.junit.Assert.*;
 
