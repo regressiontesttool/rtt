@@ -3,6 +3,10 @@ package rtt.core.loader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import rtt.core.exceptions.RTTException;
 import rtt.core.exceptions.RTTException.Type;
@@ -31,6 +35,10 @@ public abstract class ArchiveLoader {
 	protected ArchiveLoader() {}
 	
 	public static ArchiveLoader create(File path) throws RTTException {
+		if (path == null) {
+			throw new IllegalArgumentException("Give archive file was null.");
+		}		
+		
 		boolean supportedArchiveType = path.isDirectory() || path.getPath().endsWith("zip");
 		if (!supportedArchiveType) {
 			throw NotSupportedArchiveType.create(path);
@@ -44,23 +52,24 @@ public abstract class ArchiveLoader {
 		
 		return new ZipArchiveLoader();
 	}
-
 	
-	public void setBasePath(File basePath) {
-		this.baseFile = basePath.getAbsoluteFile();
-		if (basePath.isDirectory()) {
-			baseDir = basePath.getAbsolutePath();
+	public void setBasePath(File base) {
+		this.baseFile = base.getAbsoluteFile();
+		
+		Path archivePath = Paths.get(base.getPath());
+		if (Files.isDirectory(archivePath, LinkOption.NOFOLLOW_LINKS)) {
+			baseDir = archivePath.toFile().getAbsolutePath();
 		} else {
-			File parentFile = basePath.getParentFile();
-
-			while (parentFile != null && parentFile.isDirectory() == false) {
-				parentFile.getParentFile();
+			Path parent = archivePath.getParent();
+			
+			while (parent != null && !Files.isDirectory(parent)) {
+				parent = parent.getParent();
 			}
 			
-			if (parentFile != null) {
-				baseDir = parentFile.getAbsolutePath();
+			if (parent != null) {
+				baseDir = parent.toFile().getAbsolutePath();
 			} else {
-				throw new IllegalAccessError("Parent file was null. Base path: " + basePath);
+				throw new IllegalAccessError("Parent file was null. Base path: " + archivePath);
 			}
 		}
 	}

@@ -23,12 +23,13 @@ public class ExecutorLoader implements AutoCloseable {
 		return classLoader.loadClass(className);		
 	}
 
-	public ExecutorLoader(Classpath classpath) throws MalformedURLException {
+	public ExecutorLoader(Classpath classpath, String baseDir) throws MalformedURLException {
 		List<URL> urls = new ArrayList<URL>();
+		Path basePath = Paths.get(baseDir);		
 		
 		if (classpath != null && classpath.getPath() != null) {
 			for (String entry : classpath.getPath()) {
-				Path path = resolveEntry(entry);
+				Path path = resolveEntry(entry, basePath);
 				if (Files.exists(path)) {
 					urls.add(path.toUri().toURL());
 				} else {
@@ -41,8 +42,9 @@ public class ExecutorLoader implements AutoCloseable {
 				Thread.currentThread().getContextClassLoader());
 	}
 
-	private Path resolveEntry(String entry) {
-		return Paths.get(entry).toAbsolutePath().normalize();
+	private Path resolveEntry(String entry, Path basePath) {
+		Path entryPath = basePath.resolve(entry);
+		return entryPath.toAbsolutePath().normalize();
 	}
 
 	@Override

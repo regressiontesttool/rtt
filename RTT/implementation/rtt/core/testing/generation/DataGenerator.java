@@ -209,7 +209,7 @@ public class DataGenerator {
 		}
 		
 		RTTLogging.info("Initial Node: " + initialNode);
-		ExecutorLoader loader = new ExecutorLoader(config.getClasspath());		
+		ExecutorLoader loader = new ExecutorLoader(config.getClasspath(), baseDir);		
 		return new Executor(loader.resolveClass(initialNode.trim()));
 	}
 
