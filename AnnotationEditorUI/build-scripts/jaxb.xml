@@ -24,9 +24,8 @@
 	<property name="lib.jaxb" location="${rtt.lib}/development/jaxb"/>
 
 	<!-- Some package definintions -->
-	<property name="package.core" location="${rtt.src-gen}/rtt/core" />
-	<property name="package.archive" location="${package.core}/archive" />
-
+	<property name="package.annotation" location="${rtt.src-gen}/rtt/annotation/editor/exchange" />
+	
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 		<classpath>
 			<fileset dir="${lib.jaxb}" includes="*.jar" />
@@ -35,22 +34,12 @@
 
 	<!-- Removes all classes of JAXB -->
 	<target name="Clean XJC">
-		<antcall target="Clean Config" />
-		<antcall target="Clean Testsuite" />
-		<antcall target="Clean Output" />
-		<antcall target="Clean Input" />
-		<antcall target="Clean History" />
-		<antcall target="Clean Logging" />
+		<antcall target="Clean Annotations" />
 	</target>
 
 	<!-- Generate JAXB implementation -->
 	<target name="XJC ALL">
-		<antcall target="XJC Config" />
-		<antcall target="XJC Testsuite" />
-		<antcall target="XJC Output" />
-		<antcall target="XJC Input" />
-		<antcall target="XJC History" />
-		<antcall target="XJC Logging" />
+		<antcall target="XJC Annotations" />
 	</target>
 
 	<!-- = = = = = = = = = = = = = = = = =
@@ -75,7 +64,7 @@
 		<attribute name="schema" />
 		<element name="xjc-args" implicit="yes" optional="yes" />
 		<sequential>
-			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="rtt.core.archive.@{package}" removeOldOutput="yes">
+			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="@{package}" removeOldOutput="yes">
 				<produces dir="${rtt.src-gen}" includes="**/@{package}/*.java"/>
 				<xjc-args />
 			</xjc>
@@ -83,75 +72,14 @@
 	</macrodef>
 
 	<!-- ================================= 
-	            Configurations
-	     ================================= -->
-	<target name="Clean Config">
-		<JAXBClean package="configuration" />
-	</target>
-
-	<target name="XJC Config">
-		<JAXBCreate package="configuration" schema="Configuration.xsd" />
-	</target>
-
-	<!-- ================================= 
-		         Testsuite
-	     ================================= -->
-	<target name="Clean Testsuite">
-		<JAXBClean package="testsuite" />
-	</target>
-
-	<target name="XJC Testsuite">
-		<JAXBCreate package="testsuite" schema="TestSuite.xsd" />
-	</target>
-
-	<!-- ================================= 
-			     Input
-		 ================================= -->
-	<target name="Clean Input">
-		<JAXBClean package="input" />
-	</target>
-
-	<target name="XJC Input">
-		<JAXBCreate package="input" schema="Input.xsd" />
-	</target>
-
-	<!-- ================================= 
-		         Output
-	     ================================= -->
-	<target name="Clean Output">
-		<JAXBClean package="output" />
-	</target>
-
-	<target name="XJC Output">
-		<JAXBCreate package="output" schema="Output.xsd">
-			<binding file="${rtt.schemes}${file.separator}Output.xjb" />
-		</JAXBCreate>
-	</target>
-
-	<!-- ================================= 
-		         History
-	     ================================= -->
-	<target name="Clean History">
-		<JAXBClean package="history" />
-	</target>
-
-	<target name="XJC History">
-		<JAXBCreate package="history" schema="History.xsd">
-			<binding file="${rtt.schemes}${file.separator}History.xjb" />
-		</JAXBCreate>
-	</target>
-
-	<!-- ================================= 
-		         Logging
-	     ================================= -->
-	<target name="Clean Logging">
-		<JAXBClean package="logging" />
-	</target>
-
-	<target name="XJC Logging">
-		<JAXBCreate package="logging" schema="Log.xsd">
-			<binding file="${rtt.schemes}${file.separator}Log.xjb" />
-		</JAXBCreate>
+          target: Annotations              
+         ================================= -->
+    <target name="Clean Annotations" description="Removes all generated files.">
+        <JAXBClean package="rtt.annotation.editor.exchange"/>
+    </target>
+	
+	<target name="XJC Annotations">
+		<JAXBCreate package="rtt.annotation.editor.exchange" schema="Annotations.xsd"/>
 	</target>
 
 </project>

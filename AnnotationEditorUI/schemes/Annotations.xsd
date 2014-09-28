@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This program and the accompanying materials are made available under 
+	the terms of the MIT license (X11 license) which accompanies this distribution. -->
+<xs:schema xmlns:rtt="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	targetNamespace="regression.test.tool">
+	
+	<xs:element name="annotations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="model" type="rtt:model"
+					minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="model">
+		<xs:sequence>
+			<xs:element name="class" type="rtt:nodeClass"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="nodeClass">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	
+	
+	
+<!-- <xs:simpleType name="generatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OBJECT" />
+			<xs:enumeration value="FIELD" />
+			<xs:enumeration value="METHOD" />			
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="elementType" >
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VALUE" />
+			<xs:enumeration value="REFERENCE" />
+			<xs:enumeration value="NODE" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="element">
+		
+		<xs:sequence>
+			<xs:element name="element" 
+				type="rtt:element" 
+				minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>	
+		
+		<xs:attribute name="address" 
+			type="xs:string" use="required" />
+		<xs:attribute name="name"
+			type="xs:string" use="required"/>
+		<xs:attribute name="value"
+			type="xs:string" use="required" />
+		<xs:attribute name="informational" 
+			type="xs:boolean" default="false" />
+		<xs:attribute name="elementType" 
+			type="rtt:elementType" default="VALUE" />
+		<xs:attribute name="generatedBy" 
+			type="rtt:generatorType" default="OBJECT" />		
+		
+	</xs:complexType>
+ -->	
+	
+</xs:schema>
