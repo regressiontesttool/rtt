@@ -221,16 +221,40 @@ public class AnnotationEditor extends EditorPart implements Observer {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		GridLayout gl_parent = new GridLayout(1, false);
+		gl_parent.marginWidth = 2;
+		gl_parent.marginHeight = 2;
+		parent.setLayout(gl_parent);
+		
+		createAnnotationImportExportPanel(parent);	
 		
 		SashForm verticalSash = new SashForm(parent, SWT.SMOOTH | SWT.VERTICAL);
+		verticalSash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		createTopPanel(verticalSash);
-		createBottomPanel(verticalSash);		
+		createEditorPanel(verticalSash);
+		createDetailsPanel(verticalSash);		
 
 		verticalSash.setWeights(new int[] {2, 1});
 	}
 	
-	private void createTopPanel(Composite composite) {
+	private void createAnnotationImportExportPanel(Composite composite) {
+		Group annotationGroup = new Group(composite, SWT.NONE);
+		
+		FillLayout fl_annotationGroup = new FillLayout(SWT.HORIZONTAL);
+		fl_annotationGroup.spacing = 7;
+		fl_annotationGroup.marginWidth = 2;
+		annotationGroup.setLayout(fl_annotationGroup);
+		annotationGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		annotationGroup.setText("Annotations");
+		
+		Button importButton = new Button(annotationGroup, SWT.NONE);
+		importButton.setText("Import");
+		
+		Button exportButton = new Button(annotationGroup, SWT.NONE);
+		exportButton.setText("Export");
+	}
+	
+	private void createEditorPanel(Composite composite) {
 		
 		SashForm sashForm = new SashForm(composite, SWT.SMOOTH);
 		
@@ -489,7 +513,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		});
 	}
 	
-	private void createBottomPanel(Composite composite) {		
+	private void createDetailsPanel(Composite composite) {		
 		Group propertiesGroup = new Group(composite, SWT.NONE);
 		propertiesGroup.setLayout(new GridLayout(1, false));
 		propertiesGroup.setText("Details");
