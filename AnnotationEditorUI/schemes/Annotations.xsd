@@ -16,57 +16,38 @@
 
 	<xs:complexType name="model">
 		<xs:sequence>
-			<xs:element name="class" type="rtt:nodeClass"
+			<xs:element name="package" type="rtt:package"
 				minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="nodeClass">
-		<xs:attribute name="name" type="xs:string" use="required"/>
-	</xs:complexType>
-	
-	
-	
-	
-<!-- <xs:simpleType name="generatorType">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="OBJECT" />
-			<xs:enumeration value="FIELD" />
-			<xs:enumeration value="METHOD" />			
-		</xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="elementType" >
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="VALUE" />
-			<xs:enumeration value="REFERENCE" />
-			<xs:enumeration value="NODE" />
-		</xs:restriction>
-	</xs:simpleType>
-	
-	<xs:complexType name="element">
-		
+	<xs:complexType name="package">
 		<xs:sequence>
-			<xs:element name="element" 
-				type="rtt:element" 
-				minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>	
-		
-		<xs:attribute name="address" 
-			type="xs:string" use="required" />
-		<xs:attribute name="name"
-			type="xs:string" use="required"/>
-		<xs:attribute name="value"
-			type="xs:string" use="required" />
-		<xs:attribute name="informational" 
-			type="xs:boolean" default="false" />
-		<xs:attribute name="elementType" 
-			type="rtt:elementType" default="VALUE" />
-		<xs:attribute name="generatedBy" 
-			type="rtt:generatorType" default="OBJECT" />		
-		
+			<xs:element name="class" type="rtt:class"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
- -->	
+	
+	<xs:complexType name="class">
+		<xs:sequence>			
+			<xs:element name="valueField" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="valueMethod" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="initMethod" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="isNode" type="xs:boolean" use="required" />
+	</xs:complexType>
+	
+<!-- 	<xs:complexType name="field"> -->
+<!-- 		<xs:attribute name="name" type="xs:string" use="required" /> -->
+<!-- 	</xs:complexType> -->
+	
+<!-- 	<xs:complexType name="method"> -->
+<!-- 		<xs:attribute name="name" type="xs:string" use="required" /> -->
+<!-- 	</xs:complexType> -->
 	
 </xs:schema>
