@@ -75,11 +75,11 @@
           target: Annotations              
          ================================= -->
     <target name="Clean Annotations" description="Removes all generated files.">
-        <JAXBClean location="rtt/annotation/editor/exchange"/>
+        <JAXBClean location="rtt/annotation/editor/data/jaxb/model"/>
     </target>
 	
 	<target name="XJC Annotations" description="Create all annotations with JAXB">
-		<JAXBCreate package="rtt.annotation.editor.exchange" 
+		<JAXBCreate package="rtt.annotation.editor.data.jaxb.model" 
 			schema="Annotations.xsd"/>
 	</target>
 
