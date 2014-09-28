@@ -16,15 +16,15 @@
 
 	<!-- Some important directories -->
 	<property name="project.dir" location="${tasks.base}/.." />
-	<property name="rtt.src-gen" location="${project.dir}/src-gen" />
-	<property name="rtt.schemes" location="${project.dir}/schemes" />
-	<property name="rtt.lib" location="${project.dir}/libraries" />
+	<property name="src-gen.dir" location="${project.dir}/src-gen" />
+	<property name="schemes.dir" location="${project.dir}/schemes" />
+	<property name="lib.dir" location="${project.dir}/libraries" />
 	
 	<!-- important libraries -->
-	<property name="lib.jaxb" location="${rtt.lib}/development/jaxb"/>
+	<property name="lib.jaxb" location="${lib.dir}/development/jaxb" />
 
 	<!-- Some package definintions -->
-	<property name="package.annotation" location="${rtt.src-gen}/rtt/annotation/editor/exchange" />
+	<property name="package.annotation" location="${src-gen.dir}/rtt/annotation/editor/exchange" />
 	
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 		<classpath>
@@ -46,11 +46,11 @@
 		          macrodef: JAXBClean          
 	     = = = = = = = = = = = = = = = = = -->
 	<macrodef name="JAXBClean">
-		<attribute name="package" />
+		<attribute name="location" />		
 		<sequential>
 			<delete failonerror="false">
-				<fileset dir="${package.archive}">
-					<include name="@{package}/*.java" />
+				<fileset dir="${src-gen.dir}">
+					<include name="@{location}/*.java" />
 				</fileset>
 			</delete>
 		</sequential>
@@ -64,8 +64,8 @@
 		<attribute name="schema" />
 		<element name="xjc-args" implicit="yes" optional="yes" />
 		<sequential>
-			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="@{package}" removeOldOutput="yes">
-				<produces dir="${rtt.src-gen}" includes="**/@{package}/*.java"/>
+			<xjc destdir="${src-gen.dir}" schema="${schemes.dir}${file.separator}@{schema}" package="@{package}" removeOldOutput="yes">
+				<produces dir="${src-gen.dir}" includes="**/@{package}/*.java"/>
 				<xjc-args />
 			</xjc>
 		</sequential>
@@ -75,11 +75,12 @@
           target: Annotations              
          ================================= -->
     <target name="Clean Annotations" description="Removes all generated files.">
-        <JAXBClean package="rtt.annotation.editor.exchange"/>
+        <JAXBClean location="rtt/annotation/editor/exchange"/>
     </target>
 	
-	<target name="XJC Annotations">
-		<JAXBCreate package="rtt.annotation.editor.exchange" schema="Annotations.xsd"/>
+	<target name="XJC Annotations" description="Create all annotations with JAXB">
+		<JAXBCreate package="rtt.annotation.editor.exchange" 
+			schema="Annotations.xsd"/>
 	</target>
 
 </project>
