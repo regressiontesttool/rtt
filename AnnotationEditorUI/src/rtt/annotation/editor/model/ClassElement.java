@@ -110,9 +110,9 @@ public class ClassElement extends Annotatable {
 		return hasExtendedAnnotation;
 	}
 	
-	public boolean hasAnnotatedValueMember() {
+	public boolean hasValues() {
 		
-		if (valuablefields != null && !valuablefields.isEmpty()) {
+		if (!valuablefields.isEmpty()) {
 			for (FieldElement element : valuablefields) {
 				if (element.hasAnnotation()) {
 					return true;
@@ -120,9 +120,21 @@ public class ClassElement extends Annotatable {
 			}
 		}
 		
-		if (valuableMethods != null && !valuableMethods.isEmpty()) {
+		if (!valuableMethods.isEmpty()) {
 			for (MethodElement element : valuableMethods) {
 				if (element.hasAnnotation()) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean hasInits() {
+		if (!initializableMethods.isEmpty()) {
+			for (MethodElement methodElement : initializableMethods) {
+				if (methodElement.hasAnnotation()) {
 					return true;
 				}
 			}

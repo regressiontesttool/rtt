@@ -2,6 +2,8 @@ package rtt.annotation.editor.ui;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -30,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
@@ -43,9 +46,12 @@ import org.eclipse.ui.part.FileEditorInput;
 import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
-import rtt.annotation.editor.data.ModelWriter;
+import rtt.annotation.editor.data.AnnotationExporter;
+import rtt.annotation.editor.data.AnnotationImporter;
 import rtt.annotation.editor.data.ModelReader;
+import rtt.annotation.editor.data.ModelWriter;
 import rtt.annotation.editor.data.asm.ASMClassModelManager;
+import rtt.annotation.editor.data.jaxb.JAXBAnnotationManager;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.Annotation;
 import rtt.annotation.editor.model.Annotation.AnnotationType;
@@ -241,6 +247,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		Group annotationGroup = new Group(composite, SWT.NONE);
 		
 		FillLayout fl_annotationGroup = new FillLayout(SWT.HORIZONTAL);
+		fl_annotationGroup.marginHeight = 2;
 		fl_annotationGroup.spacing = 7;
 		fl_annotationGroup.marginWidth = 2;
 		annotationGroup.setLayout(fl_annotationGroup);
@@ -249,9 +256,43 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		
 		Button importButton = new Button(annotationGroup, SWT.NONE);
 		importButton.setText("Import");
+		importButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				AnnotationImporter importer = new JAXBAnnotationManager();
+				FileDialog dialog = new FileDialog(getSite().getShell(), SWT.OPEN);
+				dialog.setFilterExtensions(new String[] {importer.getExtension()});
+				
+				String result = dialog.open();
+				if (result != null) {
+					Path importPath = Paths.get(result);					
+					importer.importAnnotations(model, importPath);
+					
+					if (nodeViewer != null) {
+						nodeViewer.setInput(model);
+					}
+				}				
+			}
+		});
 		
 		Button exportButton = new Button(annotationGroup, SWT.NONE);
 		exportButton.setText("Export");
+		exportButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				AnnotationExporter exporter = new JAXBAnnotationManager();
+				FileDialog dialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+				dialog.setFilterExtensions(new String[] {exporter.getExtension()});
+				dialog.setOverwrite(true);
+				
+				String result = dialog.open();
+				if (result != null) {
+					Path exportPath = Paths.get(result);
+					exporter.exportAnnotations(model, exportPath);
+				}
+			}
+		});
 	}
 	
 	private void createEditorPanel(Composite composite) {

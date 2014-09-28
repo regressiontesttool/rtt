@@ -25,7 +25,7 @@ public final class NodeViewerItemProvider extends ViewerItemProvider {
 				return ItemColor.ANNOTATED_EXTEND;
 			}
 			
-			if (element.hasAnnotatedValueMember()) {
+			if (element.hasValues()) {
 				return ItemColor.ANNOTATED_MEMBER;
 			}					
 			
@@ -38,7 +38,7 @@ public final class NodeViewerItemProvider extends ViewerItemProvider {
 				return ItemFont.BOLD_FONT;
 			}
 			
-			if (element.hasExtendedAnnotation() || element.hasAnnotatedValueMember()) {
+			if (element.hasExtendedAnnotation() || element.hasValues()) {
 				return ItemFont.ITALIC_FONT;
 			}
 			

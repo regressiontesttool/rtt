@@ -6,5 +6,6 @@ import rtt.annotation.editor.model.ClassModel;
 
 public interface AnnotationExporter {
 	
+	public String getExtension();
 	public void exportAnnotations(ClassModel model, Path path);
 }
