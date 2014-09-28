@@ -43,8 +43,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import rtt.annotation.editor.AnnotationEditorPlugin;
 import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
-import rtt.annotation.editor.data.Exporter;
-import rtt.annotation.editor.data.Importer;
+import rtt.annotation.editor.data.ModelWriter;
+import rtt.annotation.editor.data.ModelReader;
 import rtt.annotation.editor.data.asm.ASMClassModelManager;
 import rtt.annotation.editor.model.Annotatable;
 import rtt.annotation.editor.model.Annotation;
@@ -160,7 +160,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		Exporter exporter = new ASMClassModelManager();
+		ModelWriter exporter = new ASMClassModelManager();
 		URI fileLocation = inputFile.getLocationURI();
 		
 		try {
@@ -196,7 +196,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 			setPartName(getPartName() + " - " + inputFile.getName());
 			
 			try {
-				Importer importer = new ASMClassModelManager();
+				ModelReader importer = new ASMClassModelManager();
 				model = importer.importModel(inputFile.getLocationURI());
 				model.addObserver(this);
 			} catch (IOException e) {

@@ -10,13 +10,13 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import rtt.annotation.editor.data.Exporter;
-import rtt.annotation.editor.data.Importer;
+import rtt.annotation.editor.data.ModelWriter;
+import rtt.annotation.editor.data.ModelReader;
 import rtt.annotation.editor.data.NameResolver;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 
-public class ASMClassModelManager implements Importer, Exporter {
+public class ASMClassModelManager implements ModelReader, ModelWriter {
 	
 	public static final NameResolver RESOLVER = NameResolver.create(".");
 	

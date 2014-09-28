@@ -5,6 +5,6 @@ import java.net.URI;
 
 import rtt.annotation.editor.model.ClassModel;
 
-public interface Importer {	
+public interface ModelReader {	
 	public ClassModel importModel(URI input) throws IOException;
 }
