@@ -1,6 +1,6 @@
 package rtt.annotation.editor.model;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import rtt.annotations.Node.Value;
@@ -32,7 +32,7 @@ public class Annotation {
 
 	private Annotation(AnnotationType type) {
 		this.type = type;
-		this.attributes = new Hashtable<>();
+		this.attributes = new HashMap<>();
 	}
 	
 	public AnnotationType getType() {
