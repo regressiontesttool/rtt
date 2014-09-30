@@ -12,6 +12,10 @@ public class InitAnnotation extends Annotation {
 	public boolean isWithParams() {
 		return withParams;
 	}
+	
+	public void setWithParams(boolean withParams) {
+		this.withParams = withParams;
+	}
 
 	@Override
 	public void setAttribute(String key, Object value) {

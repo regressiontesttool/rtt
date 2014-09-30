@@ -10,15 +10,24 @@ package rtt.annotation.editor.model.annotation;
 public abstract class Annotation {
 	
 	public enum AnnotationType {
-		NODE("Node"), VALUE("Value"), INITIALIZE("Initialize");
-		private String name;
+		NODE("Node", NodeAnnotation.class), 
+		VALUE("Value", ValueAnnotation.class), 
+		INITIALIZE("Initialize", InitAnnotation.class);
 		
-		private AnnotationType(String name) {
+		private String name;
+		private Class<? extends Annotation> type;
+		
+		private AnnotationType(String name, Class<? extends Annotation> type) {
 			this.name = name;
+			this.type = type;
 		}
 		
 		public String getName() {
 			return name;
+		}
+
+		public Class<? extends Annotation> getType() {
+			return type;
 		}
 	}
 

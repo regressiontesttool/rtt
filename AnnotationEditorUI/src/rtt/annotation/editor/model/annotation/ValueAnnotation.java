@@ -15,12 +15,24 @@ public class ValueAnnotation extends Annotation {
 				INDEX_KEY, NAME_KEY, INFORMATIONAL_KEY);
 	}
 	
+	public void setValueIndex(int index) {
+		this.index = index;
+	}
+	
 	public int getValueIndex() {
 		return index;
 	}
 	
+	public void setValueName(String name) {
+		this.name = name;
+	}
+	
 	public String getValueName() {
 		return name;
+	}
+	
+	public void setInformational(boolean informational) {
+		this.informational = informational;
 	}
 	
 	public boolean isInformational() {
