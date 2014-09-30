@@ -3,52 +3,61 @@ package rtt.annotation.editor.controller;
 import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotation.editor.model.annotation.Annotation;
 
-public abstract class AbstractAnnotationController<A extends Annotation, T extends Annotatable<A>> 
-	implements IAnnotationController<A, T>{
-
-	@Override
-	public final boolean canExecute(Mode mode, Class<? extends Annotation> annotation, T element) {
-		if (element == null) {
-			throw new IllegalArgumentException("Element was null.");
-		}
-		
-		switch (mode) {
-		case SET:
-			return canSetAnnotation(annotation, element);				
-		case UNSET:
-			return canUnsetAnnotation(annotation, element);
-		default:
-			throw new IllegalArgumentException("Unknown mode '" + mode + "'");
-		}
-	}	
-
-	protected abstract boolean canSetAnnotation(Class<? extends Annotation> annotation, T element);	
-	protected abstract boolean canUnsetAnnotation(Class<? extends Annotation> annotation, T element);
-
-	@Override
-	public final boolean execute(Mode mode, A annotation, T element) {
-		if (element == null) {
-			throw new IllegalArgumentException("Element was null.");
-		}
-		
-		switch (mode) {
-		case SET:
-			return setAnnotation(annotation, element);				
-		case UNSET:
-			return unsetAnnotation(annotation, element);
-		default:
-			throw new IllegalArgumentException("Unknown mode '" + mode + "'");
-		}
-	}
-
-	protected boolean setAnnotation(A annotation, T element) {
-		element.setAnnotation(annotation);
-		return true;
+public abstract class AbstractAnnotationController<A extends Annotation> 
+	implements IAnnotationController<A> {
+	
+	private Class<A> annotationType;
+	
+	public AbstractAnnotationController(Class<A> annotationType) {
+		this.annotationType = annotationType;
 	}
 	
-	protected boolean unsetAnnotation(A annotation, T element) {
-		element.setAnnotation(null);
-		return true;
+	@Override
+	public final boolean hasAnnotationType(Class<? extends Annotation> annotationType) {
+		return this.annotationType.equals(annotationType);
 	}
 
+	@Override
+	public final boolean canExecute(Mode mode, Annotatable<?> element) {
+		
+		if (element == null) {
+			throw new IllegalArgumentException("Element was null.");
+		}
+		
+		switch (mode) {
+		case SET:
+			return canSetAnnotation(element);				
+		case UNSET:
+			return canUnsetAnnotation(element);
+		default:
+			throw new IllegalArgumentException("Unknown mode '" + mode + "'");
+		}	
+	}	
+
+	protected boolean canSetAnnotation(Annotatable<?> element) {
+		return !element.hasAnnotation();
+	}
+	
+	protected boolean canUnsetAnnotation(Annotatable<?> element) {
+		return element.hasAnnotation();
+	}
+
+	@Override
+	public final boolean execute(Mode mode, Annotatable<A> element) {
+		
+		if (element == null) {
+			throw new IllegalArgumentException("Element was null.");
+		}
+		
+		switch (mode) {
+		case SET: 
+			element.setAnnotation(Annotation.create(annotationType));
+			return true;
+		case UNSET:
+			element.setAnnotation(null);
+			return true;
+		default:
+			throw new IllegalArgumentException("Unknown mode '" + mode + "'");
+		}
+	}
 }

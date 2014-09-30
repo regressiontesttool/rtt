@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
-import rtt.annotation.editor.controller.impl.ClassElementAnnotationController;
-import rtt.annotation.editor.controller.impl.FieldElementAnnotationController;
-import rtt.annotation.editor.controller.impl.InitiMethodElementAnnotationController;
-import rtt.annotation.editor.controller.impl.ValueMethodElementAnnotationController;
+import rtt.annotation.editor.controller.impl.InitAnnotationController;
+import rtt.annotation.editor.controller.impl.NodeAnnotationController;
+import rtt.annotation.editor.controller.impl.ValueAnnotationController;
 import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotation.editor.model.annotation.Annotation;
 
@@ -15,56 +14,44 @@ import rtt.annotation.editor.model.annotation.Annotation;
 public class ControllerRegistry {
 	
 	public static final ControllerRegistry INSTANCE = new ControllerRegistry();
-	private List<IAnnotationController<?, ?>> controllers;
+	private List<IAnnotationController<?>> controllers;
 	
 	protected ControllerRegistry() {
 		controllers = new ArrayList<>();
 		
-		controllers.add(new ClassElementAnnotationController());
-		controllers.add(new FieldElementAnnotationController());		
-		controllers.add(new ValueMethodElementAnnotationController());
-		controllers.add(new InitiMethodElementAnnotationController());
+		controllers.add(new NodeAnnotationController());
+		controllers.add(new ValueAnnotationController());		
+		controllers.add(new InitAnnotationController());
 	}
 
-	protected <A extends Annotation, T extends Annotatable<A>> 
-		IAnnotationController<A, T> findController(
-				Class<A> annotationType, Class<T> annotatableType) {
+	protected <A extends Annotation> IAnnotationController<A> findController(Class<A> annotationType) {
 		
-		for (IAnnotationController<?, ?> controller : controllers) {
-			if (controller.hasAnnotation(annotationType) 
-					&& controller.hasType(annotatableType)) {
-				
-				return (IAnnotationController<A, T>) controller;
+		for (IAnnotationController<?> controller : controllers) {
+			if (controller.hasAnnotationType(annotationType)) {				
+				return (IAnnotationController<A>) controller;
 			}
 		}
 		
 		return null;
 	}
 	
-	public static <A extends Annotation, T extends Annotatable<A>> boolean canExecute(
-			Mode mode, Class<A> annotationType, T element) {
+	public static <A extends Annotation> boolean canExecute(Mode mode, 
+			Class<? extends Annotation> annotationType, Annotatable<?> element) {
 		
-		IAnnotationController<A, T> controller = INSTANCE.findController(
-				annotationType, element.getClass());
-		
-		if (controller != null) {
-			return controller.canExecute(mode, annotationType, element);
-		}
-		
-		return false;
+		IAnnotationController<?> controller = INSTANCE.findController(annotationType);
+		return controller != null && controller.canExecute(mode, element);
 	}
 
-	public static <A extends Annotation, T extends Annotatable<A>> boolean execute(
-			Mode mode, A annotation, T element) {
+	public static <A extends Annotation> boolean execute(Mode mode, 
+			Class<A> annotationType, Annotatable<?> element) {
 		
-		IAnnotationController<A, T> controller = INSTANCE.findController(
-				annotation.getClass(), element.getClass());
+		IAnnotationController<A> controller = INSTANCE.findController(annotationType);
 		
-		if (controller != null && controller.canExecute(mode, annotation.getClass(), element)) {
-			if (controller.execute(mode, annotation, element)) {
+		if (controller != null && controller.canExecute(mode, element)) {
+			if (controller.execute(mode, (Annotatable<A>) element)) {
 				element.setChanged();
 				return true;
-			}
+			};
 		}
 		
 		return false;
