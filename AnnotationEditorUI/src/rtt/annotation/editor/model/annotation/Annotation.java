@@ -7,19 +7,36 @@ package rtt.annotation.editor.model.annotation;
  * @author Christian Oelsner <C.Oelsner@web.de>
  *
  */
-public abstract class Annotation {	
-
-	private String name;
+public abstract class Annotation {
 	
-	protected Annotation(String name) {
-		this.name = name;
+	public enum AnnotationType {
+		NODE("Node"), VALUE("Value"), INITIALIZE("Initialize");
+		private String name;
+		
+		private AnnotationType(String name) {
+			this.name = name;
+		}
+		
+		protected String getName() {
+			return name;
+		}
+	}
+
+	private AnnotationType type;
+	
+	protected Annotation(AnnotationType type) {
+		this.type = type;
 	}
 	
 	public String getName() {
-		return name;
+		return type.getName();
 	}
 	
-	public static <T extends Annotation> T create(Class<T> annotationType) {
+	public AnnotationType getType() {
+		return type;
+	}
+	
+	public static <T extends Annotation> T create(AnnotationType type) {
 //		Annotation annotation = new Annotation(type);
 //		
 //		switch (type) {
