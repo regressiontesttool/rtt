@@ -2,6 +2,7 @@ package rtt.annotation.editor.ui.viewer.util;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
@@ -38,19 +39,9 @@ public class EditableViewerItem extends ViewerItem {
 		
 		return String.valueOf(value);
 	}
-
-	public void setValue(Object changedValue) {
-		String newValue = String.valueOf(changedValue);
-		
-		try {
-			if (value instanceof Boolean) {
-				value = Boolean.valueOf(newValue);
-			} else if (value instanceof Integer) {
-				value = Integer.valueOf(newValue);
-			} else {
-				value = newValue;
-			}
-		} catch (Exception e) {}
+	
+	public void setValue(Object value) {
+		this.value = value;
 	}
 
 	public CellEditor getCellEditor(Composite parent) {
@@ -58,7 +49,24 @@ public class EditableViewerItem extends ViewerItem {
 			return new CheckboxCellEditor(parent);
 		}
 		
-		return new TextCellEditor(parent);
+		TextCellEditor editor = new TextCellEditor(parent);
+		
+		if (value instanceof Integer) {
+			editor.setValidator(new ICellEditorValidator() {
+				
+				@Override
+				public String isValid(Object value) {
+					try {
+			    		Integer.parseInt((String) value);
+			    		return null;
+			    	} catch(NumberFormatException e) {
+			    		return "Not a valid integer";
+			    	}
+				}
+			});
+		}
+		
+		return editor;
 	}
 
 }

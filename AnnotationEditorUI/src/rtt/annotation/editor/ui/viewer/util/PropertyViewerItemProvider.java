@@ -72,7 +72,7 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 						annotation.getAttributes().put(
 								getDescription(), getValue());
 						annotatable.setChanged();
-					}					
+					}
 				}
 			};
 			

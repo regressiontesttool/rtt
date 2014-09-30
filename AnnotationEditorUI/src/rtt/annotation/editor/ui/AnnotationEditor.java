@@ -260,7 +260,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AnnotationImporter importer = new JAXBAnnotationManager();
+				AnnotationImporter importer = JAXBAnnotationManager.getInstance();
 				FileDialog dialog = new FileDialog(getSite().getShell(), SWT.OPEN);
 				dialog.setFilterExtensions(new String[] {importer.getExtension()});
 				
@@ -281,7 +281,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		exportButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AnnotationExporter exporter = new JAXBAnnotationManager();
+				AnnotationExporter exporter = JAXBAnnotationManager.getInstance();
 				FileDialog dialog = new FileDialog(getSite().getShell(), SWT.SAVE);
 				dialog.setFilterExtensions(new String[] {exporter.getExtension()});
 				dialog.setOverwrite(true);
