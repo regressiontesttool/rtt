@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
@@ -14,7 +15,7 @@ import rtt.annotations.Node.Value;
  *
  */
 @Node
-public class MethodElement extends Annotatable {
+public class MethodElement<T extends Annotation> extends Annotatable<T> {
 	
 	@Value private String type = null;
 	@Value private List<String> parameters;

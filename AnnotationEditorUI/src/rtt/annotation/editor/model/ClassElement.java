@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotation.editor.model.annotation.Annotatable;
-import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
+import rtt.annotation.editor.model.annotation.NodeAnnotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
@@ -15,7 +17,7 @@ import rtt.annotations.Node.Value;
  *
  */
 @Node
-public class ClassElement extends Annotatable {
+public class ClassElement extends Annotatable<NodeAnnotation> {
 	
 	public enum ClassType {
 		INTERFACE("Interface"), 
@@ -40,9 +42,9 @@ public class ClassElement extends Annotatable {
 	@Value private ClassElementReference superClass = null;
 	@Value private List<ClassElementReference> interfaces;
 	
-	@Value private List<FieldElement> valuablefields;
-	@Value private List<MethodElement> valuableMethods;
-	@Value private List<MethodElement> initializableMethods;
+	@Value private List<FieldElement<ValueAnnotation>> valuablefields;
+	@Value private List<MethodElement<ValueAnnotation>> valuableMethods;
+	@Value private List<MethodElement<InitAnnotation>> initializableMethods;
 	
 	protected ClassElement(ClassModel parent) {
 		super(parent);
@@ -115,16 +117,16 @@ public class ClassElement extends Annotatable {
 	public boolean hasValues() {
 		
 		if (!valuablefields.isEmpty()) {
-			for (FieldElement element : valuablefields) {
-				if (element.hasAnnotation(AnnotationType.VALUE)) {
+			for (FieldElement<ValueAnnotation> element : valuablefields) {
+				if (element.hasAnnotation()) {
 					return true;
 				}
 			}
 		}
 		
 		if (!valuableMethods.isEmpty()) {
-			for (MethodElement element : valuableMethods) {
-				if (element.hasAnnotation(AnnotationType.VALUE)) {
+			for (MethodElement<ValueAnnotation> element : valuableMethods) {
+				if (element.hasAnnotation()) {
 					return true;
 				}
 			}
@@ -135,8 +137,8 @@ public class ClassElement extends Annotatable {
 	
 	public boolean hasInits() {
 		if (!initializableMethods.isEmpty()) {
-			for (MethodElement methodElement : initializableMethods) {
-				if (methodElement.hasAnnotation(AnnotationType.INITIALIZE)) {
+			for (MethodElement<InitAnnotation> methodElement : initializableMethods) {
+				if (methodElement.hasAnnotation()) {
 					return true;
 				}
 			}
@@ -145,19 +147,19 @@ public class ClassElement extends Annotatable {
 		return false;
 	}
 	
-	public List<FieldElement> getValuableFields() {
+	public List<FieldElement<ValueAnnotation>> getValuableFields() {
 		return valuablefields;
 	}
 	
-	public void addValuableField(FieldElement field) {
+	public void addValuableField(FieldElement<ValueAnnotation> field) {
 		if (!valuablefields.contains(field)) {
 			valuablefields.add(field);
 			field.setParent(this);
 		}
 	}
 	
-	public FieldElement getValuableField(String name, String className) {
-		for (FieldElement field : valuablefields) {
+	public FieldElement<ValueAnnotation> getValuableField(String name, String className) {
+		for (FieldElement<ValueAnnotation> field : valuablefields) {
 			if (name.equals(field.getName()) 
 					&& className.equals(field.getType())) {
 				return field;
@@ -167,30 +169,30 @@ public class ClassElement extends Annotatable {
 		return null;
 	}
 
-	public List<MethodElement> getValuableMethods() {
+	public List<MethodElement<ValueAnnotation>> getValuableMethods() {
 		return valuableMethods;
 	}
 	
-	public List<MethodElement> getInitializableMethods() {
+	public List<MethodElement<InitAnnotation>> getInitializableMethods() {
 		return initializableMethods;
 	}
 	
-	public void addValuableMethod(MethodElement method) {
+	public void addValuableMethod(MethodElement<ValueAnnotation> method) {
 		if (!valuableMethods.contains(method)) {
 			valuableMethods.add(method);
 			method.setParent(this);
 		}
 	}
 	
-	public void addInitializableMethod(MethodElement method) {
+	public void addInitializableMethod(MethodElement<InitAnnotation> method) {
 		if (!initializableMethods.contains(method)) {
 			initializableMethods.add(method);
 			method.setParent(this);
 		}
 	}
 	
-	public MethodElement getValuableMethod(String name, String className) {
-		for (MethodElement method : valuableMethods) {
+	public MethodElement<ValueAnnotation> getValuableMethod(String name, String className) {
+		for (MethodElement<ValueAnnotation> method : valuableMethods) {
 			if (name.equals(method.getName()) 
 					&& className.equals(method.getType())) {
 				
@@ -201,8 +203,8 @@ public class ClassElement extends Annotatable {
 		return null;
 	}
 	
-	public MethodElement getInitializableMethod(String name) {
-		for (MethodElement method : initializableMethods) {
+	public MethodElement<InitAnnotation> getInitializableMethod(String name) {
+		for (MethodElement<InitAnnotation> method : initializableMethods) {
 			if (name.equals(method.getName())) {				
 				return method;
 			}

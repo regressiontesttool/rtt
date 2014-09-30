@@ -1,6 +1,7 @@
 package rtt.annotation.editor.model;
 
 import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
@@ -11,7 +12,7 @@ import rtt.annotations.Node.Value;
  *
  */
 @Node
-public class FieldElement extends Annotatable {	
+public class FieldElement<T extends Annotation> extends Annotatable<T> {	
 
 	@Value private String type;
 
