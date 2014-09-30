@@ -54,7 +54,10 @@ import rtt.annotation.editor.data.asm.ASMClassModelManager;
 import rtt.annotation.editor.data.jaxb.JAXBAnnotationManager;
 import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
+import rtt.annotation.editor.model.annotation.NodeAnnotation;
 import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
@@ -77,26 +80,22 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	private final class NodeFilter extends ViewerFilter {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			Annotation annotation = null;
 			if (element instanceof Annotatable) {
-				Annotation annotation = ((Annotatable) element).getAnnotation();
-				
-				return annotation != null && 
-						annotation.getType().equals(AnnotationType.NODE);
-			}
-			
-			if (element instanceof ModelElementViewerItem<?>) {
+				annotation = ((Annotatable<?>) element).getAnnotation();
+			} else if (element instanceof ModelElementViewerItem<?>) {
 				ModelElementViewerItem<?> item = (ModelElementViewerItem<?>) element;
 				if (item.getModelElement() instanceof Annotatable) {
-					Annotatable annotatable = (Annotatable) item.getModelElement();
-					return annotatable.hasAnnotation();
+					annotation = ((Annotatable<?>) element).getAnnotation();
 				}
 			}
 			
-			return true;
+			return annotation instanceof NodeAnnotation;
 		}
 	}
 
-	private abstract class SetAnnotationSelectionAdapter extends SelectionAdapter {
+	private abstract class SetAnnotationSelectionAdapter 
+		extends SelectionAdapter {
 		
 		private Mode mode;
 		
@@ -110,10 +109,9 @@ public class AnnotationEditor extends EditorPart implements Observer {
 			ModelElement modelElement = ViewerSelectionUtil.
 					getModelElement(viewer.getSelection());
 			
-			if (modelElement instanceof Annotatable) {
+			if (modelElement instanceof Annotatable<?>) {
 				ControllerRegistry.execute(mode, 
-						Annotation.create(getAnnotation()), 
-						(Annotatable) modelElement);
+						getAnnotation(), (Annotatable<?>) modelElement);
 			}
 			
 			nodeViewer.refresh();
@@ -124,7 +122,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		}
 
 		public abstract Viewer getViewer();
-		public abstract AnnotationType getAnnotation();
+		public abstract Class<? extends Annotation> getAnnotation();
 	}
 
 	private static final int MIN_COLUMN_WIDTH = 200;
@@ -142,7 +140,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	private ViewerFilter nodeFilter;	
 	
 	private ClassModel model;
-	private AnnotationType selectedAnnotation = AnnotationType.VALUE;
+	private Class<? extends Annotation> selectedAnnotation = ValueAnnotation.class;
 	
 	private Button valueAnnotationButton;
 	private Button initializeAnnotationButton;
@@ -160,7 +158,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		nodeFilter = new NodeFilter();
 	}
 	
-	public AnnotationType getSelectedAnnotation() {
+	public Class<? extends Annotation> getSelectedAnnotation() {
 		return selectedAnnotation;
 	}
 
@@ -357,11 +355,11 @@ public class AnnotationEditor extends EditorPart implements Observer {
 				removeNodeButton.setEnabled(false);
 				
 				if (element instanceof Annotatable) {
-					Annotatable annotatable = (Annotatable) element;
+					Annotatable<?> annotatable = (Annotatable<?>) element;
 					setNodeButton.setEnabled(ControllerRegistry.canExecute(
-							Mode.SET, AnnotationType.NODE, annotatable));
+							Mode.SET, NodeAnnotation.class, annotatable));
 					removeNodeButton.setEnabled(ControllerRegistry.canExecute(
-							Mode.UNSET, AnnotationType.NODE, annotatable));					
+							Mode.UNSET, NodeAnnotation.class, annotatable));					
 				}
 				
 				propertyViewer.getControl().setEnabled(element != null);
@@ -411,7 +409,9 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		setNodeButton.setText(AnnotationType.NODE.getName());
 		setNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.SET) {
 			@Override public Viewer getViewer() { return nodeViewer; }
-			@Override public AnnotationType getAnnotation() { return AnnotationType.NODE; }		
+			@Override public Class<? extends Annotation> getAnnotation() { 
+				return NodeAnnotation.class; 
+			}		
 		});
 		
 		removeNodeButton = new Button(composite, SWT.NONE);
@@ -419,7 +419,9 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		removeNodeButton.setText("Remove");
 		removeNodeButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.UNSET) {
 			@Override public Viewer getViewer() { return nodeViewer; }
-			@Override public AnnotationType getAnnotation() { return AnnotationType.NODE; }
+			@Override public Class<? extends Annotation> getAnnotation() { 
+				return NodeAnnotation.class; 
+			}
 		});
 	}
 	
@@ -461,7 +463,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		valueAnnotationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedAnnotation = AnnotationType.VALUE;
+				selectedAnnotation = ValueAnnotation.class;
 				memberViewer.setInput(memberViewer.getInput());
 				memberViewer.expandToLevel(SECOND_LEVEL);
 				
@@ -476,7 +478,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		initializeAnnotationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectedAnnotation = AnnotationType.INITIALIZE;
+				selectedAnnotation = InitAnnotation.class;
 				memberViewer.setInput(memberViewer.getInput());
 				memberViewer.expandToLevel(SECOND_LEVEL);
 				
@@ -506,7 +508,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 				propertyViewer.expandToLevel(TreeViewer.ALL_LEVELS);
 				
 				if (selectedObject instanceof Annotatable) {
-					Annotatable annotatable = (Annotatable) selectedObject;
+					Annotatable<?> annotatable = (Annotatable<?>) selectedObject;
 					setAnnotationButton.setEnabled(ControllerRegistry.canExecute(
 							Mode.SET, selectedAnnotation, annotatable));
 					removeAnnotationButton.setEnabled(ControllerRegistry.canExecute(
@@ -542,7 +544,9 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		setAnnotationButton.setText(selectedAnnotation.getName());
 		setAnnotationButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.SET) {
 			@Override public Viewer getViewer() { return memberViewer; }
-			@Override public AnnotationType getAnnotation() { return selectedAnnotation; }
+			@Override public Class<? extends Annotation> getAnnotation() { 
+				return selectedAnnotation; 
+			}
 		});
 		
 		removeAnnotationButton = new Button(composite, SWT.NONE);
@@ -550,7 +554,9 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		removeAnnotationButton.setText("Remove");
 		removeAnnotationButton.addSelectionListener(new SetAnnotationSelectionAdapter(Mode.UNSET) {
 			@Override public Viewer getViewer() { return memberViewer; }
-			@Override public AnnotationType getAnnotation() { return selectedAnnotation; }
+			@Override public Class<? extends Annotation> getAnnotation() { 
+				return selectedAnnotation; 
+			}
 		});
 	}
 	

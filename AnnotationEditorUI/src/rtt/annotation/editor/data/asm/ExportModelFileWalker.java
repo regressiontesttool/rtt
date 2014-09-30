@@ -7,7 +7,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -24,6 +23,7 @@ import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 final class ExportModelFileWalker extends AbstractFileWalker {
 
@@ -83,13 +83,13 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		}
 	}
 	
-	private void addAnnotation(Annotatable element, List<AnnotationNode> annotations) {
+	private void addAnnotation(Annotatable<?> element, List<AnnotationNode> annotations) {
 		Annotation annotation = element.getAnnotation();
 		if (annotation != null) {
 			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getType());
 			AnnotationNode annotationNode = new AnnotationNode(descriptor);
-			for (Entry<String, Object> attribute : annotation.getAttributes().entrySet()) {
-				annotationNode.visit(attribute.getKey(), attribute.getValue());
+			for (String key : annotation.getKeys()) {
+				annotationNode.visit(key, annotation.getAttribute(key));
 			}
 			
 			annotations.add(annotationNode);
@@ -98,7 +98,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	
 	@SuppressWarnings("unchecked")
 	private void processFields(ClassNode node, ClassElement element) {
-		for (FieldElement fieldElement : element.getValuableFields()) {
+		for (FieldElement<ValueAnnotation> fieldElement : element.getValuableFields()) {
 			if (fieldElement.hasChanged()) {
 				FieldNode fieldNode = findField(node.fields, fieldElement);
 				
@@ -117,12 +117,12 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		}
 	}
 	
-	private FieldNode findField(List<FieldNode> fields, FieldElement fieldElement) {
+	private FieldNode findField(List<FieldNode> fields, FieldElement<?> fieldElement) {
 		String className = null;
 		for (FieldNode fieldNode : fields) {
 			className = Type.getType(fieldNode.desc).getClassName();
 			if (fieldElement.getName().equals(fieldNode.name) && 
-					fieldElement.getType().equals(className)) {				
+					fieldElement.getType().equals(className)) {
 				return fieldNode;
 			}
 		}
@@ -132,7 +132,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 
 	@SuppressWarnings("unchecked")
 	private void processMethods(ClassNode node, ClassElement element) {
-		for(MethodElement methodElement: element.getValuableMethods()) {
+		for(MethodElement<?> methodElement: element.getValuableMethods()) {
 			if (methodElement.hasChanged()) {
 				MethodNode methodNode = findMethod(node.methods, methodElement);
 				
@@ -151,7 +151,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		}
 	}
 	
-	private MethodNode findMethod(List<MethodNode> methods, MethodElement method) {
+	private MethodNode findMethod(List<MethodNode> methods, MethodElement<?> method) {
 		String returningClass = null;
 		for (MethodNode methodNode : methods) {
 			returningClass = Type.getReturnType(methodNode.desc).getClassName();
@@ -166,7 +166,7 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		return null;
 	}
 
-	private boolean equalParameters(MethodElement method, MethodNode methodNode) {
+	private boolean equalParameters(MethodElement<?> method, MethodNode methodNode) {
 		Type[] parameters = Type.getArgumentTypes(methodNode.desc);
 		if (method.getParameters().size() != parameters.length) {
 			return false;

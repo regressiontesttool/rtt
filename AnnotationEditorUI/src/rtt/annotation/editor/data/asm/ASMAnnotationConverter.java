@@ -3,6 +3,9 @@ package rtt.annotation.editor.data.asm;
 import org.objectweb.asm.Type;
 
 import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
+import rtt.annotation.editor.model.annotation.NodeAnnotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
@@ -10,14 +13,14 @@ import rtt.annotations.Node.Value;
 
 public enum ASMAnnotationConverter {
 	
-	NODE (AnnotationType.NODE, Type.getDescriptor(Node.class)),	
-	VALUE (AnnotationType.VALUE, Type.getDescriptor(Value.class)),
-	INITIALIZE (AnnotationType.INITIALIZE, Type.getDescriptor(Initialize.class));
+	NODE (NodeAnnotation.class, Type.getDescriptor(Node.class)),	
+	VALUE (ValueAnnotation.class, Type.getDescriptor(Value.class)),
+	INITIALIZE (InitAnnotation.class, Type.getDescriptor(Initialize.class));
 	
 	private String descriptor;
-	private AnnotationType annotation;
+	private Class<? extends Annotation> annotation;
 
-	private ASMAnnotationConverter(AnnotationType annotationType, String description) {
+	private ASMAnnotationConverter(Class<? extends Annotation> annotationType, String description) {
 		this.descriptor = description;
 		this.annotation = annotationType;
 	}
@@ -26,7 +29,7 @@ public enum ASMAnnotationConverter {
 		return descriptor;
 	}
 	
-	public AnnotationType getAnnotation() {
+	public Class<? extends Annotation> getAnnotation() {
 		return annotation;
 	}
 	
@@ -40,10 +43,11 @@ public enum ASMAnnotationConverter {
 		return null;
 	}
 	
-	public static Annotation getAnnotation(String descriptor) {
+	@SuppressWarnings("unchecked")
+	public static <A extends Annotation> A getAnnotation(String descriptor) {
 		for (ASMAnnotationConverter annotationDescriptor : values()) {
 			if (annotationDescriptor.descriptor.equals(descriptor)) {
-				return Annotation.create(annotationDescriptor.annotation);
+				return (A) Annotation.create(annotationDescriptor.annotation);
 			}
 		}
 		

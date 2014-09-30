@@ -18,13 +18,15 @@ import org.objectweb.asm.tree.MethodNode;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
-import rtt.annotation.editor.model.annotation.Annotatable;
-import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 final class ImportModelFileWalker extends AbstractFileWalker {
 	
@@ -114,12 +116,12 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		return checkAccess(access, Opcodes.ACC_SYNTHETIC);
 	}
 	
-	private void setAnnotation(List<AnnotationNode> annotations, 
-			Annotatable annotatable) {
+	private <A extends Annotation> void setAnnotation(
+			List<AnnotationNode> annotations, Annotatable<A> annotatable) {
 		
 		if (annotations != null && !annotations.isEmpty()) {
 			for (AnnotationNode annotationNode : annotations) {
-				Annotation annotation = ASMAnnotationConverter.
+				A annotation = ASMAnnotationConverter.
 						getAnnotation(annotationNode.desc);
 				
 				if (annotation != null) {
@@ -134,8 +136,8 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 	private void addFields(List<FieldNode> fields, ClassElement classElement) {
 		for (FieldNode fieldNode : fields) {
 			if (!isSynthetic(fieldNode.access)) {
-				FieldElement fieldElement = factory.createFieldElement(
-						classElement, fieldNode.name);
+				FieldElement<ValueAnnotation> fieldElement = 
+						factory.createFieldElement(classElement, fieldNode.name);
 				
 				fieldElement.setType(Type.getType(fieldNode.desc).getClassName());
 				
@@ -151,21 +153,30 @@ final class ImportModelFileWalker extends AbstractFileWalker {
 		for (MethodNode methodNode : methods) {			
 			if (!isSynthetic(methodNode.access)) {
 				Type methodType = Type.getType(methodNode.desc);
-				MethodElement method = factory.createMethodElement(
-						classElement, methodNode.name);
 				
-				method.setType(methodType.getReturnType().getClassName());	
-				setAnnotation(methodNode.visibleAnnotations, method);
+				
 				
 				if (isValuableMethod(methodType)) {
-					classElement.addValuableMethod(method);
+					MethodElement<ValueAnnotation> methodElement = 
+							factory.createMethodElement(classElement, methodNode.name);
+					
+					methodElement.setType(methodType.getReturnType().getClassName());	
+					setAnnotation(methodNode.visibleAnnotations, methodElement);
+					
+					classElement.addValuableMethod(methodElement);
 				} else if (isInitializableMethod(methodType)) {
+					MethodElement<InitAnnotation> methodElement =
+							factory.createMethodElement(classElement, methodNode.name);
+					
+					methodElement.setType(methodType.getReturnType().getClassName());	
+					setAnnotation(methodNode.visibleAnnotations, methodElement);
+					
 					Type[] arguments = Type.getArgumentTypes(methodNode.desc);
 					for (Type argument : arguments) {
-						method.getParameters().add(argument.getClassName());
-					}				
+						methodElement.getParameters().add(argument.getClassName());
+					}
 					
-					classElement.addInitializableMethod(method);
+					classElement.addInitializableMethod(methodElement);
 				}
 			}			
 		}
