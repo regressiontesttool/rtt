@@ -17,7 +17,7 @@ public abstract class Annotation {
 			this.name = name;
 		}
 		
-		protected String getName() {
+		public String getName() {
 			return name;
 		}
 	}
