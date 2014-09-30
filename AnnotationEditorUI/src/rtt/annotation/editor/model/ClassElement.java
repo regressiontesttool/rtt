@@ -3,7 +3,8 @@ package rtt.annotation.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 

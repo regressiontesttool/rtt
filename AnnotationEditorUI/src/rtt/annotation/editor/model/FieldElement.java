@@ -1,5 +1,6 @@
 package rtt.annotation.editor.model;
 
+import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 

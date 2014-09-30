@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.annotation.Annotation;
 
 final class ImportFieldElementVisitor extends FieldVisitor {
 	private final FieldElement field;

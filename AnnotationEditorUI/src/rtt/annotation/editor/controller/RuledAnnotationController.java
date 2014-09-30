@@ -1,8 +1,8 @@
 package rtt.annotation.editor.controller;
 
 import rtt.annotation.editor.controller.rules.IAnnotationRule;
-import rtt.annotation.editor.model.Annotatable;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 
 public abstract class RuledAnnotationController<T extends Annotatable>
 	extends AbstractAnnotationController<T> {

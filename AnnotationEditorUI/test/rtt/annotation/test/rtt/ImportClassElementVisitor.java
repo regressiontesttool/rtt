@@ -13,11 +13,11 @@ import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.data.asm.ASMClassModelManager;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassElement.ClassType;
+import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.ClassElementReference;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.Annotation;
 
 public final class ImportClassElementVisitor extends ClassVisitor {
 	

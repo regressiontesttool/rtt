@@ -22,12 +22,12 @@ import rtt.annotation.editor.data.jaxb.model.AnnotationModel;
 import rtt.annotation.editor.data.jaxb.model.Init;
 import rtt.annotation.editor.data.jaxb.model.ObjectFactory;
 import rtt.annotation.editor.data.jaxb.model.Value;
-import rtt.annotation.editor.model.Annotatable;
-import rtt.annotation.editor.model.Annotation;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 

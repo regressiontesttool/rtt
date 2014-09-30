@@ -12,8 +12,8 @@ import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.Annotation;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 
 public class MethodElementValueAnnotationTests {
 

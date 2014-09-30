@@ -2,8 +2,8 @@ package rtt.annotation.editor.data.asm;
 
 import org.objectweb.asm.Type;
 
-import rtt.annotation.editor.model.Annotation;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.Node.Value;

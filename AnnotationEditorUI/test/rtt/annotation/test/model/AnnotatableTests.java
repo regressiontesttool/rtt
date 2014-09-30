@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotation.editor.model.Annotatable;
-import rtt.annotation.editor.model.Annotation;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 
 public class AnnotatableTests {
 	

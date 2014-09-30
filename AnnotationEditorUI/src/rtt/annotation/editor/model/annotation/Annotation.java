@@ -1,4 +1,4 @@
-package rtt.annotation.editor.model;
+package rtt.annotation.editor.model.annotation;
 
 import java.util.HashMap;
 import java.util.Map;

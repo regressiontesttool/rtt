@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes;
 
 import rtt.annotation.editor.data.asm.ASMAnnotationConverter;
 import rtt.annotation.editor.model.MethodElement;
-import rtt.annotation.editor.model.Annotation;
+import rtt.annotation.editor.model.annotation.Annotation;
 
 final class ImportMethodElementVisitor extends MethodVisitor {
 	private final MethodElement method;

@@ -2,6 +2,7 @@ package rtt.annotation.editor.model;
 
 import java.util.Observable;
 
+import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotations.Node.Value;
 
 /**

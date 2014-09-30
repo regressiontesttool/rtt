@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import rtt.annotation.editor.controller.RuledAnnotationController;
 import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
-import rtt.annotation.editor.model.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotation.editor.model.MethodElement;
 
 public class MethodElementAnnotationController extends RuledAnnotationController<MethodElement> {
