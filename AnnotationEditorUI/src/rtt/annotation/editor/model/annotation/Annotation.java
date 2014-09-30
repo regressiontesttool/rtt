@@ -23,9 +23,11 @@ public abstract class Annotation {
 	}
 
 	private AnnotationType type;
+	private String[] keys;
 	
-	protected Annotation(AnnotationType type) {
+	protected Annotation(AnnotationType type, String... keys) {
 		this.type = type;
+		this.keys = keys;
 	}
 	
 	public String getName() {
@@ -36,12 +38,23 @@ public abstract class Annotation {
 		return type;
 	}
 	
+	public String[] getKeys() {
+		return keys;
+	}
+	
+	public abstract void setAttribute(String key, Object value);
+	public abstract Object getAttribute(String key);
+	
 	@SuppressWarnings("unchecked")
-	public static <T extends Annotation> T create(Class<T> type) {
-		T annotation = null;
+	public static <A extends Annotation> A create(Class<A> type) {
+		A annotation = null;
 		
 		if (NodeAnnotation.class.equals(type)) {
-			annotation = (T) new NodeAnnotation();
+			annotation = (A) new NodeAnnotation();
+		} else if (ValueAnnotation.class.equals(type)) {
+			annotation = (A) new ValueAnnotation();
+		} else if (InitAnnotation.class.equals(type)) {
+			annotation = (A) new InitAnnotation();
 		}
 		
 		return annotation;
