@@ -1,6 +1,5 @@
 package rtt.annotation.editor.model;
 
-import rtt.annotation.editor.model.Annotation.AnnotationType;
 import rtt.annotations.Node.Value;
 
 /**
@@ -10,20 +9,20 @@ import rtt.annotations.Node.Value;
  * @author Christian Oelsner <C.Oelsner@web.de>
  * 
  */
-public abstract class Annotatable extends ModelElement {
+public abstract class Annotatable<T extends Annotation> extends ModelElement {
 	
 	protected Annotatable(ModelElement parent) {
 		super(parent);
 	}
 
-	@Value private Annotation annotation;
+	@Value private T annotation;
 	
 	/**
 	 * Sets an {@link Annotation} to the current element.
 	 * If {@code null} was given, the current annotation will be erased.
 	 * @param annotation a new {@link Annotation} or {@code null}
 	 */
-	public final void setAnnotation(Annotation annotation) {		
+	public final void setAnnotation(T annotation) {		
 		this.annotation = annotation;
 	}
 	
@@ -33,7 +32,7 @@ public abstract class Annotatable extends ModelElement {
 	 * 
 	 * @return an {@link Annotation} or {@code null}
 	 */
-	public final Annotation getAnnotation() {
+	public final T getAnnotation() {
 		return annotation;
 	}
 	
@@ -43,9 +42,5 @@ public abstract class Annotatable extends ModelElement {
 	 */
 	public final boolean hasAnnotation() {
 		return annotation != null;
-	}
-	
-	public final boolean hasAnnotation(AnnotationType annotationType) {
-		return hasAnnotation() && annotation.getType().equals(annotationType);
 	}
 }
