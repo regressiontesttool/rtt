@@ -1,5 +1,7 @@
 package rtt.annotation.editor.model;
 
+import rtt.annotation.editor.model.annotation.Annotation;
+
 /**
  * A factory for new {@link ModelElement}s.
  * 
@@ -28,15 +30,15 @@ public class ClassModelFactory {
 		return element;
 	}
 	
-	public FieldElement createFieldElement(ClassElement parent, String name) {
-		FieldElement element = new FieldElement(parent);		
+	public <T extends Annotation> FieldElement<T> createFieldElement(ClassElement parent, String name) {
+		FieldElement<T> element = new FieldElement<>(parent);		
 		element.setName(name);
 		
 		return element;
 	}
 	
-	public MethodElement createMethodElement(ClassElement parent, String name) {
-		MethodElement element = new MethodElement(parent);
+	public <T extends Annotation> MethodElement<T> createMethodElement(ClassElement parent, String name) {
+		MethodElement<T> element = new MethodElement<>(parent);
 		element.setName(name);
 		
 		return element;
