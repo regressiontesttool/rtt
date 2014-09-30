@@ -1,47 +1,52 @@
 package rtt.annotation.editor.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.controller.impl.ClassElementAnnotationController;
 import rtt.annotation.editor.controller.impl.FieldElementAnnotationController;
-import rtt.annotation.editor.controller.impl.MethodElementAnnotationController;
-import rtt.annotation.editor.model.ClassElement;
-import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.controller.impl.InitiMethodElementAnnotationController;
+import rtt.annotation.editor.controller.impl.ValueMethodElementAnnotationController;
 import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotation.editor.model.annotation.Annotation;
-import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 
+@SuppressWarnings("unchecked")
 public class ControllerRegistry {
 	
 	public static final ControllerRegistry INSTANCE = new ControllerRegistry();
-	private Map<Class<? extends Annotatable>, IAnnotationController<?>> controller;
+	private List<IAnnotationController<?, ?>> controllers;
 	
 	protected ControllerRegistry() {
-		controller = new HashMap<Class<? extends Annotatable>, IAnnotationController<?>>();
+		controllers = new ArrayList<>();
 		
-		controller.put(ClassElement.class, new ClassElementAnnotationController());
-		controller.put(FieldElement.class, new FieldElementAnnotationController());		
-		controller.put(MethodElement.class, new MethodElementAnnotationController());
+		controllers.add(new ClassElementAnnotationController());
+		controllers.add(new FieldElementAnnotationController());		
+		controllers.add(new ValueMethodElementAnnotationController());
+		controllers.add(new InitiMethodElementAnnotationController());
 	}
 
-	@SuppressWarnings("unchecked")
-	protected <T extends Annotatable> IAnnotationController<T> findController(
-			T annotatableType) {
+	protected <A extends Annotation, T extends Annotatable<A>> 
+		IAnnotationController<A, T> findController(
+				Class<A> annotationType, Class<T> annotatableType) {
 		
-		if (controller.containsKey(annotatableType.getClass())) {
-			return (IAnnotationController<T>) controller.get(annotatableType.getClass());
+		for (IAnnotationController<?, ?> controller : controllers) {
+			if (controller.hasAnnotation(annotationType) 
+					&& controller.hasType(annotatableType)) {
+				
+				return (IAnnotationController<A, T>) controller;
+			}
 		}
 		
 		return null;
 	}
 	
-	public static <T extends Annotatable> boolean canExecute(
-			Mode mode, AnnotationType annotationType, T element) {
+	public static <A extends Annotation, T extends Annotatable<A>> boolean canExecute(
+			Mode mode, Class<A> annotationType, T element) {
 		
-		IAnnotationController<T> controller = INSTANCE.findController(element);
+		IAnnotationController<A, T> controller = INSTANCE.findController(
+				annotationType, element.getClass());
+		
 		if (controller != null) {
 			return controller.canExecute(mode, annotationType, element);
 		}
@@ -49,11 +54,13 @@ public class ControllerRegistry {
 		return false;
 	}
 
-	public static <T extends Annotatable> boolean execute(
-			Mode mode, Annotation annotation, T element) {
+	public static <A extends Annotation, T extends Annotatable<A>> boolean execute(
+			Mode mode, A annotation, T element) {
 		
-		IAnnotationController<T> controller = INSTANCE.findController(element);
-		if (controller != null && controller.canExecute(mode, annotation.getType(), element)) {
+		IAnnotationController<A, T> controller = INSTANCE.findController(
+				annotation.getClass(), element.getClass());
+		
+		if (controller != null && controller.canExecute(mode, annotation.getClass(), element)) {
 			if (controller.execute(mode, annotation, element)) {
 				element.setChanged();
 				return true;

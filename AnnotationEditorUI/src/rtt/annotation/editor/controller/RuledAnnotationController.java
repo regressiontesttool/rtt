@@ -2,10 +2,10 @@ package rtt.annotation.editor.controller;
 
 import rtt.annotation.editor.controller.rules.IAnnotationRule;
 import rtt.annotation.editor.model.annotation.Annotatable;
-import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.Annotation;
 
-public abstract class RuledAnnotationController<T extends Annotatable>
-	extends AbstractAnnotationController<T> {
+public abstract class RuledAnnotationController<A extends Annotation, T extends Annotatable<A>>
+	extends AbstractAnnotationController<A, T> {
 	
 	IAnnotationRule<T> rule;
 	
@@ -14,12 +14,14 @@ public abstract class RuledAnnotationController<T extends Annotatable>
 	}
 	
 	@Override
-	protected final boolean canSetAnnotation(AnnotationType type, T element) {
-		return rule.canSet(type, element);
+	protected final boolean canSetAnnotation(
+			Class<? extends Annotation> annotation, T element) {
+		return rule.canSet(annotation, element);
 	}
 	
 	@Override
-	protected final boolean canUnsetAnnotation(AnnotationType type, T element) {
-		return rule.canUnset(type, element);
-	}	
+	protected final boolean canUnsetAnnotation(
+			Class<? extends Annotation> annotation, T element) {
+		return rule.canUnset(annotation, element);
+	}
 }

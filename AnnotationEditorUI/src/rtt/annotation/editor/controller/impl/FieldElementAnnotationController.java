@@ -2,26 +2,25 @@ package rtt.annotation.editor.controller.impl;
 
 import rtt.annotation.editor.controller.RuledAnnotationController;
 import rtt.annotation.editor.controller.rules.AbstractAnnotationRule;
-import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotation.editor.model.FieldElement;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
-public class FieldElementAnnotationController extends RuledAnnotationController<FieldElement> {
-	
-	private static class FieldElementRule extends AbstractAnnotationRule<FieldElement> {
-
-		@Override
-		protected boolean checkSet(AnnotationType type, FieldElement element) {
-			return type == AnnotationType.VALUE && !element.hasAnnotation(AnnotationType.VALUE);
-		}
-
-		@Override
-		protected boolean checkUnset(AnnotationType type, FieldElement element) {
-			return element.hasAnnotation(type);
-		}
-		
-	}
+public class FieldElementAnnotationController 
+	extends RuledAnnotationController<ValueAnnotation, FieldElement<ValueAnnotation>> {
 	
 	public FieldElementAnnotationController() {
-		super(new FieldElementRule());
+		super(new AbstractAnnotationRule<FieldElement<ValueAnnotation>>() {});
+	}
+	
+	@Override
+	public boolean hasAnnotation(Class<? extends Annotation> annotationType) {
+		return ValueAnnotation.class.isAssignableFrom(annotationType);
+	}
+	
+	@Override
+	public boolean hasType(Class<? extends Annotatable<?>> annotatableType) {
+		return FieldElement.class.isAssignableFrom(annotatableType);
 	}
 }
