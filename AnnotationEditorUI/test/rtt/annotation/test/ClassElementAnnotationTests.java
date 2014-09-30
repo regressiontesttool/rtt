@@ -1,6 +1,9 @@
 package rtt.annotation.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +14,7 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.NodeAnnotation;
 
 public class ClassElementAnnotationTests {
 
@@ -35,45 +39,20 @@ public class ClassElementAnnotationTests {
 	@Test
 	public void testSetNodeAnnotation() throws Exception {
 		assertTrue("Adding a Node annotation should be allowed, but was not.",
-				ControllerRegistry.canExecute(Mode.SET, AnnotationType.NODE, classElement));
+				ControllerRegistry.canExecute(Mode.SET, NodeAnnotation.class, classElement));
 		assertTrue("Adding a Node annotation should be possible, but was not.",
-				ControllerRegistry.execute(Mode.SET, 
-				Annotation.create(AnnotationType.NODE), classElement));
+				ControllerRegistry.execute(Mode.SET, Annotation.create(NodeAnnotation.class), classElement));
 		
 		assertTrue("Annotation was not set", classElement.hasAnnotation());
 		assertEquals("Annotation", AnnotationType.NODE, classElement.getAnnotation().getType());
 	}
 	
 	@Test
-	public void testSetValueAnnotation() throws Exception {
-		assertFalse("Adding a Value annotation should not be allowed, but was.",
-				ControllerRegistry.canExecute(Mode.SET, AnnotationType.VALUE, classElement));
-		assertFalse("Adding a Value annotation should not be possible, but was.",
-				ControllerRegistry.execute(Mode.SET, 
-						Annotation.create(AnnotationType.VALUE), classElement));
-		
-		assertFalse(classElement.hasAnnotation());
-		assertNull(classElement.getAnnotation());
-	}
-	
-	@Test
-	public void testSetInitializeAnnotation() throws Exception {
-		assertFalse("Adding a Initialize annotation should not be allowed, but was.",
-				ControllerRegistry.canExecute(Mode.SET, AnnotationType.INITIALIZE, classElement));
-		assertFalse("Adding a Initialize annotation should not be possible, but was.",
-				ControllerRegistry.execute(Mode.SET, 
-						Annotation.create(AnnotationType.INITIALIZE), classElement));
-		
-		assertFalse(classElement.hasAnnotation());
-		assertNull(classElement.getAnnotation());
-	}
-	
-	@Test
 	public void testSetNodeAnnotationTwice() throws Exception {
-		ControllerRegistry.execute(Mode.SET, Annotation.create(AnnotationType.NODE), classElement);
+		ControllerRegistry.execute(Mode.SET, Annotation.create(NodeAnnotation.class), classElement);
 		
-		assertFalse(ControllerRegistry.canExecute(Mode.SET, AnnotationType.NODE, classElement));
-		assertFalse(ControllerRegistry.execute(Mode.SET, Annotation.create(AnnotationType.NODE), classElement));
+		assertFalse(ControllerRegistry.canExecute(Mode.SET, NodeAnnotation.class, classElement));
+		assertFalse(ControllerRegistry.execute(Mode.SET, Annotation.create(NodeAnnotation.class), classElement));
 	}
 
 }
