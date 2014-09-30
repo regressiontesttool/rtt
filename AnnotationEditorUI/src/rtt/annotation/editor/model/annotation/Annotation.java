@@ -36,24 +36,14 @@ public abstract class Annotation {
 		return type;
 	}
 	
-	public static <T extends Annotation> T create(AnnotationType type) {
-//		Annotation annotation = new Annotation(type);
-//		
-//		switch (type) {
-//		case VALUE:
-//			annotation.setAttribute("index", 100);
-//			annotation.setAttribute("name", "");
-//			annotation.setAttribute("informational", false);
-//			break;
-//		case INITIALIZE:
-//			annotation.setAttribute("withParams", false);
-//			break;
-//		default:
-//			break;
-//		}
-//		
-//		return annotation;
+	@SuppressWarnings("unchecked")
+	public static <T extends Annotation> T create(Class<T> type) {
+		T annotation = null;
 		
-		return null;
+		if (NodeAnnotation.class.equals(type)) {
+			annotation = (T) new NodeAnnotation();
+		}
+		
+		return annotation;
 	}
 }
