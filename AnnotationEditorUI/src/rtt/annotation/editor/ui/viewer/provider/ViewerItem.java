@@ -1,4 +1,4 @@
-package rtt.annotation.editor.ui.viewer.util;
+package rtt.annotation.editor.ui.viewer.provider;
 
 import java.util.ArrayList;
 import java.util.List;

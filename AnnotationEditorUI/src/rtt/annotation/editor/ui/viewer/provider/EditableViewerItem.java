@@ -1,4 +1,4 @@
-package rtt.annotation.editor.ui.viewer.util;
+package rtt.annotation.editor.ui.viewer.provider;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;

@@ -1,4 +1,6 @@
-package rtt.annotation.editor.ui.viewer.util;
+package rtt.annotation.editor.ui.viewer.provider;
+
+
 
 public class TextViewerItem extends ViewerItem {
 

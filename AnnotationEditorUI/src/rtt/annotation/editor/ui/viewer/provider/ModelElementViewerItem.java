@@ -1,4 +1,4 @@
-package rtt.annotation.editor.ui.viewer.util;
+package rtt.annotation.editor.ui.viewer.provider;
 
 import rtt.annotation.editor.model.ModelElement;
 

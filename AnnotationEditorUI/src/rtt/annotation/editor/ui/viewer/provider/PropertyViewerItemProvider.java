@@ -1,8 +1,7 @@
-package rtt.annotation.editor.ui.viewer.util;
+package rtt.annotation.editor.ui.viewer.provider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ElementReference;
@@ -26,7 +25,7 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		}
 		
 		if (input instanceof Annotatable) {
-			Annotatable annotatable = (Annotatable) input;
+			Annotatable<?> annotatable = (Annotatable<?>) input;
 			if (annotatable.hasAnnotation()) {
 				items.add(createAnnotatableItem(annotatable, parent));
 			}			
@@ -38,12 +37,12 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		}
 		
 		if (input instanceof FieldElement) {
-			FieldElement field = (FieldElement) input;
+			FieldElement<?> field = (FieldElement<?>) input;
 			items.add(createFieldElementItems(field, parent));
 		}
 		
 		if (input instanceof MethodElement) {
-			MethodElement method = (MethodElement) input;
+			MethodElement<?> method = (MethodElement<?>) input;
 			items.add(createMethodElementItems(method, parent));
 		}
 		
@@ -58,19 +57,18 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		return new TextViewerItem(parent, "Name", element.getName());
 	}
 
-	private ViewerItem createAnnotatableItem(final Annotatable annotatable, ViewerItem parent) {
+	private ViewerItem createAnnotatableItem(final Annotatable<?> annotatable, ViewerItem parent) {
 		final Annotation annotation = annotatable.getAnnotation();
 		ViewerItem properties = new TextViewerItem(parent, "Annotation", annotation.getName());
-		for (Entry<String, Object> attributes : annotation.getAttributes().entrySet()) {
-			EditableViewerItem viewerItem = new EditableViewerItem(properties,
-					attributes.getKey(), attributes.getValue()) {
+		for (final String key : annotation.getKeys()) {
+			EditableViewerItem viewerItem = new EditableViewerItem(
+					properties, key, annotation.getAttribute(key)) {
 				
 				@Override
 				public void setValue(Object changedValue) {
 					if (!changedValue.equals(getValue())) {
 						super.setValue(changedValue);
-						annotation.getAttributes().put(
-								getDescription(), getValue());
+						annotation.setAttribute(key, getValue());
 						annotatable.setChanged();
 					}
 				}
@@ -148,14 +146,14 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		};
 	}
 
-	private ViewerItem createFieldElementItems(FieldElement field, ViewerItem parent) {
+	private ViewerItem createFieldElementItems(FieldElement<?> field, ViewerItem parent) {
 		ViewerItem properties = new TextViewerItem(parent, "Properties");
 		properties.add(new TextViewerItem(properties, "Type", field.getType()));
 
 		return properties;
 	}
 
-	private ViewerItem createMethodElementItems(MethodElement method, ViewerItem parent) {
+	private ViewerItem createMethodElementItems(MethodElement<?> method, ViewerItem parent) {
 		ViewerItem properties = new TextViewerItem(parent, "Properties");
 		properties.add(new TextViewerItem(properties, "Return Type", method.getType()));
 		
