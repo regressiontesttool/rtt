@@ -10,7 +10,7 @@ import rtt.annotation.test.model.AllModelTests;
 @SuiteClasses({ ClassElementAnnotationTests.class,
 		FieldElementAnnotationTests.class,
 		MethodElementValueAnnotationTests.class, 
-		MethodElementInitializeAnnotationTests.class,
+		MethodElementInitAnnotationTests.class,
 		AllModelTests.class })
 public class AllTests {
 

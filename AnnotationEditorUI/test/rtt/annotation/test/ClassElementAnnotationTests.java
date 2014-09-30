@@ -8,13 +8,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModelFactory;
-import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
 import rtt.annotation.editor.model.annotation.NodeAnnotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 public class ClassElementAnnotationTests {
 
@@ -38,21 +38,35 @@ public class ClassElementAnnotationTests {
 	
 	@Test
 	public void testSetNodeAnnotation() throws Exception {
-		assertTrue("Adding a Node annotation should be allowed, but was not.",
-				ControllerRegistry.canExecute(Mode.SET, NodeAnnotation.class, classElement));
-		assertTrue("Adding a Node annotation should be possible, but was not.",
-				ControllerRegistry.execute(Mode.SET, Annotation.create(NodeAnnotation.class), classElement));
+		TestUtils.assertCanExecute(Mode.SET, NodeAnnotation.class, classElement);
+		TestUtils.assertExecutes(Mode.SET, NodeAnnotation.class, classElement);
 		
 		assertTrue("Annotation was not set", classElement.hasAnnotation());
 		assertEquals("Annotation", AnnotationType.NODE, classElement.getAnnotation().getType());
 	}
 	
 	@Test
-	public void testSetNodeAnnotationTwice() throws Exception {
-		ControllerRegistry.execute(Mode.SET, Annotation.create(NodeAnnotation.class), classElement);
+	public void testSetValueAnnotation() throws Exception {
+		TestUtils.assertCanNotExecute(Mode.SET, ValueAnnotation.class, classElement);
+		TestUtils.assertNotExecutes(Mode.SET, ValueAnnotation.class, classElement);
 		
-		assertFalse(ControllerRegistry.canExecute(Mode.SET, NodeAnnotation.class, classElement));
-		assertFalse(ControllerRegistry.execute(Mode.SET, Annotation.create(NodeAnnotation.class), classElement));
+		assertFalse("Annotation was set", classElement.hasAnnotation());
+	}
+	
+	@Test
+	public void testSetInitAnnotation() throws Exception {
+		TestUtils.assertCanNotExecute(Mode.SET, InitAnnotation.class, classElement);
+		TestUtils.assertNotExecutes(Mode.SET, InitAnnotation.class, classElement);
+		
+		assertFalse("Annotation was set", classElement.hasAnnotation());
+	}
+	
+	@Test
+	public void testSetNodeAnnotationTwice() throws Exception {
+		TestUtils.assertExecutes(Mode.SET, NodeAnnotation.class, classElement);
+		
+		TestUtils.assertCanNotExecute(Mode.SET, NodeAnnotation.class, classElement);
+		TestUtils.assertNotExecutes(Mode.SET, NodeAnnotation.class, classElement);
 	}
 
 }

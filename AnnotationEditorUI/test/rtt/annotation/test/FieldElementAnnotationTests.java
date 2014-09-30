@@ -8,17 +8,18 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import rtt.annotation.editor.controller.ControllerRegistry;
 import rtt.annotation.editor.controller.IAnnotationController.Mode;
 import rtt.annotation.editor.model.ClassModelFactory;
 import rtt.annotation.editor.model.FieldElement;
-import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
+import rtt.annotation.editor.model.annotation.NodeAnnotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 public class FieldElementAnnotationTests {
 
 	private ClassModelFactory factory;
-	private FieldElement field;
+	private FieldElement<ValueAnnotation> field;
 
 	@Before
 	public void setUp() throws Exception {
@@ -34,11 +35,8 @@ public class FieldElementAnnotationTests {
 	
 	@Test
 	public void testSetNodeAnnotation() throws Exception {
-		assertFalse("Adding a Node annotation should not be allowed, but was.",
-				ControllerRegistry.canExecute(Mode.SET, AnnotationType.NODE, field));
-		assertFalse("Adding a Node annotation should not be possible, but was.",
-				ControllerRegistry.execute(Mode.SET, 
-				Annotation.create(AnnotationType.NODE), field));
+		TestUtils.assertCanNotExecute(Mode.SET, NodeAnnotation.class, field);
+		TestUtils.assertNotExecutes(Mode.SET, NodeAnnotation.class, field);
 		
 		assertFalse(field.hasAnnotation());
 		assertNull(field.getAnnotation());
@@ -46,11 +44,8 @@ public class FieldElementAnnotationTests {
 	
 	@Test
 	public void testSetValueAnnotation() throws Exception {
-		assertTrue("Adding a Value annotation should be allowed, but was not.",
-				ControllerRegistry.canExecute(Mode.SET, AnnotationType.VALUE, field));
-		assertTrue("Adding a Value annotation should be possible, but was not.",
-				ControllerRegistry.execute(Mode.SET, 
-						Annotation.create(AnnotationType.VALUE), field));
+		TestUtils.assertCanExecute(Mode.SET, ValueAnnotation.class, field);
+		TestUtils.assertExecutes(Mode.SET, ValueAnnotation.class, field);
 		
 		assertTrue("Annotation was not set", field.hasAnnotation());
 		assertEquals("Annotation", AnnotationType.VALUE, field.getAnnotation().getType());
@@ -58,11 +53,8 @@ public class FieldElementAnnotationTests {
 	
 	@Test
 	public void testSetInitializeAnnotation() throws Exception {
-		assertFalse("Adding a Initialize annotation should not be allowed, but was.",
-				ControllerRegistry.canExecute(Mode.SET, AnnotationType.INITIALIZE, field));
-		assertFalse("Adding a Initialize annotation should not be possible, but was.",
-				ControllerRegistry.execute(Mode.SET, 
-						Annotation.create(AnnotationType.INITIALIZE), field));
+		TestUtils.assertCanNotExecute(Mode.SET, InitAnnotation.class, field);
+		TestUtils.assertNotExecutes(Mode.SET, InitAnnotation.class, field);
 		
 		assertFalse(field.hasAnnotation());
 		assertNull(field.getAnnotation());
@@ -70,11 +62,10 @@ public class FieldElementAnnotationTests {
 	
 	@Test
 	public void testSetValueAnnotationTwice() throws Exception {
-		ControllerRegistry.execute(Mode.SET, Annotation.create(AnnotationType.VALUE), field);
+		TestUtils.assertExecutes(Mode.SET, ValueAnnotation.class, field);
 		
-		assertFalse(ControllerRegistry.canExecute(Mode.SET, AnnotationType.VALUE, field));
-		assertFalse(ControllerRegistry.execute(Mode.SET, 
-				Annotation.create(AnnotationType.VALUE), field));
+		TestUtils.assertCanNotExecute(Mode.SET, ValueAnnotation.class, field);
+		TestUtils.assertNotExecutes(Mode.SET, ValueAnnotation.class, field);
 	}
 
 }
