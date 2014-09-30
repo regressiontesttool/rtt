@@ -77,7 +77,7 @@ public final class ImportClassElementVisitor extends ClassVisitor {
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 		Annotation annotation = ASMAnnotationConverter.getAnnotation(desc);
 		if (annotation != null) {
-			element.setAnnotation(annotation);
+//			element.setAnnotation(annotation);
 		}
 
 		return super.visitAnnotation(desc, visible);
