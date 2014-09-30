@@ -3,6 +3,7 @@ package rtt.annotation.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import rtt.annotation.editor.model.Annotation.AnnotationType;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Value;
 
@@ -114,7 +115,7 @@ public class ClassElement extends Annotatable {
 		
 		if (!valuablefields.isEmpty()) {
 			for (FieldElement element : valuablefields) {
-				if (element.hasAnnotation()) {
+				if (element.hasAnnotation(AnnotationType.VALUE)) {
 					return true;
 				}
 			}
@@ -122,7 +123,7 @@ public class ClassElement extends Annotatable {
 		
 		if (!valuableMethods.isEmpty()) {
 			for (MethodElement element : valuableMethods) {
-				if (element.hasAnnotation()) {
+				if (element.hasAnnotation(AnnotationType.VALUE)) {
 					return true;
 				}
 			}
@@ -134,7 +135,7 @@ public class ClassElement extends Annotatable {
 	public boolean hasInits() {
 		if (!initializableMethods.isEmpty()) {
 			for (MethodElement methodElement : initializableMethods) {
-				if (methodElement.hasAnnotation()) {
+				if (methodElement.hasAnnotation(AnnotationType.INITIALIZE)) {
 					return true;
 				}
 			}

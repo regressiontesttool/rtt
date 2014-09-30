@@ -11,12 +11,12 @@ public class FieldElementAnnotationController extends RuledAnnotationController<
 
 		@Override
 		protected boolean checkSet(AnnotationType type, FieldElement element) {
-			return type == AnnotationType.VALUE && !element.hasAnnotation();
+			return type == AnnotationType.VALUE && !element.hasAnnotation(AnnotationType.VALUE);
 		}
 
 		@Override
 		protected boolean checkUnset(AnnotationType type, FieldElement element) {
-			return element.hasAnnotation();
+			return element.hasAnnotation(type);
 		}
 		
 	}

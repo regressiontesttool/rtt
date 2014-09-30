@@ -39,7 +39,7 @@ public class MethodElementAnnotationController extends RuledAnnotationController
 
 		@Override
 		protected boolean checkUnset(AnnotationType type, MethodElement element) {
-			return element.hasAnnotation();
+			return element.hasAnnotation(type);
 		}
 		
 	}

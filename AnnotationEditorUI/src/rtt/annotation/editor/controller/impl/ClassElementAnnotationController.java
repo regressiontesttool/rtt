@@ -11,12 +11,12 @@ public class ClassElementAnnotationController extends RuledAnnotationController<
 		
 		@Override
 		protected boolean checkSet(AnnotationType type, ClassElement element) {
-			return type == AnnotationType.NODE && !element.hasAnnotation();
+			return type == AnnotationType.NODE && !element.hasAnnotation(AnnotationType.NODE);
 		}
 		
 		@Override
 		protected boolean checkUnset(AnnotationType type, ClassElement element) {
-			return element.hasAnnotation();
+			return element.hasAnnotation(type);
 		}
 	}
 	
