@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
@@ -25,11 +24,13 @@ import rtt.annotation.editor.data.jaxb.model.Value;
 import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
-import rtt.annotation.editor.model.annotation.Annotatable;
-import rtt.annotation.editor.model.annotation.Annotation;
-import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
+import rtt.annotation.editor.model.annotation.Annotatable;
+import rtt.annotation.editor.model.annotation.Annotation;
+import rtt.annotation.editor.model.annotation.InitAnnotation;
+import rtt.annotation.editor.model.annotation.NodeAnnotation;
+import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 public class JAXBAnnotationManager implements 
 	AnnotationImporter, AnnotationExporter {
@@ -77,9 +78,9 @@ public class JAXBAnnotationManager implements
 			classes = model.getClasses(annotatedClass.getPackage());
 			for (ClassElement classElement : classes) {
 				if (classElement.getName().equals(annotatedClass.getName())) {
-					Annotation nodeAnnotation = null;
+					NodeAnnotation nodeAnnotation = null;
 					if (annotatedClass.isNode()) {
-						nodeAnnotation = Annotation.create(AnnotationType.NODE);
+						nodeAnnotation = Annotation.create(NodeAnnotation.class);
 					}
 					classElement.setAnnotation(nodeAnnotation);
 					
@@ -92,7 +93,7 @@ public class JAXBAnnotationManager implements
 	}
 
 	private void setValueFields(List<Value> valueFields, ClassElement classElement) {
-		FieldElement fieldElement = null;		
+		FieldElement<ValueAnnotation> fieldElement = null;		
 		for (Value value : valueFields) {
 			fieldElement = classElement.getValuableField(value.getName(), value.getType());
 			if (fieldElement != null) {
@@ -102,7 +103,7 @@ public class JAXBAnnotationManager implements
 	}
 
 	private void setValueMethods(List<Value> valueMethods, ClassElement classElement) {
-		MethodElement methodElement = null;
+		MethodElement<ValueAnnotation> methodElement = null;
 		for (Value value : valueMethods) {
 			methodElement = classElement.getValuableMethod(value.getName(), value.getType());
 			if (methodElement != null) {				
@@ -111,17 +112,17 @@ public class JAXBAnnotationManager implements
 		}
 	}
 	
-	private Annotation createValueAnnotation(Value value) {
-		Annotation annotation = Annotation.create(AnnotationType.VALUE);
-		annotation.setAttribute("index", value.getValueIndex());
-		annotation.setAttribute("name", value.getValueName());
-		annotation.setAttribute("informational", value.isValueInformational());
+	private ValueAnnotation createValueAnnotation(Value value) {
+		ValueAnnotation annotation = Annotation.create(ValueAnnotation.class);
+		annotation.setValueIndex(value.getValueIndex());
+		annotation.setValueName(value.getValueName());
+		annotation.setInformational(value.isValueInformational());
 		
 		return annotation;
 	}
 
 	private void setInits(List<Init> initMethod, ClassElement classElement) {
-		MethodElement methodElement = null;
+		MethodElement<InitAnnotation> methodElement = null;
 		for (Init init : initMethod) {
 			methodElement = classElement.getInitializableMethod(init.getName());
 			if (methodElement != null) {
@@ -130,9 +131,9 @@ public class JAXBAnnotationManager implements
 		}
 	}
 	
-	private Annotation createInitAnnotation(Init init) {
-		Annotation annotation = Annotation.create(AnnotationType.INITIALIZE);
-		annotation.setAttribute("withParams", init.isWithParams());
+	private InitAnnotation createInitAnnotation(Init init) {
+		InitAnnotation annotation = Annotation.create(InitAnnotation.class);
+		annotation.setWithParams(init.isWithParams());
 		return annotation;
 	}
 
@@ -174,9 +175,9 @@ public class JAXBAnnotationManager implements
 		return classElement.hasAnnotation() || classElement.hasValues() || classElement.hasInits();
 	}
 	
-	private void addValueFields(List<FieldElement> fields, List<Value> valueAnnotatables) {
+	private void addValueFields(List<FieldElement<ValueAnnotation>> fields, List<Value> valueAnnotatables) {
 		Value valueAnnotated = null;		
-		for (FieldElement fieldElement : fields) {
+		for (FieldElement<ValueAnnotation> fieldElement : fields) {
 			valueAnnotated = createValue(fieldElement);
 			if (valueAnnotated != null) {
 				valueAnnotated.setType(fieldElement.getType());
@@ -185,9 +186,9 @@ public class JAXBAnnotationManager implements
 		}
 	}
 	
-	private void addValueMethods(List<MethodElement> methods, List<Value> valueAnnotatables) {
+	private void addValueMethods(List<MethodElement<ValueAnnotation>> methods, List<Value> valueAnnotatables) {
 		Value valueAnnotated = null;		
-		for (MethodElement methodElement : methods) {
+		for (MethodElement<ValueAnnotation> methodElement : methods) {
 			valueAnnotated = createValue(methodElement);
 			if (valueAnnotated != null) {
 				valueAnnotated.setType(methodElement.getType());
@@ -196,43 +197,36 @@ public class JAXBAnnotationManager implements
 		}
 	}
 
-	private Value createValue(Annotatable annotatable) {
-		if (annotatable.hasAnnotation(AnnotationType.VALUE)) {
-			Annotation annotation = annotatable.getAnnotation();
-			
-			Value valueAnnotated = factory.createValue();
+	private Value createValue(Annotatable<ValueAnnotation> annotatable) {
+		Value valueAnnotated = null;
+		
+		if (annotatable.hasAnnotation()) {
+			valueAnnotated = factory.createValue();
 			valueAnnotated.setName(annotatable.getName());
 			
-			Map<String,Object> attributes = annotation.getAttributes();
-			valueAnnotated.setValueIndex((Integer) attributes.get("index"));
-			valueAnnotated.setValueName((String) attributes.get("name"));
-			valueAnnotated.setValueInformational((Boolean) attributes.get("informational"));
+			ValueAnnotation annotation = annotatable.getAnnotation();		
 			
-			return valueAnnotated;
+			valueAnnotated.setValueIndex(annotation.getValueIndex());
+			valueAnnotated.setValueName(annotation.getValueName());
+			valueAnnotated.setValueInformational(annotation.isInformational());
 		}
 		
-		return null;
+		return valueAnnotated;
 	}
 
-	private void addInits(List<? extends Annotatable> annotatables, 
+	private void addInits(List<? extends Annotatable<InitAnnotation>> annotatables, 
 			List<Init> initAnnotatables) {
 		
-		Annotation annotation = null;
-		Init initAnnotated = null;
-		
-		for (Annotatable annotatable : annotatables) {
+		Init initAnnotated = null;		
+		for (Annotatable<InitAnnotation> annotatable : annotatables) {
 			if (annotatable.hasAnnotation()) {
-				annotation = annotatable.getAnnotation();
+				initAnnotated = factory.createInit();
+				initAnnotated.setName(annotatable.getName());
 				
-				if (annotation.getType() == AnnotationType.INITIALIZE) {
-					initAnnotated = factory.createInit();
-					initAnnotated.setName(annotatable.getName());
-					
-					Map<String,Object> attributes = annotation.getAttributes();
-					initAnnotated.setWithParams((Boolean) attributes.get("withParams"));
-					
-					initAnnotatables.add(initAnnotated);
-				}
+				InitAnnotation annotation = annotatable.getAnnotation();				
+				initAnnotated.setWithParams(annotation.isWithParams());
+				
+				initAnnotatables.add(initAnnotated);
 			}
 		}
 	}
