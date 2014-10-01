@@ -6,7 +6,6 @@ import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.annotation.InitAnnotation;
 import rtt.annotation.editor.model.annotation.NodeAnnotation;
 import rtt.annotation.editor.model.annotation.ValueAnnotation;
-import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
 import rtt.annotations.Node.Value;
@@ -20,7 +19,10 @@ public enum ASMAnnotationConverter {
 	private String descriptor;
 	private Class<? extends Annotation> annotation;
 
-	private ASMAnnotationConverter(Class<? extends Annotation> annotationType, String description) {
+	private ASMAnnotationConverter(
+			Class<? extends Annotation> annotationType, 
+			String description) {
+		
 		this.descriptor = description;
 		this.annotation = annotationType;
 	}
@@ -33,9 +35,9 @@ public enum ASMAnnotationConverter {
 		return annotation;
 	}
 	
-	public static String getDescriptor(AnnotationType type) {
+	public static String getDescriptor(Class<? extends Annotation> annotation) {
 		for (ASMAnnotationConverter annotationDescriptor : values()) {
-			if (annotationDescriptor.annotation.equals(type)) {
+			if (annotationDescriptor.annotation.equals(annotation)) {
 				return annotationDescriptor.descriptor;
 			}
 		}

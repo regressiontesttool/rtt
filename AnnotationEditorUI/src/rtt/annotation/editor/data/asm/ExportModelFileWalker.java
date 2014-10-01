@@ -84,16 +84,16 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	}
 	
 	private void addAnnotation(Annotatable<?> element, List<AnnotationNode> annotations) {
-		Annotation annotation = element.getAnnotation();
-		if (annotation != null) {
-			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getType());
+		if (element.hasAnnotation()) {
+			Annotation annotation = element.getAnnotation();
+			String descriptor = ASMAnnotationConverter.getDescriptor(annotation.getClass());
 			AnnotationNode annotationNode = new AnnotationNode(descriptor);
 			for (String key : annotation.getKeys()) {
 				annotationNode.visit(key, annotation.getAttribute(key));
 			}
 			
 			annotations.add(annotationNode);
-		}		
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
