@@ -56,7 +56,6 @@ import rtt.annotation.editor.model.ClassElement;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ModelElement;
 import rtt.annotation.editor.model.annotation.Annotatable;
-import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotation.editor.model.annotation.NodeAnnotation;
 import rtt.annotation.editor.ui.viewer.provider.EditableViewerItem;
@@ -78,17 +77,22 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	private final class NodeFilter extends ViewerFilter {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			Annotation annotation = null;
+			Annotatable<?> annotatable = null;
 			if (element instanceof Annotatable) {
-				annotation = ((Annotatable<?>) element).getAnnotation();
+				annotatable = (Annotatable<?>) element;
 			} else if (element instanceof ModelElementViewerItem<?>) {
 				ModelElementViewerItem<?> item = (ModelElementViewerItem<?>) element;
 				if (item.getModelElement() instanceof Annotatable) {
-					annotation = ((Annotatable<?>) element).getAnnotation();
+					annotatable = (Annotatable<?>) item.getModelElement();
 				}
 			}
 			
-			return annotation instanceof NodeAnnotation;
+			if (annotatable != null) {
+				return annotatable.getAnnotation() != null && 
+						annotatable.getAnnotation().getType() == AnnotationType.NODE;
+			}
+			
+			return true;
 		}
 	}
 
