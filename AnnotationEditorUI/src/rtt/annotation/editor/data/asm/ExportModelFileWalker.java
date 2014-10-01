@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -26,12 +27,47 @@ import rtt.annotation.editor.model.annotation.Annotation;
 import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 final class ExportModelFileWalker extends AbstractFileWalker {
+	
+	public class ExportClassAdapter extends ClassNode {
+		private ClassElement element;
+
+		public ExportClassAdapter(ClassVisitor cv, ClassElement element) {
+			super(Opcodes.ASM5);
+			this.cv = cv;
+			this.element = element;
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public void visitEnd() {
+			// set JRE version to at least 1.5
+			if ((version & 0xFF) < Opcodes.V1_5) {
+				version = Opcodes.V1_5;
+			}
+
+			if (visibleAnnotations != null) {
+				removeObsoleteAnnotations(visibleAnnotations);
+			}
+
+			if (element.hasAnnotation()) {
+				if (visibleAnnotations == null) {
+					visibleAnnotations = new ArrayList<>();
+				}
+
+				addAnnotation(element, visibleAnnotations);
+			}
+
+			processFields(this, element);			
+			processMethods(this, element);
+			
+			accept(cv);
+		}
+	}
 
 	public ExportModelFileWalker(ClassModel model) {
 		super(model);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void processData(Path file) throws IOException {
 		ClassReader reader = new ClassReader(Files.readAllBytes(file));
@@ -40,31 +76,10 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 		final ClassElement element = ASMClassModelManager.RESOLVER.findClass(className, model);
 		
 		if (element != null && element.hasChanged()) {
-			ClassNode node = new ClassNode();
-			reader.accept(node, ClassReader.SKIP_CODE);
+			ClassWriter writer = new ClassWriter(reader, 0);
+			ClassVisitor visitor = new ExportClassAdapter(writer, element);
 			
-			// set JRE version to at least 1.5
-			if ((node.version & 0xFF) < Opcodes.V1_5) {
-				node.version = Opcodes.V1_5;
-			}
-			
-			if (node.visibleAnnotations != null) {
-				removeObsoleteAnnotations(node.visibleAnnotations);
-			}
-			
-			if (element.hasAnnotation()) {
-				if (node.visibleAnnotations == null) {
-					node.visibleAnnotations = new ArrayList<>();
-				}
-				
-				addAnnotation(element, node.visibleAnnotations);
-			}
-			
-			processFields(node, element);			
-			processMethods(node, element);		
-			
-			ClassWriter writer = new ClassWriter(reader, 0);			
-			node.accept(writer);
+			reader.accept(visitor, 0);
 			
 			Files.write(file, writer.toByteArray(), StandardOpenOption.WRITE);
 		}
