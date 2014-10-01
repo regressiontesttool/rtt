@@ -33,40 +33,57 @@ public class EditableViewerItem extends ViewerItem {
 	}
 
 	public Object getValue() {
-		if (value instanceof Boolean) {
-			return value;
-		}
-		
-		return String.valueOf(value);
+		return value;
 	}
 	
 	public void setValue(Object value) {
+		
+		
+		
 		this.value = value;
 	}
 
 	public CellEditor getCellEditor(Composite parent) {
 		if (value instanceof Boolean) {
 			return new CheckboxCellEditor(parent);
-		}
-		
-		TextCellEditor editor = new TextCellEditor(parent);
+		} 
 		
 		if (value instanceof Integer) {
+			TextCellEditor editor = new TextCellEditor(parent) {
+				@Override
+				protected void doSetValue(Object value) {
+					super.doSetValue(String.valueOf(value));
+				}
+				
+				@Override
+				protected Object doGetValue() {
+					return Integer.parseInt(text.getText());				
+				}
+			};
+			
 			editor.setValidator(new ICellEditorValidator() {
 				
 				@Override
 				public String isValid(Object value) {
-					try {
-			    		Integer.parseInt((String) value);
-			    		return null;
-			    	} catch(NumberFormatException e) {
-			    		return "Not a valid integer";
-			    	}
+					if (value instanceof Integer) {
+						return null;
+					}
+					
+					if (value instanceof String) {
+						try {
+							Integer.parseInt((String) value);
+							return null;
+						} catch (NumberFormatException e) {}
+					}
+					
+					return "Not a valid number.";
 				}
 			});
-		}
+			
+			return editor;
+		} 
 		
-		return editor;
+		return new TextCellEditor(parent);
 	}
 
 }
