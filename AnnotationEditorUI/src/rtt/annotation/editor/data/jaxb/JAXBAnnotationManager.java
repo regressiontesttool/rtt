@@ -83,6 +83,7 @@ public class JAXBAnnotationManager implements
 						nodeAnnotation = Annotation.create(NodeAnnotation.class);
 					}
 					classElement.setAnnotation(nodeAnnotation);
+					classElement.setChanged();
 					
 					setValueFields(annotatedClass.getValueField(), classElement);
 					setValueMethods(annotatedClass.getValueMethod(), classElement);
@@ -98,6 +99,7 @@ public class JAXBAnnotationManager implements
 			fieldElement = classElement.getValuableField(value.getName(), value.getType());
 			if (fieldElement != null) {
 				fieldElement.setAnnotation(createValueAnnotation(value));
+				fieldElement.setChanged();
 			}
 		}
 	}
@@ -108,6 +110,7 @@ public class JAXBAnnotationManager implements
 			methodElement = classElement.getValuableMethod(value.getName(), value.getType());
 			if (methodElement != null) {				
 				methodElement.setAnnotation(createValueAnnotation(value));
+				methodElement.setChanged();
 			}
 		}
 	}
@@ -127,6 +130,7 @@ public class JAXBAnnotationManager implements
 			methodElement = classElement.getInitializableMethod(init.getName());
 			if (methodElement != null) {
 				methodElement.setAnnotation(createInitAnnotation(init));
+				methodElement.setChanged();
 			}
 		}
 	}

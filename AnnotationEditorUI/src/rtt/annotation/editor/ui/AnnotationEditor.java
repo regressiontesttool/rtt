@@ -268,10 +268,10 @@ public class AnnotationEditor extends EditorPart implements Observer {
 				if (result != null) {
 					Path importPath = Paths.get(result);					
 					importer.importAnnotations(model, importPath);
-					
-					if (nodeViewer != null) {
-						nodeViewer.setInput(model);
-					}
+//					
+//					if (nodeViewer != null) {
+//						nodeViewer.setInput(model);
+//					}
 				}				
 			}
 		});
@@ -656,6 +656,18 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		dirty = true;
-		firePropertyChange(PROP_DIRTY);		
+		firePropertyChange(PROP_DIRTY);
+		
+		if (nodeViewer != null) {
+			nodeViewer.refresh();
+		}
+		
+		if (memberViewer != null) {
+			memberViewer.refresh();
+		}
+		
+		if (propertyViewer != null) {
+			propertyViewer.refresh();
+		}
 	}
 }
