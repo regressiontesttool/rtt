@@ -22,7 +22,6 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Element;
-import regression.test.ElementType;
 import regression.test.GeneratorType;
 import regression.test.TestFactory;
 import regression.test.TestPackage;
@@ -276,6 +275,10 @@ public class ElementItemProvider
 		}
 		
 		text.append(element.getValue());
+		
+		text.append(" (");
+		text.append(element.getAddress());
+		text.append(")");
 		
 		return text.toString();
 	}
