@@ -2,6 +2,7 @@ package rtt.ui.editors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -20,9 +21,11 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import regression.test.DocumentRoot;
+import rtt.ui.RttPluginUI;
 
 class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		
@@ -33,8 +36,7 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 	}
 
 	@Override
-	protected void createMasterPart(final IManagedForm managedForm,
-			Composite parent) {
+	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
 		FormToolkit toolkit = managedForm.getToolkit();
 		
 		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
@@ -42,7 +44,7 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 		
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;	
+		layout.numColumns = 2;	
 		layout.marginHeight = 2;
 		layout.marginWidth = 2;
 		client.setLayout(layout);
@@ -89,9 +91,15 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(sPart, event.getSelection());
 			}
-		});
+		});		
 		
 		page.getSite().setSelectionProvider(viewer);
+	}
+	
+	@Override
+	public void createContent(IManagedForm managedForm) {
+		super.createContent(managedForm);
+		sashForm.setOrientation(SWT.VERTICAL);
 	}
 
 	@Override
@@ -116,7 +124,32 @@ class ReferenceMasterDetailsBlock extends MasterDetailsBlock {
 
 	@Override
 	protected void createToolBarActions(IManagedForm managedForm) {
-		// TODO Auto-generated method stub
+		final ScrolledForm form = managedForm.getForm();
 		
+		Action vaction = new Action("ver", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
+			public void run() {
+				sashForm.setOrientation(SWT.VERTICAL);
+				form.reflow(true);
+			}
+		};
+		vaction.setChecked(true);
+		vaction.setToolTipText("Vertical"); //$NON-NLS-1$
+		vaction.setImageDescriptor(RttPluginUI.getImageDescriptor(
+				RttPluginUI.IMG_VERTICAL));
+		
+		
+		Action haction = new Action("hor", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
+			public void run() {
+				sashForm.setOrientation(SWT.HORIZONTAL);
+				form.reflow(true);
+			}
+		};
+		haction.setChecked(false);
+		haction.setToolTipText("Horizontal"); //$NON-NLS-1$
+		haction.setImageDescriptor(RttPluginUI.getImageDescriptor(
+				RttPluginUI.IMG_HORIZONTAL));
+		
+		form.getToolBarManager().add(haction);
+		form.getToolBarManager().add(vaction);
 	}
 }

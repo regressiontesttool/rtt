@@ -42,6 +42,9 @@ public class RttPluginUI extends EMFPlugin {
 	public static final String PLUGIN_ID = "rtt.ui"; //$NON-NLS-1$
 	
 	public static final RttPluginUI INSTANCE = new RttPluginUI();
+
+	public static final String IMG_VERTICAL = "icons/th_vertical.gif";
+	public static final String IMG_HORIZONTAL = "icons/th_horizontal.gif";
 	
 	private static Implementation plugin;
 	

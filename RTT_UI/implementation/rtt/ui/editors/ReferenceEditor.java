@@ -20,8 +20,7 @@ import rtt.ui.utils.RttPluginUtil;
 public class ReferenceEditor extends FormEditor {
 
 	public static final String ID = "rtt.ui.editors.reference";
-	public static final String LEXER_PAGE_ID = "rtt.ui.editors.lexer";
-	public static final String PARSER_PAGE_ID = "rtt.ui.editors.parser";
+	public static final String OUTPUT_PAGE_ID = "rtt.ui.editors.parser";
 
 	private OutputDataEditorInput outputData;
 	
@@ -37,15 +36,17 @@ public class ReferenceEditor extends FormEditor {
 		contentProvider = new AdapterFactoryContentProvider(adapterFactory);
 		labelProvider = new AdapterFactoryLabelProvider(adapterFactory);
 
-		ReferenceEditorPage parPage = new ReferenceEditorPage(this, outputData.getType(), PARSER_PAGE_ID, "Parser");
-		parPage.setResource(outputData.getResource(OutputDataEditorInput.PARSER_URI));
-		parPage.setContentProvider(contentProvider);
-		parPage.setLabelProvider(labelProvider);		
+		ReferenceEditorPage outputPage = new ReferenceEditorPage(
+				this, outputData.getType(), OUTPUT_PAGE_ID, "Output");
+		
+		outputPage.setResource(outputData.getResource(OutputDataEditorInput.PARSER_URI));
+		outputPage.setContentProvider(contentProvider);
+		outputPage.setLabelProvider(labelProvider);		
 		
 		try {			
-			addPage(parPage);
+			addPage(outputPage);
 			
-			setActivePage(PARSER_PAGE_ID);
+			setActivePage(OUTPUT_PAGE_ID);
 		} catch (Exception e) {
 			ErrorDialog.openError(getSite().getShell(), "Error",
 					"Could not open editor", new Status(Status.ERROR,
