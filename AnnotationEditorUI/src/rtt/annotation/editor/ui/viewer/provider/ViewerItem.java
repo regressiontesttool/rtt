@@ -71,7 +71,7 @@ public abstract class ViewerItem {
 		this.parent = parent;		
 	}
 	
-	protected abstract String getColumnText(int columnIndex);	
+	public abstract String getColumnText(int columnIndex);	
 	
 	protected final Color getColor() {
 		return ItemColor.getColor(getItemColor());

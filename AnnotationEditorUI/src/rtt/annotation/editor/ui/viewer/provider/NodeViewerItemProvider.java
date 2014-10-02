@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rtt.annotation.editor.model.ClassElement;
+import rtt.annotation.editor.model.ClassElement.ClassType;
 import rtt.annotation.editor.model.ClassModel;
 import rtt.annotation.editor.model.ClassModel.PackageElement;
 
@@ -21,13 +22,13 @@ public final class NodeViewerItemProvider extends ViewerItemProvider {
 				return ItemColor.ANNOTATED;
 			}
 			
-			if (element.hasExtendedAnnotation()) {
-				return ItemColor.ANNOTATED_EXTEND;
-			}
-			
 			if (element.hasValues()) {
 				return ItemColor.ANNOTATED_MEMBER;
-			}					
+			}
+			
+			if (element.hasExtendedAnnotation()) {
+				return ItemColor.ANNOTATED_EXTEND;
+			}								
 			
 			return super.getItemColor(element);
 		}
@@ -38,7 +39,8 @@ public final class NodeViewerItemProvider extends ViewerItemProvider {
 				return ItemFont.BOLD_FONT;
 			}
 			
-			if (element.hasExtendedAnnotation() || element.hasValues()) {
+			if (element.getType() == ClassType.ABSTRACT || 
+					element.getType() == ClassType.INTERFACE) {
 				return ItemFont.ITALIC_FONT;
 			}
 			

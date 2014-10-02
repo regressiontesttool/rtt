@@ -16,7 +16,7 @@ public class ModelElementViewerItem<T extends ModelElement> extends ViewerItem {
 	}
 	
 	@Override
-	protected final String getColumnText(int columnIndex) {
+	public final String getColumnText(int columnIndex) {
 		return getColumnText(element, columnIndex);
 	}
 	

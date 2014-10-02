@@ -18,7 +18,7 @@ public class EditableViewerItem extends ViewerItem {
 	}
 
 	@Override
-	protected String getColumnText(int columnIndex) {
+	public String getColumnText(int columnIndex) {
 		if (columnIndex == 0) {
 			return description;
 		} else if (columnIndex == 1) {

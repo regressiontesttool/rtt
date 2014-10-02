@@ -12,7 +12,7 @@ public class TextViewerItem extends ViewerItem {
 	}
 	
 	@Override
-	protected String getColumnText(int columnIndex) {
+	public String getColumnText(int columnIndex) {
 		if (columnIndex >= 0 && columnIndex < columns.length) {
 			return columns[columnIndex];
 		}

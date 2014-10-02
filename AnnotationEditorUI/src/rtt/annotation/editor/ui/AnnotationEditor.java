@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -63,6 +64,7 @@ import rtt.annotation.editor.ui.viewer.provider.MemberViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.provider.ModelElementViewerItem;
 import rtt.annotation.editor.ui.viewer.provider.NodeViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.provider.PropertyViewerItemProvider;
+import rtt.annotation.editor.ui.viewer.provider.ViewerItem;
 import rtt.annotation.editor.ui.viewer.provider.ViewerItemProvider;
 import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
 
@@ -73,6 +75,18 @@ import rtt.annotation.editor.ui.viewer.util.ViewerSelectionUtil;
  *
  */
 public class AnnotationEditor extends EditorPart implements Observer {
+	
+	private static class ViewerItemComparator extends ViewerComparator {
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			if (e1 instanceof ViewerItem && e2 instanceof ViewerItem) {
+				String e1Text = ((ViewerItem) e1).getColumnText(0);
+				String e2Text = ((ViewerItem) e2).getColumnText(0);
+				return e1Text.compareTo(e2Text);
+			}
+			
+			return super.compare(viewer, e1, e2);
+		}
+	}
 
 	private final class NodeFilter extends ViewerFilter {
 		@Override
@@ -345,6 +359,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		nodeProvider = new NodeViewerItemProvider();		
 		
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		nodeViewer.setComparator(new ViewerItemComparator());
 		nodeViewer.setContentProvider(nodeProvider.getContentProvider());
 		
 		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
