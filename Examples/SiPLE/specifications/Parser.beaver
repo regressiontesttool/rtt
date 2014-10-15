@@ -1,0 +1,385 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/*
+ * @author C. Buerger
+ */
+%package "siple";
+%import "siple.ast.*";
+
+%class "Parser";
+
+// Procedure, Var, Begin, End
+%terminals kPROCEDURE, kVAR, kBEGIN, kEND;
+// If, Then, Else, Fi
+%terminals kIF, kTHEN, kELSE, kFI;
+// While, Do, Od
+%terminals kWHILE, kDO, kOD;
+// Call, Return
+%terminals kCALL, kRETURN;
+// Write, Read
+%terminals kWRITE, kREAD;
+// Boolean, Integer, Real, Pointer
+%terminals kBOOLEAN, kINTEGER, kREAL, kPOINTER;
+// Address, Deref
+%terminals kADDRESS, kDEREF;
+// Not, And, Or
+%terminals kNOT, kAND, kOR;
+// *, +, -, /
+%terminals pSTAR, pPLUS, pMINUS, pSLASH;
+// =, #, <=, >=, <, >
+%terminals pEQUALS, pSHARP, pANGLEBRACKETLEFT_EQUALS,
+	pANGLEBRACKETRIGHT_EQUALS, pANGLEBRACKETLEFT, pANGLEBRACKETRIGHT;
+// (, )
+%terminals pBRACKETOPENROUND, pBRACKETCLOSEROUND;
+// :=, :, ;, ,
+%terminals pCOLON_EQUALS, pCOLON, pSEMICOLON, pCOMMA;
+%terminals IDENTIFIER, CONSTANT;
+
+%goal CompilationUnit;
+// Add to construct EDataType instances of Type in xText. Type is not part of the AST.
+%goal Type;
+
+%typeof IDENTIFIER = "String";
+%typeof CONSTANT = "String";
+
+%typeof CompilationUnit = "CompilationUnit";
+%typeof Declaration = "Declaration";
+%typeof ProcedureDeclaration = "ProcedureDeclaration";
+%typeof VariableDeclaration = "VariableDeclaration";
+%typeof Block = "Block";
+%typeof Statement = "Statement";
+%typeof LValueExpression = "Expression";
+%typeof Expression = "Expression";
+%typeof OrExpr = "Expression";
+%typeof AndExpr = "Expression";
+%typeof EqExpr = "Expression";
+%typeof RelExpr = "Expression";
+%typeof AddExpr = "Expression";
+%typeof MulExpr = "Expression";
+%typeof UnaryExpr = "Expression";
+%typeof PrimExpr = "Expression";
+%typeof ProcedureCall = "ProcedureCall";
+%typeof Type = "Type";
+%typeof TypeList = "java.util.List<Type>";
+%typeof DeclarationList = "List<Declaration>";
+%typeof ParameterList = "List<VariableDeclaration>";
+%typeof StatementList = "List<Statement>";
+%typeof ArgumentList = "List<Expression>";
+
+CompilationUnit = DeclarationList.decls
+	{:
+		return new Symbol(new CompilationUnit(decls));
+	:}
+	;
+
+DeclarationList = Declaration.decl
+	{:
+		return new Symbol(new List<Declaration>().add(decl));
+	:}
+	| DeclarationList.list Declaration.decl
+	{:
+		list.add(decl);
+		return _symbol_list;
+	:}
+	;
+
+Declaration = VariableDeclaration.decl pSEMICOLON
+	{:
+		return _symbol_decl;
+	:}
+	| ProcedureDeclaration.decl pSEMICOLON
+	{:
+		return _symbol_decl;
+	:}
+	;
+
+VariableDeclaration = kVAR IDENTIFIER.id pCOLON Type.type
+	{:
+		return new Symbol(new VariableDeclaration(id, type));
+	:}
+	;
+
+ProcedureDeclaration = kPROCEDURE IDENTIFIER.id pBRACKETOPENROUND ParameterList.paras pBRACKETCLOSEROUND pCOLON Type.returnType Block.body
+	{:
+		return new Symbol(new ProcedureDeclaration(id, paras, returnType, body));
+	:}
+	| kPROCEDURE IDENTIFIER.id pBRACKETOPENROUND pBRACKETCLOSEROUND pCOLON Type.returnType Block.body
+	{:
+		return new Symbol(new ProcedureDeclaration(id, new List<VariableDeclaration>(), returnType, body));
+	:}
+	| kPROCEDURE IDENTIFIER.id pBRACKETOPENROUND ParameterList.paras pBRACKETCLOSEROUND Block.body
+	{:
+		return new Symbol(new ProcedureDeclaration(id, paras, Type.Undefined, body));
+	:}
+	| kPROCEDURE IDENTIFIER.id pBRACKETOPENROUND pBRACKETCLOSEROUND Block.body
+	{:
+		return new Symbol(new ProcedureDeclaration(id, new List<VariableDeclaration>(), Type.Undefined, body));
+	:}
+	;
+
+ParameterList = VariableDeclaration.decl
+	{:
+		return new Symbol(new List<Declaration>().add(decl));
+	:}
+	| ParameterList.list pCOMMA VariableDeclaration.decl
+	{:
+		list.add(decl);
+		return _symbol_list;
+	:}
+	;
+
+Block = kBEGIN StatementList.list kEND
+	{: 
+		return new Symbol(new Block(list));
+	:}
+	;
+
+StatementList =
+	{:
+		return new Symbol(new List<Statement>());
+	:}
+	| StatementList.list Statement.stmt
+	{:
+		list.add(stmt);
+		return _symbol_list;
+	:}
+	;
+
+Statement = Declaration
+	| Block.stmt pSEMICOLON
+	{:
+		return _symbol_stmt;
+	:}
+	| kIF Expression.cond kTHEN StatementList.body kELSE StatementList.alternative kFI pSEMICOLON
+	{:
+		return new Symbol(new If(cond, new Block(body), new Opt(new Block(alternative))));
+	:}
+	| kIF Expression.cond kTHEN StatementList.body kFI pSEMICOLON
+	{:
+		return new Symbol(new If(cond, new Block(body), new Opt()));
+	:}
+	| kWHILE Expression.cond kDO StatementList.body kOD pSEMICOLON
+	{:
+		return new Symbol(new While(cond, new Block(body)));
+	:}
+	| LValueExpression.lexpr pCOLON_EQUALS Expression.rexpr pSEMICOLON
+	{:
+		return new Symbol(new VariableAssignment(lexpr, rexpr));
+	:}
+	| kRETURN Expression.expr pSEMICOLON
+	{:
+		return new Symbol(new ProcedureReturn(new Opt(expr)));
+	:}
+	| kRETURN pSEMICOLON
+	{:
+		return new Symbol(new ProcedureReturn(new Opt()));
+	:}
+	| kWRITE Expression.expr pSEMICOLON
+	{:
+		return new Symbol(new Write(expr));
+	:}
+	| kREAD LValueExpression.expr pSEMICOLON
+	{:
+		return new Symbol(new Read(expr));
+	:}
+	| ProcedureCall.call pSEMICOLON
+	{:
+		return _symbol_call;
+	:}
+	;
+
+LValueExpression = IDENTIFIER.id
+	{:
+		return new Symbol(new Reference(id));
+	:}
+	| kDEREF pBRACKETOPENROUND LValueExpression.expr pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new Dereference(expr));
+	:}
+	;
+
+Expression = OrExpr
+	;
+
+OrExpr = OrExpr.expr1 kOR AndExpr.expr2
+	{:
+		return new Symbol(new Or(expr1, expr2));
+	:}
+	| AndExpr
+	;
+
+AndExpr = AndExpr.expr1 kAND EqExpr.expr2
+	{:
+		return new Symbol(new And(expr1, expr2));
+	:}
+	| EqExpr
+	;
+
+EqExpr = EqExpr.expr1 pEQUALS RelExpr.expr2
+	{:
+		return new Symbol(new Equal(expr1, expr2));
+	:}
+	| EqExpr.expr1 pSHARP RelExpr.expr2
+	{:
+		return new Symbol(new Not(new Equal(expr1, expr2)));
+	:}
+	| RelExpr
+	;
+
+RelExpr = RelExpr.expr1 pANGLEBRACKETRIGHT AddExpr.expr2
+	{:
+		return new Symbol(new GreaterThan(expr1, expr2));
+	:}
+	| RelExpr.expr1 pANGLEBRACKETLEFT AddExpr.expr2
+	{:
+		return new Symbol(new LesserThan(expr1, expr2));
+	:}
+	| RelExpr.expr1 pANGLEBRACKETRIGHT_EQUALS AddExpr.expr2
+	{:
+		return new Symbol(new GreaterThanEqual(expr1, expr2));
+	:}
+	| RelExpr.expr1 pANGLEBRACKETLEFT_EQUALS AddExpr.expr2
+	{:
+		return new Symbol(new LesserThanEqual(expr1, expr2));
+	:}
+	| AddExpr
+	;
+
+AddExpr = AddExpr.expr1 pPLUS MulExpr.expr2
+	{:
+		return new Symbol(new Addition(expr1, expr2));
+	:}
+	| AddExpr.expr1 pMINUS MulExpr.expr2
+	{:
+		return new Symbol(new Subtraction(expr1, expr2));
+	:}
+	| MulExpr
+	;
+
+MulExpr = MulExpr.expr1 pSTAR UnaryExpr.expr2
+	{:
+		return new Symbol(new Multiplication(expr1, expr2));
+	:}
+	| MulExpr.expr1 pSLASH UnaryExpr.expr2
+	{:
+		return new Symbol(new Division(expr1, expr2));
+	:}
+	| UnaryExpr
+	;
+
+UnaryExpr = pMINUS PrimExpr.expr
+	{:
+		return new Symbol(new UMinus(expr));
+	:}
+	| kNOT PrimExpr.expr
+	{:
+		return new Symbol(new Not(expr));
+	:}
+	| PrimExpr
+	;
+
+PrimExpr = CONSTANT.co
+	{:
+		return new Symbol(new Constant(co));
+	:}
+	| IDENTIFIER.id
+	{:
+		return new Symbol(new Dereference(new Reference(id)));
+	:}
+	| kADDRESS pBRACKETOPENROUND IDENTIFIER.id pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new Reference(id));
+	:}
+	| kDEREF pBRACKETOPENROUND Expression.expr pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new Dereference(expr));
+	:}
+	| ProcedureCall
+	| pBRACKETOPENROUND Expression.expr pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new NestedExpression(expr));
+	:}
+	;
+
+ProcedureCall = IDENTIFIER.id pBRACKETOPENROUND ArgumentList.list pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new ProcedureCall(new Dereference(new Reference(id)), list));
+	:}
+	| IDENTIFIER.id pBRACKETOPENROUND pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new ProcedureCall(new Dereference(new Reference(id)), new List<Expression>()));
+	:}
+	| kCALL pBRACKETOPENROUND Expression.expr pCOLON ArgumentList.list pBRACKETCLOSEROUND
+	{:
+		return new Symbol(new ProcedureCall(expr, list));
+	:}
+	| kCALL pBRACKETOPENROUND Expression.expr pBRACKETCLOSEROUND
+	{:
+			return new Symbol(new ProcedureCall(expr, new List<Expression>()));
+	:}
+	;
+
+ArgumentList = Expression.expr
+	{:
+		return new Symbol(new List<Expression>().add(expr));
+	:}
+	| ArgumentList.list pCOMMA Expression.expr
+	{:
+		list.add(expr);
+		return _symbol_list;
+	:}
+	;
+	
+Type = kBOOLEAN
+	{:
+		return new Symbol(Type.Boolean);
+	:}
+	| kINTEGER
+	{:
+		return new Symbol(Type.Integer);
+	:}
+	| kREAL
+	{:
+		return new Symbol(Type.Real);
+	:}
+	| kPOINTER pBRACKETOPENROUND Type.type pBRACKETCLOSEROUND
+	{:
+		return new Symbol(Type.newPointer(type));
+	:}
+	| kPROCEDURE pBRACKETOPENROUND TypeList.paraTypes pBRACKETCLOSEROUND pCOLON Type.returnType
+	{:
+		return new Symbol(Type.newProcedure(paraTypes.toArray(new Type[0]), returnType));
+	:}
+	| kPROCEDURE pBRACKETOPENROUND pBRACKETCLOSEROUND pCOLON Type.returnType
+	{:
+		return new Symbol(Type.newProcedure(new Type[0], returnType));
+	:}
+	| kPROCEDURE pBRACKETOPENROUND TypeList.paraTypes pBRACKETCLOSEROUND
+	{:
+		return new Symbol(Type.newProcedure(paraTypes.toArray(new Type[0]), Type.Undefined));
+	:}
+	| kPROCEDURE pBRACKETOPENROUND pBRACKETCLOSEROUND
+	{:
+		return new Symbol(Type.newProcedure(new Type[0], Type.Undefined));
+	:}
+	;
+
+TypeList = Type.type
+	{:
+		java.util.List<Type> list = new java.util.LinkedList<Type>();
+		list.add(type);
+		return new Symbol(list);
+	:}
+	| TypeList.list pCOMMA Type.type
+	{:
+		list.add(type);
+		return _symbol_list;
+	:}
+	;

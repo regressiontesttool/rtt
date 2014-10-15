@@ -1,0 +1,61 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+aspect NameAnalysis {
+	/** Ordinary Name Analysis */
+	
+	syn LinkedList<Declaration> CompilationUnit.LookUp(String name) {
+		LinkedList<Declaration> result = new LinkedList<Declaration>();
+		for (int i = 0; i < getNumDeclaration(); i++) // Declared within compilation unit
+			result.addAll(getDeclaration(i).LookUpLocal(name));
+		return result;
+	}
+	eq CompilationUnit.getDeclaration(int index).LookUp(String name) =
+		LookUp(name);
+	eq Block.getStatement(int index).LookUp(String name) {
+		LinkedList<Declaration> result = new LinkedList<Declaration>();
+		if (IsProcedureBody() != null)
+			for (VariableDeclaration para:IsProcedureBody().getParameterList())
+				if (para.getName().equals(name))
+					result.add(para);
+		for (int i = 0; i <= index; i++) // Declare before use
+			result.addAll(getStatement(i).LookUpLocal(name));
+		return !result.isEmpty() ? result : LookUp(name);
+	}
+	
+	syn LinkedList<Declaration> Statement.LookUpLocal(String name) =
+		new LinkedList<Declaration>();
+	eq ProcedureDeclaration.LookUpLocal(String name) {
+		LinkedList<Declaration> result = new LinkedList<Declaration>();
+		if (getName().equals(name))
+			result.add(this);
+		return result;
+	}
+	eq VariableDeclaration.LookUpLocal(String name) {
+		LinkedList<Declaration> result = new LinkedList<Declaration>();
+		if (!IsParameterDeclaration() && getName().equals(name))
+			result.add(this);
+		return result;
+	}
+	
+	eq CompilationUnit.MainProcedure() {
+		LinkedList<Declaration> scope = LookUp("main");
+		if (scope.size() == 1 && scope.get(0) instanceof ProcedureDeclaration)
+			return (ProcedureDeclaration)scope.get(0);
+		return null;
+	}
+	
+	eq Reference.Declaration() {
+		LinkedList<Declaration> scope = LookUp(getName());
+		return scope.size() == 1 ? scope.get(0) : null;
+	}
+}

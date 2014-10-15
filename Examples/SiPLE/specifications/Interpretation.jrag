@@ -1,0 +1,281 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+aspect Interpretation {
+	/** Program Interpretation */
+	
+	eq CompilationUnit.Interpret() {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		State vm = new State();
+		// Allocate all global variables:
+		for (int i = 0; i < getNumDeclaration(); i++)
+			getDeclaration(i).Interpret(vm);
+		// Prepare the main procedure's execution environment:
+		Frame envPrototype = (Frame)vm.access(MainProcedure()).value;
+		Frame newEnv = new Frame();
+		newEnv.implementation = envPrototype.implementation;
+		newEnv.closure = envPrototype.closure;
+		Frame oldEnv = vm.currentFrame;
+		vm.currentFrame = newEnv;
+		// Execute the main procedure:
+		newEnv.implementation.getBody().Interpret(vm);
+		// Restore the old execution environment:
+		vm.currentFrame = oldEnv;
+		return vm;
+	}
+	
+	public void ProcedureDeclaration.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		Frame envPrototype = new Frame();
+		envPrototype.implementation = this;
+		envPrototype.closure = vm.currentFrame;
+		vm.allocate(this, envPrototype);
+	}
+	public void VariableDeclaration.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		vm.allocate(this, null);
+	}
+	public void Block.Interpret(State vm) {
+		for (int i = 0; i < getNumStatement(); i++) {
+			getStatement(i).Interpret(vm);
+			if (vm.currentFrame.returnValue != null)
+				return;
+		}
+	}
+	public void If.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		if ((Boolean)getCondition().Value(vm))
+			getBody().Interpret(vm);
+		else if (hasAlternative())
+			getAlternative().Interpret(vm);
+	}
+	public void While.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		while ((Boolean)getCondition().Value(vm)) {
+			getBody().Interpret(vm);
+			if (vm.currentFrame.returnValue != null)
+				return;
+		}
+	}
+	public void VariableAssignment.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		MemoryLocation loc = (MemoryLocation)getLValue().Value(vm);
+		loc.value = getRValue().Value(vm);
+	}
+	public void ProcedureReturn.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		if (hasExpression())
+			vm.currentFrame.returnValue = getExpression().Value(vm);
+		else vm.currentFrame.returnValue = Type.Undefined;
+	}
+	public void Write.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		vm.stdOut.append(getExpression().Value(vm));
+		vm.stdOut.append("\n");
+	}
+	public void Read.Interpret(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		MemoryLocation loc = (MemoryLocation)getExpression().Value(vm);
+		loc.value = ReadDialog.execute(
+				getExpression().Type(),
+				vm.stdOut.toString());
+	}
+	public void Expression.Interpret(State vm) {
+		Value(vm); /* May contain procedure calls with side effects. */
+	}
+	
+	/** Expression Evaluation */
+	
+	public Object Constant.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (Type().domain) {
+		case Boolean: return AsBoolean();
+		case Integer: return AsInteger();
+		default: return AsReal();}
+	}
+	public Object Reference.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		return vm.access(Declaration());
+	}
+	public Object ProcedureCall.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		// Evaluate the Procedure operand:
+		Frame envPrototype = (Frame)getProcedure().Value(vm);
+		// Evaluate the arguments:
+		Object[] args = new Object[getNumArgument()];
+		for (int i = 0; i < args.length; i++)
+			args[i] = getArgument(i).Value(vm);
+		// Prepare the execution environment:
+		Frame newEnv = new Frame();
+		newEnv.implementation = envPrototype.implementation;
+		newEnv.closure = envPrototype.closure;
+		Frame oldEnv = vm.currentFrame;
+		vm.currentFrame = newEnv;
+		// Execute the procedure:
+		for (int i = 0; i < args.length; i++)
+			vm.allocate(newEnv.implementation.getParameter(i), args[i]);
+		newEnv.implementation.getBody().Interpret(vm);
+		Object result = null;
+		if (Type() != Type.Undefined)
+			result = newEnv.returnValue;
+		// Restore the old execution environment:
+		vm.currentFrame = oldEnv;
+		return result;
+	}
+	public Object NestedExpression.Value(State vm) {
+		return getExpression().Value(vm);
+	}
+	
+	/** ALU Operations **/
+	
+	public Object Not.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		return !(Boolean)getOperand().Value(vm);
+	}
+	public Object UMinus.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (Type().domain) {
+		case Integer: return -(Integer)getOperand().Value(vm);
+		default: return -(Float)getOperand().Value(vm);}
+	}
+	public Object RealCoercion.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		return new Float((Integer)getOperand().Value(vm));
+	}
+	public Object Dereference.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		MemoryLocation loc = (MemoryLocation)getOperand().Value(vm);
+		if (loc.value == null)
+			throw new InterpretationException(
+					"Read access to uninitialized entity.");
+		return loc.value;
+	}
+	
+	public Object And.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		return (Boolean)getOperand1().Value(vm) &&
+			(Boolean)getOperand2().Value(vm);
+	}
+	public Object Or.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		return (Boolean)getOperand1().Value(vm) ||
+			(Boolean)getOperand2().Value(vm);
+	}
+	
+	public Object Equal.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (getOperand1().Type().domain) {
+		case Boolean: return ((Boolean)getOperand1().Value(vm)).booleanValue() ==
+			((Boolean)getOperand2().Value(vm)).booleanValue();
+		case Integer: return ((Integer)getOperand1().Value(vm)).intValue() ==
+			((Integer)getOperand2().Value(vm)).intValue();
+		case Real: return ((Float)getOperand1().Value(vm)).floatValue() ==
+			((Float)getOperand2().Value(vm)).floatValue();
+		default: return getOperand1().Value(vm) == getOperand2().Value(vm);}
+	}
+	public Object GreaterThan.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (getOperand1().Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) >
+				(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) >
+			(Float)getOperand2().Value(vm);}
+	}
+	public Object LesserThan.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (getOperand1().Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) <
+				(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) <
+			(Float)getOperand2().Value(vm);}
+	}
+	public Object GreaterThanEqual.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (getOperand1().Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) >=
+				(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) >=
+			(Float)getOperand2().Value(vm);}
+	}
+	public Object LesserThanEqual.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (getOperand1().Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) <=
+				(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) <=
+			(Float)getOperand2().Value(vm);}
+	}
+	
+	public Object Addition.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) +
+			(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) +
+			(Float)getOperand2().Value(vm);}
+	}
+	public Object Subtraction.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) -
+			(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) -
+			(Float)getOperand2().Value(vm);}
+	}
+	public Object Multiplication.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (Type().domain) {
+		case Integer: return (Integer)getOperand1().Value(vm) *
+			(Integer)getOperand2().Value(vm);
+		default: return (Float)getOperand1().Value(vm) *
+			(Float)getOperand2().Value(vm);}
+	}
+	public Object Division.Value(State vm) {
+		if (!IsCorrectLocal())
+			throw new InterpretationException();
+		switch (Type().domain) {
+		case Integer: Integer op2_1 = (Integer)getOperand2().Value(vm);
+			if (op2_1 == 0)
+				throw new InterpretationException("Devision by zero.");
+			return (Integer)getOperand1().Value(vm) / op2_1;
+		default: Float op2_2 = (Float)getOperand2().Value(vm);
+			if (op2_2 == 0.0)
+				throw new InterpretationException("Devision by zero.");
+			return (Float)getOperand1().Value(vm) / op2_2;}
+	}
+}

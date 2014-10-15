@@ -1,0 +1,74 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+aspect TypeCoercions {
+	// Coercion can only happen once! The following hack --- to use a flag to
+	// test for rewrite applicability --- avoids horrible execution times and
+	// memory requirements because of some JastAdd issues.
+	
+	private boolean BinaryExpression.coercionTested = false;
+	private boolean VariableAssignment.coercionTested = false;
+	
+	rewrite BinaryExpression {
+		when (!coercionTested)
+		to BinaryExpression {
+			coercionTested = true;
+			if (getOperand1().Type().isReal() &&
+					getOperand2().Type().isInteger())
+				setOperand2(new RealCoercion(getOperand2()));
+			else if (getOperand1().Type().isInteger() &&
+					getOperand2().Type().isReal())
+				setOperand1(new RealCoercion(getOperand1()));
+			return this;
+		}
+	}
+	
+	rewrite VariableAssignment {
+		when (!coercionTested)
+		to VariableAssignment {
+			coercionTested = true;
+			if (getRValue().Type().isInteger() &&
+					getLValue().Type().isPointer() &&
+					getLValue().Type().rtype.isReal()) {
+				setRValue(new RealCoercion(getRValue()));
+			}
+			return this;
+		}
+	}
+	
+	/*
+	rewrite BinaryExpression {
+		when (getOperand1().Type().isReal() &&
+				getOperand2().Type().isInteger())
+		to BinaryExpression {
+			setOperand2(new RealCoercion(getOperand2()));
+			return this;
+		}
+		when (getOperand1().Type().isInteger() &&
+			getOperand2().Type().isReal())
+		to BinaryExpression {
+			setOperand1(new RealCoercion(getOperand1()));
+			return this;
+		}
+	}
+
+	rewrite VariableAssignment {
+		when (getRValue().Type().isInteger() &&
+				getLValue().Type().isPointer() &&
+				getLValue().Type().rtype.isReal())
+		to VariableAssignment {
+			setRValue(new RealCoercion(getRValue()));
+			return this;
+		}
+	}
+	*/
+}

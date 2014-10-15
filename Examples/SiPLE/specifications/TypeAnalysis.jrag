@@ -1,0 +1,112 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+aspect TypeAnalysis {
+	/** Statements with Type Constraints **/
+	
+	eq ProcedureDeclaration.Type() {
+		Type[] paras = new Type[getNumParameter()];
+		for (int i = 0; i < getNumParameter(); i++)
+			paras[i] = getParameter(i).Type();
+		return Type.newProcedure(paras, getReturnType());
+	}
+	eq VariableDeclaration.Type() = getDeclaredType();
+	eq VariableAssignment.Type() = getLValue().Type().isPointer() ?
+		Type.equals(getLValue().Type().rtype, getRValue().Type()) :
+		Type.ERROR_TYPE;
+	eq ProcedureReturn.Type() {
+		ProcedureDeclaration decl = ProcedureInContext();
+		if (decl == null)
+			return Type.ERROR_TYPE;
+		if (!hasExpression())
+			if (!decl.getReturnType().isUndefined())
+				return Type.ERROR_TYPE;
+			else return Type.Undefined;
+		return Type.equals(decl.getReturnType(), getExpression().Type());
+	}
+	eq Write.Type() {
+		Type type = getExpression().Type();
+		if (type.isPointer() || type.isProcedure() || type.isUndefined())
+			return Type.ERROR_TYPE;
+		return type;
+	}
+	eq Read.Type() {
+		Type type = getExpression().Type();
+		if (!type.isPointer())
+			return Type.ERROR_TYPE;
+		if (type.rtype.isPointer() || type.rtype.isProcedure() || type.rtype.isUndefined())
+			return Type.ERROR_TYPE;
+		return type;
+	}
+	
+	/** Expressions' Type **/
+	
+	eq Constant.Type() {
+		if (AsBoolean() != null)
+			return Type.Boolean;
+		if (AsReal() != null)
+			return Type.Real;
+		if (AsInteger() != null)
+			return Type.Integer;
+		return Type.ERROR_TYPE;
+	}
+	eq Reference.Type() = Declaration() != null ?
+			Type.newPointer(Declaration().Type()) :
+			Type.ERROR_TYPE;
+	eq ProcedureCall.Type() {
+		Type type = getProcedure().Type();
+		if (!type.isProcedure())
+			return Type.ERROR_TYPE;
+		if (getNumArgument() != type.paras.length)
+			return Type.ERROR_TYPE;
+		for (int i = 0; i < getNumArgument(); i++)
+			if (!Type.bequals(type.paras[i], getArgument(i).Type()))
+				return Type.ERROR_TYPE;
+		return type.rtype;
+	}
+	eq NestedExpression.Type() = getExpression().Type();
+	eq Not.Type() = getOperand().Type().isBoolean() ?
+			Type.Boolean :
+			Type.ERROR_TYPE;
+	eq UMinus.Type() =
+		getOperand().Type().isReal() ||
+		getOperand().Type().isInteger() ?
+			getOperand().Type() :
+			Type.ERROR_TYPE;
+	eq RealCoercion.Type() = getOperand().Type().isInteger() ?
+			Type.Real :
+			Type.ERROR_TYPE;
+	eq Dereference.Type() = getOperand().Type().isPointer() ?
+			getOperand().Type().rtype :
+			Type.ERROR_TYPE;
+	eq LogicExpression.Type() =
+		getOperand1().Type().isBoolean() &&
+		getOperand2().Type().isBoolean() ?
+			Type.Boolean :
+			Type.ERROR_TYPE;
+	eq EqualityExpression.Type() =
+		Type.bequals(getOperand1().Type(), getOperand2().Type()) &&
+		(getOperand1().Type().isReal() ||
+		getOperand1().Type().isInteger()) ?
+			Type.Boolean :
+			Type.ERROR_TYPE;
+	eq Equal.Type() =
+		Type.bequals(getOperand1().Type(), getOperand2().Type()) ?
+			Type.Boolean :
+			Type.ERROR_TYPE;
+	eq ArithmeticExpression.Type() =
+		Type.bequals(getOperand1().Type(), getOperand2().Type()) &&
+		(getOperand1().Type().isReal() ||
+		getOperand1().Type().isInteger()) ?
+			getOperand1().Type() :
+			Type.ERROR_TYPE;
+}

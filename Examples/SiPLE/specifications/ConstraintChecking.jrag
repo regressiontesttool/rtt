@@ -1,0 +1,57 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+aspect ConstraintChecking {
+	eq ASTNode.IsCorrect() {
+		if (!IsCorrectLocal())
+			return false;
+		for (int i = 0; i < getNumChild(); i++)
+			if (!getChild(i).IsCorrect())
+				return false;
+		return true;
+	}
+	eq ASTNode.IsCorrectLocal() = true;
+	// WORKAROUND: Superfluous equations required for EMF adaptation:
+	eq CompilationUnit.IsCorrect() = super.IsCorrect();
+	eq Statement.IsCorrect() = super.IsCorrect();
+	eq Statement.IsCorrectLocal() = super.IsCorrectLocal();
+	
+	eq CompilationUnit.IsCorrectLocal() {
+		if (MainProcedure() == null)
+			return false;
+		ProcedureDeclaration main = MainProcedure();
+		return main.getNumParameter() == 0 &&
+				main.getReturnType() == Type.Undefined;
+	}
+	eq ProcedureDeclaration.IsCorrectLocal() {
+		// Procedures with a return type must finish with a return statement:
+		if (getReturnType() != Type.Undefined) {
+			if (getBody().getNumStatement() == 0)
+				return false;
+			Statement lastStatement = getBody().getStatement(
+					getBody().getNumStatement() - 1);
+			if (!(lastStatement instanceof ProcedureReturn))
+				return false;
+		}
+		// The procedure declaration must not be a redeclaration:
+		return LookUp(getName()).size() < 2;
+	}
+	eq VariableDeclaration.IsCorrectLocal() =
+		LookUp(getName()).size() < 2; // Forbid redeclarations
+	eq If.IsCorrectLocal() = getCondition().Type() == Type.Boolean;
+	eq While.IsCorrectLocal() = getCondition().Type() == Type.Boolean;
+	eq VariableAssignment.IsCorrectLocal() = Type() != Type.ERROR_TYPE;
+	eq ProcedureReturn.IsCorrectLocal() = Type() != Type.ERROR_TYPE;
+	eq Write.IsCorrectLocal() = Type() != Type.ERROR_TYPE;
+	eq Read.IsCorrectLocal() = Type() != Type.ERROR_TYPE;
+	eq Expression.IsCorrectLocal() = Type() != Type.ERROR_TYPE;
+}

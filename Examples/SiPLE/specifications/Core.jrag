@@ -1,0 +1,126 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+import java.util.*;
+
+import siple.*;
+import siple.State.*;
+
+/**
+ * For complicated computations about SiPLE programs, often simple support
+ * methods are required that refine nodes' local information --- like
+ * conversions of terminal nodes' value --- or distribute local context
+ * information to remotely located nodes further down the AST or vice versa.
+ * To this end, the access support API is provided.
+ * @author C. Bürger
+ */
+aspect AccessSupport {
+	// AST nodes can be compared w.r.t. their unique Dewey addresses.
+	ASTNode implements Comparable<ASTNode>;
+	public int ASTNode.compareTo(ASTNode o) {
+		return o.NodeAddress().compareTo(NodeAddress());
+	}
+	
+	// Find the AST's root node.
+	syn CompilationUnit ASTNode.ASTRoot();
+	// Each AST node has an unique Dewey address.
+	inh DeweyAddress ASTNode.NodeAddress();
+	
+	// Each declaration knows if it is a parameter declaration.
+	inh boolean Declaration.IsParameterDeclaration();
+	// Find the procedure declaration the block is the body - i.e.
+	// implementation - of (null, if the block is not a procedure's body).
+	inh ProcedureDeclaration Block.IsProcedureBody();
+	// Find the closest procedure containing the statement.
+	inh ProcedureDeclaration Statement.ProcedureInContext();
+	
+	// Each procedure knows all its return statements.
+	coll java.util.List<ProcedureReturn> ProcedureDeclaration.Returns()
+		[new ArrayList<ProcedureReturn>()] with add;
+	
+	// Each procedure knows all its local declarations.
+	coll java.util.List<Declaration> ProcedureDeclaration.Decls()
+		[new ArrayList<Declaration>()] with add;
+	
+	// Interpret a constant as a value of a certain type (null, iff it is not).
+	syn Boolean Constant.AsBoolean();
+	syn Integer Constant.AsInteger();
+	syn Float Constant.AsReal();
+}
+
+/**
+ * SiPLE's ordinary name space is block-structured. Especially, procedure
+ * declarations can be nested and consequently procedures have a closure. All
+ * globally declared entities can be used before their declaration. For all
+ * other entities the declare before use rule applies. The supported name
+ * analysis provides facillities to search for an entity by name. The search
+ * returns all appropriate entities in scope. Additionally, each construct that
+ * must be associated with exactly one entity (E.g. references) has an
+ * attribute, that refers to the associated construct or is null, iff the
+ * construct does not exist or is ambiguous.
+ * @author C. Bürger
+ */
+aspect NameAnalysis {
+	// Ordinary name space:
+	inh LinkedList<Declaration> ASTNode.LookUp(String name);
+	syn ProcedureDeclaration CompilationUnit.MainProcedure();
+	syn Declaration Reference.Declaration();
+}
+
+/**
+ * SiPLE is a statically, strongly typed language. The supported type analysis
+ * is program execution independent and specifies a type for all expressions,
+ * declarations and statements with type constraints. Iff an expression's or
+ * statement's type constraints are not satisfied, its type is a special
+ * error type.
+ * 
+ * Further, SiPLE supports automatic type coercions from integer to real
+ * numbers.
+ * @author C. Bürger
+ */
+aspect TypeAnalysis {
+	syn Type Declaration.Type();
+	syn Type VariableAssignment.Type();
+	syn Type ProcedureReturn.Type();
+	syn Type Write.Type();
+	syn Type Read.Type();
+	syn Type Expression.Type();
+}
+
+/**
+ * SiPLE programs and program fragments can be statically checked for
+ * well-formedness.
+ */
+aspect ConstraintChecking {
+	// Check a program fragment (The construct and its subtree)
+	syn boolean ASTNode.IsCorrect();
+	// Check a program construct (Exculding its subtree)
+	syn boolean ASTNode.IsCorrectLocal();
+}
+
+/**
+ * SiPLE programs can be interpreted. To interpret a SiPLE program means to
+ * execute its statements, starting with a call to the main procedure. Each
+ * statement can change the program's internal state. The interpretation's
+ * result is either, an interpretation exception iff the program is erroneous
+ * or the final state otherwise. Since SiPLE is Turing complete, the
+ * interpretation of a program might also not terminate at all.
+ * 
+ * Instead of interpreting the complete program at once, it is also possible
+ * to interpret single statements or to compute the value of single
+ * expressions starting from a given interpretation state. Again, errors
+ * encountered while interpretation result in appropriate exceptions.
+ * @author C. Bürger
+ */
+aspect Interpretation {
+	syn State CompilationUnit.Interpret();
+	public abstract void Statement.Interpret(State vm)
+		throws InterpretationException;
+	public abstract Object Expression.Value(State vm)
+		throws InterpretationException;
+}

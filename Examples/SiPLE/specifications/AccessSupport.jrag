@@ -1,0 +1,56 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+aspect AccessSupport {
+	eq ASTNode.ASTRoot() = getParent().ASTRoot();
+	eq CompilationUnit.ASTRoot() = this;
+	
+	syn DeweyAddress CompilationUnit.NodeAddress() =
+		new DeweyAddress().addAddressPart(1);
+	eq ASTNode.getChild(int index).NodeAddress() =
+		NodeAddress().clone().addAddressPart(index + 1);
+	
+	eq CompilationUnit.getDeclaration(int index).IsParameterDeclaration() = false;
+	eq ProcedureDeclaration.getParameter(int index).IsParameterDeclaration() = true;
+	
+	eq ProcedureDeclaration.getBody().IsProcedureBody() = this;
+	eq Block.getStatement(int index).IsProcedureBody() = null;
+	
+	eq CompilationUnit.getDeclaration(int index).ProcedureInContext() = null;
+	eq ProcedureDeclaration.getBody().ProcedureInContext() = this;
+	
+	ProcedureReturn contributes this when ProcedureInContext() != null
+		to ProcedureDeclaration.Returns() for ProcedureInContext();
+	
+	Declaration contributes this when ProcedureInContext() != null
+		to ProcedureDeclaration.Decls() for ProcedureInContext();
+	
+	eq Constant.AsBoolean() {
+		if ("true".equals(getLexem()))
+			return true;
+		if ("false".equals(getLexem()))
+			return false;
+		return null;
+	}
+	eq Constant.AsInteger() {
+		try {
+			return Integer.parseInt(getLexem());
+		} catch (Exception e) {return null;}
+	}
+	eq Constant.AsReal() {
+		if (!getLexem().contains("."))
+			return null;
+		try {
+			return Float.parseFloat(getLexem());
+		} catch (Exception e) {return null;}
+	}
+}

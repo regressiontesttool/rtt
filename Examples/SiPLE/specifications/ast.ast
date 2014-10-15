@@ -1,0 +1,71 @@
+/**
+ * <copyright>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the BSD 3-clause license which accompanies this distribution.
+ *
+ * </copyright>
+ */
+
+/**
+ * @author C. Bürger
+ */
+
+CompilationUnit ::= Declaration*;
+
+abstract Statement;
+	
+	Block:Statement ::= Statement*;
+	If:Statement ::= Condition:Expression Body:Block [Alternative:Block];
+	While:Statement ::= Condition:Expression Body:Block;
+	VariableAssignment:Statement ::= LValue:Expression RValue:Expression;
+	ProcedureReturn:Statement ::= [Expression];
+	Write:Statement ::= Expression;
+	Read:Statement ::= Expression;
+	
+	abstract Declaration:Statement ::= <Name:String>;
+		
+		ProcedureDeclaration:Declaration ::=
+				Parameter:VariableDeclaration*
+				<ReturnType:Type>
+				Body:Block;
+		VariableDeclaration:Declaration ::=
+				<DeclaredType:Type>;
+	
+	abstract Expression:Statement;
+		
+		Constant:Expression ::= <Lexem:String>;
+		Reference:Expression ::= <Name:String>;
+		ProcedureCall:Expression ::= Procedure:Expression Argument:Expression*;
+		NestedExpression:Expression ::= Expression;
+		
+		abstract UnaryExpression:Expression ::= Operand:Expression;
+			
+			Not:UnaryExpression;
+			UMinus:UnaryExpression;
+			RealCoercion:UnaryExpression;
+			Dereference:UnaryExpression;
+			
+		abstract BinaryExpression:Expression ::=
+				Operand1:Expression
+				Operand2:Expression;
+			
+			abstract LogicExpression:BinaryExpression;
+			
+				And:LogicExpression;
+				Or:LogicExpression;
+				
+			abstract EqualityExpression:BinaryExpression;
+			
+				Equal:EqualityExpression;
+				GreaterThan:EqualityExpression;
+				LesserThan:EqualityExpression;
+				GreaterThanEqual:EqualityExpression;
+				LesserThanEqual:EqualityExpression;
+				
+			abstract ArithmeticExpression:BinaryExpression;
+				
+				Addition:ArithmeticExpression;
+				Subtraction:ArithmeticExpression;
+				Multiplication:ArithmeticExpression;
+				Division:ArithmeticExpression;
