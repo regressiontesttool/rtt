@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SiPLE" default="build-jar">
+
+	<!-- - - - - - - - - - - - - - - - - - 
+	      target: clean               
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="clean">
+		<delete dir="src-gen" failonerror="false" />
+		<delete dir="java-bin" failonerror="false" />
+
+		<mkdir dir="src-gen" />
+		<mkdir dir="java-bin" />
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+	      target: make_syntax                      
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="make_syntax">
+		<java jar="tools/jflex.jar" fork="true" failonerror="true">
+			<arg line="-d src-gen/siple specifications/Lexer.jflex" />
+		</java>
+
+		<java jar="tools/beaver.jar" fork="true" failonerror="true">
+			<arg line="-c -d src-gen specifications/Parser.beaver" />
+		</java>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+	      target: make_binary                      
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="make_binary">
+		<javac srcdir="src:src-gen" destdir="java-bin"
+			classpath="tools/beaver-rt.jar"
+			encoding="utf-8" deprecation="true"
+			failonerror="true">			
+		</javac>
+	</target>
+
+	<!-- ================================= 
+          target: build-jar              
+         ================================= -->
+    <target name="build-jar" depends="clean">
+        
+    	<antcall target="make_syntax" />    	
+    	<java jar="tools/jastadd2.jar" fork="true" failonerror="true">
+    		<arg line="--rewrite --package='siple.ast' --o=src-gen specifications/*.ast specifications/*.jrag"/>
+    	</java>
+    	<antcall target="make_binary" />
+    	 
+    </target>
+
+
+
+
+</project>
