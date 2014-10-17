@@ -1,4 +1,15 @@
-/bin
-/src-gen
-/java-bin
-/siple.jar
+# This program and the accompanying materials are made available under the
+# terms of the MIT license (X11 license) which accompanies this distribution.
+
+# author: C. Bürger
+
+# Ignore backup files of common text editors:
+**/*~
+# Ignore Mac Os X Desktop Services Store configuration files:
+**/.DS_Store
+# Ignore generated code directories:
+**/*-gen
+# Ignore generated binary directories:
+**/*bin
+# Ignore generated jars:
+/*.jar
