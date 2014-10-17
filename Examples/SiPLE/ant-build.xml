@@ -54,8 +54,5 @@
     	</java>
     	<antcall target="make_binary" />    	 
     </target>
-
-
-
-
+	
 </project>
