@@ -38,6 +38,51 @@ public class DataGenerator {
 		return element;
 	}
 	
+	private void handleResult(final Object object, Element element) 
+			throws ReflectiveOperationException {
+		
+		if (object != null) {
+			if (objectAddresses.containsKey(object)) {
+				element.setElementType(ElementType.REFERENCE);
+				element.setValue(objectAddresses.get(object));
+			} else {
+				Class<?> objectType = object.getClass();
+				
+				if (AnnotationProcessor.isNode(object)) {
+					objectAddresses.put(object, element.getAddress());
+					
+					element.setElementType(ElementType.NODE);
+					element.setValue(objectType.getName());
+
+					handleNode(object, element);
+				}
+				
+				if (element.getElements().isEmpty()) {
+					if (objectType.isArray()) {
+						element.setElementType(ElementType.NODE);
+						element.setValue(objectType.getSimpleName());						
+						handleArray(object, element);
+					} else if (object instanceof Iterable<?>) {
+						element.setElementType(ElementType.NODE);
+						element.setValue(objectType.getName());						
+						handleIterable((Iterable<?>) object, element);
+					} else if (object instanceof Map<?, ?>) {
+						element.setElementType(ElementType.NODE);
+						element.setValue(objectType.getName());
+						element.setGeneratedBy(GeneratorType.MAP);
+						
+						handleMap((Map<?, ?>) object, element);
+					}						
+				}
+				
+				if (element.getValue() == null) {
+					element.setElementType(ElementType.VALUE);
+					element.setValue(object.toString());
+				}				
+			}
+		}
+	}
+	
 	private void handleNode(final Object object, Element element) 
 			throws ReflectiveOperationException {	
 		
@@ -61,60 +106,20 @@ public class DataGenerator {
 			childAddress++;			
 		}
 	}
-	
-	private void handleResult(final Object object, Element element) 
-			throws ReflectiveOperationException {
-		
-		if (object != null) {
-			if (objectAddresses.containsKey(object)) {
-				element.setElementType(ElementType.REFERENCE);
-				element.setValue(objectAddresses.get(object));
-			} else {
-				Class<?> objectType = object.getClass();
-
-				if (object.getClass().isArray()) {
-					element.setElementType(ElementType.NODE);
-					element.setValue(objectType.getSimpleName());
-					handleArray(object, element);
-					
-				} else if (object instanceof Iterable<?>) {
-					element.setElementType(ElementType.NODE);
-					element.setValue(objectType.getName());
-					handleIterable((Iterable<?>) object, element);
-					
-				} else if (object instanceof Map<?, ?>) {
-					element.setElementType(ElementType.NODE);
-					element.setValue(objectType.getName());					
-//					handleMap((Map<?, ?>) object, element);
-					
-				} else if (AnnotationProcessor.isNode(object)) {
-					objectAddresses.put(object, element.getAddress());
-					
-					element.setElementType(ElementType.NODE);
-					element.setValue(objectType.getName());
-
-					handleNode(object, element);
-				} else {
-					element.setElementType(ElementType.VALUE);
-					element.setValue(object.toString());
-				}
-			}
-		}
-	}
 
 	private void handleArray(final Object array, Element element) 
-			throws ReflectiveOperationException {	
+			throws ReflectiveOperationException {
 		
 		Element childElement = null;
 		String address = null;
 		String name = null;
 		
-		for (int index = 1; index < Array.getLength(array); index++) {
+		for (int index = 1; index - 1 < Array.getLength(array); index++) {
 			address = element.getAddress() + "." + index;
 			name = element.getName() + "[" + index + "]";
 			
 			childElement = createElement(address, name, 
-					GeneratorType.OBJECT, element.isInformational());
+					GeneratorType.ARRAY, element.isInformational());
 			element.getElements().add(childElement);
 			
 			handleResult(Array.get(array, index - 1), childElement);
@@ -124,22 +129,27 @@ public class DataGenerator {
 	private void handleIterable(final Iterable<?> iterable, Element element) 
 			throws ReflectiveOperationException {
 
+		int index = 1;
+		
 		Element childElement = null;
 		String address = null;
-		String name = null;
-		int index = 1;
+		String name = null;				
 		
 		for (Object object : iterable) {
 			address = element.getAddress() + "." + index;
 			name = element.getName() + "[" + index + "]";
 			
 			childElement = createElement(address, name, 
-					GeneratorType.OBJECT, element.isInformational());
+					GeneratorType.ITERABLE, element.isInformational());			
 			element.getElements().add(childElement);
 			
-			handleResult(object, childElement);
-			index++;
+			handleResult(object, childElement);			
+			index++;			
 		}
+	}
+	
+	private void handleMap(final Map<?, ?> map, Element element) {
+		
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
