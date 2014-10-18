@@ -276,9 +276,19 @@ public class ElementItemProvider
 		
 		text.append(element.getValue());
 		
+		if (element.getGeneratedBy() == GeneratorType.ARRAY ||
+				element.getGeneratedBy() == GeneratorType.ITERABLE ||
+				element.getGeneratedBy() == GeneratorType.MAP) {
+			text.append(" (size=");
+			text.append(element.getElement().size());
+			text.append(")");
+		}
+		
 		text.append(" (");
 		text.append(element.getAddress());
 		text.append(")");
+		
+		
 		
 		return text.toString();
 	}
