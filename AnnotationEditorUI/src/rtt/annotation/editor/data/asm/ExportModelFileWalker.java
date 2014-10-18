@@ -24,7 +24,6 @@ import rtt.annotation.editor.model.FieldElement;
 import rtt.annotation.editor.model.MethodElement;
 import rtt.annotation.editor.model.annotation.Annotatable;
 import rtt.annotation.editor.model.annotation.Annotation;
-import rtt.annotation.editor.model.annotation.ValueAnnotation;
 
 final class ExportModelFileWalker extends AbstractFileWalker {
 	
@@ -57,8 +56,9 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 				addAnnotation(element, visibleAnnotations);
 			}
 
-			processFields(this, element);			
-			processMethods(this, element);
+			processFields(this, element.getValuableFields());			
+			processMethods(this, element.getValuableMethods());
+			processMethods(this, element.getInitializableMethods());			
 			
 			accept(cv);
 		}
@@ -112,8 +112,10 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void processFields(ClassNode node, ClassElement element) {
-		for (FieldElement<ValueAnnotation> fieldElement : element.getValuableFields()) {
+	private <T extends Annotation> void processFields(ClassNode node, 
+			List<FieldElement<T>> elements) {
+		
+		for (FieldElement<?> fieldElement : elements) {
 			if (fieldElement.hasChanged()) {
 				FieldNode fieldNode = findField(node.fields, fieldElement);
 				
@@ -146,8 +148,10 @@ final class ExportModelFileWalker extends AbstractFileWalker {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void processMethods(ClassNode node, ClassElement element) {
-		for(MethodElement<?> methodElement: element.getValuableMethods()) {
+	private <T extends Annotation> void processMethods(ClassNode node, 
+			List<MethodElement<T>> elements) {
+		
+		for(MethodElement<?> methodElement : elements) {
 			if (methodElement.hasChanged()) {
 				MethodNode methodNode = findMethod(node.methods, methodElement);
 				
