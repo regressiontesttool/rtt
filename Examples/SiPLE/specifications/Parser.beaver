@@ -304,7 +304,7 @@ PrimExpr = CONSTANT.co
 	| ProcedureCall
 	| pBRACKETOPENROUND Expression.expr pBRACKETCLOSEROUND
 	{:
-		return new Symbol(new NestedExpression(expr));
+		return _symbol_expr;
 	:}
 	;
 

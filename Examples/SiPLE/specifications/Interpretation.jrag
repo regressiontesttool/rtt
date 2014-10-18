@@ -143,9 +143,6 @@ aspect Interpretation {
 		vm.currentFrame = oldEnv;
 		return result;
 	}
-	public Object NestedExpression.Value(State vm) {
-		return getExpression().Value(vm);
-	}
 	
 	/** ALU Operations **/
 	

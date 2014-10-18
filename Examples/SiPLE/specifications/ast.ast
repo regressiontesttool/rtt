@@ -37,7 +37,6 @@ abstract Statement;
 		Constant:Expression ::= <Lexem:String>;
 		Reference:Expression ::= <Name:String>;
 		ProcedureCall:Expression ::= Procedure:Expression Argument:Expression*;
-		NestedExpression:Expression ::= Expression;
 		
 		abstract UnaryExpression:Expression ::= Operand:Expression;
 			

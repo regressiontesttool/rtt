@@ -73,7 +73,6 @@ aspect TypeAnalysis {
 				return Type.ERROR_TYPE;
 		return type.rtype;
 	}
-	eq NestedExpression.Type() = getExpression().Type();
 	eq Not.Type() = getOperand().Type().isBoolean() ?
 			Type.Boolean :
 			Type.ERROR_TYPE;
