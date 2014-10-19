@@ -30,6 +30,7 @@ rm *.jar
 # Build:
 clear_all
 make_syntax
-java -jar tools/jastadd2.jar --rewrite --package="siple.ast" --o=src-gen \
+# BEWARE: Because of buggy JastAdd visit checks (v 2.1.10) false-positive circularity exceptions are thrown!
+java -jar tools/jastadd2.jar --rewrite="" --visitCheck="false" --package="siple.ast" --o=src-gen \
 	specifications/*.ast specifications/*.jrag
 make_binary siple.jar

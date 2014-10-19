@@ -26,7 +26,8 @@
 	
 	<target name="make-semantic">
 		<taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="tools/jastadd2.jar" />
-		<jastadd rewrite="true" package="siple.ast" outdir="src-gen" lineColumnNumbers="true">
+		<!-- BEWARE: Because of buggy JastAdd visit checks (v 2.1.10) false-positive circularity exceptions are thrown! -->
+		<jastadd rewrite="" visitCheck="false" package="siple.ast" outdir="src-gen" lineColumnNumbers="true">
 			<fileset dir="specifications">
 				<include name="*.ast" />
 				<include name="*.jrag" />
