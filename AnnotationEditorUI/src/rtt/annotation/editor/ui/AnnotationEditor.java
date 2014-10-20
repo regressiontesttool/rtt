@@ -91,19 +91,14 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	private final class NodeFilter extends ViewerFilter {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			Annotatable<?> annotatable = null;
-			if (element instanceof Annotatable) {
-				annotatable = (Annotatable<?>) element;
-			} else if (element instanceof ModelElementViewerItem<?>) {
-				ModelElementViewerItem<?> item = (ModelElementViewerItem<?>) element;
-				if (item.getModelElement() instanceof Annotatable) {
-					annotatable = (Annotatable<?>) item.getModelElement();
+			if (element instanceof ModelElementViewerItem<?>) {
+				ClassElement classElement = ((ModelElementViewerItem<?>) element).
+						getModelElement(ClassElement.class);
+				
+				if (classElement != null) {
+					return classElement.hasAnnotation(AnnotationType.NODE) || 
+							classElement.hasExtendedAnnotation();
 				}
-			}
-			
-			if (annotatable != null) {
-				return annotatable.getAnnotation() != null && 
-						annotatable.getAnnotation().getType() == AnnotationType.NODE;
 			}
 			
 			return true;
@@ -282,10 +277,6 @@ public class AnnotationEditor extends EditorPart implements Observer {
 				if (result != null) {
 					Path importPath = Paths.get(result);					
 					importer.importAnnotations(model, importPath);
-//					
-//					if (nodeViewer != null) {
-//						nodeViewer.setInput(model);
-//					}
 				}				
 			}
 		});
