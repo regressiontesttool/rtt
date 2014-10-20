@@ -32,7 +32,7 @@ public class ClassElementReference extends ElementReference<ClassElement> {
 		return null;
 	}
 	
-	public static List<ClassElementReference> create(String[] classNames) {
+	public static List<ClassElementReference> create(String... classNames) {
 		List<ClassElementReference> result = new ArrayList<>();
 		for (String interfaceName : classNames) {
 			result.add(create(interfaceName));

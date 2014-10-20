@@ -22,7 +22,7 @@ public final class NodeViewerItemProvider extends ViewerItemProvider {
 				return ItemColor.ANNOTATED;
 			}
 			
-			if (element.hasValues()) {
+			if (element.hasAnnotatedValueMembers()) {
 				return ItemColor.ANNOTATED_MEMBER;
 			}
 			
