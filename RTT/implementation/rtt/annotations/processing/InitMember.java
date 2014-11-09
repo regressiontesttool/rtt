@@ -29,7 +29,9 @@ public abstract class InitMember<T extends Member>
 			constructor.setAccessible(true);
 			try {
 				if (isWithParams()) {
-					return constructor.newInstance(input, params);
+					String[] paramArray = params.toArray(new String[params.size()]);
+					
+					return constructor.newInstance(input, paramArray);
 				} else {
 					return constructor.newInstance(input);
 				}
