@@ -2,12 +2,7 @@ package rtt.ui.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -15,7 +10,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 
 import rtt.ui.RttPluginUI;
 import rtt.ui.editors.input.OutputDataEditorInput;
-import rtt.ui.utils.RttPluginUtil;
 
 public class ReferenceEditor extends FormEditor {
 
@@ -24,25 +18,13 @@ public class ReferenceEditor extends FormEditor {
 
 	private OutputDataEditorInput outputData;
 	
-	private ComposedAdapterFactory adapterFactory;
-	
-	private IContentProvider contentProvider;
-	private ILabelProvider labelProvider;	
-
 	@Override
-	protected void addPages() {
-		adapterFactory = RttPluginUtil.createFactory();
+	protected void addPages() {		
 		
-		contentProvider = new AdapterFactoryContentProvider(adapterFactory);
-		labelProvider = new AdapterFactoryLabelProvider(adapterFactory);
-
 		ReferenceEditorPage outputPage = new ReferenceEditorPage(
 				this, outputData.getType(), OUTPUT_PAGE_ID, "Output");
 		
-		outputPage.setResource(outputData.getResource(OutputDataEditorInput.PARSER_URI));
-		outputPage.setContentProvider(contentProvider);
-		outputPage.setLabelProvider(labelProvider);		
-		
+		outputPage.setResource(outputData.getResource(OutputDataEditorInput.PARSER_URI));		
 		try {			
 			addPage(outputPage);
 			
@@ -68,9 +50,7 @@ public class ReferenceEditor extends FormEditor {
 					RttPluginUI.PLUGIN_ID, "The given data is not a correct rtt output: " + input));
 		}
 	}
-
-
-
+	
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
@@ -88,26 +68,4 @@ public class ReferenceEditor extends FormEditor {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	@Override
-	public void dispose() {
-		
-		if (contentProvider != null) {
-			contentProvider.dispose();
-			contentProvider = null;
-		}
-		
-		if (labelProvider != null) {
-			labelProvider.dispose();
-			labelProvider = null;
-		}
-		
-		if (adapterFactory != null) {
-			adapterFactory.dispose();
-			adapterFactory = null;
-		}
-		
-		super.dispose();
-	}
-
 }
