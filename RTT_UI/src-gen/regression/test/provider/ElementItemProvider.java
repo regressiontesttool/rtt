@@ -23,6 +23,7 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Element;
+import regression.test.ElementType;
 import regression.test.TestFactory;
 import regression.test.TestPackage;
 import rtt.ui.editors.ReferenceMasterDetailsBlock;
@@ -271,29 +272,22 @@ public class ElementItemProvider
 	@Override
 	public String getText(Object object) {
 		Element element = (Element) object;
-		StringBuilder text = new StringBuilder(element.getName());
+		String value = element.getValue();
 		
-		switch (element.getElementType()) {
-		case NODE:
-			text.append(" : ");
-			break;
-		case REFERENCE:
-			text.append(" refers to ");
-			break;
-		case VALUE:
-			text.append(" = ");
-			break;		
+		if (element.getElementType() == ElementType.REFERENCE) {			
+			value = "refers to ".concat(value);
 		}
 		
-		text.append(element.getValue());
-		
-		return text.toString();
+		return value;
 	}
 	
 	@Override
 	public String getColumnText(Object object, int columnIndex) {
 		switch(columnIndex) {
-		case ReferenceMasterDetailsBlock.NODE_COLUMN:
+		case ReferenceMasterDetailsBlock.NAME_COLUMN:
+			return ((Element) object).getName();
+			
+		case ReferenceMasterDetailsBlock.VALUE_COLUMN:
 			return getText(object);
 			
 		case ReferenceMasterDetailsBlock.GENERATED_BY_COLUMN:
