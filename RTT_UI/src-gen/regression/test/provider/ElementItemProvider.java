@@ -266,13 +266,13 @@ public class ElementItemProvider
 	
 	
 	private String getValue(Element element) {
-		String value = element.getValue();
+		String value = String.valueOf(element.getValue());
 		
 		if (element.getElementType() == ElementType.REFERENCE) {
 			value = "refers to ".concat(value);
 		}
 		
-		if (value.isEmpty()) {
+		if (value != null && value.isEmpty()) {
 			value = "[empty]";
 		}
 		
