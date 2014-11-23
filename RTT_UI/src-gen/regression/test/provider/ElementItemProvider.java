@@ -278,6 +278,10 @@ public class ElementItemProvider
 			value = "refers to ".concat(value);
 		}
 		
+		if (value.isEmpty()) {
+			value = "[empty]";
+		}
+		
 		return value;
 	}
 	
