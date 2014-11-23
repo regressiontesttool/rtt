@@ -24,6 +24,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Element;
 import regression.test.ElementType;
+import regression.test.GeneratorType;
 import regression.test.TestFactory;
 import regression.test.TestPackage;
 import rtt.ui.editors.ReferenceMasterDetailsBlock;
@@ -262,19 +263,12 @@ public class ElementItemProvider
 		
 		return super.getColumnImage(object, columnIndex);
 	}
-
-	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated NOT
-	 */
-	@Override
-	public String getText(Object object) {
-		Element element = (Element) object;
+	
+	
+	private String getValue(Element element) {
 		String value = element.getValue();
 		
-		if (element.getElementType() == ElementType.REFERENCE) {			
+		if (element.getElementType() == ElementType.REFERENCE) {
 			value = "refers to ".concat(value);
 		}
 		
@@ -285,20 +279,70 @@ public class ElementItemProvider
 		return value;
 	}
 	
+	private String getGeneratedBy(Element element) {
+		if (element.getGeneratedBy() == GeneratorType.OBJECT) {
+			return "";
+		}
+		
+		return element.getGeneratedBy().name();		
+	}
+	
+	private String getAddress(Element element) {
+		return element.getAddress();
+	}
+
+	/**
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated NOT
+	 */
+	@Override
+	public String getText(Object object) {
+		Element element = (Element) object;
+		
+		StringBuilder textBuilder = new StringBuilder();
+		if (element.getGeneratedBy() != GeneratorType.OBJECT) {
+			textBuilder.append("[");
+			textBuilder.append(getGeneratedBy(element));
+			textBuilder.append("] ");
+		}
+		
+		textBuilder.append(element.getName());
+		
+		switch(element.getElementType()) {
+		case NODE:
+			textBuilder.append(" : ");
+			break;
+		case REFERENCE: 
+			textBuilder.append(" refers to ");
+			break;
+		case VALUE:
+			textBuilder.append(" = ");
+			break;
+		}
+		
+		textBuilder.append(getValue(element));		
+		
+		return textBuilder.toString();
+	}
+	
 	@Override
 	public String getColumnText(Object object, int columnIndex) {
+		Element element = (Element) object;
+		
 		switch(columnIndex) {
 		case ReferenceMasterDetailsBlock.NAME_COLUMN:
-			return ((Element) object).getName();
+			return element.getName();
 			
 		case ReferenceMasterDetailsBlock.VALUE_COLUMN:
-			return getText(object);
+			return getValue(element);
 			
 		case ReferenceMasterDetailsBlock.GENERATED_BY_COLUMN:
-			return ((Element) object).getGeneratedBy().name();
+			return getGeneratedBy(element);
 			
 		case ReferenceMasterDetailsBlock.ADDRESS_COLUMN:
-			return ((Element) object).getAddress();	
+			return getAddress(element);	
 			
 		default:
 			return super.getColumnText(object, columnIndex); 
