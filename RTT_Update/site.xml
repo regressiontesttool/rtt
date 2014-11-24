@@ -6,7 +6,7 @@
    <feature url="features/rtt.annotation.editor.feature_1.0.3.201411231935.jar" id="rtt.annotation.editor.feature" version="1.0.3.201411231935">
       <category name="rtt.category"/>
    </feature>
-   <feature url="features/rtt.feature_1.9.3.201411231948.jar" id="rtt.feature" version="1.9.3.201411231948">
+   <feature url="features/rtt.feature_1.9.3.201411241647.jar" id="rtt.feature" version="1.9.3.201411241647">
       <category name="rtt.category"/>
    </feature>
    <category-def name="rtt.category" label="Regression Test Tool"/>
