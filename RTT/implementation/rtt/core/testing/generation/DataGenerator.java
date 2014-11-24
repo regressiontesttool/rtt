@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import rtt.annotations.processing.AnnotationProcessor;
@@ -68,9 +69,7 @@ public class DataGenerator {
 						handleIterable((Iterable<?>) object, element);
 					} else if (object instanceof Map<?, ?>) {
 						element.setElementType(ElementType.NODE);
-						element.setValue(objectType.getName());
-						element.setGeneratedBy(GeneratorType.MAP);
-						
+						element.setValue(objectType.getName());						
 						handleMap((Map<?, ?>) object, element);
 					}						
 				}
@@ -148,8 +147,42 @@ public class DataGenerator {
 		}
 	}
 	
-	private void handleMap(final Map<?, ?> map, Element element) {
+	private void handleMap(final Map<?, ?> map, Element element) 
+			throws ReflectiveOperationException {
 		
+		final boolean isInformational = element.isInformational();
+		
+		int entryIndex = 1;
+		
+		Element entryElement = null;
+		Element keyElement = null;
+		Element valueElement = null;
+		
+		String address = null;
+		String name = null;
+		
+		for (Entry<?, ?> mapEntry : map.entrySet()) {
+			address = element.getAddress() + "." + entryIndex;
+			name = element.getName() + " [" + entryIndex + "]";
+			entryElement = createElement(address, name, 
+					GeneratorType.MAP, isInformational);
+			
+			// add an element representing the key
+			keyElement = createElement(address, name + "-Key", 
+					GeneratorType.MAP, isInformational);
+			handleResult(mapEntry.getKey(), keyElement);
+			entryElement.getElements().add(keyElement);
+			
+			// add an element representing the value
+			valueElement = createElement(address, name + "-Value", 
+					GeneratorType.MAP, isInformational);
+			handleResult(mapEntry.getValue(), valueElement);
+			entryElement.getElements().add(valueElement);	
+			
+			element.getElements().add(entryElement);
+			
+			entryIndex++;
+		}		
 	}
 	
 	public static Output generateOutput(Input input, List<String> params, 
