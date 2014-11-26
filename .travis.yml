@@ -3,7 +3,7 @@ jdk:
   - oraclejdk7
   
 before_script:
-  - ant -buildfile ./RTT/build-rtt.xml
+  - ant -buildfile ./RTT/build_rtt.xml
   
 script:
   - ant -buildfile ./RTT/tests/ant-tests.xml
