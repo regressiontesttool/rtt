@@ -32,8 +32,8 @@
 	
 	<!-- Delete all generated testsuites and their logs -->
 	<target name="Clean">
-		<delete includeemptydirs="false">
-			<fileset dir="${_basedir}/tests/testresults">
+		<delete includeemptydirs="false" failonerror="false">
+			<fileset dir="${_basedir}/tests/testresults" >
 				<include name="**/*"/>
 			</fileset>
 		</delete>

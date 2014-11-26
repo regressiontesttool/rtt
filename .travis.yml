@@ -3,3 +3,4 @@ jdk:
   - oraclejdk7
 script:
   - ant -buildfile ./RTT/tests/ant-tests.xml
+  - ant -buildfile ./RTT/tests/cli-tests.xml
