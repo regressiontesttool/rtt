@@ -2,4 +2,4 @@ language: java
 jdk:
   - oraclejdk7
 script:
-  - ant "./RTT/tests/nat-tests.xml"
+  - ant "./RTT/tests/ant-tests.xml"
