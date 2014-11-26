@@ -1,3 +1,5 @@
 language: java
 jdk:
   - oraclejdk7
+script:
+  - "./RTT/tests/nat-tests.xml"
