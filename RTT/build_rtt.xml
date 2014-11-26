@@ -45,11 +45,13 @@
 	</target>
 	
 	<target name="clean">
+		<antcall target="Clean XJC" />
 		<delete dir="${bin.dir}" failonerror="false" />
 	</target>
 	
 	<target name="compile">
-		<mkdir dir="${bin.dir}"/>
+		<antcall target="XJC ALL" />
+		<mkdir dir="${bin.dir}"/>	
 		<javac srcdir="${src.dir}" destdir="${bin.dir}" />
 	</target>
 
