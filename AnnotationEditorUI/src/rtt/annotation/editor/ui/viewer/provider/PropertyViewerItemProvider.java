@@ -33,7 +33,7 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		
 		if (input instanceof ClassElement) {
 			ClassElement classElement = (ClassElement) input;
-			items.add(createClassElementItems(classElement, parent));
+			items.addAll(createClassElementItems(classElement, parent));
 		}
 		
 		if (input instanceof FieldElement) {
@@ -80,22 +80,22 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 		return properties;
 	}
 
-	private ViewerItem createClassElementItems(ClassElement element, ViewerItem parent) {
-		ViewerItem properties = new TextViewerItem(parent, "Properties");
+	private List<ViewerItem> createClassElementItems(ClassElement element, ViewerItem parent) {
+		List<ViewerItem> items = new ArrayList<>();
 		
-		properties.add(new TextViewerItem(properties, "Package", element.getPackageName()));
+		items.add(new TextViewerItem(parent, "Package", element.getPackageName()));
 		
 		if (element.hasSuperClass()) {
-			ViewerItem item = new TextViewerItem(properties, "Extends", element.getSuperClass().getName());
+			ViewerItem item = new TextViewerItem(parent, "Extends", element.getSuperClass().getName());
 			if (element.getSuperClass().isResolved()) {
-				item = createReferenceItem(properties, "Extends", element.getSuperClass());
+				item = createReferenceItem(parent, "Extends", element.getSuperClass());
 			}
 			
-			properties.add(item);
+			items.add(item);
 		}
 		
 		if (element.hasInterfaces()) {
-			ViewerItem interfaceItem = new TextViewerItem(properties, "Implements");
+			ViewerItem interfaceItem = new TextViewerItem(parent, "Implements");
 			for (ElementReference<ClassElement> reference : element.getInterfaces()) {
 				ViewerItem item = new TextViewerItem(interfaceItem, "Interface", reference.getName());				
 				if (reference.isResolved()) {
@@ -105,10 +105,10 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 				interfaceItem.add(item);	
 			}
 			
-			properties.add(interfaceItem);
+			items.add(interfaceItem);
 		}
 
-		return properties;
+		return items;
 	}
 
 	private ViewerItem createReferenceItem(ViewerItem parent, final String text, ElementReference<ClassElement> classReference) {
@@ -147,17 +147,11 @@ public class PropertyViewerItemProvider extends ViewerItemProvider {
 	}
 
 	private ViewerItem createFieldElementItems(FieldElement<?> field, ViewerItem parent) {
-		ViewerItem properties = new TextViewerItem(parent, "Properties");
-		properties.add(new TextViewerItem(properties, "Type", field.getType()));
-
-		return properties;
+		return new TextViewerItem(parent, "Type", field.getType());
 	}
 
 	private ViewerItem createMethodElementItems(MethodElement<?> method, ViewerItem parent) {
-		ViewerItem properties = new TextViewerItem(parent, "Properties");
-		properties.add(new TextViewerItem(properties, "Return Type", method.getType()));
-		
-		return properties;
+		return new TextViewerItem(parent, "Return Type", method.getType());
 	}
 
 	@Override

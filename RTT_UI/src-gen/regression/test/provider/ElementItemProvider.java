@@ -266,17 +266,25 @@ public class ElementItemProvider
 	
 	
 	private String getValue(Element element) {
-		String value = String.valueOf(element.getValue());
+		StringBuilder valueBuilder = new StringBuilder();
 		
 		if (element.getElementType() == ElementType.REFERENCE) {
-			value = "refers to ".concat(value);
+			valueBuilder.append(" refers to ");
 		}
 		
-		if (value != null && value.isEmpty()) {
-			value = "[empty]";
+		valueBuilder.append(String.valueOf(element.getValue()));
+		
+		if (element.getElementType() == ElementType.NODE) {
+			valueBuilder.append(" (size=");
+			valueBuilder.append(element.getElement().size());
+			valueBuilder.append(")");
 		}
 		
-		return value;
+		if (valueBuilder.length() == 0) {
+			valueBuilder.append("[empty]");
+		}
+		
+		return valueBuilder.toString();
 	}
 	
 	private String getGeneratedBy(Element element) {
@@ -314,11 +322,10 @@ public class ElementItemProvider
 		case NODE:
 			textBuilder.append(" : ");
 			break;
-		case REFERENCE: 
-			textBuilder.append(" refers to ");
-			break;
 		case VALUE:
 			textBuilder.append(" = ");
+			break;
+		default:
 			break;
 		}
 		

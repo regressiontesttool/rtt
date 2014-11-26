@@ -102,7 +102,7 @@ public class DataGenerator {
 			element.getElements().add(childElement);
 			handleResult(annotatedElement.getResult(object), childElement);
 
-			childAddress++;			
+			childAddress++;
 		}
 	}
 
@@ -158,6 +158,9 @@ public class DataGenerator {
 		Element keyElement = null;
 		Element valueElement = null;
 		
+		Object keyItem = null;
+		Object valueItem = null;
+		
 		String address = null;
 		String name = null;
 		
@@ -168,14 +171,22 @@ public class DataGenerator {
 					GeneratorType.MAP, isInformational);
 			
 			// add an element representing the key
+			keyItem = mapEntry.getKey();
+			
 			keyElement = createElement(address, name + "-Key", 
 					GeneratorType.MAP, isInformational);
+			keyElement.setValue(keyItem.getClass().getSimpleName());
+			
 			handleResult(mapEntry.getKey(), keyElement);
 			entryElement.getElements().add(keyElement);
 			
 			// add an element representing the value
+			valueItem = mapEntry.getValue();
+			
 			valueElement = createElement(address, name + "-Value", 
 					GeneratorType.MAP, isInformational);
+			valueElement.setValue(valueItem.getClass().getSimpleName());
+			
 			handleResult(mapEntry.getValue(), valueElement);
 			entryElement.getElements().add(valueElement);	
 			

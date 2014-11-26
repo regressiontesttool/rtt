@@ -25,17 +25,21 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
@@ -89,19 +93,47 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	}
 
 	private final class NodeFilter extends ViewerFilter {
+		private boolean filterNodes = false;
+		
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (element instanceof ModelElementViewerItem<?>) {
 				ClassElement classElement = ((ModelElementViewerItem<?>) element).
 						getModelElement(ClassElement.class);
 				
-				if (classElement != null) {
+				if (classElement != null && filterNodes) {
 					return classElement.hasAnnotation(AnnotationType.NODE) || 
 							classElement.hasExtendedAnnotation();
 				}
 			}
 			
 			return true;
+		}
+		
+		public void filterNodes(boolean filterNodes) {
+			this.filterNodes = filterNodes;
+		}
+	}
+	
+	private final class ClassSearchFilter extends ViewerFilter {
+		private String searchedClass = null;
+		
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof ModelElementViewerItem<?>) {
+				ClassElement classElement = ((ModelElementViewerItem<?>) element).
+						getModelElement(ClassElement.class);
+				
+				if (classElement != null && searchedClass != null) {
+					return classElement.getName().startsWith(searchedClass);
+				}
+			}
+			
+			return true;
+		}
+		
+		public void searchClass(String searchedClass) {
+			this.searchedClass = searchedClass;
 		}
 	}
 
@@ -148,7 +180,8 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	private ViewerItemProvider memberProvider;
 	private ViewerItemProvider propertyProvider;
 	
-	private ViewerFilter nodeFilter;	
+	private NodeFilter nodeFilter;	
+	private ClassSearchFilter searchFilter;
 	
 	private ClassModel model;
 	private AnnotationType selectedAnnotation = AnnotationType.VALUE;
@@ -164,9 +197,11 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	private boolean dirty = false;
 
 	private IFile inputFile;	
+	private Text txtSearch;
 
 	public AnnotationEditor() {
 		nodeFilter = new NodeFilter();
+		searchFilter = new ClassSearchFilter();
 	}
 	
 	public AnnotationType getSelectedAnnotation() {
@@ -314,21 +349,52 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		
 		Group nodesGroup = new Group(composite, SWT.NONE);
 		nodesGroup.setText("Nodes");
-		nodesGroup.setLayout(new GridLayout(1, false));
+		GridLayout gl_nodesGroup = new GridLayout(1, false);
+		gl_nodesGroup.marginHeight = 2;
+		gl_nodesGroup.horizontalSpacing = 3;
+		gl_nodesGroup.verticalSpacing = 3;
+		gl_nodesGroup.marginWidth = 3;
+		nodesGroup.setLayout(gl_nodesGroup);
 		
 		Composite filterComposite = new Composite(nodesGroup, SWT.NONE);
-		filterComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
-		filterComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 1, 1));
+		GridLayout gl_filterComposite = new GridLayout(3, false);
+		gl_filterComposite.marginWidth = 0;
+		gl_filterComposite.verticalSpacing = 3;
+		gl_filterComposite.horizontalSpacing = 4;
+		gl_filterComposite.marginHeight = 0;
+		filterComposite.setLayout(gl_filterComposite);
+		filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		
+		Label searchLabel = new Label(filterComposite, SWT.NONE);
+		searchLabel.setText("Filter:");
+		
+		txtSearch = new Text(filterComposite, SWT.BORDER);
+		txtSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		txtSearch.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				txtSearch.setText("");
+			}
+		});
+		
+		txtSearch.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				searchFilter.searchClass(txtSearch.getText());				
+				nodeViewer.refresh();
+			}
+		});
 		
 		filterButton = new Button(filterComposite, SWT.CHECK);
-		filterButton.setText("Show Nodes only");
+		filterButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		filterButton.setText("Nodes only");
 		filterButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				nodeViewer.resetFilters();				
-				if (filterButton.getSelection()) {
-					nodeViewer.setFilters(new ViewerFilter[] { nodeFilter });
-				}
+				nodeFilter.filterNodes(filterButton.getSelection());
+				nodeViewer.refresh();
 			}
 		});
 		
@@ -351,6 +417,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		
 		nodeViewer = new TreeViewer(viewerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		nodeViewer.setComparator(new ViewerItemComparator());
+		nodeViewer.setFilters(new ViewerFilter[] {nodeFilter, searchFilter});
 		nodeViewer.setContentProvider(nodeProvider.getContentProvider());
 		
 		nodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -403,7 +470,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		
 		TreeColumn nodesColumn = nodeViewerColumn.getColumn();
 		columnLayout.setColumnData(nodesColumn, new ColumnWeightData(1, ColumnWeightData.MINIMUM_WIDTH, true));
-		nodesColumn.setText("Nodes");
+		nodesColumn.setText("Packages/Classes");
 		
 		if (model != null) {
 			nodeViewer.setInput(model);
@@ -437,12 +504,19 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		
 		Group membersGroup = new Group(composite, SWT.NONE);
 		membersGroup.setText("Annotatable Members");
-		membersGroup.setLayout(new GridLayout(1, false));
+		GridLayout gl_membersGroup = new GridLayout(1, false);
+		gl_membersGroup.verticalSpacing = 3;
+		gl_membersGroup.marginWidth = 3;
+		gl_membersGroup.marginHeight = 2;
+		gl_membersGroup.horizontalSpacing = 3;
+		membersGroup.setLayout(gl_membersGroup);
 		
 		Composite annotationSelectionComposite = new Composite(membersGroup, SWT.NONE);
-		RowLayout rl_annotationSelectionComposite = new RowLayout(SWT.HORIZONTAL);
-		rl_annotationSelectionComposite.spacing = 10;
-		annotationSelectionComposite.setLayout(rl_annotationSelectionComposite);
+		GridLayout gl_annotationSelectionComposite = new GridLayout(3, false);
+		gl_annotationSelectionComposite.verticalSpacing = 3;
+		gl_annotationSelectionComposite.horizontalSpacing = 3;
+		gl_annotationSelectionComposite.marginHeight = 2;
+		annotationSelectionComposite.setLayout(gl_annotationSelectionComposite);
 		annotationSelectionComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		createAnnotationSelection(annotationSelectionComposite);
@@ -481,6 +555,7 @@ public class AnnotationEditor extends EditorPart implements Observer {
 		valueAnnotationButton.setSelection(true);		
 		
 		initializeAnnotationButton = new Button(annotationSelectionComposite, SWT.RADIO);
+		initializeAnnotationButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		initializeAnnotationButton.setEnabled(false);
 		initializeAnnotationButton.setText(AnnotationType.INITIALIZE.getName());
 		initializeAnnotationButton.addSelectionListener(new SelectionAdapter() {
@@ -570,7 +645,10 @@ public class AnnotationEditor extends EditorPart implements Observer {
 	
 	private void createDetailsPanel(Composite composite) {		
 		Group propertiesGroup = new Group(composite, SWT.NONE);
-		propertiesGroup.setLayout(new GridLayout(1, false));
+		GridLayout gl_propertiesGroup = new GridLayout(1, false);
+		gl_propertiesGroup.marginWidth = 3;
+		gl_propertiesGroup.marginHeight = 2;
+		propertiesGroup.setLayout(gl_propertiesGroup);
 		propertiesGroup.setText("Details");
 		
 		Composite propertyViewerComposite = new Composite(propertiesGroup, SWT.NONE);
