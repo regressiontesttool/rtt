@@ -43,6 +43,15 @@
 			</fileset>
 		</delete>
 	</target>
+	
+	<target name="clean">
+		<delete dir="${bin.dir}" failonerror="false" />
+	</target>
+	
+	<target name="compile">
+		<mkdir dir="${bin.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" />
+	</target>
 
 	<!-- Create *.jar distribution -->
 	<target name="Jar">
