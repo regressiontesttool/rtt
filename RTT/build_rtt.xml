@@ -21,7 +21,7 @@
 	<property name="lib.dir" location="${rtt.base}/libraries/runtime" />
 	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
-        <property name="src-gen.dir" location="${rtt.base}/src-gen" />
+	<property name="src-gen.dir" location="${rtt.base}/src-gen" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
 
 	<!-- Name of the jar and source file-->
@@ -45,12 +45,12 @@
 		</delete>
 	</target>
 	
-	<target name="clean">
+	<target name="Clean">
 		<antcall target="Clean XJC" />
 		<delete dir="${bin.dir}" failonerror="false" />
 	</target>
 	
-	<target name="compile">
+	<target name="Compile">
 		<antcall target="XJC ALL" />
 		<mkdir dir="${bin.dir}"/>	
 		<javac srcdir="${src.dir}:${src-gen.dir}" 
