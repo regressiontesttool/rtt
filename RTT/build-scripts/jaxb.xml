@@ -10,7 +10,7 @@
      ====================================================================== -->
 <project name="jaxb-tasks">
 
-	<dirname file="${ant.file.jaxb-taks}" property="tasks.base" />
+	<dirname file="${ant.file.jaxb-tasks}" property="tasks.base" />
 
 	<!-- Some important directories -->
 	<property name="project.dir" location="${tasks.base}/.." />
