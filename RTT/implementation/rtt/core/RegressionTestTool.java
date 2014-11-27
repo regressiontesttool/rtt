@@ -44,12 +44,12 @@ public class RegressionTestTool {
 			options = optionParser.parseArguments(args);
 			if (!CommandLineValidator.validate(options)) {
 				System.err.println(optionParser.getHelpMessage());
-				return;
+				System.exit(-1);
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			System.err.println(optionParser.getHelpMessage());
-			return;
+			System.exit(-1);
 		}
 
 		File archive = options.getArchive();
