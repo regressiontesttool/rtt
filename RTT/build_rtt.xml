@@ -18,17 +18,29 @@
 
 	<!-- Important directories -->
 	<property name="distr.dir" location="${rtt.base}/distribution" />
-	<property name="lib.dir" location="${rtt.base}/libraries/runtime" />
 	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
 	<property name="src-gen.dir" location="${rtt.base}/src-gen" />
 	<property name="src-tests.dir" location="${rtt.base}/tests/src" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
+	
+	<!-- library locations -->
+	<property name="lib.dir" location="${rtt.base}/libraries" />
+	<property name="runtime.dir" location="${lib.dir}/runtime" />
+	<property name="junit.dir" location="${lib.dir}/development/junit" />
 
 	<!-- Name of the jar and source file-->
 	<property name="distr.jar.name" value="rtt" />
 	<property name="distr.jar.path" location="${distr.dir}/${distr.jar.name}.jar" />
 	<property name="distr.src.name" value="rtt_src" />
+	
+	<path id="libs.junit">
+		<fileset dir="${junit.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<path id="libs.runtime">
+		<fileset dir="${runtime.dir}" includes="**/*.jar"/>
+	</path>
 
 	<!-- Refresh all classes and create jar -->
 	<target name="RefreshAll">
@@ -58,9 +70,8 @@
 			   destdir="${bin.dir}"
 			   includeantruntime="false">
 			<classpath>
-				<fileset dir="${lib.dir}">
-					<include name="**/*.jar" />
-				</fileset>
+				<path refid="libs.junit" />
+				<path refid="libs.runtime" />
 			</classpath>
 			<exclude name="rtt/core/RTTApplication.java" />
 			<exclude name="rtt/core/classpath/**/*" />
