@@ -47,6 +47,10 @@ public abstract class Annotation {
 		return type;
 	}
 	
+	public boolean isType(AnnotationType type) {
+		return this.type == type;
+	}
+	
 	public String[] getKeys() {
 		return keys;
 	}

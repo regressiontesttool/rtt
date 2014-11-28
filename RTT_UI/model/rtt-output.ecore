@@ -112,8 +112,11 @@
       <details key="name" value="generatorType"/>
     </eAnnotations>
     <eLiterals name="OBJECT"/>
-    <eLiterals name="FIELD" value="1"/>
-    <eLiterals name="METHOD" value="2"/>
+    <eLiterals name="ARRAY" value="1"/>
+    <eLiterals name="ITERABLE" value="2"/>
+    <eLiterals name="MAP" value="3"/>
+    <eLiterals name="FIELD" value="4"/>
+    <eLiterals name="METHOD" value="5"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="GeneratorTypeObject" instanceClassName="org.eclipse.emf.common.util.Enumerator">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

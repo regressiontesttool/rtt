@@ -81,7 +81,7 @@ public class ClassElement extends Annotatable<NodeAnnotation> {
 		return interfaces != null && !interfaces.isEmpty();
 	}
 	
-	public ElementReference<ClassElement> getSuperClass() {
+	public ClassElementReference getSuperClass() {
 		return superClass;
 	}
 	
@@ -94,27 +94,25 @@ public class ClassElement extends Annotatable<NodeAnnotation> {
 	}
 	
 	public boolean hasExtendedAnnotation() {
-		boolean hasExtendedAnnotation = false;
+		boolean extendsAnnotated = false;
 		
 		if (hasSuperClass() && superClass.isResolved()) {
-			hasExtendedAnnotation = superClass.isAnnotated();
+			extendsAnnotated = superClass.isAnnotated();
 		}
 		
-		if (!hasExtendedAnnotation && hasInterfaces()) {
+		if (!extendsAnnotated && hasInterfaces()) {
 			for (ClassElementReference interfaceRef : interfaces) {
-				if (interfaceRef.isResolved()) {
-					hasExtendedAnnotation = interfaceRef.isAnnotated();
-					if (hasExtendedAnnotation == true) {
-						break;
-					}
+				if (interfaceRef.isResolved() && interfaceRef.isAnnotated()) {
+					extendsAnnotated = true;
+					break;
 				}				
 			}
 		}
 		
-		return hasExtendedAnnotation;
+		return extendsAnnotated;
 	}
 	
-	public boolean hasValues() {
+	public boolean hasAnnotatedValueMembers() {
 		
 		if (!valuablefields.isEmpty()) {
 			for (FieldElement<ValueAnnotation> element : valuablefields) {
@@ -135,7 +133,7 @@ public class ClassElement extends Annotatable<NodeAnnotation> {
 		return false;
 	}
 	
-	public boolean hasInits() {
+	public boolean hasAnnotatedInitializeMembers() {
 		if (!initializableMethods.isEmpty()) {
 			for (MethodElement<InitAnnotation> methodElement : initializableMethods) {
 				if (methodElement.hasAnnotation()) {

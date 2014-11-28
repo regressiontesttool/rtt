@@ -13,6 +13,9 @@
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="rtt-output.ecore#//GeneratorType">
       <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/OBJECT"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/ARRAY"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/ITERABLE"/>
+      <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/MAP"/>
       <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/FIELD"/>
       <genEnumLiterals ecoreEnumLiteral="rtt-output.ecore#//GeneratorType/METHOD"/>
     </genEnums>

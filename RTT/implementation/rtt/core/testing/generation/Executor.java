@@ -102,7 +102,7 @@ public class Executor {
 			RTTLogging.throwException(new AnnotationException(NO_INPUTSTREAM_PARAMETER));
 		}
 		
-		if (withParams && (parameterTypes[1] == null || !parameterTypes.equals(String[].class))) {
+		if (withParams && (parameterTypes[1] == null || !parameterTypes[1].equals(String[].class))) {
 			RTTLogging.throwException(new AnnotationException(NO_STRINGARRAY_PARAMETER));
 		}
 	}

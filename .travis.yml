@@ -1,0 +1,11 @@
+language: java
+jdk:
+  - oraclejdk7
+  
+before_script:
+  - ant -buildfile ./RTT/build_rtt.xml Clean Compile Jar
+  - mkdir ./RTT/libraries/plugin/
+  - cp ./RTT/distribution/rtt.jar ./RTT/libraries/plugin/ant-lib.jar
+  
+script:
+  - ant -buildfile ./RTT/tests/ant-tests.xml

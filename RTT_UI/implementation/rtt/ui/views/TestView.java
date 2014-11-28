@@ -152,16 +152,15 @@ public class TestView extends ViewPart implements ISelectionListener {
 	private ProjectListener projectListener;
 	private TestsuiteListener suiteListener;
 
-	public TestView() {
-	}
+	public TestView() {}
 
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 
 		Group runGroup = new Group(parent, SWT.NONE);
-		runGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
-				1));
+		runGroup.setLayoutData(new GridData(
+				SWT.FILL, SWT.FILL, true, false, 1, 1));
 		runGroup.setText("Testing");
 		runGroup.setLayout(new GridLayout(2, false));
 
@@ -170,14 +169,14 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 		comboViewer = new ComboViewer(runGroup, SWT.READ_ONLY);
 		Combo combo = comboViewer.getCombo();
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
+		combo.setLayoutData(new GridData(
+				SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboViewer.setLabelProvider(new RttSimpleLabelProvider());
 		comboViewer.setContentProvider(new RttStructuredContentProvider());
 		
 		generateButton = new Button(runGroup, SWT.NONE);
-		generateButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 2, 1));
+		generateButton.setLayoutData(new GridData(
+				SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		generateButton.setText("Generate Reference Results ...");
 		generateButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -187,8 +186,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 		});
 
 		runButton = new Button(runGroup, SWT.NONE);
-		runButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-				1));
+		runButton.setLayoutData(new GridData(
+				SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		runButton.setText("Run Tests ...");
 		runButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -199,8 +198,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 
 		Group historyGroup = new Group(parent, SWT.NONE);
 		historyGroup.setLayout(new GridLayout(1, false));
-		historyGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
+		historyGroup.setLayoutData(new GridData(
+				SWT.FILL, SWT.FILL, true, true, 1, 1));
 		historyGroup.setText("History");		
 
 		contentViewer = new TreeViewer(historyGroup, SWT.BORDER |
@@ -214,7 +213,8 @@ public class TestView extends ViewPart implements ISelectionListener {
 		contentViewer.addDoubleClickListener(new RttDoubleClickListener(getSite().getPage()));
 		
 		Tree tree = contentViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tree.setLayoutData(new GridData(
+				SWT.FILL, SWT.FILL, true, true, 1, 1));
 		contentViewer.setComparator(new TestrunComparator());
 
 		MenuManager menuManager = new MenuManager();

@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ====================================================================== 
-     13.02.2012 15:51:05                                                        
-
-     JAXB Tasks:
+	 JAXB Tasks:
 	
         	This file contains all task for JAXB class creation.
         	Within this file are two tasks for complete deletion and 
         	creating of JAXB classes.
                    
-     Christian Oelsner                                                               
+     @author: Christian Oelsner                                                               
      ====================================================================== -->
-<project name="jaxb-taks">
+<project name="jaxb-tasks">
 
-	<dirname file="${ant.file.jaxb-taks}" property="tasks.base" />
+	<dirname file="${ant.file.jaxb-tasks}" property="tasks.base" />
 
 	<!-- Some important directories -->
 	<property name="project.dir" location="${tasks.base}/.." />
@@ -75,7 +73,11 @@
 		<attribute name="schema" />
 		<element name="xjc-args" implicit="yes" optional="yes" />
 		<sequential>
-			<xjc destdir="${rtt.src-gen}" schema="${rtt.schemes}${file.separator}@{schema}" package="rtt.core.archive.@{package}" removeOldOutput="yes">
+			<xjc destdir="${rtt.src-gen}" 
+				schema="${rtt.schemes}${file.separator}@{schema}" 
+				package="rtt.core.archive.@{package}" 
+				removeOldOutput="yes">
+				
 				<produces dir="${rtt.src-gen}" includes="**/@{package}/*.java"/>
 				<xjc-args />
 			</xjc>

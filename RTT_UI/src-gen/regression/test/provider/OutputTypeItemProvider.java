@@ -8,16 +8,14 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
+import org.eclipse.emf.edit.provider.ITableItemLabelProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
@@ -38,6 +36,7 @@ public class OutputTypeItemProvider
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
 		ITreeItemContentProvider,
+		ITableItemLabelProvider,
 		IItemLabelProvider,
 		IItemPropertySource {
 	/**
@@ -105,6 +104,15 @@ public class OutputTypeItemProvider
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/OutputType"));
 	}
+	
+	@Override
+	public Object getColumnImage(Object object, int columnIndex) {
+		if (columnIndex == 0) {
+			return getImage(object);
+		}
+		
+		return super.getColumnImage(object, columnIndex);
+	}
 
 	/**
 	 * This returns the label text for the adapted class.
@@ -116,6 +124,16 @@ public class OutputTypeItemProvider
 	public String getText(Object object) {
 		return getString("_UI_OutputType_type");
 	}
+	
+	@Override
+	public String getColumnText(Object object, int columnIndex) {
+		if (columnIndex == 0) {
+			return getText(object);
+		}
+		
+		return super.getColumnText(object, columnIndex);
+	}
+	
 
 	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached

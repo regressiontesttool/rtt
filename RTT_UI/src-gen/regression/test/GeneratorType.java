@@ -29,6 +29,30 @@ public enum GeneratorType implements Enumerator {
 	OBJECT(0, "OBJECT", "OBJECT"),
 
 	/**
+	 * The '<em><b>ARRAY</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #ARRAY_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	ARRAY(1, "ARRAY", "ARRAY"), /**
+	 * The '<em><b>ITERABLE</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #ITERABLE_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	ITERABLE(2, "ITERABLE", "ITERABLE"), /**
+	 * The '<em><b>MAP</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #MAP_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	MAP(3, "MAP", "MAP"), /**
 	 * The '<em><b>FIELD</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -36,7 +60,7 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	FIELD(1, "FIELD", "FIELD"),
+	FIELD(4, "FIELD", "FIELD"),
 
 	/**
 	 * The '<em><b>METHOD</b></em>' literal object.
@@ -46,7 +70,7 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	METHOD(2, "METHOD", "METHOD");
+	METHOD(5, "METHOD", "METHOD");
 
 	/**
 	 * The '<em><b>OBJECT</b></em>' literal value.
@@ -64,6 +88,51 @@ public enum GeneratorType implements Enumerator {
 	public static final int OBJECT_VALUE = 0;
 
 	/**
+	 * The '<em><b>ARRAY</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>ARRAY</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #ARRAY
+	 * @model
+	 * @generated
+	 * @ordered
+	 */
+	public static final int ARRAY_VALUE = 1;
+
+	/**
+	 * The '<em><b>ITERABLE</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>ITERABLE</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #ITERABLE
+	 * @model
+	 * @generated
+	 * @ordered
+	 */
+	public static final int ITERABLE_VALUE = 2;
+
+	/**
+	 * The '<em><b>MAP</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>MAP</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #MAP
+	 * @model
+	 * @generated
+	 * @ordered
+	 */
+	public static final int MAP_VALUE = 3;
+
+	/**
 	 * The '<em><b>FIELD</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -76,7 +145,7 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int FIELD_VALUE = 1;
+	public static final int FIELD_VALUE = 4;
 
 	/**
 	 * The '<em><b>METHOD</b></em>' literal value.
@@ -91,7 +160,7 @@ public enum GeneratorType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final int METHOD_VALUE = 2;
+	public static final int METHOD_VALUE = 5;
 
 	/**
 	 * An array of all the '<em><b>Generator Type</b></em>' enumerators.
@@ -102,6 +171,9 @@ public enum GeneratorType implements Enumerator {
 	private static final GeneratorType[] VALUES_ARRAY =
 		new GeneratorType[] {
 			OBJECT,
+			ARRAY,
+			ITERABLE,
+			MAP,
 			FIELD,
 			METHOD,
 		};
@@ -155,6 +227,9 @@ public enum GeneratorType implements Enumerator {
 	public static GeneratorType get(int value) {
 		switch (value) {
 			case OBJECT_VALUE: return OBJECT;
+			case ARRAY_VALUE: return ARRAY;
+			case ITERABLE_VALUE: return ITERABLE;
+			case MAP_VALUE: return MAP;
 			case FIELD_VALUE: return FIELD;
 			case METHOD_VALUE: return METHOD;
 		}

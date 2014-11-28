@@ -15,6 +15,15 @@ public class ModelElementViewerItem<T extends ModelElement> extends ViewerItem {
 		return element;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <E extends ModelElement> E getModelElement(Class<E> elementType) {
+		if (elementType.isInstance(element)) {
+			return (E) element;
+		}
+		
+		return null;
+	}
+	
 	@Override
 	public final String getColumnText(int columnIndex) {
 		return getColumnText(element, columnIndex);

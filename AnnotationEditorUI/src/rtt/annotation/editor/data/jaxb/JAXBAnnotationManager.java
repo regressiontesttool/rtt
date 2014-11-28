@@ -176,7 +176,9 @@ public class JAXBAnnotationManager implements
 	}
 	
 	private boolean isAnnotated(ClassElement classElement) {
-		return classElement.hasAnnotation() || classElement.hasValues() || classElement.hasInits();
+		return classElement.hasAnnotation() || 
+				classElement.hasAnnotatedValueMembers() || 
+				classElement.hasAnnotatedInitializeMembers();
 	}
 	
 	private void addValueFields(List<FieldElement<ValueAnnotation>> fields, List<Value> valueAnnotatables) {

@@ -21,6 +21,7 @@
 	<property name="lib.dir" location="${rtt.base}/libraries/runtime" />
 	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
+	<property name="src-gen.dir" location="${rtt.base}/src-gen" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
 
 	<!-- Name of the jar and source file-->
@@ -42,6 +43,26 @@
 				<include name="javadoc/**/*" />
 			</fileset>
 		</delete>
+	</target>
+	
+	<target name="Clean">
+		<antcall target="Clean XJC" />
+		<delete dir="${bin.dir}" failonerror="false" />
+	</target>
+	
+	<target name="Compile">
+		<antcall target="XJC ALL" />
+		<mkdir dir="${bin.dir}"/>	
+		<javac srcdir="${src.dir}:${src-gen.dir}" 
+                       destdir="${bin.dir}" >
+                   <classpath>
+                       <fileset dir="${lib.dir}">
+                           <include name="**/*.jar" />
+                       </fileset>
+                   </classpath>
+                   <exclude name="rtt/core/RTTApplication.java" />
+                   <exclude name="rtt/core/classpath/**/*" />
+                </javac>
 	</target>
 
 	<!-- Create *.jar distribution -->

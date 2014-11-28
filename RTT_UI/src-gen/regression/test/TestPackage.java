@@ -752,6 +752,9 @@ public class TestPackage extends EPackageImpl {
 
 		initEEnum(generatorTypeEEnum, GeneratorType.class, "GeneratorType");
 		addEEnumLiteral(generatorTypeEEnum, GeneratorType.OBJECT);
+		addEEnumLiteral(generatorTypeEEnum, GeneratorType.ARRAY);
+		addEEnumLiteral(generatorTypeEEnum, GeneratorType.ITERABLE);
+		addEEnumLiteral(generatorTypeEEnum, GeneratorType.MAP);
 		addEEnumLiteral(generatorTypeEEnum, GeneratorType.FIELD);
 		addEEnumLiteral(generatorTypeEEnum, GeneratorType.METHOD);
 

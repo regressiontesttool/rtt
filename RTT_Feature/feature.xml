@@ -2,7 +2,7 @@
 <feature
       id="rtt.feature"
       label="Regression Test Tool"
-      version="1.9.1.qualifier"
+      version="1.9.3.qualifier"
       provider-name="Software Technology Group - Technische Universität Dresden - Germany">
 
    <description url="http://rtt.googlecode.com/svn/trunk/RTT_Update">
@@ -39,7 +39,7 @@ THE SOFTWARE.
    </license>
 
    <url>
-      <discovery label="EMF Compare Update Site" url="http://download.eclipse.org/modeling/emf/compare/updates/releases"/>
+      <discovery label="EMF Compare 2.1 Update Site" url="http://download.eclipse.org/modeling/emf/compare/updates/releases/2.1/"/>
    </url>
 
    <requires>

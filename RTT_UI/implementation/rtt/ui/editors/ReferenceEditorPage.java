@@ -2,8 +2,11 @@ package rtt.ui.editors;
 
 
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -12,6 +15,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import rtt.core.manager.data.history.OutputDataManager.OutputDataType;
+import rtt.ui.utils.RttPluginUtil;
 
 public class ReferenceEditorPage extends FormPage {
 	
@@ -21,14 +25,21 @@ public class ReferenceEditorPage extends FormPage {
 	protected String title;
 	protected Resource resource;
 	
-	private IContentProvider contentProvider;
-	private ILabelProvider labelProvider;
+	private ITreeContentProvider contentProvider;
+	private ITableLabelProvider labelProvider;
+	
+	private ComposedAdapterFactory adapterFactory;
 	
 	
 	public ReferenceEditorPage(FormEditor editor, OutputDataType type, String id, String tabTitle) {
 		super(editor, id, tabTitle);
-		this.title = type.getText() + " Data of the " + tabTitle;
-		block = new ReferenceMasterDetailsBlock(this);
+		this.title = type.getText() + " Output Data";
+		
+		adapterFactory = RttPluginUtil.createFactory();
+		contentProvider = new AdapterFactoryContentProvider(adapterFactory); 
+		labelProvider = new AdapterFactoryLabelProvider(adapterFactory);
+		
+		block = createMasterDetails();
 	}
 	
 	public void setResource(Resource resource) {
@@ -37,6 +48,10 @@ public class ReferenceEditorPage extends FormPage {
 	
 	public Resource getResource() {
 		return resource;
+	}
+	
+	private MasterDetailsBlock createMasterDetails() {
+		return new ReferenceMasterDetailsBlock(this);
 	}
 	
 	@Override
@@ -50,19 +65,31 @@ public class ReferenceEditorPage extends FormPage {
 		return title;
 	}
 
-	public IContentProvider getContentProvider() {
+	public ITreeContentProvider getContentProvider() {
 		return contentProvider;
 	}
-	
-	public void setContentProvider(IContentProvider contentProvider) {
-		this.contentProvider = contentProvider;
-	}
 
-	public ILabelProvider getLabelProvider() {
+	public ITableLabelProvider getLabelProvider() {
 		return labelProvider;
 	}
 	
-	public void setLabelProvider(ILabelProvider labelProvider) {
-		this.labelProvider = labelProvider;
+	@Override
+	public void dispose() {
+		if (contentProvider != null) {
+			contentProvider.dispose();
+			contentProvider = null;
+		}
+
+		if (labelProvider != null) {
+			labelProvider.dispose();
+			labelProvider = null;
+		}
+
+		if (adapterFactory != null) {
+			adapterFactory.dispose();
+			adapterFactory = null;
+		}
+
+		super.dispose();
 	}
 }

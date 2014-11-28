@@ -16,15 +16,18 @@ import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
+import org.eclipse.emf.edit.provider.ITableItemLabelProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import regression.test.Element;
+import regression.test.ElementType;
 import regression.test.GeneratorType;
 import regression.test.TestFactory;
 import regression.test.TestPackage;
+import rtt.ui.editors.ReferenceMasterDetailsBlock;
 
 /**
  * This is the item provider adapter for a {@link regression.test.Element} object.
@@ -38,8 +41,10 @@ public class ElementItemProvider
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
 		ITreeItemContentProvider,
+		ITableItemLabelProvider,
 		IItemLabelProvider,
-		IItemPropertySource {
+		IItemPropertySource {	
+	
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -237,11 +242,61 @@ public class ElementItemProvider
 	 * This returns Element.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Element"));
+		String image = "full/obj16/Element";
+		if (((Element) object).isInformational()) {
+			image += "_Info";
+		}
+		
+		return overlayImage(object, 
+				getResourceLocator().getImage(image));
+	}
+	
+	@Override
+	public Object getColumnImage(Object object, int columnIndex) {
+		if (columnIndex == 0) {
+			return getImage(object);
+		}
+		
+		return super.getColumnImage(object, columnIndex);
+	}
+	
+	
+	private String getValue(Element element) {
+		StringBuilder valueBuilder = new StringBuilder();
+		
+		if (element.getElementType() == ElementType.REFERENCE) {
+			valueBuilder.append(" refers to ");
+		}
+		
+		valueBuilder.append(String.valueOf(element.getValue()));
+		
+		if (element.getElementType() == ElementType.NODE) {
+			valueBuilder.append(" (size=");
+			valueBuilder.append(element.getElement().size());
+			valueBuilder.append(")");
+		}
+		
+		if (valueBuilder.length() == 0) {
+			valueBuilder.append("[empty]");
+		}
+		
+		return valueBuilder.toString();
+	}
+	
+	private String getGeneratedBy(Element element) {
+		if (element.getGeneratedBy() == GeneratorType.OBJECT) {
+			return "";
+		}
+		
+		return element.getGeneratedBy().name();		
+	}
+	
+	private String getAddress(Element element) {
+		return element.getAddress();
 	}
 
 	/**
@@ -253,34 +308,52 @@ public class ElementItemProvider
 	@Override
 	public String getText(Object object) {
 		Element element = (Element) object;
-		StringBuilder text = new StringBuilder();
+		
+		StringBuilder textBuilder = new StringBuilder();
 		if (element.getGeneratedBy() != GeneratorType.OBJECT) {
-			text.append("[");
-			text.append(element.getGeneratedBy().name());
-			text.append("] ");
+			textBuilder.append("[");
+			textBuilder.append(getGeneratedBy(element));
+			textBuilder.append("] ");
 		}
 		
-		text.append(element.getName());
+		textBuilder.append(element.getName());
 		
-		switch (element.getElementType()) {
+		switch(element.getElementType()) {
 		case NODE:
-			text.append(" : ");
-			break;
-		case REFERENCE:
-			text.append(" refers to ");
+			textBuilder.append(" : ");
 			break;
 		case VALUE:
-			text.append(" = ");
-			break;		
+			textBuilder.append(" = ");
+			break;
+		default:
+			break;
 		}
 		
-		text.append(element.getValue());
+		textBuilder.append(getValue(element));		
 		
-		text.append(" (");
-		text.append(element.getAddress());
-		text.append(")");
+		return textBuilder.toString();
+	}
+	
+	@Override
+	public String getColumnText(Object object, int columnIndex) {
+		Element element = (Element) object;
 		
-		return text.toString();
+		switch(columnIndex) {
+		case ReferenceMasterDetailsBlock.NAME_COLUMN:
+			return element.getName();
+			
+		case ReferenceMasterDetailsBlock.VALUE_COLUMN:
+			return getValue(element);
+			
+		case ReferenceMasterDetailsBlock.GENERATED_BY_COLUMN:
+			return getGeneratedBy(element);
+			
+		case ReferenceMasterDetailsBlock.ADDRESS_COLUMN:
+			return getAddress(element);	
+			
+		default:
+			return super.getColumnText(object, columnIndex); 
+		}		
 	}
 
 	/**

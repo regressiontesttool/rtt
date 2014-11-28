@@ -1,6 +1,7 @@
 package rtt.annotation.editor.model.annotation;
 
 import rtt.annotation.editor.model.ModelElement;
+import rtt.annotation.editor.model.annotation.Annotation.AnnotationType;
 import rtt.annotations.Node.Value;
 
 /**
@@ -43,5 +44,9 @@ public abstract class Annotatable<T extends Annotation> extends ModelElement {
 	 */
 	public final boolean hasAnnotation() {
 		return annotation != null;
+	}
+	
+	public final boolean hasAnnotation(AnnotationType type) {
+		return hasAnnotation() && annotation.isType(type);
 	}
 }

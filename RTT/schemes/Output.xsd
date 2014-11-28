@@ -17,6 +17,9 @@
 	<xs:simpleType name="generatorType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OBJECT" />
+			<xs:enumeration value="ARRAY" />
+			<xs:enumeration value="ITERABLE" />
+			<xs:enumeration value="MAP" />
 			<xs:enumeration value="FIELD" />
 			<xs:enumeration value="METHOD" />			
 		</xs:restriction>

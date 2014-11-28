@@ -11,7 +11,7 @@
 	<property name="_basedir" location="${tasks.base}/.."/>
 	
 	<!-- Declare RTT's Ant tasks -->
-	<taskdef resource="rtt/ant/taskdef.properties">
+	<taskdef resource="rtt/ant/taskdef.properties" onerror="failall">
 		<classpath path="${_basedir}/libraries/plugin/ant-lib.jar"/>
 	</taskdef>
 	
@@ -32,8 +32,8 @@
 	
 	<!-- Delete all generated testsuites and their logs -->
 	<target name="Clean">
-		<delete includeemptydirs="false">
-			<fileset dir="${_basedir}/tests/testresults">
+		<delete includeemptydirs="false" failonerror="false">
+			<fileset dir="${_basedir}/tests/testresults" >
 				<include name="**/*"/>
 			</fileset>
 		</delete>
