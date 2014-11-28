@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================                                                         
+
+     junit-tests     
+                   
+     @author Christian Oelsner <C.Oelsner@web.de>                                                                
+     ====================================================================== -->
+<project name="junit-tests" default="Tests">
+	<description>
+    	Runs all Junit test cases.        
+    </description>
+
+	<dirname file="${ant.file.junit-tests}" property="tasks.base"/>
+	<property name="_basedir" location="${tasks.base}/.."/>
+	
+	<property name="bin.dir" location="${_basedir}/binary" />
+	
+	<property name="lib.dir" location="${_basedir}/libraries"/>
+	<property name="junit.dir" location="${lib.dir}/development/junit" />
+	<property name="runtime.dir" location="${lib.dir}/runtime/" />
+	
+	<path id="junit.libs">
+		<pathelement location="${junit.dir}/junit-4.11.jar"/>
+		<pathelement location="${junit.dir}/hamcrest-core-1.3.jar"/>
+	</path>
+	
+	<path id="runtime.libs">
+		<fileset dir="${runtime.dir}" includes="**/*.jar" />
+	</path>
+
+	<!-- ================================= 
+          target: default              
+         ================================= -->
+	<target name="Tests" description="Run all tests">
+
+		<junit printsummary="true" haltonerror="true" >
+			<classpath>
+				<path refid="junit.libs" />
+				<path refid="runtime.libs" />
+				<pathelement location="${bin.dir}" />
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<test name="rtt.core.tests.junit.AllExecutorTests" />
+			<test name="rtt.core.tests.junit.AllOutputCompareTests" />
+			<test name="rtt.core.tests.junit.AllProcessingTests" />
+			<test name="rtt.core.tests.junit.core.DataGeneratorTests" />
+		</junit>
+	</target>
+
+</project>
