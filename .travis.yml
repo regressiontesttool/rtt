@@ -9,3 +9,4 @@ before_script:
   
 script:
   - ant -buildfile ./RTT/tests/ant-tests.xml
+  - ant -buildfile ./RTT/tests/junit-tests.xml
