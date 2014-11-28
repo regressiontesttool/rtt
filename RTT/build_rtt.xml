@@ -86,9 +86,7 @@
 			</manifest>
 
 			<!-- integrate third-party libraries -->
-			<zipfileset src="${lib.dir}/truezip-6.8.4.jar" />
-			<zipfileset src="${lib.dir}/jewelcli-0.6.jar" />
-			<zipgroupfileset dir="${lib.dir}/logging" includes="*.jar" />
+                        <zipgroupfileset dir="${runtime.dir}" includes="**/*.jar" />
 
 			<!-- add license informations -->
 			<zipfileset dir="${licenses.dir}" includes="*.txt" prefix="LICENSES"/>
