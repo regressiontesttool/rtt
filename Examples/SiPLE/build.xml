@@ -2,13 +2,14 @@
 
 <!--
 	This program and the accompanying materials are made available under the
-	terms of the BSD 3-clause license which accompanies this distribution.
+	terms of the MIT license (X11 license) which accompanies this distribution.
 
 	Author: C. Bürger
 -->
 
-<project name="SiPLE" default="build-jar">
+<project name="SiPLE" default="all">
 	<target name="clean">
+		<delete file="siple.jar" />
 		<delete dir="src-gen" failonerror="false" />
 		<delete dir="java-bin" failonerror="false" />
 		<mkdir dir="src-gen" />
@@ -41,16 +42,15 @@
 			encoding="utf-8" deprecation="true"
 			failonerror="true">
 		</javac>
-	</target>
-	
-	<target name="build-jar" depends="clean">
-        <delete file="siple.jar" />
-    	<antcall target="make-syntax" />
-    	<antcall target="make-semantic" />
-    	<antcall target="make-binary" />
 		<jar destfile="siple.jar"
 			basedir="java-bin"
 			manifest="manifest.txt"
 			includes="**/*" />
+	</target>
+	
+	<target name="all" depends="clean">
+        <antcall target="make-syntax" />
+    	<antcall target="make-semantic" />
+    	<antcall target="make-binary" />
     </target>
 </project>
