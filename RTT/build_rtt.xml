@@ -22,6 +22,7 @@
 	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
 	<property name="src-gen.dir" location="${rtt.base}/src-gen" />
+	<property name="src-tests.dir" location="${rtt.base}/tests/src" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
 
 	<!-- Name of the jar and source file-->
@@ -44,25 +45,26 @@
 			</fileset>
 		</delete>
 	</target>
-	
+
 	<target name="Clean">
 		<antcall target="Clean XJC" />
 		<delete dir="${bin.dir}" failonerror="false" />
 	</target>
-	
+
 	<target name="Compile">
 		<antcall target="XJC ALL" />
-		<mkdir dir="${bin.dir}"/>	
-		<javac srcdir="${src.dir}:${src-gen.dir}" 
-                       destdir="${bin.dir}" >
-                   <classpath>
-                       <fileset dir="${lib.dir}">
-                           <include name="**/*.jar" />
-                       </fileset>
-                   </classpath>
-                   <exclude name="rtt/core/RTTApplication.java" />
-                   <exclude name="rtt/core/classpath/**/*" />
-                </javac>
+		<mkdir dir="${bin.dir}"/>
+		<javac srcdir="${src.dir}:${src-gen.dir}:${src-tests.dir}" 
+			   destdir="${bin.dir}"
+			   includeantruntime="false">
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<exclude name="rtt/core/RTTApplication.java" />
+			<exclude name="rtt/core/classpath/**/*" />
+		</javac>
 	</target>
 
 	<!-- Create *.jar distribution -->
@@ -71,20 +73,20 @@
 			<manifest>
 				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
 			</manifest>
-			
+
 			<!-- integrate third-party libraries -->
-			<zipfileset src="${lib.dir}/truezip-6.8.4.jar" />			
+			<zipfileset src="${lib.dir}/truezip-6.8.4.jar" />
 			<zipfileset src="${lib.dir}/jewelcli-0.6.jar" />
 			<zipgroupfileset dir="${lib.dir}/logging" includes="*.jar" />
-			
+
 			<!-- add license informations -->
 			<zipfileset dir="${licenses.dir}" includes="*.txt" prefix="LICENSES"/>
-			
+
 			<!-- logback config file -->
 			<fileset dir="${rtt.base}">
 				<include name="logback.xml"/>
 			</fileset>
-			
+
 			<fileset dir="${src.dir}">
 				<include name="**/taskdef.properties" />
 			</fileset>
@@ -119,12 +121,12 @@
 				<pathelement path="${src.dir}"/>
 				<pathelement path="${rtt.src-gen}"/>
 			</sourcepath>
-			
+
 			<package name="rtt.*"/>
 			<excludepackage name="rtt.core.classpath" />
-			
+
 			<doctitle>Regression Test Tool (RTT) - API</doctitle>
-			
+
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="*.jar" />
