@@ -43,12 +43,13 @@ public class DataGenerator {
 			throws ReflectiveOperationException {
 		
 		if (object != null) {
+			Class<?> objectType = object.getClass();
+			element.setReturnType(objectType.getName());
+			
 			if (objectAddresses.containsKey(object)) {
 				element.setElementType(ElementType.REFERENCE);
 				element.setValue(objectAddresses.get(object));
-			} else {
-				Class<?> objectType = object.getClass();
-				
+			} else {				
 				if (AnnotationProcessor.isNode(object)) {
 					objectAddresses.put(object, element.getAddress());
 					
@@ -100,6 +101,7 @@ public class DataGenerator {
 					element.isInformational() || annotatedElement.isInformational());
 			
 			element.getElements().add(childElement);
+			childElement.setReturnType(annotatedElement.getReturnType());
 			handleResult(annotatedElement.getResult(object), childElement);
 
 			childAddress++;
@@ -121,6 +123,8 @@ public class DataGenerator {
 					GeneratorType.ARRAY, element.isInformational());
 			element.getElements().add(childElement);
 			
+			childElement.setReturnType(element.getName());
+			
 			handleResult(Array.get(array, index - 1), childElement);
 		}
 	}
@@ -141,6 +145,7 @@ public class DataGenerator {
 			childElement = createElement(address, name, 
 					GeneratorType.ITERABLE, element.isInformational());			
 			element.getElements().add(childElement);
+			childElement.setReturnType(object.getClass().getName());
 			
 			handleResult(object, childElement);			
 			index++;			

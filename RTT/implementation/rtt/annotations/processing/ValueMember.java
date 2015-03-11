@@ -27,6 +27,11 @@ public abstract class ValueMember<T extends Member>
 			field.setAccessible(true);
 			return field.get(object);
 		}
+		
+		@Override
+		public String getReturnType() {
+			return field.getType().getName();
+		}
 	}
 
 	private static final class ValueMethod extends ValueMember<Method> {
@@ -45,6 +50,11 @@ public abstract class ValueMember<T extends Member>
 			
 			method.setAccessible(true);
 			return method.invoke(object);
+		}
+		
+		@Override
+		public String getReturnType() {
+			return method.getReturnType().getName();
 		}
 	}
 
@@ -77,6 +87,8 @@ public abstract class ValueMember<T extends Member>
 	
 	public abstract Object getResult(Object object) 
 			throws ReflectiveOperationException;
+	
+	public abstract String getReturnType();
 	
 	public static final ValueMember<Field> create(final Field field) {
 		return new ValueField(field);
