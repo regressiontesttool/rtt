@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link regression.test.Element#isInformational <em>Informational</em>}</li>
  *   <li>{@link regression.test.Element#getName <em>Name</em>}</li>
  *   <li>{@link regression.test.Element#getValue <em>Value</em>}</li>
+ *   <li>{@link regression.test.Element#getReturnType <em>Return Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -196,6 +197,26 @@ public class Element extends EObjectImpl implements EObject {
 	 * @ordered
 	 */
 	protected String value = VALUE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getReturnType() <em>Return Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getReturnType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String RETURN_TYPE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getReturnType() <em>Return Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getReturnType()
+	 * @generated
+	 * @ordered
+	 */
+	protected String returnType = RETURN_TYPE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -566,6 +587,40 @@ public class Element extends EObjectImpl implements EObject {
 	}
 
 	/**
+	 * Returns the value of the '<em><b>Return Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Return Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Return Type</em>' attribute.
+	 * @see #setReturnType(String)
+	 * @see regression.test.TestPackage#getElement_ReturnType()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 *        extendedMetaData="kind='attribute' name='returnType'"
+	 * @generated
+	 */
+	public String getReturnType() {
+		return returnType;
+	}
+
+	/**
+	 * Sets the value of the '{@link regression.test.Element#getReturnType <em>Return Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Return Type</em>' attribute.
+	 * @see #getReturnType()
+	 * @generated
+	 */
+	public void setReturnType(String newReturnType) {
+		String oldReturnType = returnType;
+		returnType = newReturnType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.ELEMENT__RETURN_TYPE, oldReturnType, returnType));
+	}
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -601,6 +656,8 @@ public class Element extends EObjectImpl implements EObject {
 				return getName();
 			case TestPackage.ELEMENT__VALUE:
 				return getValue();
+			case TestPackage.ELEMENT__RETURN_TYPE:
+				return getReturnType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -636,6 +693,9 @@ public class Element extends EObjectImpl implements EObject {
 			case TestPackage.ELEMENT__VALUE:
 				setValue((String)newValue);
 				return;
+			case TestPackage.ELEMENT__RETURN_TYPE:
+				setReturnType((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -669,6 +729,9 @@ public class Element extends EObjectImpl implements EObject {
 			case TestPackage.ELEMENT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
+			case TestPackage.ELEMENT__RETURN_TYPE:
+				setReturnType(RETURN_TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -695,6 +758,8 @@ public class Element extends EObjectImpl implements EObject {
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case TestPackage.ELEMENT__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+			case TestPackage.ELEMENT__RETURN_TYPE:
+				return RETURN_TYPE_EDEFAULT == null ? returnType != null : !RETURN_TYPE_EDEFAULT.equals(returnType);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -721,6 +786,8 @@ public class Element extends EObjectImpl implements EObject {
 		result.append(name);
 		result.append(", value: ");
 		result.append(value);
+		result.append(", returnType: ");
+		result.append(returnType);
 		result.append(')');
 		return result.toString();
 	}

@@ -72,6 +72,7 @@ public class ElementItemProvider
 			addInformationalPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addValuePropertyDescriptor(object);
+			addReturnTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -209,6 +210,28 @@ public class ElementItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Return Type feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addReturnTypePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Element_returnType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Element_returnType_feature", "_UI_Element_type"),
+				 TestPackage.Literals.ELEMENT__RETURN_TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -329,7 +352,10 @@ public class ElementItemProvider
 			break;
 		}
 		
-		textBuilder.append(getValue(element));		
+		textBuilder.append(getValue(element));
+		textBuilder.append(" (");
+		textBuilder.append(element.getReturnType());
+		textBuilder.append(")");
 		
 		return textBuilder.toString();
 	}
@@ -341,6 +367,9 @@ public class ElementItemProvider
 		switch(columnIndex) {
 		case ReferenceMasterDetailsBlock.NAME_COLUMN:
 			return element.getName();
+			
+		case ReferenceMasterDetailsBlock.RETURN_TYPE_COLUMN:
+			return element.getReturnType();
 			
 		case ReferenceMasterDetailsBlock.VALUE_COLUMN:
 			return getValue(element);
@@ -374,6 +403,7 @@ public class ElementItemProvider
 			case TestPackage.ELEMENT__INFORMATIONAL:
 			case TestPackage.ELEMENT__NAME:
 			case TestPackage.ELEMENT__VALUE:
+			case TestPackage.ELEMENT__RETURN_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case TestPackage.ELEMENT__ELEMENT:

@@ -190,13 +190,22 @@ public class TestPackage extends EPackageImpl {
 	public static final int ELEMENT__VALUE = 6;
 
 	/**
+	 * The feature id for the '<em><b>Return Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	public static final int ELEMENT__RETURN_TYPE = 7;
+
+	/**
 	 * The number of structural features of the '<em>Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	public static final int ELEMENT_FEATURE_COUNT = 7;
+	public static final int ELEMENT_FEATURE_COUNT = 8;
 
 	/**
 	 * The meta object id for the '{@link regression.test.OutputType <em>Output Type</em>}' class.
@@ -554,6 +563,20 @@ public class TestPackage extends EPackageImpl {
 
 
 	/**
+	 * Returns the meta object for the attribute '{@link regression.test.Element#getReturnType <em>Return Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Return Type</em>'.
+	 * @see regression.test.Element#getReturnType()
+	 * @see #getElement()
+	 * @generated
+	 */
+	public EAttribute getElement_ReturnType() {
+		return (EAttribute)elementEClass.getEStructuralFeatures().get(7);
+	}
+
+
+	/**
 	 * Returns the meta object for class '{@link regression.test.OutputType <em>Output Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -680,6 +703,7 @@ public class TestPackage extends EPackageImpl {
 		createEAttribute(elementEClass, ELEMENT__INFORMATIONAL);
 		createEAttribute(elementEClass, ELEMENT__NAME);
 		createEAttribute(elementEClass, ELEMENT__VALUE);
+		createEAttribute(elementEClass, ELEMENT__RETURN_TYPE);
 
 		outputTypeEClass = createEClass(OUTPUT_TYPE);
 		createEReference(outputTypeEClass, OUTPUT_TYPE__INITIAL_ELEMENT);
@@ -740,6 +764,7 @@ public class TestPackage extends EPackageImpl {
 		initEAttribute(getElement_Informational(), theXMLTypePackage.getBoolean(), "informational", "false", 0, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElement_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElement_Value(), theXMLTypePackage.getString(), "value", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getElement_ReturnType(), theXMLTypePackage.getString(), "returnType", null, 1, 1, Element.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(outputTypeEClass, OutputType.class, "OutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getOutputType_InitialElement(), this.getElement(), null, "initialElement", null, 1, 1, OutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -870,6 +895,13 @@ public class TestPackage extends EPackageImpl {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "value"
+		   });		
+		addAnnotation
+		  (getElement_ReturnType(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "returnType"
 		   });		
 		addAnnotation
 		  (elementTypeEEnum, 
@@ -1034,6 +1066,14 @@ public class TestPackage extends EPackageImpl {
 		 * @generated
 		 */
 		public static final EAttribute ELEMENT__VALUE = eINSTANCE.getElement_Value();
+
+		/**
+		 * The meta object literal for the '<em><b>Return Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		public static final EAttribute ELEMENT__RETURN_TYPE = eINSTANCE.getElement_ReturnType();
 
 		/**
 		 * The meta object literal for the '{@link regression.test.OutputType <em>Output Type</em>}' class.
