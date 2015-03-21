@@ -65,7 +65,8 @@ public abstract class InitMember<T extends Member>
 				
 				Object initialObject = constructor.newInstance();
 				if (isWithParams()) {
-					method.invoke(initialObject, input, params);
+					String[] paramArray = params.toArray(new String[params.size()]);
+					method.invoke(initialObject, input, paramArray);
 				} else {
 					method.invoke(initialObject, input);
 				}
