@@ -7,7 +7,7 @@
 <!--
 	Ant build script to generate RTT's Java XML bindings (JAXB) and its
 	distributions.
-	@author C. Bürger
+	@author Christian Oelsner
 -->
 
 <project name="rtt" default="Jar">
@@ -26,60 +26,40 @@
 	
 	<!-- library locations -->
 	<property name="lib.dir" location="${rtt.base}/libraries" />
+	<property name="devel.dir" location="${lib.dir}/development" />
 	<property name="runtime.dir" location="${lib.dir}/runtime" />
-	<property name="junit.dir" location="${lib.dir}/development/junit" />
 	<property name="plugin.dir" location="${lib.dir}/plugin" />
+	
+	<!-- JUnit directory -->
+	<property name="junit.dir" location="${devel.dir}/junit" />	
 
 	<!-- Name of the jar and source file-->
 	<property name="distr.jar.name" value="rtt" />
 	<property name="distr.jar.path" location="${distr.dir}/${distr.jar.name}.jar" />
 	<property name="distr.src.name" value="rtt_src" />
 	
-	<path id="libs.junit">
-		<fileset dir="${junit.dir}" includes="**/*.jar"/>
-	</path>
 	
-	<path id="libs.runtime">
-		<fileset dir="${runtime.dir}" includes="**/*.jar"/>
-	</path>
-
-	<!-- Refresh all classes and create jar -->
-	<target name="RefreshAll">
-		<antcall target="XJC ALL" />
-		<antcall target="Jar" />
-	</target>
-
-	<target name="Clean Distribution">
-		<delete includeemptydirs="true">
-			<fileset dir="${distr.dir}">
-				<include name="${distr.jar.name}.jar" />
-				<include name="${distr.src.name}.zip" />
-				<include name="javadoc/**/*" />
-			</fileset>
-		</delete>
-	</target>
-
-	<target name="Clean">
-		<antcall target="Clean XJC" />
+	<!-- Target: Clean -->
+	<target name="Clean" depends="Clean XJC">
 		<delete dir="${bin.dir}" failonerror="false" />
 	</target>
 
-	<target name="Compile">
-		<antcall target="XJC ALL" />
+	<!-- Target: Compile -->
+	<target name="Compile" depends="XJC ALL">
 		<mkdir dir="${bin.dir}"/>
 		<javac srcdir="${src.dir}:${src-gen.dir}:${src-tests.dir}" 
 			   destdir="${bin.dir}"
 			   includeantruntime="false">
 			<classpath>
-				<path refid="libs.junit" />
-				<path refid="libs.runtime" />
+				<fileset dir="${junit.dir}" includes="*.jar" />
+				<fileset dir="${runtime.dir}" includes="**/*.jar" />
 			</classpath>
 			<exclude name="rtt/core/RTTApplication.java" />
 			<exclude name="rtt/core/classpath/**/*" />
 		</javac>
 	</target>
 
-	<!-- Create *.jar distribution -->
+	<!-- Target: Jar - Creates *.jar distribution -->
 	<target name="Jar">
 		<jar destfile="${distr.jar.path}" index="false" update="false" compress="false">
 			<manifest>
@@ -92,14 +72,9 @@
 			<!-- add license informations -->
 			<zipfileset dir="${licenses.dir}" includes="*.txt" prefix="LICENSES"/>
 
-			<!-- logback config file -->
-			<fileset dir="${rtt.base}">
-				<include name="logback.xml"/>
-			</fileset>
-
-			<fileset dir="${src.dir}">
-				<include name="**/taskdef.properties" />
-			</fileset>
+			<fileset dir="${rtt.base}" includes="logback.xml" />
+			<fileset dir="${src.dir}" includes="**/taskdef.properties" />
+			
 			<fileset dir="${rtt.schemes}">
 				<include name="**/*.xsd" />
 				<include name="**/*.xslt" />
@@ -111,23 +86,26 @@
 		</jar>
 	</target>
 	
-	<target name="Test" depends="Clean, Compile, Jar">
-	    <mkdir dir="${plugin.dir}" />
-	    <copy file="${distr.jar.path}" tofile="${plugin.dir}/ant-lib.jar" />
-	    <ant antfile="${rtt.base}/tests/junit-tests.xml" />
-	</target>
-
-	<!-- Create source code distribution -->
-	<target name="SrcDistribution" depends="Clean XJC, Clean Distribution">
-		<zip destfile="${distr.dir}/${distr.src.name}.zip" encoding="UTF-8" compress="true" update="false">
-			<fileset dir="${rtt.base}">
-				<include name="**/*" />
-				<exclude name="binary" />
-				<exclude name="binary/**/*" />
-				<exclude name="distribution" />
-				<exclude name="distribution/**/*" />
-			</fileset>
-		</zip>
+	<target name="Test" depends="test-junit" />
+	
+	<target name="test-junit">
+		<echo message="Running JUnit Tests" level="info" />
+		
+		<junit printsummary="true" 
+		    haltonerror="true"
+		    haltonfailure="true"
+		    outputtoformatters="false">
+			<classpath>
+				<fileset dir="${junit.dir}" includes="*.jar" />
+				<fileset dir="${runtime.dir}" includes="**/*.jar" />
+				<pathelement location="${bin.dir}" />
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<test name="rtt.core.tests.junit.AllExecutorTests" />
+			<test name="rtt.core.tests.junit.AllOutputCompareTests" />
+			<test name="rtt.core.tests.junit.AllProcessingTests" />
+			<test name="rtt.core.tests.junit.core.DataGeneratorTests" />
+		</junit>
 	</target>
 
 	<!-- Creates Javadoc (todo) -->

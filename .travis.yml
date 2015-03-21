@@ -1,6 +1,9 @@
 language: java
 jdk:
   - oraclejdk7
+
+before-script:
+  - ant -buildfile ./RTT/build_rtt.xml Clean Compile Jar
   
 script:
   - ant -buildfile ./RTT/build_rtt.xml Test
