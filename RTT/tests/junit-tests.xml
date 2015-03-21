@@ -33,7 +33,10 @@
          ================================= -->
 	<target name="Tests" description="Run all tests">
 
-		<junit printsummary="true" haltonerror="true" >
+		<junit printsummary="true" 
+		    haltonerror="true"
+		    haltonfailure="true"
+		    outputtoformatters="false">
 			<classpath>
 				<path refid="junit.libs" />
 				<path refid="runtime.libs" />
