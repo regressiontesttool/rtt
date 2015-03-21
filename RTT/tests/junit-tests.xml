@@ -5,7 +5,7 @@
                    
      @author Christian Oelsner <C.Oelsner@web.de>                                                                
      ====================================================================== -->
-<project name="junit-tests" default="Tests">
+<project name="junit-tests" default="JUnit Tests">
 	<description>
     	Runs all Junit test cases.        
     </description>
@@ -29,9 +29,9 @@
 	</path>
 
 	<!-- ================================= 
-          target: default              
+          target: JUnit Tests              
          ================================= -->
-	<target name="Tests" description="Run all tests">
+	<target name="JUnit Tests" description="Run all tests">
 
 		<junit printsummary="true" 
 		    haltonerror="true"
