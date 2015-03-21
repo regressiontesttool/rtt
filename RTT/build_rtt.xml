@@ -28,6 +28,7 @@
 	<property name="lib.dir" location="${rtt.base}/libraries" />
 	<property name="runtime.dir" location="${lib.dir}/runtime" />
 	<property name="junit.dir" location="${lib.dir}/development/junit" />
+	<property name="plugin.dir" location="${lib.dir}/plugin" />
 
 	<!-- Name of the jar and source file-->
 	<property name="distr.jar.name" value="rtt" />
@@ -108,6 +109,12 @@
 				<exclude name="rtt/tests/**/*" />
 			</fileset>
 		</jar>
+	</target>
+	
+	<target name="Test" depends="Clean, Compile, Jar">
+	    <mkdir dir="${plugin.dir}" />
+	    <copy file="${distr.jar.path}" tofile="${plugin.dir}/ant-lib.jar" />
+	    <ant antfile="${rtt.base}/tests/junit-tests.xml" />
 	</target>
 
 	<!-- Create source code distribution -->
