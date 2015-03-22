@@ -102,7 +102,7 @@ public class ExecutorCorrectInitializeTests {
 		public WithParamsConstructorClass(InputStream in, String[] params) {}
 	}
 
-	@Test(expected=RuntimeException.class)
+	@Test
 	public void testWithParamsConstructor() throws Throwable {
 		initializeExecutor(WithParamsConstructorClass.class);
 	}
@@ -114,7 +114,7 @@ public class ExecutorCorrectInitializeTests {
 		public void init(InputStream in, String[] params) {}
 	}
 
-	@Test(expected=RuntimeException.class)
+	@Test
 	public void testWithParamsMethod() throws Throwable {
 		initializeExecutor(WithParamsMethodClass.class);
 	}
