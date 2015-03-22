@@ -147,7 +147,8 @@ public class ExecutorFailingInitializeTests {
 	// Test: withParameter constructor
 
 	@Node static class WithParamsConstructorClass {
-		@Initialize(withParams=true) public WithParamsConstructorClass(InputStream in) {}
+		@Initialize(withParams=true) 
+		public WithParamsConstructorClass(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)
@@ -158,7 +159,8 @@ public class ExecutorFailingInitializeTests {
 	// Test: withParameter method
 
 	@Node static class WithParamsMethodClass {
-		@Initialize(withParams=true) public void init(InputStream in) {}
+		@Initialize(withParams=true) 
+		public void init(InputStream in) {}
 	}
 
 	@Test(expected=RuntimeException.class)

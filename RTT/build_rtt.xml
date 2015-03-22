@@ -7,7 +7,7 @@
 <!--
 	Ant build script to generate RTT's Java XML bindings (JAXB) and its
 	distributions.
-	@author C. Bürger
+	@author Christian Oelsner
 -->
 
 <project name="rtt" default="Jar">
@@ -18,76 +18,62 @@
 
 	<!-- Important directories -->
 	<property name="distr.dir" location="${rtt.base}/distribution" />
-	<property name="lib.dir" location="${rtt.base}/libraries/runtime" />
 	<property name="licenses.dir" location="${rtt.base}/LICENSES"/>
 	<property name="src.dir" location="${rtt.base}/implementation" />
 	<property name="src-gen.dir" location="${rtt.base}/src-gen" />
+	<property name="src-tests.dir" location="${rtt.base}/tests/src" />
 	<property name="bin.dir" location="${rtt.base}/binary" />
+	
+	<!-- library locations -->
+	<property name="lib.dir" location="${rtt.base}/libraries" />
+	<property name="devel.dir" location="${lib.dir}/development" />
+	<property name="runtime.dir" location="${lib.dir}/runtime" />
+	<property name="plugin.dir" location="${lib.dir}/plugin" />
+	
+	<!-- JUnit directory -->
+	<property name="junit.dir" location="${devel.dir}/junit" />	
 
 	<!-- Name of the jar and source file-->
 	<property name="distr.jar.name" value="rtt" />
 	<property name="distr.jar.path" location="${distr.dir}/${distr.jar.name}.jar" />
 	<property name="distr.src.name" value="rtt_src" />
-
-	<!-- Refresh all classes and create jar -->
-	<target name="RefreshAll">
-		<antcall target="XJC ALL" />
-		<antcall target="Jar" />
-	</target>
-
-	<target name="Clean Distribution">
-		<delete includeemptydirs="true">
-			<fileset dir="${distr.dir}">
-				<include name="${distr.jar.name}.jar" />
-				<include name="${distr.src.name}.zip" />
-				<include name="javadoc/**/*" />
-			</fileset>
-		</delete>
-	</target>
 	
-	<target name="Clean">
-		<antcall target="Clean XJC" />
+	<!-- Target: Clean -->
+	<target name="Clean" depends="Clean XJC">
 		<delete dir="${bin.dir}" failonerror="false" />
 	</target>
-	
-	<target name="Compile">
-		<antcall target="XJC ALL" />
-		<mkdir dir="${bin.dir}"/>	
-		<javac srcdir="${src.dir}:${src-gen.dir}" 
-                       destdir="${bin.dir}" >
-                   <classpath>
-                       <fileset dir="${lib.dir}">
-                           <include name="**/*.jar" />
-                       </fileset>
-                   </classpath>
-                   <exclude name="rtt/core/RTTApplication.java" />
-                   <exclude name="rtt/core/classpath/**/*" />
-                </javac>
+
+	<!-- Target: Compile -->
+	<target name="Compile" depends="XJC ALL">
+		<mkdir dir="${bin.dir}"/>
+		<javac srcdir="${src.dir}:${src-gen.dir}:${src-tests.dir}" 
+			   destdir="${bin.dir}"
+			   includeantruntime="false">
+			<classpath>
+				<fileset dir="${junit.dir}" includes="*.jar" />
+				<fileset dir="${runtime.dir}" includes="**/*.jar" />
+			</classpath>
+			<exclude name="rtt/core/RTTApplication.java" />
+			<exclude name="rtt/core/classpath/**/*" />
+		</javac>
 	</target>
 
-	<!-- Create *.jar distribution -->
+	<!-- Target: Jar - Creates *.jar distribution -->
 	<target name="Jar">
 		<jar destfile="${distr.jar.path}" index="false" update="false" compress="false">
 			<manifest>
 				<attribute name="Main-Class" value="rtt.core.RegressionTestTool" />
 			</manifest>
-			
+
 			<!-- integrate third-party libraries -->
-			<zipfileset src="${lib.dir}/truezip-6.8.4.jar" />			
-			<zipfileset src="${lib.dir}/jewelcli-0.6.jar" />
-			<zipgroupfileset dir="${lib.dir}/logging" includes="*.jar" />
-			
+                        <zipgroupfileset dir="${runtime.dir}" includes="**/*.jar" />
+
 			<!-- add license informations -->
 			<zipfileset dir="${licenses.dir}" includes="*.txt" prefix="LICENSES"/>
+
+			<fileset dir="${rtt.base}" includes="logback.xml" />
+			<fileset dir="${src.dir}" includes="**/taskdef.properties" />
 			
-			<!-- logback config file -->
-			<fileset dir="${rtt.base}">
-				<include name="logback.xml"/>
-			</fileset>
-			
-			<fileset dir="${src.dir}">
-				<include name="**/taskdef.properties" />
-			</fileset>
 			<fileset dir="${rtt.schemes}">
 				<include name="**/*.xsd" />
 				<include name="**/*.xslt" />
@@ -98,18 +84,34 @@
 			</fileset>
 		</jar>
 	</target>
-
-	<!-- Create source code distribution -->
-	<target name="SrcDistribution" depends="Clean XJC, Clean Distribution">
-		<zip destfile="${distr.dir}/${distr.src.name}.zip" encoding="UTF-8" compress="true" update="false">
-			<fileset dir="${rtt.base}">
-				<include name="**/*" />
-				<exclude name="binary" />
-				<exclude name="binary/**/*" />
-				<exclude name="distribution" />
-				<exclude name="distribution/**/*" />
-			</fileset>
-		</zip>
+	
+	<target name="Test" depends="test-junit" />
+	
+	<target name="test-junit">
+		<echo message="Running JUnit Tests" level="info" />
+		
+		<junit printsummary="true" 
+		    haltonerror="true"
+		    haltonfailure="true"
+		    outputtoformatters="false">
+			<classpath>
+				<fileset dir="${junit.dir}" includes="*.jar" />
+				<fileset dir="${runtime.dir}" includes="**/*.jar" />
+				<pathelement location="${bin.dir}" />
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<test name="rtt.core.tests.junit.AllExecutorTests" />
+			<test name="rtt.core.tests.junit.AllOutputCompareTests" />
+			<test name="rtt.core.tests.junit.AllProcessingTests" />
+			<test name="rtt.core.tests.junit.core.DataGeneratorTests" />
+		</junit>
+	</target>
+	
+	<target name="test-ant">
+		<echo message="Running Ant Interface Tests" level="info" />
+		<mkdir dir="${plugin.dir}" />
+		<copy file="${distr.jar.path}" tofile="${plugin.dir}/ant-lib.jar"/>
+		<ant antfile="${rtt.base}/tests/ant-tests.xml" target="Ant-Tests" />
 	</target>
 
 	<!-- Creates Javadoc (todo) -->
@@ -119,12 +121,12 @@
 				<pathelement path="${src.dir}"/>
 				<pathelement path="${rtt.src-gen}"/>
 			</sourcepath>
-			
+
 			<package name="rtt.*"/>
 			<excludepackage name="rtt.core.classpath" />
-			
+
 			<doctitle>Regression Test Tool (RTT) - API</doctitle>
-			
+
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="*.jar" />

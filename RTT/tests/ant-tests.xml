@@ -5,8 +5,9 @@
 
 <!--
 	@author C. Bürger
+	@author Christian Oelsner
 -->
-<project name="rtt" default="Tests">
+<project name="rtt" default="Ant-Tests">
 	<dirname file="${ant.file.rtt}" property="tasks.base"/>
 	<property name="_basedir" location="${tasks.base}/.."/>
 	
@@ -40,7 +41,7 @@
 	</target>
 	
 	<!-- Execute all test Scenarios -->
-	<target name="Tests" depends="Clean">
+	<target name="Ant-Tests" depends="Clean">
 		<antcall target="ConfigurationUpdateTestScenarios"/>
 		<antcall target="ArchiveUpdateTestScenarios"/>
 		<antcall target="RunTestsTestScenarios"/>
