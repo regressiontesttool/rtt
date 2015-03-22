@@ -1,4 +1,4 @@
-Regression Test Tool (RTT) [![Build Status](https://travis-ci.org/COelsner/rtt.svg?branch=master)](https://travis-ci.org/COelsner/rtt)
+Regression Test Tool (RTT) [![Build Status](https://travis-ci.org/regressiontesttool/rtt.svg)](https://travis-ci.org/regressiontesttool/rtt)
 =============================
 
 A regression test tool for any type of java based program. The components to be regression tested just need to be marked by special Java annotations. Further code changes are not required. RTT comes with an own test archive system, fully equipped with input and output data versioning. A dedicated Eclipse Plug-in is also available.
