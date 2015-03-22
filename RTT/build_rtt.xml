@@ -38,7 +38,6 @@
 	<property name="distr.jar.path" location="${distr.dir}/${distr.jar.name}.jar" />
 	<property name="distr.src.name" value="rtt_src" />
 	
-	
 	<!-- Target: Clean -->
 	<target name="Clean" depends="Clean XJC">
 		<delete dir="${bin.dir}" failonerror="false" />
@@ -106,6 +105,13 @@
 			<test name="rtt.core.tests.junit.AllProcessingTests" />
 			<test name="rtt.core.tests.junit.core.DataGeneratorTests" />
 		</junit>
+	</target>
+	
+	<target name="test-ant">
+		<echo message="Running Ant Interface Tests" level="info" />
+		<mkdir dir="${plugin.dir}" />
+		<copy file="${distr.jar.path}" tofile="${plugin.dir}/ant-lib.jar"/>
+		<ant antfile="${rtt.base}/tests/ant-tests.xml" target="Ant-Tests" />
 	</target>
 
 	<!-- Creates Javadoc (todo) -->
