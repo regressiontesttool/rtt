@@ -10,7 +10,7 @@ import rtt.annotations.Node;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
-public class ExecutorInheritanceInitializeTests {
+public class ExecutorInheritanceInitializeTest {
 
 	private Input input;
 	private ArrayList<String> params;

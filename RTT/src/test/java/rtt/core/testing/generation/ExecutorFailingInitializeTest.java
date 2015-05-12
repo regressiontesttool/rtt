@@ -12,7 +12,7 @@ import rtt.annotations.Node.Initialize;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
-public class ExecutorFailingInitializeTests {
+public class ExecutorFailingInitializeTest {
 
 	private Input input;
 	private List<String> params;

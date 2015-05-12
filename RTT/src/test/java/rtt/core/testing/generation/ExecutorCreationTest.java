@@ -8,7 +8,7 @@ import rtt.annotations.Node;
 import rtt.annotations.Node.Initialize;
 import rtt.core.testing.generation.Executor;
 
-public class ExecutorCreationTests {
+public class ExecutorCreationTest {
 	
 	// Test: anonymous classes
 	

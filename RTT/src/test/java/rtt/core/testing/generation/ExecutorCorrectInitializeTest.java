@@ -11,7 +11,7 @@ import rtt.annotations.Node;
 import rtt.core.archive.input.Input;
 import rtt.core.testing.generation.Executor;
 
-public class ExecutorCorrectInitializeTests {	
+public class ExecutorCorrectInitializeTest {	
 
 	private Input input;
 	private List<String> params;
