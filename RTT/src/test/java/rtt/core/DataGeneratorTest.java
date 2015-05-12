@@ -23,7 +23,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.generation.DataGenerator;
 import rtt.core.testing.generation.Executor;
 
-public class DataGeneratorTests {
+public class DataGeneratorTest {
 
 	private Input input;
 	private List<String> params;

@@ -13,7 +13,7 @@ import rtt.core.exceptions.RTTException;
 import rtt.core.loader.ArchiveLoader.NotSupportedArchiveType;
 import rtt.core.manager.Manager;
 
-public class ManagerInitializeTests {
+public class ManagerInitializeTest {
 
 	private Path dirExisting;
 	private Path dirNonExisting;
@@ -106,10 +106,11 @@ public class ManagerInitializeTests {
 		createArchive(zipComplexFolderCreating);
 	}
 	
+	/** TODO 
 	@Test
 	public void testExistingZip() throws Exception {
 		Manager manager = createManager(zipExisting);
 		manager.loadArchive(zipExisting.toFile());
 	}
-
+	*/
 }

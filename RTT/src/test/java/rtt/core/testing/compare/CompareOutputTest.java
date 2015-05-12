@@ -15,7 +15,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.results.TestFailure;
 
 
-public class CompareOutputTests {
+public class CompareOutputTest {
 
 	@Before
 	public void setUp() throws Exception {}
@@ -57,7 +57,7 @@ public class CompareOutputTests {
 	}
 	
 	private Output createOutput(ElementType initType, boolean informational) {		
-		Element initialElement = CompareElementTests.
+		Element initialElement = CompareElementTest.
 				createSampleElement(initType, informational);
 		
 		Output output = new Output();		
@@ -71,7 +71,7 @@ public class CompareOutputTests {
 		Element initialNode = output.getInitialElement();
 		Element element = null;
 		for (int i = 0; i < childCount; i++) {
-			element = CompareElementTests.createSampleElement(
+			element = CompareElementTest.createSampleElement(
 					ElementType.VALUE, childInfos);
 			element.setName("Item " + i);
 			
@@ -105,7 +105,7 @@ public class CompareOutputTests {
 		Output nonEmptyOutput = new Output();
 		
 		nonEmptyOutput.setInitialElement(
-				CompareElementTests.createSampleElement(ElementType.VALUE, false));
+				CompareElementTest.createSampleElement(ElementType.VALUE, false));
 		
 		testDifference(emptyOutput, nonEmptyOutput, true);
 		testDifference(emptyOutput, nonEmptyOutput, false);
@@ -114,7 +114,7 @@ public class CompareOutputTests {
 		testDifference(nonEmptyOutput, emptyOutput, false);
 		
 		nonEmptyOutput.setInitialElement(
-				CompareElementTests.createSampleElement(ElementType.VALUE, true));
+				CompareElementTest.createSampleElement(ElementType.VALUE, true));
 		
 		testDifference(emptyOutput, nonEmptyOutput, true);
 		testDifference(emptyOutput, nonEmptyOutput, false);

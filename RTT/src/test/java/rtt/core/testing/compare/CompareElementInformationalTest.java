@@ -10,7 +10,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
 import rtt.core.tests.junit.utils.CompareUtils;
 
-public class CompareElementInformationalTests {
+public class CompareElementInformationalTest {
 	
 	private static final String NAME = "SampleElement";
 	private static final GeneratorType GENERATOR = GeneratorType.OBJECT;

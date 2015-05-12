@@ -9,7 +9,7 @@ import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
 import rtt.core.tests.junit.utils.CompareUtils;
 
-public class CompareNodeTests {
+public class CompareNodeTest {
 	
 	private OutputCompare comparer;
 	
@@ -19,7 +19,7 @@ public class CompareNodeTests {
 	}
 	
 	public static Element createSampleNode(boolean informational) {
-		return CompareElementTests.createSampleElement(ElementType.NODE, informational);
+		return CompareElementTest.createSampleElement(ElementType.NODE, informational);
 	}
 	
 	public enum CreateInfo {
@@ -37,7 +37,7 @@ public class CompareNodeTests {
 		Element node = createSampleNode(parentIsInfo);	
 		
 		for(int i = 0; i < childCount; i++) {
-			Element childElement = CompareElementTests.
+			Element childElement = CompareElementTest.
 					createSampleElement(type, childIsInfo);
 			
 			node.getElements().add(childElement);
@@ -144,10 +144,10 @@ public class CompareNodeTests {
 				createSampleNode(1, ElementType.VALUE, CreateInfo.NONE));
 		
 		Element node = createSampleNode(false);
-		Element value = CompareElementTests.createSampleElement(ElementType.VALUE, false);
+		Element value = CompareElementTest.createSampleElement(ElementType.VALUE, false);
 		value.setValue("anOtherValue");
 		node.getElements().add(value);
-		node.getElements().add(CompareElementTests.createSampleElement(ElementType.VALUE, false));
+		node.getElements().add(CompareElementTest.createSampleElement(ElementType.VALUE, false));
 		
 		testDifference(createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), node, Difference.VALUE);
 		testDifference(node, createSampleNode(2, ElementType.VALUE, CreateInfo.NONE), Difference.VALUE);
@@ -159,10 +159,10 @@ public class CompareNodeTests {
 				createSampleNode(1, ElementType.VALUE, CreateInfo.CHILDS));
 		
 		Element node = createSampleNode(false);
-		Element value = CompareElementTests.createSampleElement(ElementType.VALUE, true);
+		Element value = CompareElementTest.createSampleElement(ElementType.VALUE, true);
 		value.setValue("anOtherValue");
 		node.getElements().add(value);
-		node.getElements().add(CompareElementTests.createSampleElement(ElementType.VALUE, true));
+		node.getElements().add(CompareElementTest.createSampleElement(ElementType.VALUE, true));
 		
 		testNoDifferences(createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS), node);
 		testNoDifferences(node, createSampleNode(2, ElementType.VALUE, CreateInfo.CHILDS));
@@ -205,7 +205,7 @@ public class CompareNodeTests {
 	@Test
 	public void testUnequalChildElement_Name() throws Exception {
 		Element changedNode = createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE);
-		Element changedElement = CompareElementTests.createSampleElement(ElementType.REFERENCE, false);
+		Element changedElement = CompareElementTest.createSampleElement(ElementType.REFERENCE, false);
 		changedElement.setName("anOtherName");		
 		changedNode.getElements().add(changedElement);
 		
@@ -224,7 +224,7 @@ public class CompareNodeTests {
 	@Test
 	public void testUnequalChildValue() throws Exception {
 		Element changedNode = createSampleNode(2, ElementType.VALUE, CreateInfo.NONE);
-		Element changedChild = CompareElementTests.createSampleElement(ElementType.VALUE, false);
+		Element changedChild = CompareElementTest.createSampleElement(ElementType.VALUE, false);
 		changedChild.setValue("anOtherValue");		
 		changedNode.getElements().add(changedChild);
 		
@@ -243,7 +243,7 @@ public class CompareNodeTests {
 	@Test
 	public void testUnequalChildReference() throws Exception {
 		Element changedNode = createSampleNode(2, ElementType.REFERENCE, CreateInfo.NONE);
-		Element changedChild = CompareElementTests.createSampleElement(ElementType.REFERENCE, false);
+		Element changedChild = CompareElementTest.createSampleElement(ElementType.REFERENCE, false);
 		changedChild.setValue("2.2.2");		
 		changedNode.getElements().add(changedChild);
 		
