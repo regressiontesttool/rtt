@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:rtt="regression.test.tool" targetNamespace="regression.test.tool"
+	xmlns:rtt="testsuite.archive.core.rtt" 
+	targetNamespace="testsuite.archive.core.rtt"
 
 	attributeFormDefault="unqualified" elementFormDefault="qualified">
 	<xs:element name="testsuites">

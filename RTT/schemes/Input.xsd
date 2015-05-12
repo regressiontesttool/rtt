@@ -3,7 +3,13 @@
 	This program and the accompanying materials are made available under the
 	terms of the MIT license (X11 license) which accompanies this distribution.
 -->
-<xs:schema xmlns:tns="regression.test.tool" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="regression.test.tool">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:tns="input.archive.core.rtt" 
+	targetNamespace="input.archive.core.rtt"
+	
+	attributeFormDefault="unqualified"
+	elementFormDefault="qualified" >
+	
 	<xs:element name="input">
 		<xs:complexType>
 			<xs:simpleContent>
