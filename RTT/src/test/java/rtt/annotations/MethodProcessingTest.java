@@ -11,7 +11,7 @@ import rtt.annotations.processing.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
-public class MethodProcessingTests {
+public class MethodProcessingTest {
 
 	@Before
 	public void setUp() throws Exception {}

@@ -10,7 +10,7 @@ import rtt.annotations.processing.AnnotationProcessor;
 import rtt.annotations.processing.ValueMember;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
-public class NamedMethodProcessingTests {
+public class NamedMethodProcessingTest {
 
 	@Before
 	public void setUp() throws Exception {}

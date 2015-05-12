@@ -12,16 +12,16 @@ import org.junit.Test;
 import rtt.annotations.Node.Value;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.annotations.processing.ValueMember;
-import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.EqualNamedAttributeClass;
-import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.EqualNamedExtendingClass;
-import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.ExtendingClass;
-import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.NamedAttributeClass;
-import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.NamedExtendingClass;
-import rtt.core.tests.junit.annotations.NamedMethodProcessingTests.NoNameAttributeClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTest.EqualNamedAttributeClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTest.EqualNamedExtendingClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTest.ExtendingClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTest.NamedAttributeClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTest.NamedExtendingClass;
+import rtt.core.tests.junit.annotations.NamedMethodProcessingTest.NoNameAttributeClass;
 import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
-public class NamedFieldProcessingTests {
+public class NamedFieldProcessingTest {
 
 	@Before
 	public void setUp() throws Exception {}
