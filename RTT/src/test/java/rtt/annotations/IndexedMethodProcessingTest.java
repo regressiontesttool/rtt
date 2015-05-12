@@ -1,4 +1,4 @@
-package rtt.core.tests.junit.annotations;
+package rtt.annotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -12,12 +12,11 @@ import org.junit.Test;
 import rtt.annotations.Node.Value;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.annotations.processing.ValueMember;
-import rtt.core.tests.junit.annotations.IndexedFieldProcessingTest.AscendingIndexAttributeClass;
-import rtt.core.tests.junit.annotations.IndexedFieldProcessingTest.EqualIndexAttributeClass;
-import rtt.core.tests.junit.annotations.IndexedFieldProcessingTest.ExtendingClass;
-import rtt.core.tests.junit.annotations.IndexedFieldProcessingTest.IndexedExtendingClass;
-import rtt.core.tests.junit.annotations.IndexedFieldProcessingTest.NoIndexAttributeClass;
-import rtt.core.tests.junit.utils.TestAnnotationUtils;
+import rtt.annotations.IndexedFieldProcessingTest.AscendingIndexAttributeClass;
+import rtt.annotations.IndexedFieldProcessingTest.EqualIndexAttributeClass;
+import rtt.annotations.IndexedFieldProcessingTest.ExtendingClass;
+import rtt.annotations.IndexedFieldProcessingTest.IndexedExtendingClass;
+import rtt.annotations.IndexedFieldProcessingTest.NoIndexAttributeClass;
 
 @SuppressWarnings("unused")
 public class IndexedMethodProcessingTest {

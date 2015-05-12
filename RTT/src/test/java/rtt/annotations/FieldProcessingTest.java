@@ -1,4 +1,4 @@
-package rtt.core.tests.junit.annotations;
+package rtt.annotations;
 
 import static org.junit.Assert.*;
 
@@ -11,7 +11,6 @@ import org.junit.Test;
 import rtt.annotations.Node.Value;
 import rtt.annotations.processing.AnnotationProcessor;
 import rtt.annotations.processing.ValueMember;
-import rtt.core.tests.junit.utils.TestAnnotationUtils;
 
 @SuppressWarnings("unused")
 public class FieldProcessingTest {

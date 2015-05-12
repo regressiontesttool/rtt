@@ -1,4 +1,4 @@
-package rtt.core.tests.junit.compare;
+package rtt.core.testing.compare;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +8,6 @@ import rtt.core.archive.output.ElementType;
 import rtt.core.archive.output.GeneratorType;
 import rtt.core.testing.compare.OutputCompare;
 import rtt.core.testing.compare.OutputCompare.CompareResult.Difference;
-import rtt.core.tests.junit.utils.CompareUtils;
 
 public class CompareElementInformationalTest {
 	

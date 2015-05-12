@@ -1,4 +1,4 @@
-package rtt.core.tests.junit.core;
+package rtt.core.testing.generation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -1,4 +1,4 @@
-package rtt.core.tests.junit.generation.executor;
+package rtt.core.testing.generation;
 
 import java.io.InputStream;
 

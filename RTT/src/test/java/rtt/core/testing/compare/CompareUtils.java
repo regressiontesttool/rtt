@@ -1,4 +1,4 @@
-package rtt.core.tests.junit.utils;
+package rtt.core.testing.compare;
 
 import static org.junit.Assert.fail;
 import rtt.core.archive.output.Element;
