@@ -80,6 +80,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<property name="compile_classpath"
+										  refid="maven.compile.classpath"/>
+								<property name="outputDir"
+										  value="${project.build.outputDirectory}"/>
+								<property name="sourceDir"
+										  value="${project.build.sourceDirectory}"/>
+								<echo message="outputDir: ${project.build.outputDirectory}" />
+								<echo message="sourceDir: ${project.build.sourceDirectory}" />
+								<echo message="compile_classpath: ${compile_classpath}" />
+								<ant antfile="${basedir}/src/test/ant/ant-tests.xml" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+            </plugin>
         </plugins>
     </build>
 </project>
