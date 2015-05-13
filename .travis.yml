@@ -1,6 +1,5 @@
 language: java
 jdk:
-  - oraclejdk7
-  
- before_install:
-  - "cd RTT/"
+  - oraclejdk7  
+ before_install: 
+  - cd RTT/
