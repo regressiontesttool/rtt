@@ -6,7 +6,7 @@
  *
  * </copyright>
  */
-package rtt.core.tests;
+package rtt.core;
 
 import java.io.*;
 import java.util.*;

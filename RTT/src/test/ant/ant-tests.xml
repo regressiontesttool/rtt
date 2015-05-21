@@ -9,7 +9,7 @@
 -->
 <project name="rtt" default="Ant-Tests">
 	<dirname file="${ant.file.rtt}" property="tasks.base"/>
-	<property name="_basedir" location="${tasks.base}/.."/>
+	<property name="_basedir" location="${testOutput}"/>
 	
 	<!-- Declare RTT's Ant tasks -->
 	<taskdef resource="rtt/ant/taskdef.properties" onerror="failall">
@@ -71,8 +71,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -117,8 +117,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>		
 		
@@ -158,8 +158,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -211,8 +211,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -220,8 +220,8 @@
 			<configuration
 				overwrite="true"
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -230,7 +230,7 @@
 				overwrite="true"
 				name="c1"
 				initial="RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -255,8 +255,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c2"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -330,8 +330,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -390,8 +390,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -454,8 +454,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
@@ -512,8 +512,8 @@
 		<updateConfigurations archive="${archive}">
 			<configuration
 				name="c1"
-				initial="rtt.core.tests.RepositoryGenerator">
-				<classpathElement path="../binary"/>
+				initial="rtt.core.RepositoryGenerator">
+				<classpathElement path="${_basedir}"/>
 			</configuration>
 		</updateConfigurations>
 		
