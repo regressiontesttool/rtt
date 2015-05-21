@@ -97,9 +97,14 @@
 										  value="${project.build.outputDirectory}"/>
 								<property name="sourceDir"
 										  value="${project.build.sourceDirectory}"/>
-								<echo message="outputDir: ${project.build.outputDirectory}" />
-								<echo message="sourceDir: ${project.build.sourceDirectory}" />
-								<echo message="compile_classpath: ${compile_classpath}" />
+								<property name="testOutput"
+								          value="${project.build.testOutputDirectory}" />
+								<property name="testSource"
+								          value="${project.build.testSourceDirectory}" />
+								<echo message="outputDir: ${outputDir}" />
+								<echo message="sourceDir: ${sourceDir}" />
+								<echo message="testOutput: ${testOutput}" />
+								<echo message="testOutput: ${testSource}" />
 								<ant antfile="${basedir}/src/test/ant/ant-tests.xml" />
 							</tasks>
 						</configuration>

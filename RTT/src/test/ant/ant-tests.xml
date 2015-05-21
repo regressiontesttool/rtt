@@ -13,7 +13,7 @@
 	
 	<!-- Declare RTT's Ant tasks -->
 	<taskdef resource="rtt/ant/taskdef.properties" onerror="failall">
-		<classpath path="${_basedir}/libraries/plugin/ant-lib.jar"/>
+		<classpath path="${compile_classpath}"/>
 	</taskdef>
 	
 	<!-- = = = = = = = = = = = = = = = = =
