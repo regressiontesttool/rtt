@@ -29,7 +29,8 @@ public final class RepositoryGenerator {
 	 * stream as source for splicing and repository generation.
 	 * @param is Input consumed while and needed for repository generation.
 	 */
-	@Node.Initialize(acceptedExceptions=RuntimeException.class)
+	/**@Node.Initialize(acceptedExceptions=RuntimeException.class) */
+	@Node.Initialize
 	public RepositoryGenerator(InputStream is) {this.is = is;}
 	
 	/**

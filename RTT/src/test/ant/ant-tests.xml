@@ -11,6 +11,10 @@
 	<dirname file="${ant.file.rtt}" property="tasks.base"/>
 	<property name="_basedir" location="${testOutput}"/>
 	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" onerror="failall">
+		<classpath path="${compile_classpath}" />
+	</taskdef>
+	
 	<!-- Declare RTT's Ant tasks -->
 	<taskdef resource="rtt/ant/taskdef.properties" onerror="failall">
 		<classpath path="${compile_classpath}"/>
@@ -171,16 +175,35 @@
 			</testsuite>
 		</updateArchive>
 		
-		<updateTests archive="${archive}"
-			configuration="c1"
-		/>
+		<trycatch>
+			<try>
+				<runTests>
+					<updateTests archive="${archive}"
+								 configuration="c1"/>
+				</runTests>
+				<fail message="There should be an exception" />
+			</try>
+			<catch>
+				<echo>Exception catched.</echo>
+			</catch>
+		</trycatch>
 		
-		<runTests>
-			<test archive="${archive}"
-				configuration="c1"
-				matching="false"
-			/>
-		</runTests>
+		
+		
+		<trycatch>
+			<try>
+				<runTests>
+					<test archive="${archive}"
+						  configuration="c1"
+				          matching="false"
+					/>
+				</runTests>
+				<fail message="There should be an exception" />
+			</try>
+			<catch>
+				<echo>There was an error</echo>
+			</catch>
+		</trycatch>
 		
 		<exportLog archive="${archive}"
 			destination="${_basedir}/tests/testresults/ga_1-uc_1-ua_cec_s1_123-ur_c1_s1_12e3-rt_c1_s1_12s3"
