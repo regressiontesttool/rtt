@@ -184,11 +184,9 @@
 				<fail message="There should be an exception" />
 			</try>
 			<catch>
-				<echo>Exception catched.</echo>
+				<echo>Exception catched. Test passed.</echo>
 			</catch>
-		</trycatch>
-		
-		
+		</trycatch>	
 		
 		<trycatch>
 			<try>
@@ -201,7 +199,7 @@
 				<fail message="There should be an exception" />
 			</try>
 			<catch>
-				<echo>There was an error</echo>
+				<echo>Exception catched. Test passed.</echo>
 			</catch>
 		</trycatch>
 		
