@@ -90,7 +90,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target unless="${skipTests}">
 								<property name="compile_classpath"
 										  refid="maven.compile.classpath"/>
 								<property name="outputDir"
@@ -104,9 +104,9 @@
 								<echo message="outputDir: ${outputDir}" />
 								<echo message="sourceDir: ${sourceDir}" />
 								<echo message="testOutput: ${testOutput}" />
-								<echo message="testOutput: ${testSource}" />
+								<echo message="testSource: ${testSource}" />
 								<ant antfile="${basedir}/src/test/ant/ant-tests.xml" />
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
