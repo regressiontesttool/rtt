@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -71,25 +71,12 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 
 	private Entry createEntry(String message, String suffix, EntryType type) {
 		Entry entry = new Entry();
-		entry.setDate(getNow());
+		entry.setDate(Calendar.getInstance());
 		entry.setMsg(message);
 		entry.setSuffix(suffix);
 		entry.setType(type);
 
 		return entry;
-	}
-	
-	private XMLGregorianCalendar getNow() {
-		try {
-			XMLGregorianCalendar cal = DatatypeFactory.newInstance()
-					.newXMLGregorianCalendar(new GregorianCalendar());
-			cal.normalize();
-
-			return cal;
-		} catch (DatatypeConfigurationException e) {
-			RTTLogging.trace("Could not retrieve gregorian calendar", e);
-			return null;
-		}
 	}
 	
 	/**
@@ -208,7 +195,7 @@ public class LogManager extends AbstractDataManager<ArchiveLog> {
 			String configName, String suiteName) {
 		
 		Testrun tr = new Testrun();
-		tr.setDate(getNow());
+		tr.setDate(Calendar.getInstance());
 		tr.setConfiguration(configName);
 		tr.setType(EntryType.TESTRUN);
 		

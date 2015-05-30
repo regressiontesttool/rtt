@@ -4,7 +4,7 @@
 	terms of the MIT license (X11 license) which accompanies this distribution.
 -->
 <jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
-	<jaxb:bindings schemaLocation="History.xsd">
+	<jaxb:bindings schemaLocation="History.xsd" node="/xsd:schema">
 		<jaxb:bindings node="//xsd:complexType[@name='version']/xsd:attribute[@name='date']">
 			<jaxb:property>
 				<jaxb:baseType>

@@ -70,7 +70,6 @@
 				<configuration>
 					<schemaDirectory>schemes</schemaDirectory>
 					<bindingDirectory>schemes</bindingDirectory>
-					<generateDirectory>target/src-gen/</generateDirectory>
 				</configuration>
 				<executions>
 					<execution>
@@ -81,8 +80,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
 				<executions>
 					<execution>
 						<phase>test</phase>
