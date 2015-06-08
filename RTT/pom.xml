@@ -4,10 +4,14 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
 							 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.rtt</groupId>
+    <parent>
+    	<groupId>org.rtt</groupId>
+    	<artifactId>parent</artifactId>
+    	<version>0.1-SNAPSHOT</version>
+    </parent>
+
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
-    <version>0.1-SNAPSHOT</version>
     <name>rtt-core</name>
     <url>http://rtt.org</url>
 	
