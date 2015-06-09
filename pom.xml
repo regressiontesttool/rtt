@@ -8,7 +8,7 @@
     <groupId>org.rtt</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>0.1-SNAPSHOT</version>
     <name>rtt-parent</name>
 
     <modules>
